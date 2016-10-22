@@ -1,0 +1,22 @@
+\documentclass{grattan}
+
+<<30-million,eval=FALSE>>=
+# We need this to be kept as is
+# 30 million not 30~million
+"30 million"
+@
+
+\begin{document}
+% Comments should not be detected either
+% 30 million
+There were 30~million people watching. 
+
+
+
+<<390-million,eval=FALSE>>=
+# We need this to be kept as is
+# 30 million not 30~million
+"390 million"
+@
+
+\end{document}

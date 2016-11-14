@@ -47,7 +47,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       stop("Argument length 0")
     }
 
-    if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", ").")){
+    if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", ".)")){
       cat(paste0(split_line_after_footnote,
                  collapse = ""),
           "\n")

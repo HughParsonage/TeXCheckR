@@ -8,6 +8,8 @@ weld_bmillion(filename, outfile = filename)
 }
 \arguments{
 \item{filename}{A LaTeX or knitr file.}
+
+\item{outfile}{The file to write to, defaults to \code{filename}.}
 }
 \value{
 NULL. This function is called for its side-effect: rewriting \code{filename} with \code{30 million} changed to \code{30~million}.

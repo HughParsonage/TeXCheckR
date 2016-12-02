@@ -8,11 +8,16 @@ check_footnote_typography(filename, ignore.lines = NULL)
 }
 \arguments{
 \item{filename}{A LaTeX file.}
+
+\item{ignore.lines}{Lines to ignore (for example, those using the word 'footnote').}
 }
 \value{
 Called for its side-effect.
 }
 \description{
 Check footnote typography
+}
+\details{
+This function when applied to a LaTeX file will throw an error if: (1) footnotes
 }
 

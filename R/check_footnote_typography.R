@@ -1,10 +1,19 @@
 #' Check footnote typography
 #' @param filename A LaTeX file.
+#' @param ignore.lines Lines to ignore (for example, those using the word 'footnote').
 #' @return Called for its side-effect.
+#' @details This function when applied to a LaTeX file will throw an error if: (1) footnotes
 #' @export
 
 check_footnote_typography <- function(filename, ignore.lines = NULL){
   lines <- readLines(filename)
+  if (!is.null(ignore.lines)){
+    lines <- lines[-ignore.lines]
+  }
+
+  # Remove commentaries (but not the comment symbol)
+
+  lines <- gsub("%.*$", "%", lines, perl = TRUE)
 
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)
@@ -44,20 +53,25 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       cat(paste0(split_line_after_footnote,
                  collapse = ""),
           "\n")
-      stop("Argument length 0")
+      stop("Argument length 0. You may want to consider omitting this line.")
     }
 
-    if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", ".)")){
-      cat(paste0(split_line_after_footnote,
-                 collapse = ""),
-          "\n")
-      stop("Footnote does not end with full stop.")
+    if (split_line_after_footnote[footnote_closes_at - 1] != "."){
+      # OK if full stop is before parenthesis.
+      if (!(split_line_after_footnote[footnote_closes_at - 1] == ")" && split_line_after_footnote[footnote_closes_at - 2] == ".")){
+        cat(paste0(split_line_after_footnote,
+                   collapse = ""),
+            "\n")
+        stop("Footnote does not end with full stop.")
+      }
     }
   }
 
-  for (line in lines){
-    if (grepl(" \\footnote", line, fixed = TRUE)){
-      cat(line)
+  for (line in seq_along(lines)){
+    if (grepl(" \\footnote", lines[[line]], fixed = TRUE) ||
+        # footnote on new line without protective %
+        (grepl("^\\\\footnote", lines[[line]], perl = TRUE) && !grepl("%$", lines[[line - 1L]], perl = TRUE))){
+      cat(lines[line])
       stop("Space before footnote.")
     }
   }

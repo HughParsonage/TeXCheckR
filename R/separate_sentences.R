@@ -23,6 +23,7 @@ separate_sentences <- function(filename){
           lines,
           gsub(".\\footnote", ".%\n\\footnote", fixed = TRUE,
                gsub(".\\footcite", ".%\n\\footcite", fixed = TRUE,
-                    gsub("\\.\\s+([A-Z])", "\\.\n\\1", lines, perl = TRUE)))) %>%
+                    gsub("\\.\\s+([A-Z])", "\\.\n\\1", perl = TRUE,
+                         gsub("\\.[}]\\s+([A-Z])", "\\.}\n\\1", lines, perl = TRUE))))) %>%
     writeLines(filename)
 }

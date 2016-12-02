@@ -53,7 +53,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       cat(paste0(split_line_after_footnote,
                  collapse = ""),
           "\n")
-      stop("Argument length 0. You may want to consider omitting this line.")
+      stop("Argument length 0. You may want to consider ignoring this line.")
     }
 
     if (split_line_after_footnote[footnote_closes_at - 1] != "."){

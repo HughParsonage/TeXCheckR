@@ -1,0 +1,48 @@
+
+\paperheight=2\paperheight
+
+\makeatletter
+
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global\@firstcolumnfalse
+    \global\setbox\@leftcolumn\copy\@outputbox
+    \splitmaxdepth\maxdimen
+    \vbadness\maxdimen
+     \setbox\@outputbox\vbox{\unvbox\@outputbox\unskip}%
+     \setbox\@outputbox\vsplit\@outputbox to\maxdimen
+    \toks@\expandafter{\topmark}%
+    \xdef\@firstcoltopmark{\the\toks@}%
+    \toks@\expandafter{\splitfirstmark}%
+    \xdef\@firstcolfirstmark{\the\toks@}%
+    \ifx\@firstcolfirstmark\@empty
+      \global\let\@setmarks\relax
+    \else
+      \gdef\@setmarks{%
+        \let\firstmark\@firstcolfirstmark
+        \let\topmark\@firstcoltopmark}%
+    \fi
+  \else
+    \global\@firstcolumntrue
+    \setbox\@outputbox\vbox{%
+     \hb@xt@\textwidth{%
+\vbox{%
+       \hb@xt@\columnwidth{\box\@leftcolumn \hss}%
+%        \hfil
+%        {\normalcolor\vrule \@width\columnseprule}%
+%        \hfil
+\hrule
+       \hb@xt@\columnwidth{\box\@outputbox \hss}}%
+}%
+   }%
+  \@combinedblfloats
+    \@setmarks
+    \@outputpage
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi{\@outputpage
+     \@startdblcolumn}%
+    \endgroup
+  \fi}%
+\makeatother

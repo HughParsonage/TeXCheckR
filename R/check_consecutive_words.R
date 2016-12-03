@@ -1,5 +1,10 @@
 #' Check consecutive typeset words
 #' @param path Path containing the latex file.
+#' @param latex_file The LaTeX file whose output will be checked.
+#' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
+#' you can use the md5sum of the output of this function.
+#' @return An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
+#' Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}.
 #' @export
 
 
@@ -11,6 +16,12 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   orig_wd <- getwd()
   on.exit(setwd(orig_wd))
   setwd(path)
+
+  md5sum_latex_file <- tools::md5sum(latex_file)
+
+  if (!is.null(md5sum.ok) && md5sum_latex_file == md5sum.ok){
+    return(NULL)
+  }
 
   if (file.exists("CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")){
     stop('"CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex" exists in the path. This was unexpected.')
@@ -76,7 +87,11 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
       cat(valid_typeset_lines[rep(which(is_repeated)[repetition], each = 5) + -2:2], sep = "\n")
       cat("\n\n")
     }
-    stop("Repeated words.")
+
+    # out <- data.table(repeated_words = repeated_words)
+
+    stop("Repeated words.", "\n", "\n",
+         "If document acceptable, md5sum.ok = '", md5sum_latex_file, "'")
   }
 
 

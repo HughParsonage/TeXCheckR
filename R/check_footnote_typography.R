@@ -68,19 +68,16 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
   }
 
   for (line in seq_along(lines)){
-    if (grepl(" \\footnote", lines[[line]], fixed = TRUE) ||
+    if ((grepl(" \\footnote", lines[[line]], fixed = TRUE) && !grepl("\\s*\\\\footnote", lines[[line]], perl = TRUE)) ||
         # footnote on new line without protective %
-        (grepl("^\\\\footnote", lines[[line]], perl = TRUE) && !grepl("%$", lines[[line - 1L]], perl = TRUE))){
+        (grepl("^\\s*\\\\footnote", lines[[line]], perl = TRUE) && !grepl("%$", lines[[line - 1L]], perl = TRUE))){
       cat(lines[line])
       stop("Space before footnote.")
     }
   }
   message("No space before footnote marks")
   rm(line)
-  NULL
+  invisible(NULL)
 }
 
 
-# test_that("Detected", {
-#   expect_error(check_footnote_typography("tests/footnote-bad-full-stop.rnw"), regexp = "Full stop after footnotemark")
-# })

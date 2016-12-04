@@ -5,3 +5,10 @@ Parsing grattan reports for errors
 
 This package assists with enforcing of simple style decisions of the Grattan Report, Melbourne.
 
+In the working directory containing your report, run
+
+```r
+library(grattanReporter)
+checkGrattanReport()
+```
+

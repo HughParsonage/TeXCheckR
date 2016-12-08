@@ -12,8 +12,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
   }
 
   # Remove commentaries (but not the comment symbol)
+  # Need to include percentage signs though
 
-  lines <- gsub("%.*$", "%", lines, perl = TRUE)
+  lines <- gsub("((?<!(\\\\))%).*$", "%", lines, perl = TRUE)
 
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)

@@ -7,29 +7,65 @@
 #' @details Uses the \code{en_AU} hunspell dictionary.
 #' @importFrom hunspell hunspell
 #' @importFrom hunspell dictionary
+#' @export
 
 check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
-  lines <- readLines(filename, warn = FALSE)
+  lines <- readLines(filename, warn = FALSE)[-1]
 
   if (!is.null(ignore.lines)){
     lines <- lines[-ignore.lines]
   }
 
+  # Do not check cite keys
+  lines <- gsub(paste0("((foot)|(text)|(auto))",
+                       "cites?",
+                          # optional pre/postnote
+                          "(",
+                          # prenote
+                          "\\[", "\\]",
+                          # postnote
+                          "\\[", "[^\\]]*", "\\]",
+                          ")?",
+                       # cite key (possibly multiple)
+                       "([{]", "[^\\}]+", "[}])+",
+
+                       collapse = ""),
+                "\\1cite\\{citation\\}",
+                lines,
+                perl = TRUE)
+
+  # Do not check labels
+  lines <- gsub(paste0("(",
+                          "\\\\[VCvc]?",
+                          "(ref)|(label)",
+                       "\\{)",
+                          "([^\\}]+)",
+                       "\\}"),
+                "\\1correct\\}",
+                lines,
+                perl = TRUE)
+
+  lines_corrected <- gsub(sprintf("\\b(%s)\\b", correctly_spelled_words),
+                          "correct",
+                          lines,
+                          perl = TRUE)
+
+
   if (!is.null(known.correct)){
+    # replace these words with the word 'correct'
     lines_corrected <- gsub(sprintf("\\b(%s)\\b", paste0(known.correct, collapse = ")|(")),
                             "correct",
-                            lines,
+                            lines_corrected,
                             perl = TRUE)
-  } else {
-    lines_corrected <- lines
   }
 
-  parsed <- hunspell(lines, format = "latex", dict = dictionary("en_AU"))
+  parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_AU"))
 
   are_misspelt <- sapply(parsed, not_length0)
 
   if (any(are_misspelt)){
-    cat(lines[are_misspelt][[1]])
+    cat(lines[are_misspelt][[1]], "\n")
+    cat("\t", unlist(hunspell(lines_corrected[are_misspelt][[1]], format = "latex", dict = dictionary("en_AU"))), "\n")
     stop("Spellcheck failed on above line.")
   }
   invisible(NULL)

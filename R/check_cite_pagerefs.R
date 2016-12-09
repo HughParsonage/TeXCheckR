@@ -12,12 +12,12 @@ check_cite_pagerefs <- function(filename){
 
     # Check constructions like p. 93
     if (grepl("cite\\[\\]\\[p\\.?\\s*[0-9]+\\]", line, perl = TRUE)){
-      cat(line)
+      message(line)
       stop("Unnecessary p in postnote.")
     }
     # Check single hyphen between pagerefs
     if (grepl("cite\\[\\]\\[[0-9]+-[0-9]+\\]", line, perl = TRUE)){
-      cat(line)
+      message(line)
       stop("Page reference appears wrong.")
     }
   }

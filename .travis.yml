@@ -4,6 +4,7 @@ warnings_are_errors: true
 sudo: true
 
 before_install:
+  - sudo apt-get intall dictionaries-common
   - sudo apt-get install hunspell-en-au
 
 r_packages:

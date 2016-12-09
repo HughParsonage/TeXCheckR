@@ -16,18 +16,34 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
     lines <- lines[-ignore.lines]
   }
 
+  # Do not check the bibliogrpahy filename
+  lines <- gsub("\\{.*\\.bib\\}",
+                "\\{bibliography.bib\\}",
+                lines)
+
+  # inputs and includes
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines, perl = TRUE))
+
+  inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(?:\\.tex)?)[}]$",
+                 "\\2",
+                 lines[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines, perl = TRUE)],
+                 perl = TRUE)
+
+  stopifnot(length(inputs) == length(inputs_in_doc))
+
   # Do not check cite keys
   lines <- gsub(paste0("((foot)|(text)|(auto))",
                        "cites?",
                           # optional pre/postnote
-                          "(",
+                          "((",
                           # prenote
                           "\\[", "\\]",
                           # postnote
                           "\\[", "[^\\]]*", "\\]",
                           ")?",
                        # cite key (possibly multiple)
-                       "([{]", "[^\\}]+", "[}])+",
+                       # (the multiplicity applies to the prenote as well)
+                       "[{]", "[^\\}]+", "[}])+",
 
                        collapse = ""),
                 "\\1cite\\{citation\\}",
@@ -45,6 +61,29 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
                 lines,
                 perl = TRUE)
 
+  # box labels
+  lines <- gsub("(((small)|(big))box[*]?[}][{][^\\}]+[}][{])[^\\}]+[}]",
+                "\\1box-key\\}",
+                lines,
+                perl = TRUE)
+
+  # itemize enumerate optional arguments
+  lines <- gsub("(\\\\begin[{](?:(?:itemize)|(?:enumerate))[}])(\\[[^\\]]+\\])?",
+                "\\1",
+                lines,
+                perl = TRUE)
+
+  # Just completely ignore tabularx lines
+  lines <- if_else(grepl("\\begin{tabularx}", lines, fixed = TRUE),
+                   "\\begin{tabularx}{\\linewidth}{XXXX}",
+                   lines)
+
+  # Treat square brackets as invisible:
+  # e.g. 'urgently phas[e] out' is correct
+  # Need to avoid optional arguments to commands: use the spaces?
+
+
+
   lines_corrected <- gsub(sprintf("\\b(%s)\\b", correctly_spelled_words),
                           "correct",
                           lines,
@@ -53,7 +92,7 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
 
   if (!is.null(known.correct)){
     # replace these words with the word 'correct'
-    lines_corrected <- gsub(sprintf("\\b(%s)\\b", paste0(known.correct, collapse = ")|(")),
+    lines_corrected <- gsub(sprintf("(\\b%s\\b)", paste0(known.correct, collapse = "\\b)|(\\b")),
                             "correct",
                             lines_corrected,
                             perl = TRUE)
@@ -68,5 +107,6 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
     cat("\t", unlist(hunspell(lines_corrected[are_misspelt][[1]], format = "latex", dict = dictionary("en_AU"))), "\n")
     stop("Spellcheck failed on above line.")
   }
-  invisible(NULL)
+
+  return(invisible(NULL))
 }

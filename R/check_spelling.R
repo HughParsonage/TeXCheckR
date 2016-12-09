@@ -98,13 +98,13 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
                             perl = TRUE)
   }
 
-  parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_GB"))
+  parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_AU"))
 
   are_misspelt <- sapply(parsed, not_length0)
 
   if (any(are_misspelt)){
     cat(lines[are_misspelt][[1]], "\n")
-    cat("\t", unlist(hunspell(lines_corrected[are_misspelt][[1]], format = "latex", dict = dictionary("en_GB"))), "\n")
+    cat("\t", unlist(hunspell(lines_corrected[are_misspelt][[1]], format = "latex", dict = dictionary("en_AU"))), "\n")
     stop("Spellcheck failed on above line.")
   }
 

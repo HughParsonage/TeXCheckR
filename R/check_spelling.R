@@ -83,7 +83,6 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
   # Need to avoid optional arguments to commands: use the spaces?
 
 
-
   lines_corrected <- gsub(sprintf("\\b(%s)\\b", correctly_spelled_words),
                           "correct",
                           lines,

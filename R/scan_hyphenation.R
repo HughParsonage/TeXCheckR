@@ -9,6 +9,7 @@ scan_hyphenation <- function(path = "."){
   pdf.files <- list.files(path = path, pattern = "\\.pdf$")
   stopifnot(length(pdf.files) == 1L)
 
+  file.pdf <- pdf.files[[1]]
 
   system(paste0("pdftotext -layout ", file.pdf))
   on.exit(file.remove(gsub("pdf$", "txt", file.pdf)))

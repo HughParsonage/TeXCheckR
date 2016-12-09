@@ -169,6 +169,7 @@ scrtime
 scrutinised
 SES
 ShareAlike
+Sizable
 smallbox
 Sonnemann
 standardised

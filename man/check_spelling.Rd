@@ -4,14 +4,17 @@
 \alias{check_spelling}
 \title{Spellchecker for Grattan reports}
 \usage{
-check_spelling(filename, ignore.lines = NULL, known.correct = NULL)
+check_spelling(filename, ignore.lines = NULL, known.correct = NULL,
+  known.wrong = NULL)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
 
 \item{ignore.lines}{Integer vector of lines to ignore (due to possibly spurious errors).}
 
-\item{known.correct}{Character vector of words known to be correct (which will never be raised by this function).}
+\item{known.correct}{Character vector of patterns known to be correct (which will never be raised by this function).}
+
+\item{known.wrong}{Character vector of patterns known to be wrong.}
 }
 \value{
 If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.

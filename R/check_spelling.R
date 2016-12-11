@@ -2,7 +2,8 @@
 #'
 #' @param filename Path to a LaTeX file to check.
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
-#' @param known.correct Character vector of words known to be correct (which will never be raised by this function).
+#' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
+#' @param known.wrong Character vector of patterns known to be wrong.
 #' @return If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 #' @details Uses the \code{en_AU} hunspell dictionary.
 #' @importFrom hunspell hunspell
@@ -10,11 +11,19 @@
 #' @import hunspell
 #' @export
 
-check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
+check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, known.wrong = NULL){
   lines <- readLines(filename, warn = FALSE)[-1]
 
   if (!is.null(ignore.lines)){
-    lines <- lines[-ignore.lines]
+    lines[ignore.lines] <- ""
+  }
+
+  # Check known wrong
+  for (wrong in known.wrong){
+    if (any(grepl(wrong, lines))){
+      cat(wrong)
+      stop("A pattern you have raised was detected in the document.")
+    }
   }
 
   # Do not check the bibliogrpahy filename
@@ -22,15 +31,28 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL){
                 "\\{bibliography.bib\\}",
                 lines)
 
+  lines_after_begin_document <- lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
+
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines, perl = TRUE))
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines_after_begin_document, perl = TRUE))
 
   inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(?:\\.tex)?)[}]$",
                  "\\2",
-                 lines[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines, perl = TRUE)],
+                 lines[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines_after_begin_document, perl = TRUE)],
                  perl = TRUE)
 
-  stopifnot(length(inputs) == length(inputs_in_doc))
+  if (length(inputs) != inputs_in_doc){
+    stop("Unable to parse inputs. Check they are all of the form \\input{filename}.")
+  }
+
+  # Recursively check
+  if (length(inputs) > 0){
+    for (input in inputs){
+      tryCatch(check_spelling(filename = paste0(input, ".tex"), known.correct = known.correct, known.wrong = known.wrong),
+               # Display the filename as well as the error returned.
+               error = function(e){cat(input); e})
+    }
+  }
 
   # Do not check cite keys
   lines <- gsub(paste0("((foot)|(text)|(auto))",

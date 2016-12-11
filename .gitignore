@@ -3,3 +3,11 @@
 .RData
 .Ruserdata
 grattanReporter.Rproj
+*.aux
+*.bcf
+*.lof
+*.log
+*.out
+*.pdf
+*.run.xml
+*.toc

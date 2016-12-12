@@ -48,4 +48,7 @@ checkGrattanReport <- function(path = ".",
 
   cat("\n", "Checking sentence-ending periods...")
   check_sentence_ending_periods(filename)
+
+  cat("\n", "Checking spelling...")
+  check_spelling(filename)
 }

@@ -36,21 +36,24 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
   # inputs and includes
   inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines_after_begin_document, perl = TRUE))
 
-  inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(?:\\.tex)?)[}]$",
-                 "\\2",
-                 lines[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines_after_begin_document, perl = TRUE)],
-                 perl = TRUE)
+  if (inputs_in_doc > 0){
+    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(?:\\.tex)?)[}]$",
+                   "\\2",
+                   lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines_after_begin_document, perl = TRUE)],
+                   perl = TRUE)
 
-  if (length(inputs) != inputs_in_doc){
-    stop("Unable to parse inputs. Check they are all of the form \\input{filename}.")
-  }
+    if (length(inputs) != inputs_in_doc){
+      stop("Unable to parse inputs. Check they are all of the form \\input{filename}.")
+    }
 
-  # Recursively check
-  if (length(inputs) > 0){
-    for (input in inputs){
-      tryCatch(check_spelling(filename = paste0(input, ".tex"), known.correct = known.correct, known.wrong = known.wrong),
-               # Display the filename as well as the error returned.
-               error = function(e){cat(input); e})
+
+    # Recursively check
+    if (length(inputs) > 0){
+      for (input in inputs){
+        tryCatch(check_spelling(filename = paste0(input, ".tex"), known.correct = known.correct, known.wrong = known.wrong),
+                 # Display the filename as well as the error returned.
+                 error = function(e){cat(input); e})
+      }
     }
   }
 

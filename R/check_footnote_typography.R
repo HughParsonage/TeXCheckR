@@ -19,6 +19,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)
   lines <- lines[!grepl("GenericWarning", lines, fixed = TRUE)]
+  # Don't try to parse the word 'footnote' outside a control sequence.
+  lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)
 
   combined_lines <- combine_lines(lines)
 

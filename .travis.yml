@@ -6,7 +6,7 @@ addons:
   apt:
     packages:
       - libhunspell-dev
-      - hunspell-en-au
+      # - hunspell-en-au
 
 r_packages:
   - covr

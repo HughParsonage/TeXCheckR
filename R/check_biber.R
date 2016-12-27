@@ -11,16 +11,18 @@ check_biber <- function(path){
     if (length(blg.file) == 1L){
       blg <- readLines(blg.file, warn = FALSE)
       # Remove legislation marks:
-      blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)). in entry .*(Act)", blg, perl = TRUE)]
+      blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
 
-      if (any(grepl("WARN", blg, fixed = TRUE))){
+      # WARN not WARNINGS
+      if (any(grepl("WARN ", blg, fixed = TRUE))){
         first_bad_entry <-
-          blg[grepl("WARN", blg, fixed = TRUE)] %>%
+          blg[grepl("WARN ", blg, fixed = TRUE)] %>%
           head(1)
 
-        cat(sub("^.*WARN", "WARN", first_bad_entry))
+        cat(sub("^.*WARN ", "WARN", first_bad_entry))
         stop("Biber emitted a warning.")
       }
     }
   }
+  invisible(NULL)
 }

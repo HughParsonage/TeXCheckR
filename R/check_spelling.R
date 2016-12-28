@@ -122,13 +122,33 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                    "\\begin{tabularx}{\\linewidth}{XXXX}",
                    lines)
 
-  # Ignore phantoms (assume no braces excep closing)
+  # Valid ordinal patterns are permitted
+  ordinal_pattern <-
+    paste0("((?<!1)1(\\\\textsuperscript\\{)?st)",
+           "|",
+           "((?<!1)2(\\\\textsuperscript\\{)?nd)",
+           "|",
+           "((?<!1)3(\\\\textsuperscript\\{)?rd)",
+           "|",
+           "(([04-9]|(1[1-3]))(\\\\textsuperscript\\{)?th)")
+  stopifnot(identical(grepl(ordinal_pattern,
+                            c("3rd", "11th", "21st", "13th", "13rd", "101st", "11st", "funding", "3\\textsuperscript{rd}"),
+                            perl = TRUE),
+                      c(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)))
 
+  lines <-
+    gsub(ordinal_pattern,
+         "correct",
+         lines,
+         perl = TRUE)
+
+  # Ignore phantoms
+  lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "correct")
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct
   # Need to avoid optional arguments to commands: use the spaces?
-
+  lines <- rm_editorial_square_brackets(lines)
 
   lines_corrected <- gsub(sprintf("\\b(%s)\\b", correctly_spelled_words),
                           "correct",
@@ -153,6 +173,8 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                             lines_corrected,
                             perl = TRUE)
   }
+
+
 
   parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_GB"))
 

@@ -11,6 +11,6 @@ braces_closes_at <- function(tex_line, position_of_opening_brace){
       tex_line_split[-c(1:(x - 1))]
 
     tex_group <- cumsum(lines_split == "{") - cumsum(lines_split == "}")
-    min(which(tex_group < tex_group[1])) - 1
+    min(which(tex_group < tex_group[1])) - 1L
   })
 }

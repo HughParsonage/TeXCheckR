@@ -135,6 +135,16 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                           lines,
                           perl = TRUE)
 
+  if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
+    words_to_add <-
+      lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
+      gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
+      strsplit(split = " ", fixed = TRUE) %>%
+      unlist
+
+    known.correct <- union(known.correct, words_to_add)
+  }
+
 
   if (!is.null(known.correct)){
     # replace these words with the word 'correct'

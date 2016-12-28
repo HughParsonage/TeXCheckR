@@ -88,7 +88,25 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                 perl = TRUE)
 
   # box labels
-  lines <- gsub("(((small)|(big))box[*]?[}][{][^\\}]+[}][{])[^\\}]+[}]",
+  lines <- gsub(paste0("(",
+                       "((small)|(big))box[*]?",
+                       "[}]",
+
+                       # optional placement parameter
+                       # e.g. \begin{smallbox}[!h]
+                       "(",
+                       "\\[",
+                       # empty optional argument unlikely,
+                       # but not for this function to check.
+                       "[!htbpH]*",
+                       "\\]",
+                       ")?",
+                       # title argument
+                       "[{][^\\}]+[}]",
+                       # key argument:
+                       "[{]",
+                       ")", # caputure everything except the actual key
+                       "[^\\}]+[}]"),
                 "\\1box-key\\}",
                 lines,
                 perl = TRUE)

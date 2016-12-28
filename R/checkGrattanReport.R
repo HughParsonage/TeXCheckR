@@ -7,7 +7,8 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom dplyr if_else
-
+#' @importFrom clisymbols symbol
+#' @importFrom crayon green red
 
 checkGrattanReport <- function(path = ".",
                                file = NULL,
@@ -35,20 +36,26 @@ checkGrattanReport <- function(path = ".",
     filename <- file
   }
 
-  cat("cite pagerefs", "\n")
   check_cite_pagerefs(filename)
+  cat(green(symbol$tick, "Cite and pagrefs checked.\n"))
 
-  cat("Checking dashes...")
   check_dashes(filename)
-  cat("\n", "Checking footnote typography...")
-  check_footnote_typography(filename, ignore.lines = ignore.list$footnote_typography)
+  cat(green(symbol$tick, "Dashes correctly typed.\n"))
 
-  cat("\n", "Checking repetitive xrefs...")
+  suppressMessages(check_footnote_typography(filename, ignore.lines = ignore.list$footnote_typography))
+  cat(green(symbol$tick, "Footnote typography checked.\n"))
+
   check_repetitive_xrefs(filename)
+  cat(green(symbol$tick, "No repetitive xrefs.\n"))
 
-  cat("\n", "Checking sentence-ending periods...")
   check_sentence_ending_periods(filename)
+  cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
 
-  cat("\n", "Checking spelling...")
-  check_spelling(filename)
+  check_spelling(filename,
+                 known.correct = if (file.exists("./checkGrattanReport/spelling_known_correct.txt")){
+                   readLines("./checkGrattanReport/spelling_known_correct.txt", warn = FALSE, encoding = "UTF-8")
+                 } else {
+                   NULL
+                 })
+  cat(green(symbol$tick, "Spellcheck complete.\n"))
 }

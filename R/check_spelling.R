@@ -12,7 +12,7 @@
 #' @export
 
 check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, known.wrong = NULL){
-  lines <- readLines(filename, warn = FALSE)[-1]
+  lines <- readLines(filename, warn = FALSE, encoding = "UTF-8")[-1]
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""

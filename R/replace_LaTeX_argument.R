@@ -33,13 +33,14 @@ replace_LaTeX_argument <- function(tex_lines, command_name, replacement, .dummy_
            })
   out_split <- strsplit(out, split = "", fixed = TRUE)
   out <-
-    lapply(seq_along(out_split),
-           function(i){
+    vapply(seq_along(out_split),
+           FUN = function(i){
              x <- out_split[[i]]
              dt <- dt.out[[i]]
              x[Seq_union(dt$start, dt$stop - 1)] <- .dummy_replacer
              gsub(paste0("(", .dummy_replacer, ")+"), replacement, paste0(x, collapse = ""), perl = TRUE)
-           })
+           },
+           FUN.VALUE = character(1))
 
 
   tex_lines[tex_lines_with_command] <- out

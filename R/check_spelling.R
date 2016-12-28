@@ -78,7 +78,7 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
 
   # Do not check labels
   lines <- gsub(paste0("(",
-                          "\\\\[VCvc]?",
+                          "\\\\(([VCvc])|(top)|(chap))?",
                           "(ref)|(label)",
                        "\\{)",
                           "([^\\}]+)",

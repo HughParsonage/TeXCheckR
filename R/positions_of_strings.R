@@ -1,8 +1,6 @@
 #' Position of strings
 #' @param tex_line_split A split line (via \code{strsplit(x, split = "")}).
 #' @param command_split The string the position of which is desired, split (via \code{strsplit(x, split = "")}).
-#' @param tex_line A line of text.
-#' @param command_name The string the position of which is desired.
 #' @param end (logical) Should the position of the \strong{end} of the string.
 #' By default, \code{TRUE}; otherwise, the start of the string is chosen.
 #' @return The end (or start if end = FALSE) of the location of command
@@ -31,6 +29,9 @@ position_of_string <- function(tex_line_split, command_split, end = TRUE){
   }
 }
 
+#' @rdname position_of_string
+#' @param tex_line A line of text.
+#' @param command_name The string the position of which is desired.
 positions_of_all_strings <- function(tex_line, command_name, end = TRUE){
   stopifnot(length(tex_line) == 1L,
             length(command_name) == 1L)
@@ -50,7 +51,7 @@ positions_of_all_strings <- function(tex_line, command_name, end = TRUE){
       tex_line_split <- tex_line_split[-c(1:(start_at - 1))]
     }
   }
-  out + cumsum(lag(out, default = 0)) + 1
+  out + cumsum(dplyr::lag(out, default = 0)) + 1
 }
 
 

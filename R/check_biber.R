@@ -17,7 +17,7 @@ check_biber <- function(path){
       if (any(grepl("WARN ", blg, fixed = TRUE))){
         first_bad_entry <-
           blg[grepl("WARN ", blg, fixed = TRUE)] %>%
-          head(1)
+          .[1]
 
         cat(sub("^.*WARN ", "WARN", first_bad_entry))
         stop("Biber emitted a warning.")

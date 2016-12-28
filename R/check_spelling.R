@@ -104,6 +104,9 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                    "\\begin{tabularx}{\\linewidth}{XXXX}",
                    lines)
 
+  # Ignore phantoms (assume no braces excep closing)
+
+
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct
   # Need to avoid optional arguments to commands: use the spaces?

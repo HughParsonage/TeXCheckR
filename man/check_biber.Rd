@@ -4,10 +4,10 @@
 \alias{check_biber}
 \title{Check biber}
 \usage{
-check_biber(path)
+check_biber(path = ".")
 }
 \arguments{
-\item{path}{Containing the bst file.}
+\item{path}{Containing the blg file.}
 }
 \description{
 Check biber

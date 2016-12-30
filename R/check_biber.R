@@ -1,9 +1,9 @@
 #' Check biber
 #'
-#' @param path Containing the bst file.
+#' @param path Containing the blg file.
 #' @export
 
-check_biber <- function(path){
+check_biber <- function(path = "."){
   blg.file <- dir(path = path, pattern = "blg$", full.names = TRUE)
   if (length(blg.file) > 1L){
     stop("More than one blg file.")

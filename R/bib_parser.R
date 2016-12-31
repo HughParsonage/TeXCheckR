@@ -2,6 +2,7 @@
 #'
 #' @import data.table
 #' @importFrom dplyr if_else
+#' @importFrom dplyr coalesce
 #' @param file \code{.bib} file.
 #' @export
 
@@ -51,6 +52,12 @@ bib2DT <- function(file){
                  perl = TRUE),
             NA_character_)
   }
+
+  # CRAN NOTE avoidance
+  Line_no <- Surname <- Year <- annote <- author <- booktitle <- chapter <- crossref <- edition <-
+    editor <- endyear <- howpublished <- institution <- intra_key_line_no <- line_no <-
+    note <- number <- organization <- pages <- publisher <- related <- school <- series <- title <-
+    type <- volume <- NULL
 
   data.table(line_no = seq_along(bib),
              bib = bib,
@@ -107,8 +114,6 @@ bib2DT <- function(file){
     .[, Line_no := line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:Line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:Line_no] %>%
-    # select(-line_no, -bib) %>%
-    # melt.data.table(id.vars = c("line_by_entry_no", "is_field")) %>%
     setorder(Surname, Year, title, intra_key_line_no) %>%
     .[]
 }

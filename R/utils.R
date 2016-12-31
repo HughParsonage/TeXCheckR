@@ -18,7 +18,8 @@ Seq_union <- function(x, y){
 
 rev_forename_surname <- function(noms){
   # John Daley --> Daley, John
-  gsub(paste0("([A-Z](?:[a-z]*|\\.?))",
+  gsub(paste0("([A-Z.]+(?:[a-z]*|\\.?))",
+              #      ^ for WA Mozart
               " ",
               # van etc
               # \2
@@ -26,7 +27,8 @@ rev_forename_surname <- function(noms){
               # \3
               "( )?",
               # \4
-              "([A-Z][a-z]+)"
+              # [A-Z]? for McDonald etc
+              "([A-Z][a-z]+[A-Z]?[a-z]*)"
               ),
        "\\4, \\1\\3\\2",
        noms,

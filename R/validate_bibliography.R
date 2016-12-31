@@ -20,13 +20,24 @@ validate_bibliography <- function(path = ".", file = NULL){
   # Abbreviated names
   if (any(grepl("^\\s+(author).*((Productivity Commission)|((Australian)? Bureau of Statistics))", bib, perl = TRUE))){
     first_bad <-
-      grep("^\\s+(author).*((Productivity Commission)|((Australian)? Bureau of Statistics))",
+      grep(paste0("^\\s+(author).*",
+                  "(",
+                  "(Productivity Commission)",
+                  "|",
+                  "((Australian)? Bureau of Statistics)",
+                  "|",
+                  "(Australian Labor Party)",
+                  "|",
+                  "(Australian Institute of Health and Welfare)",
+                  "|",
+                  "(Word Health Organi[sz]ation)",
+                  ")"),
            bib,
            perl = TRUE,
            value = TRUE) %>%
       .[1]
     cat(first_bad)
-    stop("Authors should be abbreviated")
+    stop("Institutional authors should be abbreviated.")
   }
 
 
@@ -38,6 +49,14 @@ validate_bibliography <- function(path = ".", file = NULL){
          perl = TRUE,
          value = TRUE)
 
+  urls_not_articles <- c("http://images.theage.com.au/file/2014/07/31/5639573/Help_interest_rate_options_report.pdf")
+
+  bib_just_keys_and_urls <-
+    gsub("http://images.theage.com.au/file/2014/07/31/5639573/Help_interest_rate_options_report.pdf",
+         "",
+         bib_just_keys_and_urls,
+         fixed = TRUE)
+
   should_be_Articles <-
     grep(paste0("^\\s+(url).*",
                 "(",
@@ -45,7 +64,9 @@ validate_bibliography <- function(path = ".", file = NULL){
                 "|",
                 "(((theaustralian)|(theage)|(smh)|(canberratimes))\\.com\\.au)",
                 "|",
-                "(theconversation\\.edu\\.au)",
+                "(theconversation\\.((edu\\.au)|(com)))",
+                "|",
+                "(insidestory\\.org\\.au)",
                 ")"),
          bib_just_keys_and_urls,
          perl = TRUE) - 1

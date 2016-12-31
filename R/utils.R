@@ -15,3 +15,29 @@ Seq_union <- function(x, y){
     }
   }
 }
+
+rev_forename_surname <- function(noms){
+  # John Daley --> Daley, John
+  gsub(paste0("([A-Z](?:[a-z]*|\\.?))",
+              " ",
+              # van etc
+              # \2
+              "((?:v[ao]n)|(?:der?)|(?:di))*",
+              # \3
+              "( )?",
+              # \4
+              "([A-Z][a-z]+)"
+              ),
+       "\\4, \\1\\3\\2",
+       noms,
+       perl = TRUE)
+}
+
+rev_forename_surname_bibtex <- function(author_fields){
+  author_fields %>%
+  strsplit(split = " and ", fixed = TRUE)  %>%
+  lapply(rev_forename_surname) %>%
+    lapply(paste0, collapse = " and ") %>%
+    unlist
+}
+

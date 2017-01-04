@@ -117,3 +117,11 @@ bib2DT <- function(file){
     setorder(Surname, Year, title, intra_key_line_no) %>%
     .[]
 }
+
+reorder_bib <- function(bib, outbib){
+  out_no <- bib2DT(bib)[["Line_no"]]
+  readLines(bib, encoding = "UTF-8") %>%
+    .[out_no] %>%
+    writeLines(outbib, useBytes = TRUE)
+}
+

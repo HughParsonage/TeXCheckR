@@ -17,7 +17,9 @@ Seq_union <- function(x, y){
 }
 
 rev_forename_surname_bibtex <- function(author_fields){
-  full_names <- sapply(author_fields, strsplit, " and ", USE.NAMES = FALSE)
+  full_names <-
+    lapply(author_fields, strsplit, " and ") %>%
+    lapply(unlist, recursive = FALSE)
 
   comma_name <-
     full_names %>%
@@ -36,8 +38,12 @@ rev_forename_surname_bibtex <- function(author_fields){
       }
     }
   }
-  unlist(out, recursive = FALSE) %>%
-    sapply(paste0, collapse = ", ") %>%
-    paste0(collapse = " and ")
+
+  lapply(out, FUN = function(author_name){
+    lapply(author_name, paste0, collapse = ", ")
+  }) %>%
+    sapply(FUN = function(authors){
+      paste0(authors, collapse = " and ")
+    })
 }
 

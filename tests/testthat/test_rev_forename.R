@@ -13,4 +13,12 @@ test_that("rev forename surname works on bibtex-like entry", {
                "McDonald, Andrew and Mozart, WA")
   expect_equal(rev_forename_surname_bibtex("Andrew McDonald and Li Wu"),
                "McDonald, Andrew and Wu, Li")
+  expect_equal(rev_forename_surname_bibtex("John Daley and Coates, Brendan and Ludwig van Beethoven and Beethoven, Ludiwg van and WA Mozart"),
+               "Daley, John and Coates, Brendan and Beethoven, Ludwig van and Beethoven, Ludiwg van and Mozart, WA")
+})
+
+test_that("rev forename works with UTF8 characters", {
+  lukasz <- readLines("lukasz.txt", encoding = "UTF-8", warn = FALSE)
+  expect_equal(rev_forename_surname_bibtex(lukasz[1]),
+               lukasz[2])
 })

@@ -16,30 +16,28 @@ Seq_union <- function(x, y){
   }
 }
 
-rev_forename_surname <- function(noms){
-  # John Daley --> Daley, John
-  gsub(paste0("([A-Z.]+(?:[a-z]*|\\.?))",
-              #      ^ for WA Mozart
-              " ",
-              # van etc
-              # \2
-              "((?:v[ao]n)|(?:der?)|(?:di))*",
-              # \3
-              "( )?",
-              # \4
-              # [A-Z]? for McDonald etc
-              "([A-Z][a-z]+[A-Z]?[a-z]*)"
-              ),
-       "\\4, \\1\\3\\2",
-       noms,
-       perl = TRUE)
-}
-
 rev_forename_surname_bibtex <- function(author_fields){
-  author_fields %>%
-  strsplit(split = " and ", fixed = TRUE)  %>%
-  lapply(rev_forename_surname) %>%
-    lapply(paste0, collapse = " and ") %>%
-    unlist
+  full_names <- sapply(author_fields, strsplit, " and ", USE.NAMES = FALSE)
+
+  comma_name <-
+    full_names %>%
+    lapply(grepl, pattern = ", ", fixed = TRUE)
+
+  forename_surnames <-
+    full_names %>%
+    lapply(strsplit, split = "(, )|(\\s((?!(?:v[ao]n)|(?:der?)|(?:di))(?=(\\w+$))))", perl = TRUE)
+
+  out <- forename_surnames
+
+  for (field in seq_along(author_fields)){
+    for (nom in seq_along(full_names[[field]])){
+      if (!comma_name[[field]][[nom]]){
+        out[[field]][[nom]] <- rev(out[[field]][[nom]])
+      }
+    }
+  }
+  unlist(out, recursive = FALSE) %>%
+    sapply(paste0, collapse = ", ") %>%
+    paste0(collapse = " and ")
 }
 

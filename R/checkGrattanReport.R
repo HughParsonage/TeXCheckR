@@ -8,7 +8,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr if_else
 #' @importFrom clisymbols symbol
-#' @importFrom crayon green red
+#' @importFrom crayon green red bgGreen
 
 checkGrattanReport <- function(path = ".",
                                file = NULL,

@@ -68,5 +68,8 @@ checkGrattanReport <- function(path = ".",
     validate_bibliography(file = bib_file)
   }
 
+  cat(green(symbol$tick, "Bibliography validated.\n"))
+
+  cat(bgGreen(symbol$tick, "Report checked.\n"))
 
 }

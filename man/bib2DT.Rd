@@ -4,10 +4,12 @@
 \alias{bib2DT}
 \title{Bib file as data.table}
 \usage{
-bib2DT(file)
+bib2DT(file, to_sort = FALSE)
 }
 \arguments{
 \item{file}{\code{.bib} file.}
+
+\item{to_sort}{Include only author, title, year, and date.}
 }
 \description{
 Bib file as data.table

@@ -58,4 +58,15 @@ checkGrattanReport <- function(path = ".",
                    NULL
                  })
   cat(green(symbol$tick, "Spellcheck complete.\n"))
+
+  # To check the bibliography
+  bib_files <-
+    readLines(filename, warn = FALSE) %>%
+    .[grepl("\\addbibresource", ., fixed = TRUE)] %>%
+    gsub("^\\\\addbibresource[{](.+\\.bib)[}]$", "\\1", .)
+  for (bib_file in bib_files){
+    validate_bibliography(file = bib_file)
+  }
+
+
 }

@@ -4,9 +4,10 @@
 #' @importFrom dplyr if_else
 #' @importFrom dplyr coalesce
 #' @param file \code{.bib} file.
+#' @param to_sort Include only author, title, year, and date.
 #' @export
 
-bib2DT <- function(file){
+bib2DT <- function(file, to_sort = FALSE){
   stopifnot(length(file) == 1L)
   if (!grepl("\\.bib$", file)){
     warning("File extension is not '.bib'.")
@@ -15,7 +16,8 @@ bib2DT <- function(file){
   bib <-
     readLines(file, encoding = "UTF-8") %>%
     # Avoid testing }\\s+$ rather than just == }
-    trimws
+    trimws %>%
+    .[!grepl("@Comment", ., fixed = TRUE)]
   is_at <- grepl("^@", bib, perl = TRUE)
   is_closing <- bib == "}"
 
@@ -48,8 +50,7 @@ bib2DT <- function(file){
     if_else(grepl(pattern, from, perl = TRUE),
             gsub(pattern = pattern,
                  "\\1",
-                 from,
-                 perl = TRUE),
+                 from), # perl = TRUE slower
             NA_character_)
   }
 
@@ -72,30 +73,40 @@ bib2DT <- function(file){
     .[, title  := extract_field_from("title", bib)] %>%
     .[, year   := extract_field_from("year", bib)] %>%
     .[, date   := extract_field_from("date", bib)] %>%
-    .[, address := extract_field_from("address", bib)] %>%
-    .[, annote   := extract_field_from("annote", bib)] %>%
-    .[, booktitle   := extract_field_from("booktitle", bib)] %>%
-    .[, booktitle   := extract_field_from("booktitle", bib)] %>%
-    .[, chapter   := extract_field_from("chapter", bib)] %>%
-    .[, crossref   := extract_field_from("crossref", bib)] %>%
-    .[, options   := extract_field_from("options", bib)] %>%
-    .[, related   := extract_field_from("related", bib)] %>%
-    .[, edition   := extract_field_from("edition", bib)] %>%
-    .[, editor   := extract_field_from("editor", bib)] %>%
-    .[, howpublished   := extract_field_from("howpublished", bib)] %>%
-    .[, institution   := extract_field_from("institution", bib)] %>%
-    .[, month   := extract_field_from("month", bib)] %>%
-    .[, note   := extract_field_from("note", bib)] %>%
-    .[, number   := extract_field_from("number", bib)] %>%
-    .[, organization   := extract_field_from("organization", bib)] %>%
-    .[, pages   := extract_field_from("pages", bib)] %>%
-    .[, publisher   := extract_field_from("publisher", bib)] %>%
-    .[, school   := extract_field_from("school", bib)] %>%
-    .[, series   := extract_field_from("series", bib)] %>%
-    .[, type   := extract_field_from("type", bib)] %>%
-    .[, volume   := extract_field_from("volume", bib)] %>%
-    .[, url   := extract_field_from("url", bib)] %>%
-    .[, edition   := extract_field_from("edition", bib)] %>%
+    {
+      dot <- .
+      if (!to_sort){
+        out <-
+          dot %>%
+          .[, address := extract_field_from("address", bib)] %>%
+          .[, annote   := extract_field_from("annote", bib)] %>%
+          .[, booktitle   := extract_field_from("booktitle", bib)] %>%
+          .[, booktitle   := extract_field_from("booktitle", bib)] %>%
+          .[, chapter   := extract_field_from("chapter", bib)] %>%
+          .[, crossref   := extract_field_from("crossref", bib)] %>%
+          .[, options   := extract_field_from("options", bib)] %>%
+          .[, related   := extract_field_from("related", bib)] %>%
+          .[, edition   := extract_field_from("edition", bib)] %>%
+          .[, editor   := extract_field_from("editor", bib)] %>%
+          .[, howpublished   := extract_field_from("howpublished", bib)] %>%
+          .[, institution   := extract_field_from("institution", bib)] %>%
+          .[, month   := extract_field_from("month", bib)] %>%
+          .[, note   := extract_field_from("note", bib)] %>%
+          .[, number   := extract_field_from("number", bib)] %>%
+          .[, organization   := extract_field_from("organization", bib)] %>%
+          .[, pages   := extract_field_from("pages", bib)] %>%
+          .[, publisher   := extract_field_from("publisher", bib)] %>%
+          .[, school   := extract_field_from("school", bib)] %>%
+          .[, series   := extract_field_from("series", bib)] %>%
+          .[, type   := extract_field_from("type", bib)] %>%
+          .[, volume   := extract_field_from("volume", bib)] %>%
+          .[, url   := extract_field_from("url", bib)] %>%
+          .[, edition   := extract_field_from("edition", bib)]
+      } else {
+        out <- dot
+      }
+      out
+    } %>%
     # Inference
     .[, endyear := gsub("^[0-9]{4}/([0-9]{4})$", "\\1", date, perl = TRUE)] %>%
     .[, Year := coalesce(year, endyear, substr(date, 0, 4))] %>%
@@ -119,9 +130,8 @@ bib2DT <- function(file){
 }
 
 reorder_bib <- function(bib, outbib){
-  out_no <- bib2DT(bib)[["Line_no"]]
-  readLines(bib, encoding = "UTF-8") %>%
-    .[out_no] %>%
-    writeLines(outbib, useBytes = TRUE)
+  out_no <- bib2DT(bib, to_sort = TRUE)[["Line_no"]]
+  y <- readLines(bib, encoding = "UTF-8")
+  writeLines(y[out_no], outbib, useBytes = TRUE)
 }
 

@@ -125,7 +125,7 @@ bib2DT <- function(file, to_sort = FALSE){
     .[, Line_no := line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:Line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:Line_no] %>%
-    setorder(Surname, Year, title, intra_key_line_no) %>%
+    setorder(Surname, Year, title, Line_no) %>%
     .[]
 }
 

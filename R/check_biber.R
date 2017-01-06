@@ -11,7 +11,7 @@ check_biber <- function(path = "."){
     if (length(blg.file) == 1L){
       blg <- readLines(blg.file, warn = FALSE)
       # Remove legislation marks:
-      blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
+      blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)|(NZ)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
 
       # WARN not WARNINGS
       if (any(grepl("WARN ", blg, fixed = TRUE))){

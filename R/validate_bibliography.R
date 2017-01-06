@@ -14,24 +14,29 @@ validate_bibliography <- function(path = ".", file = NULL){
     bib_file <- file
   }
 
-  bib <- readLines(bib_file, warn = FALSE, encoding = "UTF-8")
-  bib <- bib[!grepl("% Valid", bib, fixed = TRUE)]
+  bib <-
+    readLines(bib_file, warn = FALSE, encoding = "UTF-8") %>%
+    trimws %>%
+    .[!grepl("% Valid", ., fixed = TRUE)]
 
   # Abbreviated names
-  if (any(grepl("^\\s+(author).*((Productivity Commission)|((Australian)? Bureau of Statistics))", bib, perl = TRUE))){
+  inst_pattern <-
+    paste0("^\\s+(author).*",
+           "(",
+           "(Productivity Commission)",
+           "|",
+           "((Australian )?Bureau of Statistics)",
+           "|",
+           "(Australian Labor Party)",
+           "|",
+           "(Australian Institute of Health and Welfare)",
+           "|",
+           "(Word Health Organi[sz]ation)",
+           ")")
+
+  if (any(grepl(inst_pattern, bib, perl = TRUE))){
     first_bad <-
-      grep(paste0("^\\s+(author).*",
-                  "(",
-                  "(Productivity Commission)",
-                  "|",
-                  "((Australian)? Bureau of Statistics)",
-                  "|",
-                  "(Australian Labor Party)",
-                  "|",
-                  "(Australian Institute of Health and Welfare)",
-                  "|",
-                  "(Word Health Organi[sz]ation)",
-                  ")"),
+      grep(inst_pattern,
            bib,
            perl = TRUE,
            value = TRUE) %>%
@@ -57,17 +62,20 @@ validate_bibliography <- function(path = ".", file = NULL){
          bib_just_keys_and_urls,
          fixed = TRUE)
 
+  newspapers_pattern <-
+    paste0("^(url).*",
+           "(",
+           "(((theguardian)|(afr))\\.com)",
+           "|",
+           "(((theaustralian)|(theage)|(smh)|(canberratimes)|(greatlakesadvocate))\\.com\\.au)",
+           "|",
+           "(theconversation\\.((edu\\.au)|(com)))",
+           "|",
+           "(insidestory\\.org\\.au)",
+           ")")
+
   should_be_Articles <-
-    grep(paste0("^\\s+(url).*",
-                "(",
-                "((theguardian)|(afr)\\.com)",
-                "|",
-                "(((theaustralian)|(theage)|(smh)|(canberratimes))\\.com\\.au)",
-                "|",
-                "(theconversation\\.((edu\\.au)|(com)))",
-                "|",
-                "(insidestory\\.org\\.au)",
-                ")"),
+    grep(newspapers_pattern,
          bib_just_keys_and_urls,
          perl = TRUE) - 1
 
@@ -84,6 +92,50 @@ validate_bibliography <- function(path = ".", file = NULL){
       cat
     stop("URL suggests the article type should be used.")
   }
+
+  # Once we have verified all are articles, check the right journal has been included.
+  just_key_journal_urls <-
+    bib %>%
+    .[grepl("^(@|(journal)|(url))", ., perl = TRUE) | bib == "}"]
+
+  both_url_and_journal <- entry_no <- group_by <- is_article <- is_newspaper <-
+    journal <- journal_actual <- journal_from_url <- text <- NULL
+
+  journal_actual_vs_journal_expected <-
+    data.table(text = just_key_journal_urls) %>%
+    .[, entry_no := cumsum(grepl("^@", text))] %>%
+    .[, is_article := any(grepl("^@Article", text)), by = entry_no] %>%
+    # Journal + URL occur iff
+    # @
+    # TRUE
+    # TRUE
+    # }
+    .[, both_url_and_journal := .N == 4L, by = entry_no] %>%
+    .[, is_newspaper := any(grepl(newspapers_pattern, text, perl = TRUE)), by = entry_no] %>%
+    .[is_article & both_url_and_journal &is_newspaper] %>%
+    .[, .(key = grep("^@Article", text, perl = TRUE, value = TRUE),
+          journal_actual = gsub("^journal.*[{](.*)[}],?$",
+                                "\\1",
+                                text[grepl("^journal", text, perl = TRUE)],
+                                perl = TRUE),
+          journal_from_url = gsub(paste0("^.*(", newspapers_pattern, ").*$"),
+                                  "\\3",
+                                  text[grepl("^url", text, perl = TRUE)],
+                                  perl = TRUE)),
+      by = entry_no] %>%
+    setkey(journal_from_url) %>%
+    .[newspaper_by_url]
+
+  incorrect_journal_entries <-
+    journal_actual_vs_journal_expected[journal_actual != journal]
+
+  if (nrow(incorrect_journal_entries) > 0){
+    cat(journal_actual_vs_journal_expected)
+    stop("In entry ", journal_actual_vs_journal_expected[1][["key"]], ", ",
+         "url suggests  journal = ", journal_actual_vs_journal_expected[1][["journal"]], ", ",
+         "but journal = ", journal_actual_vs_journal_expected[1][["journal_actual"]])
+  }
+
 
   # dois should not include the top-level URL
   if (any(grepl("^\\s+(doi).*https?[:][/][/]", bib, perl = TRUE))){

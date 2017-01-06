@@ -114,6 +114,10 @@ validate_bibliography <- function(path = ".", file = NULL){
     .[, is_newspaper := any(grepl(newspapers_pattern, text, perl = TRUE)), by = entry_no] %>%
     .[is_article & both_url_and_journal &is_newspaper] %>%
     .[, .(key = grep("^@Article", text, perl = TRUE, value = TRUE),
+          url = gsub("^url.*[{](.*)[}],?$",
+                     "\\1",
+                     text[grepl("^url", text, perl = TRUE)],
+                     perl = TRUE),
           journal_actual = gsub("^journal.*[{](.*)[}],?$",
                                 "\\1",
                                 text[grepl("^journal", text, perl = TRUE)],
@@ -130,10 +134,17 @@ validate_bibliography <- function(path = ".", file = NULL){
     journal_actual_vs_journal_expected[journal_actual != journal]
 
   if (nrow(incorrect_journal_entries) > 0){
-    cat(journal_actual_vs_journal_expected)
-    stop("In entry ", journal_actual_vs_journal_expected[1][["key"]], ", ",
-         "url suggests  journal = ", journal_actual_vs_journal_expected[1][["journal"]], ", ",
-         "but journal = ", journal_actual_vs_journal_expected[1][["journal_actual"]])
+    print(incorrect_journal_entries)
+    stop("Inconsistent treatment of article journal. ",
+         "\n",
+         "In entry", "\n\t",
+         incorrect_journal_entries[1][["key"]], "\n\n",
+         "I see:", "\n\t",
+         "url = {", incorrect_journal_entries[1][["url"]], "}", "\n\n",
+         "which suggests", "\n\t",
+         "journal = {", incorrect_journal_entries[1][["journal"]], "} ,", "\n\n",
+         "but\n\t",
+         "journal = {", incorrect_journal_entries[1][["journal_actual"]], "} .")
   }
 
 
@@ -144,6 +155,24 @@ validate_bibliography <- function(path = ".", file = NULL){
          "10.1787/9789264229945-en", "\n",
          "not", "\n\t",
          "http://dx.doi.org/10.1787/9789264229945-en")
+  }
+
+  asDT <- bib2DT(bib_file)
+
+  # Check no dates and year
+  nrows_years_and_date <-
+    asDT %>%
+    .[!is.na(year) & !is.na(date)] %>%
+    unique(by = "key") %>%
+    nrow
+
+  if (nrows_years_and_date > 0){
+    asDT %>%
+      .[!is.na(year) & !is.na(date)] %>%
+      unique(by = "key") %>%
+      print
+
+    stop("Date and year should not both appear in bibliography.")
   }
 
   invisible(NULL)

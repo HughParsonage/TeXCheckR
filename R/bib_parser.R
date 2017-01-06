@@ -68,7 +68,6 @@ bib2DT <- function(file, to_sort = FALSE){
                        gsub("^@[A-Za-z]+\\{(.*),$", "\\1", bib, perl = TRUE),
                        NA_character_)] %>%
     .[, key := zoo::na.locf(key, na.rm = FALSE)] %>%
-    # .[is_field] %>%
     .[, author := extract_field_from("author", bib)] %>%
     .[, title  := extract_field_from("title", bib)] %>%
     .[, year   := extract_field_from("year", bib)] %>%

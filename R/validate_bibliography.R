@@ -42,7 +42,7 @@ validate_bibliography <- function(path = ".", file = NULL){
            value = TRUE) %>%
       .[1]
     cat(first_bad)
-    stop("Institutional authors should be abbreviated.")
+    stop(cat(crayon::bgRed(symbol$cross)), "Institutional authors should be abbreviated.")
   }
 
 
@@ -90,7 +90,7 @@ validate_bibliography <- function(path = ".", file = NULL){
       .[arent_Articles_but_should_be] %>%
       .[1] %>%
       cat
-    stop("URL suggests the article type should be used.")
+    stop(cat(crayon::bgRed(symbol$cross)), "URL suggests the article type should be used.")
   }
 
   # Once we have verified all are articles, check the right journal has been included.
@@ -134,10 +134,9 @@ validate_bibliography <- function(path = ".", file = NULL){
     journal_actual_vs_journal_expected[journal_actual != journal]
 
   if (nrow(incorrect_journal_entries) > 0){
+    cat(crayon::bgRed(symbol$cross, "Inconsistent treatment of article journal.\n"))
     print(incorrect_journal_entries)
-    stop("Inconsistent treatment of article journal. ",
-         "\n",
-         "In entry", "\n\t",
+    stop("In entry", "\n\t",
          incorrect_journal_entries[1][["key"]], "\n\n",
          "I see:", "\n\t",
          "url = {", incorrect_journal_entries[1][["url"]], "}", "\n\n",
@@ -172,7 +171,7 @@ validate_bibliography <- function(path = ".", file = NULL){
       unique(by = "key") %>%
       print
 
-    stop("Date and year should not both appear in bibliography.")
+    stop(cat(crayon::bgRed(symbol$cross)), "Date and year should not both appear in bibliography.")
   }
 
   invisible(NULL)

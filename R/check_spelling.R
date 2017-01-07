@@ -176,7 +176,23 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                             perl = TRUE)
   }
 
+  if (any(grepl(wrongly_spelled_words, lines_corrected, perl = TRUE))){
+    first_wrong_line_no <-
+      grep(wrongly_spelled_words, lines_corrected, perl = TRUE) %>%
+      .[1]
 
+    wrongly_spelled_word <-
+      gsub(paste0("^.*\\b(", wrongly_spelled_words, ")\\b.*$"),
+           "\\1",
+           lines_corrected[first_wrong_line_no],
+           perl = TRUE)
+
+    cat(bgRed(symbol$cross), " ",
+        first_wrong_line_no, ": ", lines_corrected[first_wrong_line_no], "\n",
+        "\t", wrongly_spelled_word,
+        sep = "")
+    stop("Common spelling error detected.")
+  }
 
   parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_GB"))
 

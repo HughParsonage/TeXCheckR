@@ -37,9 +37,11 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
   inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines_after_begin_document, perl = TRUE))
 
   if (inputs_in_doc > 0){
-    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(?:\\.tex)?)[}]$",
-                   "\\2",
-                   lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(graphics))))[{](.*(\\.tex)?)[}]$", lines_after_begin_document, perl = TRUE)],
+    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
+                   "\\1",
+                   lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",
+                                                    lines_after_begin_document,
+                                                    perl = TRUE)],
                    perl = TRUE)
 
     if (length(inputs) != inputs_in_doc){

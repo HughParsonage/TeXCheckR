@@ -31,7 +31,7 @@ check_labels <- function(filename){
 
   wrong_lines <-
     lines_with_labels %>%
-    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec))[:]",
+    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
              label_contents,
              perl = TRUE)]
 

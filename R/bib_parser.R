@@ -60,7 +60,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
   Line_no <- Surname <- Year <- annote <- author <- booktitle <- chapter <- crossref <- edition <-
     editor <- endyear <- howpublished <- institution <- intra_key_line_no <- line_no <-
     note <- number <- organization <- pages <- publisher <- related <- school <- series <- title <-
-    type <- volume <- NULL
+    type <- volume <- Year_as_date <- Date <- NULL
 
   data.table(line_no = seq_along(bib),
              bib = bib,

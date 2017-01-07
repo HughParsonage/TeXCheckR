@@ -80,12 +80,13 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
 
   # Do not check labels
   lines <- gsub(paste0("(",
-                          "\\\\(([VCvc])|(top)|(chap))?",
-                          "(ref)|(label)",
-                       "\\{)",
+                          "\\\\(([VCvc]?(page)?)|(top)|([Cc]hap))?",
+                          "(ref(range)?)|(label)",
+                       ")",
+                       "\\{",
                           "([^\\}]+)",
                        "\\}"),
-                "\\1correct\\}",
+                "\\1\\{correct\\}",
                 lines,
                 perl = TRUE)
 

@@ -8,7 +8,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr if_else
 #' @importFrom clisymbols symbol
-#' @importFrom crayon green red bgGreen
+#' @importFrom crayon green red bgGreen bgRed
 
 checkGrattanReport <- function(path = ".",
                                file = NULL,
@@ -69,6 +69,10 @@ checkGrattanReport <- function(path = ".",
   }
 
   cat(green(symbol$tick, "Bibliography validated.\n"))
+
+  check_labels(filename)
+
+  cat(green(symbol$tick, "Labels checked.\n"))
 
   cat(bgGreen(symbol$tick, "Report checked.\n"))
 

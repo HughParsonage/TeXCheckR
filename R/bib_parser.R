@@ -1,20 +1,22 @@
-#' Bib file as data.table
-#'
+#' Functions for parsing .bib files
+#' @name bib_parser
 #' @import data.table
 #' @importFrom dplyr if_else
 #' @importFrom dplyr coalesce
-#' @param file \code{.bib} file.
+#' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
-#' @export
+#' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
+#' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
+#' @export bib2DT
 
-bib2DT <- function(file, to_sort = FALSE){
-  stopifnot(length(file) == 1L)
-  if (!grepl("\\.bib$", file)){
+bib2DT <- function(file.bib, to_sort = FALSE){
+  stopifnot(length(file.bib) == 1L)
+  if (!grepl("\\.bib$", file.bib)){
     warning("File extension is not '.bib'.")
   }
 
   bib <-
-    readLines(file, encoding = "UTF-8") %>%
+    readLines(file.bib, encoding = "UTF-8") %>%
     # Avoid testing }\\s+$ rather than just == }
     trimws %>%
     .[!grepl("@Comment", ., fixed = TRUE)]
@@ -106,9 +108,12 @@ bib2DT <- function(file, to_sort = FALSE){
       }
       out
     } %>%
-    # Inference
-    .[, endyear := gsub("^[0-9]{4}/([0-9]{4})$", "\\1", date, perl = TRUE)] %>%
-    .[, Year := coalesce(year, endyear, substr(date, 0, 4))] %>%
+    # 1999/2015 --> 1999
+    .[, date := if_else(grepl("/", date, fixed = TRUE),
+                        substr(date, 0, 4),
+                        date)] %>%
+    .[, Year_as_date := paste0(Year, "-01-01")] %>%
+    .[, Date := coalesce(date, Year_as_date)] %>%
     .[, Surname := if_else(!is.na(author),
                            # If protected, just use as-is
                            if_else(grepl("^[{]", author, perl = TRUE),
@@ -128,9 +133,12 @@ bib2DT <- function(file, to_sort = FALSE){
     .[]
 }
 
-reorder_bib <- function(bib, outbib){
-  out_no <- bib2DT(bib, to_sort = TRUE)[["Line_no"]]
-  y <- readLines(bib, encoding = "UTF-8")
-  writeLines(y[out_no], outbib, useBytes = TRUE)
+#' @rdname bib_parser
+#' @param outfile.bib File to write the reordered bib to. Defaults to \code{file.bib}.
+#' @export reorder_bib
+reorder_bib <- function(file.bib, outfile.bib = file.bib){
+  out_no <- bib2DT(file.bib, to_sort = TRUE)[["Line_no"]]
+  y <- readLines(file.bib, encoding = "UTF-8")
+  writeLines(y[out_no], outfile.bib, useBytes = TRUE)
 }
 

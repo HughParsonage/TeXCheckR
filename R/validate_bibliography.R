@@ -156,22 +156,24 @@ validate_bibliography <- function(path = ".", file = NULL){
          "http://dx.doi.org/10.1787/9789264229945-en")
   }
 
-  asDT <- bib2DT(bib_file)
+  just_years_and_dates <-
+    grep("^((@)|(year)|(date)|[}])",
+         bib,
+         perl = TRUE,
+         value = TRUE)
 
-  # Check no dates and year
-  nrows_years_and_date <-
-    asDT %>%
-    .[!is.na(year) & !is.na(date)] %>%
-    unique(by = "key") %>%
-    nrow
+  year_date_same_entry <-
+    and(grepl("^((year)|(date))", just_years_and_dates, perl = TRUE),
+        grepl("^((year)|(date))", lead(just_years_and_dates), perl = TRUE))
 
-  if (nrows_years_and_date > 0){
-    asDT %>%
-      .[!is.na(year) & !is.na(date)] %>%
-      unique(by = "key") %>%
-      print
-
-    stop(cat(crayon::bgRed(symbol$cross)), "Date and year should not both appear in bibliography.")
+  if (any(year_date_same_entry)){
+    bad_entry <- just_years_and_dates[which(year_date_same_entry)[[1]] + c(-1, 0, 1, 2)]
+    cat(crayon::bgRed(symbol$cross),
+        bad_entry[1], "\n\t",
+        bad_entry[2], "\n\t",
+        bad_entry[3], "\n\t",
+        bad_entry[4], "\n")
+    stop("Date and year should not both appear in bibliography.")
   }
 
   invisible(NULL)

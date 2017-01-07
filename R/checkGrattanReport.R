@@ -6,7 +6,11 @@
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
+#' @importFrom magrittr and
+#' @importFrom magrittr or
 #' @importFrom dplyr if_else
+#' @importFrom dplyr lead
+#' @importFrom dplyr lag
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed
 

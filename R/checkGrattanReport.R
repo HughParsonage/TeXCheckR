@@ -38,7 +38,7 @@ checkGrattanReport <- function(path = ".",
 
   check_cite_pagerefs(filename)
   cat("\n",
-      green(symbol$tick, "Cite and pagerefs checked.\n"))
+      green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
 
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))

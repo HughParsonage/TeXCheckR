@@ -1,6 +1,6 @@
 #' Check consecutive typeset words
 #' @param path Path containing the latex file.
-#' @param latex_file The LaTeX file whose output will be checked.
+#' @param latex_file The LaTeX file (without path) whose output will be checked.
 #' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 #' you can use the md5sum of the output of this function.
 #' @return An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
@@ -16,6 +16,8 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   orig_wd <- getwd()
   on.exit(setwd(orig_wd))
   setwd(path)
+
+  stopifnot(file.exists(latex_file))
 
   md5sum_latex_file <- tools::md5sum(latex_file)
 
@@ -34,7 +36,11 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
 
   readLines(latex_file) %>%
     gsub("\\begin{document}", "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}", x = ., fixed = TRUE) %>%
+    # Safe to omit the bibliography for now
+    gsub("\\printbibliography", "", x = ., fixed = TRUE) %>%
     writeLines(latex_file)
+
+  warning(latex_file, "has been modified. Recompile ")
 
   # Put the text from http://tex.stackexchange.com/questions/341842/convert-twocolumn-layout-to-onecolumn-with-identical-linebreaks
   writeLines(twocolumn_atop, con = "CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")
@@ -83,7 +89,7 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
 
   if (length(repeated_words) > 0){
     for (repetition in seq_along(repeated_words)){
-      cat(repeated_words[repetition], "\n", sep = "\n")
+      cat(repeated_words[repetition], sep = "\n")
       cat(valid_typeset_lines[rep(which(is_repeated)[repetition], each = 5) + -2:2], sep = "\n")
       cat("\n\n")
     }

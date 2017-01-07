@@ -9,7 +9,7 @@ check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL)
 \arguments{
 \item{path}{Path containing the latex file.}
 
-\item{latex_file}{The LaTeX file whose output will be checked.}
+\item{latex_file}{The LaTeX file (without path) whose output will be checked.}
 
 \item{md5sum.ok}{The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 you can use the md5sum of the output of this function.}

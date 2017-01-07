@@ -112,10 +112,13 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     .[, date := if_else(grepl("/", date, fixed = TRUE),
                         substr(date, 0, 4),
                         date)] %>%
-    .[, Year_as_date := paste0(Year, "-01-01")] %>%
+    .[, Year_as_date := if_else(grepl("[0-9]{4}", year),
+                                paste0(year, "-01-01"),
+                                year)] %>%
     .[, Date := coalesce(date, Year_as_date)] %>%
     .[, Surname := if_else(!is.na(author),
                            # If protected, just use as-is
+                           # recalling that the outer braces have been removed already
                            if_else(grepl("^[{]", author, perl = TRUE),
                                    gsub("[{}]", "", author, perl = TRUE),
                                    # Daley, John
@@ -129,7 +132,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     .[, Line_no := line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:Line_no] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:Line_no] %>%
-    setorder(Surname, Year, title, Line_no) %>%
+    setorder(Surname, Date, title, Line_no) %>%
     .[]
 }
 

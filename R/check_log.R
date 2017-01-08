@@ -14,5 +14,5 @@ check_log <- function(path = ".", final = FALSE){
               fixed = TRUE,
               value = TRUE)[[1]])
   }
-  
+  invisible(NULL)
 }

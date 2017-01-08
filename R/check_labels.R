@@ -71,5 +71,17 @@ check_labels <- function(filename){
         sep = "")
     stop("Chapters must be labelled and have prefix 'chap:'.")
   }
+  
+  chapter_xref_lines <-
+    grep("[VvCc]ref(range)?[{]chap[:]", 
+         lines, 
+         perl = TRUE, 
+         value = TRUE)
+  
+  if (length(chapter_xref_lines) > 0){
+    print_error_context(chapter_xref_lines[[1]])
+    stop("Cross-references to chapters must use Chapref or topref.")
+  }
+  
   invisible(NULL)
 }

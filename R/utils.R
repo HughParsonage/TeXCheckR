@@ -47,3 +47,6 @@ rev_forename_surname_bibtex <- function(author_fields){
     })
 }
 
+print_error_context <- function(..., type = c("travis", "twitter")){
+  cat(bgRed(symbol$cross), " ", ..., sep = "")
+}

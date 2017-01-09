@@ -11,7 +11,11 @@
 #' @import hunspell
 #' @export
 
-check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, known.wrong = NULL){
+check_spelling <- function(filename,
+                           ignore.lines = NULL,
+                           known.correct = NULL,
+                           known.wrong = NULL){
+  file_path <- dirname(filename)
   lines <- readLines(filename, warn = FALSE, encoding = "UTF-8")[-1]
 
   if (!is.null(ignore.lines)){

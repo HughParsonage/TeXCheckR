@@ -16,7 +16,12 @@ check_spelling <- function(filename,
                            known.correct = NULL,
                            known.wrong = NULL){
   file_path <- dirname(filename)
-  lines <- readLines(filename, warn = FALSE, encoding = "UTF-8")[-1]
+  lines <- 
+    readLines(filename, warn = FALSE, encoding = "UTF-8")
+  
+  if (any(grepl("\\documentclass", lines, fixed = TRUE))){
+    lines <- gsub("{grattan}", "{report}", lines, fixed = TRUE)
+  }
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -24,7 +29,8 @@ check_spelling <- function(filename,
 
   # Check known wrong
   for (wrong in known.wrong){
-    if (any(grepl(wrong, lines))){
+    if (any(grepl(wrong, lines, perl = TRUE))){
+      cat(grep(wrong, lines, perl = TRUE)[[1]])
       cat(wrong)
       stop("A pattern you have raised was detected in the document.")
     }
@@ -35,11 +41,18 @@ check_spelling <- function(filename,
                 "\\{bibliography.bib\\}",
                 lines)
 
-  lines_after_begin_document <- lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
-
+  lines_after_begin_document <- 
+    if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
+      lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
+    } else {
+      lines
+    }
+  
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines_after_begin_document, perl = TRUE))
-
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", 
+                               lines_after_begin_document, 
+                               perl = TRUE))
+  
   if (inputs_in_doc > 0){
     inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",

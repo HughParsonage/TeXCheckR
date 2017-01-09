@@ -68,10 +68,13 @@ check_spelling <- function(filename,
 
     # Recursively check
     if (length(inputs) > 0){
+      cat("Check subfiles:\n")
       for (input in inputs){
-        tryCatch(check_spelling(filename = paste0(input, ".tex"), known.correct = known.correct, known.wrong = known.wrong),
-                 # Display the filename as well as the error returned.
-                 error = function(e){cat(input); e})
+        cat(input, "\n")
+        check_spelling(filename = file.path(file_path, 
+                                            paste0(input, ".tex")), 
+                       known.correct = known.correct, 
+                       known.wrong = known.wrong)
       }
     }
   }

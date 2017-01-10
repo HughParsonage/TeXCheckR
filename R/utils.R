@@ -1,7 +1,7 @@
 
 `%notin%` <- Negate(`%in%`)
 
-not_length0 <- function(x) length(x) > 0
+not_length0 <- function(x) as.logical(length(x))
 
 # takes a vector of froms and tos and takes their union
 Seq_union <- function(x, y){
@@ -47,6 +47,25 @@ rev_forename_surname_bibtex <- function(author_fields){
     })
 }
 
-print_error_context <- function(..., type = c("travis", "twitter")){
-  cat(bgRed(symbol$cross), " ", ..., sep = "")
+print_error_context <- function(error.symbol = bgRed(symbol$cross), 
+                                line_no = NULL,
+                                context = NULL,
+                                ..., 
+                                console = c("travis", "twitter")){
+  console <- match.arg(console)
+  # Printing requirements:
+  ## 1. Cross
+  ## 2. Line no (if applicable)
+  ## 3. Context
+  ## 4. Suggeston.
+  switch(console,
+         "travis" = {
+           cat(bgRed(symbol$cross), " ", ..., sep = "")
+         }, 
+         "twitter" = {
+           warning("Not implemented.")
+           if (FALSE){
+             twitteR::updateStatus()
+           }
+         })
 }

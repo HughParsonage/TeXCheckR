@@ -65,7 +65,7 @@ print_error_context <- function(error.symbol = bgRed(symbol$cross),
          "twitter" = {
            warning("Not implemented.")
            if (FALSE){
-             twitteR::updateStatus()
+             # twitteR::updateStatus()
            }
          })
 }

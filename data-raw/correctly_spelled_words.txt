@@ -51,6 +51,7 @@ can't
 cancelled
 cancelling
 Carmela
+channeling
 Chartpack
 Cherastidtham
 Chifley
@@ -80,6 +81,7 @@ emphasise
 emphasised
 Emslie
 EMTR
+EMTRs?
 enumi
 enumii
 externality

@@ -143,11 +143,13 @@ check_spelling <- function(filename,
          lines,
          perl = TRUE)
   
-  # Just completely ignore tabularx lines
-  lines <- 
-    if_else(grepl("\\begin{tabularx}", lines, fixed = TRUE),
-            "\\begin{tabularx}{\\linewidth}{XXXX}",
-            lines)
+  # Just completely ignore tabularx tabular table lines
+  for (table_env in c("{tabularx}", "{tabular}", "{table}")){
+    lines <- 
+      if_else(grepl(paste0("\\begin", table_env), lines, fixed = TRUE),
+              "\\begin{table-env}",
+              lines)
+  }
   
   # Valid ordinal patterns are permitted
   ordinal_pattern <-
@@ -198,10 +200,10 @@ check_spelling <- function(filename,
            lines[first_wrong_line_no],
            perl = TRUE)
 
-    cat(bgRed(symbol$cross), " ",
-        first_wrong_line_no, ": ", lines[first_wrong_line_no], "\n",
-        "\t", wrongly_spelled_word,
-        sep = "")
+    print_error_context(first_wrong_line_no,
+                        lines[first_wrong_line_no], 
+                        "\n",
+                        "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")
   }
 
@@ -228,9 +230,20 @@ check_spelling <- function(filename,
                               dict = dictionary("en_GB"))
           
           if (not_length0(recheck[[1]])){
+            nchar_of_badword <- nchar(bad_word)
+            
+            chars_b4_badword <- 
+              gsub(sprintf("^(.*)(?:%s).*$", bad_word),
+                   "\\1",
+                   lines[[line_w_misspell]],
+                   perl = TRUE) %>%
+              nchar
             print_error_context(line_no = line_w_misspell,
                                 context = lines[[line_w_misspell]],
-                                "\t", bad_word, "\n")
+                                "\n   ", 
+                                rep(" ", chars_b4_badword), 
+                                rep("^", nchar_of_badword), 
+                                "\n")
             stop("Spellcheck failed on above line with '", bad_word, "'")
           }
         }

@@ -47,10 +47,10 @@ rev_forename_surname_bibtex <- function(author_fields){
     })
 }
 
-print_error_context <- function(error.symbol = bgRed(symbol$cross), 
-                                line_no = NULL,
+print_error_context <- function(line_no = NULL,
                                 context = NULL,
                                 ..., 
+                                error.symbol = bgRed(symbol$cross), 
                                 console = c("travis", "twitter")){
   console <- match.arg(console)
   # Printing requirements:
@@ -60,7 +60,7 @@ print_error_context <- function(error.symbol = bgRed(symbol$cross),
   ## 4. Suggeston.
   switch(console,
          "travis" = {
-           cat(bgRed(symbol$cross), " ", ..., sep = "")
+           cat(bgRed(symbol$cross), " ", context, ..., sep = "")
          }, 
          "twitter" = {
            warning("Not implemented.")

@@ -80,71 +80,75 @@ check_spelling <- function(filename,
   }
 
   # Do not check cite keys
-  lines <- gsub(paste0("((foot)|(text)|(auto))",
-                       "cites?",
-                          # optional pre/postnote
-                          "((",
-                          # prenote
-                          "\\[", "\\]",
-                          # postnote
-                          "\\[", "[^\\]]*", "\\]",
-                          ")?",
-                       # cite key (possibly multiple)
-                       # (the multiplicity applies to the prenote as well)
-                       "[{]", "[^\\}]+", "[}])+",
-
-                       collapse = ""),
-                "\\1cite\\{citation\\}",
-                lines,
-                perl = TRUE)
-
+  lines <- 
+    gsub(paste0("((foot)|(text)|(auto))",
+                "cites?",
+                # optional pre/postnote
+                "((",
+                # prenote
+                "\\[", "\\]",
+                # postnote
+                "\\[", "[^\\]]*", "\\]",
+                ")?",
+                # cite key (possibly multiple)
+                # (the multiplicity applies to the prenote as well)
+                "[{]", "[^\\}]+", "[}])+",
+                
+                collapse = ""),
+         "\\1cite\\{citation\\}",
+         lines,
+         perl = TRUE)
+  
   # Do not check labels
   lines <- gsub(paste0("(",
-                          "\\\\(([VCvc]?(page)?)|(top)|([Cc]hap))?",
-                          "(ref(range)?)|(label)",
+                       "\\\\(([VCvc]?(page)?)|(top)|([Cc]hap))?",
+                       "(ref(range)?)|(label)",
                        ")",
                        "\\{",
-                          "([^\\}]+)",
+                       "([^\\}]+)",
                        "\\}"),
                 "\\1\\{correct\\}",
                 lines,
                 perl = TRUE)
-
+  
   # box labels
-  lines <- gsub(paste0("(",
-                       "((small)|(big))box[*]?",
-                       "[}]",
-
-                       # optional placement parameter
-                       # e.g. \begin{smallbox}[!h]
-                       "(",
-                       "\\[",
-                       # empty optional argument unlikely,
-                       # but not for this function to check.
-                       "[!htbpH]*",
-                       "\\]",
-                       ")?",
-                       # title argument
-                       "[{][^\\}]+[}]",
-                       # key argument:
-                       "[{]",
-                       ")", # caputure everything except the actual key
-                       "[^\\}]+[}]"),
-                "\\1box-key\\}",
-                lines,
-                perl = TRUE)
-
+  lines <- 
+    gsub(paste0("(",
+                "((small)|(big))box[*]?",
+                "[}]",
+                
+                # optional placement parameter
+                # e.g. \begin{smallbox}[!h]
+                "(",
+                "\\[",
+                # empty optional argument unlikely,
+                # but not for this function to check.
+                "[!htbpH]*",
+                "\\]",
+                ")?",
+                # title argument
+                "[{][^\\}]+[}]",
+                # key argument:
+                "[{]",
+                ")", # caputure everything except the actual key
+                "[^\\}]+[}]"),
+         "\\1box-key\\}",
+         lines,
+         perl = TRUE)
+  
   # itemize enumerate optional arguments
-  lines <- gsub("(\\\\begin[{](?:(?:itemize)|(?:enumerate))[}])(\\[[^\\]]+\\])?",
-                "\\1",
-                lines,
-                perl = TRUE)
-
+  lines <- 
+    gsub("(\\\\begin[{](?:(?:itemize)|(?:enumerate))[}])(\\[[^\\]]+\\])?",
+         "\\1",
+         lines,
+         perl = TRUE)
+  
   # Just completely ignore tabularx lines
-  lines <- if_else(grepl("\\begin{tabularx}", lines, fixed = TRUE),
-                   "\\begin{tabularx}{\\linewidth}{XXXX}",
-                   lines)
-
+  lines <- 
+    if_else(grepl("\\begin{tabularx}", lines, fixed = TRUE),
+            "\\begin{tabularx}{\\linewidth}{XXXX}",
+            lines)
+  
   # Valid ordinal patterns are permitted
   ordinal_pattern <-
     paste0("((?<!1)1(\\\\textsuperscript\\{)?st)",
@@ -158,7 +162,7 @@ check_spelling <- function(filename,
                             c("3rd", "11th", "21st", "13th", "13rd", "101st", "11st", "funding", "3\\textsuperscript{rd}"),
                             perl = TRUE),
                       c(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)))
-
+  
   lines <-
     gsub(ordinal_pattern,
          "correct",
@@ -173,56 +177,63 @@ check_spelling <- function(filename,
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
 
-  lines_corrected <- gsub(sprintf("\\b(%s)\\b", correctly_spelled_words),
-                          "correct",
-                          lines,
-                          perl = TRUE)
-
   if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
     words_to_add <-
       lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
       gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
-
-    known.correct <- union(known.correct, words_to_add)
   }
 
-
-  if (!is.null(known.correct)){
-    # replace these words with the word 'correct'
-    lines_corrected <- gsub(sprintf("(\\b%s\\b)", paste0(known.correct, collapse = "\\b)|(\\b")),
-                            "correct",
-                            lines_corrected,
-                            perl = TRUE)
-  }
-
-  if (any(grepl(wrongly_spelled_words, lines_corrected, perl = TRUE))){
+  if (any(grepl(wrongly_spelled_words, lines, perl = TRUE))){
     first_wrong_line_no <-
-      grep(wrongly_spelled_words, lines_corrected, perl = TRUE) %>%
+      grep(wrongly_spelled_words, lines, perl = TRUE) %>%
       .[1]
 
     wrongly_spelled_word <-
       gsub(paste0("^.*\\b(", wrongly_spelled_words, ")\\b.*$"),
            "\\1",
-           lines_corrected[first_wrong_line_no],
+           lines[first_wrong_line_no],
            perl = TRUE)
 
     cat(bgRed(symbol$cross), " ",
-        first_wrong_line_no, ": ", lines_corrected[first_wrong_line_no], "\n",
+        first_wrong_line_no, ": ", lines[first_wrong_line_no], "\n",
         "\t", wrongly_spelled_word,
         sep = "")
     stop("Common spelling error detected.")
   }
 
-  parsed <- hunspell(lines_corrected, format = "latex", dict = dictionary("en_GB"))
+  parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
 
   are_misspelt <- sapply(parsed, not_length0)
 
   if (any(are_misspelt)){
-    cat(lines[are_misspelt][[1]], "\n")
-    cat("\t", unlist(hunspell(lines_corrected[are_misspelt][[1]], format = "latex", dict = dictionary("en_GB"))), "\n")
-    stop("Spellcheck failed on above line.")
+    for (line_w_misspell in which(are_misspelt)){
+      bad_words <- parsed[[line_w_misspell]]
+      for (bad_word in bad_words){
+        if (bad_word %notin% c(correctly_spelled_words, words_to_add)){
+          bad_line <- lines[[line_w_misspell]]
+          bad_line_corrected <- bad_line
+          for (good_word in c(correctly_spelled_words, words_to_add, known.correct)){
+            bad_line_corrected <- gsub(paste0("\\b", good_word, "\\b"),
+                                       "",
+                                       bad_line_corrected, 
+                                       perl = TRUE, 
+                                       ignore.case = TRUE)
+          }
+          recheck <- hunspell(bad_line_corrected,
+                              format = "latex",
+                              dict = dictionary("en_GB"))
+          
+          if (not_length0(recheck[[1]])){
+            print_error_context(line_no = line_w_misspell,
+                                context = lines[[line_w_misspell]],
+                                "\t", bad_word, "\n")
+            stop("Spellcheck failed on above line with '", bad_word, "'")
+          }
+        }
+      }
+    }
   }
 
   return(invisible(NULL))

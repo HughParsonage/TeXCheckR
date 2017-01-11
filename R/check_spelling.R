@@ -177,17 +177,19 @@ check_spelling <- function(filename,
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
 
+  words_to_add <- NULL
   if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
     words_to_add <-
       lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
       gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
+      trimws %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
   }
 
-  if (any(grepl(wrongly_spelled_words, lines, perl = TRUE))){
+  if (any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE))){
     first_wrong_line_no <-
-      grep(wrongly_spelled_words, lines, perl = TRUE) %>%
+      grep(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE) %>%
       .[1]
 
     wrongly_spelled_word <-

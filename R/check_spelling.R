@@ -151,6 +151,9 @@ check_spelling <- function(filename,
               lines)
   }
   
+  # Ignore captionsetups
+  lines <- replace_LaTeX_argument(lines, "captionsetup", "")
+  
   # Valid ordinal patterns are permitted
   ordinal_pattern <-
     paste0("((?<!1)1(\\\\textsuperscript\\{)?st)",

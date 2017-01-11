@@ -176,6 +176,7 @@ check_spelling <- function(filename,
 
   # Ignore phantoms
   lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "correct")
+  lines <- replace_LaTeX_argument(lines, command_name = "gls", replacement = "correct")
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct
@@ -218,7 +219,7 @@ check_spelling <- function(filename,
     for (line_w_misspell in which(are_misspelt)){
       bad_words <- parsed[[line_w_misspell]]
       for (bad_word in bad_words){
-        if (bad_word %notin% c(correctly_spelled_words, words_to_add)){
+        if (bad_word %notin% c(correctly_spelled_words, words_to_add, known.correct)){
           bad_line <- lines[[line_w_misspell]]
           bad_line_corrected <- bad_line
           for (good_word in c(correctly_spelled_words, words_to_add, known.correct)){
@@ -241,10 +242,18 @@ check_spelling <- function(filename,
                    lines[[line_w_misspell]],
                    perl = TRUE) %>%
               nchar
+            
+            context <- 
+              if (chars_b4_badword < 80){
+                substr(lines[[line_w_misspell]], 0, 80)
+              } else {
+                lines[[line_w_misspell]]
+              }
+            
             print_error_context(line_no = line_w_misspell,
-                                context = lines[[line_w_misspell]],
-                                "\n   ", 
-                                rep(" ", chars_b4_badword), 
+                                context = context,
+                                "\n", 
+                                rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)), 
                                 rep("^", nchar_of_badword), 
                                 "\n")
             stop("Spellcheck failed on above line with '", bad_word, "'")

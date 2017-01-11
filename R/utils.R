@@ -8,10 +8,21 @@ Seq_union <- function(x, y){
   if (length(x) == 1L && length(y) == 1L){
     seq.int(x, y)
   } else {
-    if (length(x) != 1L && length(y) != 1L){
-      c(Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y))
-    } else {
+    lengthx <- length(x)
+    lengthy <- length(y)
+    if (lengthx == lengthy){
       unlist(Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y))
+    } else {
+      if (length(x) != 1L && lengthy != 1L){
+        stop("x and y must have the same length if neither have length 1.")
+      }
+      if (lengthx == 1L){
+        Seq_union(rep(x, lengthy), y) %>%
+          unique
+      } else {
+        Seq_union(x, rep(y, lengthx)) %>%
+          unique
+      }
     }
   }
 }
@@ -60,7 +71,7 @@ print_error_context <- function(line_no = NULL,
   ## 4. Suggeston.
   switch(console,
          "travis" = {
-           cat(bgRed(symbol$cross), " ", context, ..., sep = "")
+           cat(error.symbol, " ", line_no, ": ", context, ..., sep = "")
          }, 
          "twitter" = {
            warning("Not implemented.")

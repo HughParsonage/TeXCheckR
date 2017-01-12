@@ -18,10 +18,10 @@ Seq_union <- function(x, y){
       }
       if (lengthx == 1L){
         Seq_union(rep(x, lengthy), y) %>%
-          unique
+          unique.default
       } else {
         Seq_union(x, rep(y, lengthx)) %>%
-          unique
+          unique.default
       }
     }
   }

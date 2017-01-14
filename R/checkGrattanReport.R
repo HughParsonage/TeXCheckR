@@ -39,6 +39,12 @@ checkGrattanReport <- function(path = ".",
   } else {
     filename <- file
   }
+  
+  the_authors <- 
+    get_authors(filename)
+  
+  cat("I see the following as authors:", 
+      the_authors, sep = "\n")
 
   check_cite_pagerefs(filename)
   cat("\n",
@@ -79,6 +85,6 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "Labels checked.\n"))
 
-  cat(bgGreen(symbol$tick, "Report checked.\n"))
+  cat(bgGreen(symbol$tick, symbol$tick, "Report checked.\n"))
 
 }

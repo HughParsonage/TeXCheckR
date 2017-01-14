@@ -11,8 +11,17 @@
 #' @import hunspell
 #' @export
 
-check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, known.wrong = NULL){
-  lines <- readLines(filename, warn = FALSE, encoding = "UTF-8")[-1]
+check_spelling <- function(filename,
+                           ignore.lines = NULL,
+                           known.correct = NULL,
+                           known.wrong = NULL){
+  file_path <- dirname(filename)
+  lines <- 
+    readLines(filename, warn = FALSE, encoding = "UTF-8")
+  
+  if (any(grepl("\\documentclass", lines, fixed = TRUE))){
+    lines <- gsub("{grattan}", "{report}", lines, fixed = TRUE)
+  }
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -20,7 +29,8 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
 
   # Check known wrong
   for (wrong in known.wrong){
-    if (any(grepl(wrong, lines))){
+    if (any(grepl(wrong, lines, perl = TRUE))){
+      cat(grep(wrong, lines, perl = TRUE)[[1]])
       cat(wrong)
       stop("A pattern you have raised was detected in the document.")
     }
@@ -31,11 +41,18 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
                 "\\{bibliography.bib\\}",
                 lines)
 
-  lines_after_begin_document <- lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
-
+  lines_after_begin_document <- 
+    if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
+      lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
+    } else {
+      lines
+    }
+  
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", lines_after_begin_document, perl = TRUE))
-
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", 
+                               lines_after_begin_document, 
+                               perl = TRUE))
+  
   if (inputs_in_doc > 0){
     inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",
@@ -51,10 +68,13 @@ check_spelling <- function(filename, ignore.lines = NULL, known.correct = NULL, 
 
     # Recursively check
     if (length(inputs) > 0){
+      cat("Check subfiles:\n")
       for (input in inputs){
-        tryCatch(check_spelling(filename = paste0(input, ".tex"), known.correct = known.correct, known.wrong = known.wrong),
-                 # Display the filename as well as the error returned.
-                 error = function(e){cat(input); e})
+        cat(input, "\n")
+        check_spelling(filename = file.path(file_path, 
+                                            paste0(input, ".tex")), 
+                       known.correct = known.correct, 
+                       known.wrong = known.wrong)
       }
     }
   }

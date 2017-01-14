@@ -15,6 +15,8 @@ test_that("rev forename surname works on bibtex-like entry", {
                "McDonald, Andrew and Wu, Li")
   expect_equal(rev_forename_surname_bibtex("John Daley and Coates, Brendan and Ludwig van Beethoven and Beethoven, Ludiwg van and WA Mozart"),
                "Daley, John and Coates, Brendan and Beethoven, Ludwig van and Beethoven, Ludiwg van and Mozart, WA")
+  expect_equal(rev_forename_surname_bibtex("W A Mozart and Li Wu"),
+               "Mozart, W A and Wu, Li")
 })
 
 test_that("rev forename works on multilength vectors", {

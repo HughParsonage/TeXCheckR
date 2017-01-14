@@ -3,7 +3,9 @@
 check_cite_pagerefs <- function(filename){
   lines <- readLines(filename, warn = FALSE)
 
-  lines_with_cites <- lines[grepl("cite[", lines, fixed = TRUE) | grepl("cite{", lines, fixed = TRUE)]
+  lines_with_cites <- 
+    lines[or(grepl("cite[", lines, fixed = TRUE),
+             grepl("cite{", lines, fixed = TRUE))]
 
   for (line in lines_with_cites){
     if (grepl("cite\\[[^\\]]+\\][{]", line, perl = TRUE)){
@@ -11,16 +13,20 @@ check_cite_pagerefs <- function(filename){
     }
 
     # Check constructions like p. 93
-    if (grepl("cite\\[\\]\\[p\\.?\\s*[0-9]+\\]", line, perl = TRUE)){
+    if (grepl(paste0("cite\\[\\]",
+                     "\\[pp?\\.?\\s*[0-9]+"), 
+              line,
+              perl = TRUE)){
       message(line)
       stop("Unnecessary p in postnote.")
     }
     # Check single hyphen between pagerefs
     if (grepl("cite\\[\\]\\[[0-9]+-[0-9]+\\]", line, perl = TRUE)){
       message(line)
-      stop("Page reference appears wrong.")
+      stop("Page ranges should be separated by two hyphens (--).")
     }
   }
   rm(line)
+  
   invisible(NULL)
 }

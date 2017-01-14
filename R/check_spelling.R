@@ -177,6 +177,7 @@ check_spelling <- function(filename,
   # Ignore phantoms
   lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "correct")
   lines <- replace_LaTeX_argument(lines, command_name = "gls", replacement = "correct")
+  lines <- replace_LaTeX_argument(lines, command_name = "href", replacement = "correct")
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct
@@ -244,7 +245,7 @@ check_spelling <- function(filename,
               nchar
             
             context <- 
-              if (chars_b4_badword < 80){
+              if (chars_b4_badword + nchar_of_badword < 80){
                 substr(lines[[line_w_misspell]], 0, 80)
               } else {
                 lines[[line_w_misspell]]

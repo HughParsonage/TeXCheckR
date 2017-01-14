@@ -7,7 +7,6 @@
 1cm
 1em
 1ex
-2000s
 22pt
 23pt
 2a
@@ -38,6 +37,7 @@ Batchelor
 behaviour
 benefitted
 bigbox
+BMI
 Booz
 bottomrule
 Brinckerhoff
@@ -51,6 +51,7 @@ can't
 cancelled
 cancelling
 Carmela
+Center
 channeling
 Chartpack
 Cherastidtham
@@ -58,6 +59,7 @@ Chifley
 Chifley's
 Chivers
 cmidrule
+Coca-Cola Amatil
 compact's
 contentspage
 costings?
@@ -66,6 +68,7 @@ Cth
 Daley
 Danks
 de
+deadweight
 Deloitte
 Dept
 didn't
@@ -82,8 +85,11 @@ emphasised
 Emslie
 EMTR
 EMTRs?
+endogeneity
 enumi
 enumii
+Epigenetics
+Euromonitor
 externality
 Fitzgibbon
 float's
@@ -101,6 +107,8 @@ Gonski
 Goodna
 Goss
 Government's
+GP
+GPs
 Grattan
 Grattan's
 gray
@@ -109,6 +117,10 @@ GST
 HECS
 HELP
 honourable
+hypothecate
+hypothecated
+hypothecating
+hypothecation
 indices
 indigeneity
 initialisms
@@ -121,6 +133,7 @@ judgement
 Karnup
 key1
 key2
+kJ
 Kleinhenz
 Kwinana
 Labor
@@ -131,6 +144,7 @@ lockstep
 logit
 lr
 Maitland
+Medibank
 megaprojects
 Microdata
 microtype
@@ -164,7 +178,9 @@ Plunkett
 politicised
 postnote
 pre
+presenteeism
 progressivity
+PwC
 Pyne
 Qld
 quintile
@@ -185,6 +201,8 @@ smallbox
 Sonnemann
 standardised
 Stat
+stevia
+sucralose
 summarised
 superannuants?
 superchapterfigure
@@ -207,6 +225,9 @@ Turnbull
 underfull
 underrun
 underruns
+undersupplied
+undersupply
+undersupplying
 Unported
 unrealised
 uptick

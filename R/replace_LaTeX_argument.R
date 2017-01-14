@@ -3,13 +3,14 @@
 #' @param command_name Name of the command (without backslash) whose first
 #'   argument will be replaced.
 #' @param replacement Replacement for the contents of each argument.
+#' @param arg The (mandatory) argument that will be replaced.
 #' @param .dummy_replacer What to replace every \strong{letter} in the argument with during parsing.
 #' Selecting a \code{.dummy_replacer} that is present in \code{tex_lines} is an error.
 #' @return A character vector with the first argument of \code{command_name} replaced with \code{replacement}.
 #' @export replace_LaTeX_argument
 #'
 
-replace_LaTeX_argument <- function(tex_lines, command_name, replacement, .dummy_replacer = "ZzZz"){
+replace_LaTeX_argument <- function(tex_lines, command_name, replacement, arg = 1L, .dummy_replacer = "ZzZz"){
   if (any(grepl(.dummy_replacer, tex_lines))){
     stop(".dummy_replacer occurs in tex_lines. Choose a different string.")
   }

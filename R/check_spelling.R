@@ -167,17 +167,23 @@ check_spelling <- function(filename,
                             c("3rd", "11th", "21st", "13th", "13rd", "101st", "11st", "funding", "3\\textsuperscript{rd}"),
                             perl = TRUE),
                       c(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)))
-  
+
   lines <-
     gsub(ordinal_pattern,
-         "correct",
+         "",
          lines,
          perl = TRUE)
 
   # Ignore phantoms
-  lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "correct")
-  lines <- replace_LaTeX_argument(lines, command_name = "gls", replacement = "correct")
+  lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
+  lines <- replace_LaTeX_argument(lines, command_name = "gls", replacement = "ENTRY")
   lines <- replace_LaTeX_argument(lines, command_name = "href", replacement = "correct")
+  # Replace label argument in smallbox etc
+  lines <- replace_nth_LaTeX_argument(lines,
+                                      fixed = FALSE,
+                                      command_name = "\\\\begin.(?:(?:(?:very)?small)|(?:big))box[*]?",
+                                      n = 2L,
+                                      replacement = "box:key")
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct

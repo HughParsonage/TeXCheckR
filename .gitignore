@@ -12,3 +12,4 @@ grattanReporter.Rproj
 *.run.xml
 *.toc
 *.idx
+.httr-oauth

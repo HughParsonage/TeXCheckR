@@ -181,7 +181,7 @@ check_spelling <- function(filename,
   # Replace label argument in smallbox etc
   lines <- replace_nth_LaTeX_argument(lines,
                                       fixed = FALSE,
-                                      command_name = "\\\\begin.(?:(?:(?:very)?small)|(?:big))box[*]?",
+                                      command_name = "\\\\begin.(?:(?:(?:very)?small)|(?:big))box[*]?[}]",
                                       n = 2L,
                                       replacement = "box:key")
 

@@ -46,7 +46,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
     strsplit(split = "")
 
   positions_of_nth_arg <-
-    nth_arg_positions(tex_lines = tex_lines,
+    nth_arg_positions(tex_lines = tex_lines_with_command_name,
                       command_name = command_name,
                       fixed = fixed,
                       n = n)

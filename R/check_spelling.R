@@ -16,9 +16,9 @@ check_spelling <- function(filename,
                            known.correct = NULL,
                            known.wrong = NULL){
   file_path <- dirname(filename)
-  lines <- 
+  lines <-
     readLines(filename, warn = FALSE, encoding = "UTF-8")
-  
+
   if (any(grepl("\\documentclass", lines, fixed = TRUE))){
     lines <- gsub("{grattan}", "{report}", lines, fixed = TRUE)
   }
@@ -41,18 +41,18 @@ check_spelling <- function(filename,
                 "\\{bibliography.bib\\}",
                 lines)
 
-  lines_after_begin_document <- 
+  lines_after_begin_document <-
     if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
       lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
     } else {
       lines
     }
-  
+
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))", 
-                               lines_after_begin_document, 
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))",
+                               lines_after_begin_document,
                                perl = TRUE))
-  
+
   if (inputs_in_doc > 0){
     inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",
@@ -71,16 +71,16 @@ check_spelling <- function(filename,
       cat("Check subfiles:\n")
       for (input in inputs){
         cat(input, "\n")
-        check_spelling(filename = file.path(file_path, 
-                                            paste0(input, ".tex")), 
-                       known.correct = known.correct, 
+        check_spelling(filename = file.path(file_path,
+                                            paste0(input, ".tex")),
+                       known.correct = known.correct,
                        known.wrong = known.wrong)
       }
     }
   }
 
   # Do not check cite keys
-  lines <- 
+  lines <-
     gsub(paste0("((foot)|(text)|(auto))",
                 "cites?",
                 # optional pre/postnote
@@ -93,12 +93,12 @@ check_spelling <- function(filename,
                 # cite key (possibly multiple)
                 # (the multiplicity applies to the prenote as well)
                 "[{]", "[^\\}]+", "[}])+",
-                
+
                 collapse = ""),
          "\\1cite\\{citation\\}",
          lines,
          perl = TRUE)
-  
+
   # Do not check labels
   lines <- gsub(paste0("(",
                        "\\\\(([VCvc]?(page)?)|(top)|([Cc]hap))?",
@@ -110,13 +110,13 @@ check_spelling <- function(filename,
                 "\\1\\{correct\\}",
                 lines,
                 perl = TRUE)
-  
+
   # box labels
-  lines <- 
+  lines <-
     gsub(paste0("(",
                 "((small)|(big))box[*]?",
                 "[}]",
-                
+
                 # optional placement parameter
                 # e.g. \begin{smallbox}[!h]
                 "(",
@@ -135,25 +135,25 @@ check_spelling <- function(filename,
          "\\1box-key\\}",
          lines,
          perl = TRUE)
-  
+
   # itemize enumerate optional arguments
-  lines <- 
+  lines <-
     gsub("(\\\\begin[{](?:(?:itemize)|(?:enumerate))[}])(\\[[^\\]]+\\])?",
          "\\1",
          lines,
          perl = TRUE)
-  
+
   # Just completely ignore tabularx tabular table lines
   for (table_env in c("{tabularx}", "{tabular}", "{table}")){
-    lines <- 
+    lines <-
       if_else(grepl(paste0("\\begin", table_env), lines, fixed = TRUE),
               "\\begin{table-env}",
               lines)
   }
-  
+
   # Ignore captionsetups
   lines <- replace_LaTeX_argument(lines, "captionsetup", "")
-  
+
   # Valid ordinal patterns are permitted
   ordinal_pattern <-
     paste0("((?<!1)1(\\\\textsuperscript\\{)?st)",
@@ -206,7 +206,7 @@ check_spelling <- function(filename,
            perl = TRUE)
 
     print_error_context(first_wrong_line_no,
-                        lines[first_wrong_line_no], 
+                        lines[first_wrong_line_no],
                         "\n",
                         "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")
@@ -226,36 +226,36 @@ check_spelling <- function(filename,
           for (good_word in c(correctly_spelled_words, words_to_add, known.correct)){
             bad_line_corrected <- gsub(paste0("\\b", good_word, "\\b"),
                                        "",
-                                       bad_line_corrected, 
-                                       perl = TRUE, 
+                                       bad_line_corrected,
+                                       perl = TRUE,
                                        ignore.case = TRUE)
           }
           recheck <- hunspell(bad_line_corrected,
                               format = "latex",
                               dict = dictionary("en_GB"))
-          
+
           if (not_length0(recheck[[1]])){
             nchar_of_badword <- nchar(bad_word)
-            
-            chars_b4_badword <- 
+
+            chars_b4_badword <-
               gsub(sprintf("^(.*)(?:%s).*$", bad_word),
                    "\\1",
                    lines[[line_w_misspell]],
                    perl = TRUE) %>%
               nchar
-            
-            context <- 
+
+            context <-
               if (chars_b4_badword + nchar_of_badword < 80){
                 substr(lines[[line_w_misspell]], 0, 80)
               } else {
                 lines[[line_w_misspell]]
               }
-            
+
             print_error_context(line_no = line_w_misspell,
                                 context = context,
-                                "\n", 
-                                rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)), 
-                                rep("^", nchar_of_badword), 
+                                "\n",
+                                rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
+                                rep("^", nchar_of_badword),
                                 "\n")
             stop("Spellcheck failed on above line with '", bad_word, "'")
           }

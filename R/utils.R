@@ -4,14 +4,28 @@
 not_length0 <- function(x) as.logical(length(x))
 
 # takes a vector of froms and tos and takes their union
+seq.default.Vectorized <- function(x, y)
+  Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y)
+
 Seq_union <- function(x, y){
   if (length(x) == 1L && length(y) == 1L){
     seq.int(x, y)
   } else {
-    if (length(x) != 1L && length(y) != 1L){
-      c(Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y))
+    if (length(x) == length(y)){
+      unlist(seq.default.Vectorized(x, y))
     } else {
-      unlist(Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y))
+      lengthx <- length(x)
+      lengthy <- length(y)
+      if (lengthx != 1L && lengthy != 1L){
+        stop("x and y must have the same length if neither have length 1.")
+      }
+      if (lengthx == 1L){
+        Seq_union(rep(x, lengthy), y) %>%
+          unique.default
+      } else {
+        Seq_union(x, rep(y, lengthx)) %>%
+          unique.default
+      }
     }
   }
 }
@@ -47,10 +61,10 @@ rev_forename_surname_bibtex <- function(author_fields){
     })
 }
 
-print_error_context <- function(error.symbol = bgRed(symbol$cross), 
-                                line_no = NULL,
+print_error_context <- function(line_no = NULL,
                                 context = NULL,
                                 ..., 
+                                error.symbol = bgRed(symbol$cross), 
                                 console = c("travis", "twitter")){
   console <- match.arg(console)
   # Printing requirements:
@@ -60,7 +74,7 @@ print_error_context <- function(error.symbol = bgRed(symbol$cross),
   ## 4. Suggeston.
   switch(console,
          "travis" = {
-           cat(bgRed(symbol$cross), " ", ..., sep = "")
+           cat(error.symbol, " ", line_no, ": ", context, ..., sep = "")
          }, 
          "twitter" = {
            warning("Not implemented.")
@@ -68,4 +82,17 @@ print_error_context <- function(error.symbol = bgRed(symbol$cross),
              # twitteR::updateStatus()
            }
          })
+}
+
+nth_max <- function(x, n){
+  n <- length(x)
+  sort(x, partial = n - 1)[n - 1]
+}
+
+nth_min <- function(x, n){
+  sort(x)[n]
+}
+
+nth_min.int <- function(x, n){
+  sort.int(x)[n]
 }

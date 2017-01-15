@@ -34,6 +34,7 @@ ATO
 Austroads
 Baldavis
 Batchelor
+Batrouney
 behaviour
 benefitted
 bigbox
@@ -114,6 +115,7 @@ Grattan's
 gray
 Griffiths
 GST
+Hannebery
 HECS
 HELP
 honourable
@@ -149,6 +151,7 @@ megaprojects
 Microdata
 microtype
 midrule
+Minifie
 minimisation
 minimised
 minimising
@@ -196,6 +199,7 @@ scrtime
 scrutinised
 SES
 ShareAlike
+Sharmini
 Sizable
 smallbox
 Sonnemann
@@ -208,6 +212,7 @@ superannuants?
 superchapterfigure
 superchaptersection
 superchaptertable
+Swerissen
 Table1
 tabularx
 Tas
@@ -238,6 +243,7 @@ Vic
 WA
 wasn't
 whitespace
+Wiltshire
 Wran
 Xlrrr
 Xrr

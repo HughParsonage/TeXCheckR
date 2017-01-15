@@ -7,7 +7,7 @@
 get_authors(filename)
 }
 \arguments{
-\item{filename}{The filename containing the names of the authors.}
+\item{filename}{The filename whose preamble contains the names of the authors.}
 }
 \value{
 The names of Grattan staff who were authors in \code{filename}.

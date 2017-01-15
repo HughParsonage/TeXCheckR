@@ -14,7 +14,12 @@
 check_spelling <- function(filename,
                            ignore.lines = NULL,
                            known.correct = NULL,
-                           known.wrong = NULL){
+                           known.wrong = NULL,
+                           .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+
   file_path <- dirname(filename)
   lines <-
     readLines(filename, warn = FALSE, encoding = "UTF-8")
@@ -257,12 +262,14 @@ check_spelling <- function(filename,
                 lines[[line_w_misspell]]
               }
 
-            print_error_context(line_no = line_w_misspell,
-                                context = context,
-                                "\n",
-                                rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
-                                rep("^", nchar_of_badword),
-                                "\n")
+            .report_error(line_no = line_w_misspell,
+                          context = context,
+                          "\n",
+                          rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
+                          rep("^", nchar_of_badword),
+                          "\n",
+                          error_message = paste0(c("Spellcheck failed on above line with '", bad_word, "'",
+                                                   collapse = NULL)))
             stop("Spellcheck failed on above line with '", bad_word, "'")
           }
         }

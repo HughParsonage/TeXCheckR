@@ -5,7 +5,7 @@
 \title{Spellchecker for Grattan reports}
 \usage{
 check_spelling(filename, ignore.lines = NULL, known.correct = NULL,
-  known.wrong = NULL)
+  known.wrong = NULL, .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}

@@ -1,8 +1,7 @@
 #' Check Grattan Report
 #'
 #' @param path Path to search for the filename.
-#' @param file If non-NULL, the file is used, disregarding other LaTeX files in \code{path}.
-#' @param ignore.list A list of lines to ignore for each cite.
+#' @param output_method How errors should be reported.
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -15,45 +14,54 @@
 #' @importFrom crayon green red bgGreen bgRed
 
 checkGrattanReport <- function(path = ".",
-                               file = NULL,
-                               ignore.list = list(cite_pagrefs = NULL,
-                                                  dashes = NULL,
-                                                  footnote_typography = NULL,
-                                                  repetitive_xrefs = NULL,
-                                                  sentence_ending_periods = NULL)){
+                               output_method = c("console", "twitter")){
   current_wd <- getwd()
   setwd(path)
   on.exit(setwd(current_wd))
+  output_method <- match.arg(output_method)
 
-  if (is.null(file)){
-    filename <- list.files(pattern = "\\.Rnw$")
-    if (length(filename) == 0L){
-      filename <- list.files(pattern = "\\.tex$")
-    }
-
-    if (length(filename) != 1L){
-      stop("Multiple LaTeX files in directory. Specify using file = ")
-    } else {
-      filename <- filename[[1]]
-    }
-  } else {
-    filename <- file
+  tex_file <- dir(path = ".", pattern = "\\.tex$")
+  if (length(tex_file) != 1L){
+    stop("path must contain one and only one .tex file.")
   }
-  
-  the_authors <- 
+  filename <- tex_file[[1]]
+
+  the_authors <-
     get_authors(filename)
-  
-  cat("I see the following as authors:", 
+
+  cat("I see the following as authors:",
       the_authors, sep = "\n")
 
-  check_cite_pagerefs(filename)
+  .report_error <- function(...){
+    report2console(...)
+  }
+
+  if (output_method == "twitter"){
+    authors_twitter_handles <-
+      Grattan_staff %>%
+      .[and(name %in% the_authors,
+            nchar(twitter_handle) > 0)] %>%
+      .[["twitter_handle"]] %>%
+      paste0("@", .)
+
+    report_name <- gsub("^(.*)\\.tex$", "\\1", tex_file)
+
+    .report_error <- function(...){
+      report2twitter(...,
+                     authors = authors_twitter_handles,
+                     build_status = "Broken:",
+                     report_name = report_name)
+    }
+  }
+
+  check_cite_pagerefs(filename, .report_error = .report_error)
   cat("\n",
       green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
 
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
 
-  suppressMessages(check_footnote_typography(filename, ignore.lines = ignore.list$footnote_typography))
+  suppressMessages(check_footnote_typography(filename))
   cat(green(symbol$tick, "Footnote typography checked.\n"))
 
   check_repetitive_xrefs(filename)
@@ -62,12 +70,7 @@ checkGrattanReport <- function(path = ".",
   check_sentence_ending_periods(filename)
   cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
 
-  check_spelling(filename,
-                 known.correct = if (file.exists("./checkGrattanReport/spelling_known_correct.txt")){
-                   readLines("./checkGrattanReport/spelling_known_correct.txt", warn = FALSE, encoding = "UTF-8")
-                 } else {
-                   NULL
-                 })
+  check_spelling(filename)
   cat(green(symbol$tick, "Spellcheck complete.\n"))
 
   # To check the bibliography

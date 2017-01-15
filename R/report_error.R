@@ -45,21 +45,17 @@ report2twitter <- function(preamble = NULL,
   longest_author <- authors[which.max(nchar(authors))]
 
   possible_tweet <- c(longest_author,
-                      paste(report_name, build_status),
-                      error_message,
-                      paste0("\u2718", " ",
-                             "Line ", line_no, ": ",
-                             context))
+                      paste(build_status, report_name),
+                      paste0("\u2718", " ", error_message),
+                      paste0(line_no, ": ", context))
 
   .Twitter.statuses <- list(length(authors))
   if (sum(nchar(possible_tweet)) <= 140){
     for (j in seq_along(authors)){
       tweet <- paste0(c(authors[[j]],
-                        paste(report_name, build_status),
-                        error_message,
-                        paste0("\u2718", " ",
-                               "Line ", line_no, ": ",
-                               context)),
+                        paste(build_status, report_name),
+                        paste0("\u2718", " ", error_message),
+                        paste0(line_no, ": ", context)),
                       collapse = "\n")
       .Twitter.statuses[[j]] <- updateStatus(text = tweet)
     }

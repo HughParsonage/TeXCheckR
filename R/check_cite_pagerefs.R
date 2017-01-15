@@ -15,7 +15,7 @@ check_cite_pagerefs <- function(filename, .report_error){
     if (grepl("cite\\[[^\\]]+\\][{]", line, perl = TRUE)){
       .report_error(line_no = line_no,
                     context = line,
-                    error_message = "ERROR: Use postnote for pagerefs.")
+                    error_message = "Use postnote for pagerefs.")
       stop("Use postnote for pagerefs.")
     }
 

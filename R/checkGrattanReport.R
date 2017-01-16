@@ -107,7 +107,9 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
 
-  cat(bgGreen(symbol$tick, symbol$tick, "Report checked.\n"))
+  cat("\n")
+  
+  cat(bgGreen(symbol$tick, "Report checked.\n"))
   
   if (output_method == "gmailr"){
     if (file.exists("./travis/grattanReport/gmailr-log.tsv")){

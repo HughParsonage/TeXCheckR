@@ -10,6 +10,5 @@ test_that("Stops when chapter prefixes wrong", {
 })
 
 test_that("Stops when chapref not used", {
-  expect_error(check_labels("./check-labels/chapter-using-Vref.tex"))
+  expect_error(check_labels("./check-labels/chapter-using-Vref.tex"), regexp = "Chapref")
 })
-

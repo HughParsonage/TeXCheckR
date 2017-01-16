@@ -17,6 +17,9 @@
 #' @export
 
 check_labels <- function(filename, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
   lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
 
   lines <- gsub("[%].*$", "", lines, perl = TRUE)

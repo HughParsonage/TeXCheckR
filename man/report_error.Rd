@@ -17,15 +17,17 @@ report2twitter(preamble = NULL, report_name, build_status, error_message,
 
 \item{context}{THe content of the file to provide context to the error.}
 
+\item{error_message}{The error message to display beyond the console.}
+
+\item{build_status}{What should the build status be reported as?}
+
 \item{authors}{Text to alert the authors (such as a twitter handle).}
 
-\item{...}{Extra messages.}
-
-\item{preamble}{Message to appear before}
-
-\item{error.symbol}{The mark to indicate an error.}
+\item{report_name}{Name of project whose errors are being reported.}
 
 \item{...}{Extra messages.}
+
+\item{preamble}{Message to appear before other messages.}
 }
 \description{
 Report errors to console and twitter

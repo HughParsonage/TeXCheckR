@@ -1,5 +1,6 @@
 #' Check repetitive cross-references
 #' @param filename A LaTeX file
+#' @param .report_error The function to provide context to the error.
 #' @return NULL
 
 check_repetitive_xrefs <- function(filename, .report_error){
@@ -10,7 +11,7 @@ check_repetitive_xrefs <- function(filename, .report_error){
 
   line_nos_with_VrefCref <- grep("[CVcv]ref", lines, perl = TRUE)
 
-  for (line in lines_with_VrefCref){
+  for (line in line_nos_with_VrefCref){
     # 'See Figure \Vref{fig:'
     if (grepl("((figure)|(table)|(box)) .[CVcv]ref", lines[[line]], perl = TRUE, ignore.case = TRUE)){
       .report_error(line_no = line,

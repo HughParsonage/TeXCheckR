@@ -39,6 +39,7 @@ checkGrattanReport <- function(path = ".",
   if (output_method == "twitter"){
     stopifnot(file.exists("~/twitteR/grattan-reporter.R"))
     source("~/twitteR/grattan-reporter.R")
+    twitter_handle <- name <- NULL
     authors_twitter_handles <-
       Grattan_staff %>%
       .[and(name %in% the_authors,

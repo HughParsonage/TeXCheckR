@@ -15,6 +15,8 @@ check_spelling(filename, ignore.lines = NULL, known.correct = NULL,
 \item{known.correct}{Character vector of patterns known to be correct (which will never be raised by this function).}
 
 \item{known.wrong}{Character vector of patterns known to be wrong.}
+
+\item{.report_error}{A function to provide context to any errors.}
 }
 \value{
 If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.

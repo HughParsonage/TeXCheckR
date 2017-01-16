@@ -1,15 +1,16 @@
 #' Report errors to console and twitter
 #' @name report_error
-#' @param preamble Message to appear before
+#' @param preamble Message to appear before other messages.
 #' @param line_no The line number locating the source of the error.
 #' @param context THe content of the file to provide context to the error.
+#' @param error_message The error message to display beyond the console.
+#' @param report_name Name of project whose errors are being reported.
+#' @param build_status What should the build status be reported as?
 #' @param authors Text to alert the authors (such as a twitter handle).
-#' @param error.symbol The mark to indicate an error.
 #' @importFrom twitteR updateStatus
-
+#' @param ... Extra messages.
 
 #' @rdname report_error
-#' @param ... Extra messages.
 report2console <- function(line_no = NULL,
                            context = NULL,
                            error_message = NULL,
@@ -27,7 +28,6 @@ report2console <- function(line_no = NULL,
 
 
 #' @rdname report_error
-#' @param ... Extra messages.
 report2twitter <- function(preamble = NULL,
                            report_name,
                            build_status,
@@ -59,7 +59,7 @@ report2twitter <- function(preamble = NULL,
                       collapse = "\n")
       .Twitter.statuses[[j]] <- updateStatus(text = tweet)
     }
-    .last.Twitter.status <<- .Twitter.statuses
+    assign(".last.Twitter.status", .Twitter.statuses, envir = .GlobalEnv)
     cat('.last.Twitter.status\n')
   } else {
     cat((possible_tweet))

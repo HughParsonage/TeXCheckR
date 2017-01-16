@@ -4,10 +4,12 @@
 \alias{check_repetitive_xrefs}
 \title{Check repetitive cross-references}
 \usage{
-check_repetitive_xrefs(filename)
+check_repetitive_xrefs(filename, .report_error)
 }
 \arguments{
 \item{filename}{A LaTeX file}
+
+\item{.report_error}{The function to provide context to the error.}
 }
 \description{
 Check repetitive cross-references

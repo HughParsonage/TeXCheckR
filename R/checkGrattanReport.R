@@ -14,11 +14,15 @@
 #' @importFrom crayon green red bgGreen bgRed
 
 checkGrattanReport <- function(path = ".",
-                               output_method = c("console", "twitter")){
+                               output_method = c("console", "twitter", "gmailr")){
   current_wd <- getwd()
   setwd(path)
   on.exit(setwd(current_wd))
   output_method <- match.arg(output_method)
+  
+  if (!dir.exists("./travis/grattanReport/")){
+    stop("./travis/grattanReport/ does not exist.")
+  }
 
   tex_file <- dir(path = ".", pattern = "\\.tex$")
   if (length(tex_file) != 1L){
@@ -35,28 +39,36 @@ checkGrattanReport <- function(path = ".",
   .report_error <- function(...){
     report2console(...)
   }
+  
+  report_name <- gsub("^(.*)\\.tex$", "\\1", tex_file)
 
-  if (output_method == "twitter"){
-    stopifnot(file.exists("~/twitteR/grattan-reporter.R"))
-    source("~/twitteR/grattan-reporter.R")
-    twitter_handle <- name <- NULL
-    authors_twitter_handles <-
-      Grattan_staff %>%
-      .[and(name %in% the_authors,
-            nchar(twitter_handle) > 0)] %>%
-      .[["twitter_handle"]] %>%
-      paste0("@", .)
-
-    report_name <- gsub("^(.*)\\.tex$", "\\1", tex_file)
-
-    .report_error <- function(...){
-      report2twitter(...,
-                     authors = authors_twitter_handles,
-                     build_status = "Broken:",
-                     report_name = report_name)
-    }
-  }
-
+  switch(output_method, 
+         "twitter" = {
+           stopifnot(file.exists("~/twitteR/grattan-reporter.R"))
+           source("~/twitteR/grattan-reporter.R")
+           twitter_handle <- name <- NULL
+           authors_twitter_handles <-
+             Grattan_staff %>%
+             .[and(name %in% the_authors,
+                   nchar(twitter_handle) > 0)] %>%
+             .[["twitter_handle"]] %>%
+             paste0("@", .)
+           
+           .report_error <- function(...){
+             report2twitter(...,
+                            authors = authors_twitter_handles,
+                            build_status = "Broken:",
+                            report_name = report_name)
+           }
+         }, 
+         "gmailr" = {
+           .report_error <- function(...){
+             report2gmail(...,
+                          report_name = report_name, 
+                          authors = the_authors)
+           }
+         })
+  
   check_cite_pagerefs(filename, .report_error = .report_error)
   cat("\n",
       green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
@@ -73,7 +85,7 @@ checkGrattanReport <- function(path = ".",
   check_sentence_ending_periods(filename)
   cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
 
-  check_spelling(filename)
+  check_spelling(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Spellcheck complete.\n"))
 
   # To check the bibliography
@@ -96,5 +108,34 @@ checkGrattanReport <- function(path = ".",
   cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
 
   cat(bgGreen(symbol$tick, symbol$tick, "Report checked.\n"))
-
+  
+  if (output_method == "gmailr"){
+    if (file.exists("./travis/grattanReport/gmailr-log.tsv")){
+      prev_build_status <-
+        fread("./travis/grattanReport/gmailr-log.tsv") %>%
+        utils::tail(., 1) %>%
+        .[["build_status"]]
+      append <- TRUE
+    } else {
+      prev_build_status <- "None"
+      append <- FALSE
+    }
+    
+    if (prev_build_status %in% c("None", "Broken", "Still failing")){
+      message <- gmailr::mime(
+        To = "hugh.parsonage@gmail.com", #email_addresses, 
+        From = "hugh.parsonage@gmail.com",
+        Subject = paste0("Fixed: ", report_name)
+      ) %>%
+        gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
+      gmailr::send_message(message)
+    }
+    
+    data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+               build_status = "OK", 
+               error_message = "") %>%
+      fwrite("./travis/grattanReport/gmailr-log.tsv",
+             sep = "\t",
+             append = append)
+  }
 }

@@ -227,7 +227,7 @@ check_spelling <- function(filename,
 
   parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
 
-  are_misspelt <- sapply(parsed, not_length0)
+  are_misspelt <- vapply(parsed, not_length0, logical(1))
 
   if (any(are_misspelt)){
     for (line_w_misspell in which(are_misspelt)){
@@ -270,7 +270,7 @@ check_spelling <- function(filename,
                           rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
                           rep("^", nchar_of_badword),
                           "\n",
-                          error_message = paste0(c("Spellcheck failed on above line with '", bad_word, "'",
+                          error_message = paste0(c("Spellcheck failed:'", bad_word, "'",
                                                    collapse = NULL)))
             stop("Spellcheck failed on above line with '", bad_word, "'")
           }

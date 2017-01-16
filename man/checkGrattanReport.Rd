@@ -4,7 +4,8 @@
 \alias{checkGrattanReport}
 \title{Check Grattan Report}
 \usage{
-checkGrattanReport(path = ".", output_method = c("console", "twitter"))
+checkGrattanReport(path = ".", output_method = c("console", "twitter",
+  "gmailr"))
 }
 \arguments{
 \item{path}{Path to search for the filename.}

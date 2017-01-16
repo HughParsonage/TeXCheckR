@@ -73,7 +73,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
   for (line in seq_along(lines)){
     if ((grepl(" \\footnote", lines[[line]], fixed = TRUE) && !grepl("\\s*\\\\footnote", lines[[line]], perl = TRUE)) ||
         # footnote on new line without protective %
-        (grepl("^\\s*\\\\footnote", lines[[line]], perl = TRUE) && !grepl("%$", lines[[line - 1L]], perl = TRUE))){
+        (grepl("^\\s*\\\\footnote", lines[[line]], perl = TRUE) && !grepl("(?<! )%$", lines[[line - 1L]], perl = TRUE))){
       cat(lines[line])
       stop("Space before footnote.")
     }

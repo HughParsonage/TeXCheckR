@@ -68,4 +68,63 @@ report2twitter <- function(preamble = NULL,
   }
 }
 
+#' @rdname report_error
+report2gmail <- function(preamble = NULL,
+                         report_name,
+                         build_status,
+                         error_message,
+                         line_no = NULL,
+                         context = NULL,
+                         authors,
+                         ...){
+  email_addresses <- 
+    Grattan_staff[name %in% authors] %>%
+    .[["email_address"]]
+  
+  if (file.exists("./travis/grattanReport/gmailr-log.tsv")){
+    prev_build_status <-
+      fread("./travis/grattanReport/gmailr-log.tsv") %>%
+      utils::tail(., 1) %>%
+      .[["build_status"]]
+    build_status <-
+      switch(prev_build_status, 
+             "OK" = "Broken",
+             "Broken" = "Still failing", 
+             "Still failing" = "Still failing")
+    append <- TRUE
+  } else {
+    build_status <- "Broken"
+    append <- FALSE
+  }
+  
+  the_message <-
+    gmailr::mime(
+      To = "hugh.parsonage@gmail.com", #email_addresses, 
+      From = "hugh.parsonage@gmail.com",
+      Subject = paste0(report_name, ": ", build_status)
+    ) %>%
+    gmailr::html_body(body = paste0("<html>", 
+                                    "<body>", 
+                                      "<p>",
+                                        "grattanReporter reports the following error:",
+                                      "</p>",
+                                      "<p>",
+                                        "&emsp;", error_message,
+                                      "</p>",
+                                      "<p>",
+                                        "&emsp;", line_no, ": ", context,
+                                      "</p>",
+                                    "<p>Please fix.</p>",
+                                    "</body>",
+                                    "</html>"))
+  gmailr::send_message(the_message)
+  
+  data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+             build_status = build_status, 
+             error_message = error_message) %>%
+  fwrite("./travis/grattanReport/gmailr-log.tsv",
+         sep = "\t",
+         append = append)
+}
+
 

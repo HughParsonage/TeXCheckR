@@ -2,6 +2,7 @@
 % Please edit documentation in R/report_error.R
 \name{report_error}
 \alias{report2console}
+\alias{report2gmail}
 \alias{report2twitter}
 \alias{report_error}
 \title{Report errors to console and twitter}
@@ -10,6 +11,9 @@ report2console(line_no = NULL, context = NULL, error_message = NULL,
   build_status = NULL, authors = NULL, report_name = NULL, ...)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
+  line_no = NULL, context = NULL, authors, ...)
+
+report2gmail(preamble = NULL, report_name, build_status, error_message,
   line_no = NULL, context = NULL, authors, ...)
 }
 \arguments{

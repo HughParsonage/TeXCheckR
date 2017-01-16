@@ -4,10 +4,12 @@
 \alias{check_labels}
 \title{Check labels}
 \usage{
-check_labels(filename)
+check_labels(filename, .report_error)
 }
 \arguments{
 \item{filename}{The LaTeX source file to check.}
+
+\item{.report_error}{The function to provide context to the error.}
 }
 \value{
 \code{NULL}, invisibly if labels check out. An error otherwise.

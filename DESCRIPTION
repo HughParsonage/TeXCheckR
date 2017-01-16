@@ -13,7 +13,8 @@ Imports: magrittr,
   stringi,
   hunspell, 
   clisymbols, 
-  crayon, 
+  crayon,
+  twitteR,
   zoo
 LazyData: TRUE
 RoxygenNote: 5.0.1

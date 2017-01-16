@@ -4,16 +4,12 @@
 \alias{checkGrattanReport}
 \title{Check Grattan Report}
 \usage{
-checkGrattanReport(path = ".", file = NULL,
-  ignore.list = list(cite_pagrefs = NULL, dashes = NULL, footnote_typography =
-  NULL, repetitive_xrefs = NULL, sentence_ending_periods = NULL))
+checkGrattanReport(path = ".", output_method = c("console", "twitter"))
 }
 \arguments{
 \item{path}{Path to search for the filename.}
 
-\item{file}{If non-NULL, the file is used, disregarding other LaTeX files in \code{path}.}
-
-\item{ignore.list}{A list of lines to ignore for each cite.}
+\item{output_method}{How errors should be reported.}
 }
 \value{
 Called for its side-effect.

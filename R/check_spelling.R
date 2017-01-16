@@ -4,6 +4,7 @@
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
+#' @param .report_error A function to provide context to any errors.
 #' @return If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 #' @details Uses the \code{en_AU} hunspell dictionary.
 #' @importFrom hunspell hunspell
@@ -14,7 +15,12 @@
 check_spelling <- function(filename,
                            ignore.lines = NULL,
                            known.correct = NULL,
-                           known.wrong = NULL){
+                           known.wrong = NULL,
+                           .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+
   file_path <- dirname(filename)
   lines <-
     readLines(filename, warn = FALSE, encoding = "UTF-8")
@@ -211,10 +217,11 @@ check_spelling <- function(filename,
            lines[first_wrong_line_no],
            perl = TRUE)
 
-    print_error_context(first_wrong_line_no,
-                        lines[first_wrong_line_no],
-                        "\n",
-                        "\t", wrongly_spelled_word)
+    .report_error(line_no = first_wrong_line_no,
+                  context = lines[first_wrong_line_no],
+                  preamble = NULL,
+                  "\n",
+                  "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")
   }
 
@@ -257,12 +264,14 @@ check_spelling <- function(filename,
                 lines[[line_w_misspell]]
               }
 
-            print_error_context(line_no = line_w_misspell,
-                                context = context,
-                                "\n",
-                                rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
-                                rep("^", nchar_of_badword),
-                                "\n")
+            .report_error(line_no = line_w_misspell,
+                          context = context,
+                          "\n",
+                          rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
+                          rep("^", nchar_of_badword),
+                          "\n",
+                          error_message = paste0(c("Spellcheck failed on above line with '", bad_word, "'",
+                                                   collapse = NULL)))
             stop("Spellcheck failed on above line with '", bad_word, "'")
           }
         }

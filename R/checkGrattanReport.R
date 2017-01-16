@@ -90,6 +90,10 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "Labels checked.\n"))
 
+  check_all_figs_tbls_refd(filename)
+
+  cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
+
   cat(bgGreen(symbol$tick, symbol$tick, "Report checked.\n"))
 
 }

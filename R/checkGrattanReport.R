@@ -92,6 +92,7 @@ checkGrattanReport <- function(path = ".",
   bib_files <-
     readLines(filename, warn = FALSE) %>%
     .[grepl("\\addbibresource", ., fixed = TRUE)] %>%
+    trimws %>%
     gsub("^\\\\addbibresource[{](.+\\.bib)[}]$", "\\1", .)
   for (bib_file in bib_files){
     validate_bibliography(file = bib_file)

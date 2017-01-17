@@ -2,6 +2,7 @@
 
 export(bib2DT)
 export(checkGrattanReport)
+export(check_CenturyFootnote)
 export(check_biber)
 export(check_consecutive_words)
 export(check_dashes)

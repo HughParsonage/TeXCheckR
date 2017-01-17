@@ -2,6 +2,8 @@
 #'
 #' @param path Path to search for the filename.
 #' @param output_method How errors should be reported.
+#' @param compile Should \code{pdflatex} be run on the report so the log be checked?
+#' @param final Should the document be assumed to be final?
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -14,10 +16,13 @@
 #' @importFrom crayon green red bgGreen bgRed
 
 checkGrattanReport <- function(path = ".",
-                               output_method = c("console", "twitter", "gmailr")){
+                               output_method = c("console", "twitter", "gmailr"),
+                               compile = FALSE,
+                               final = FALSE){
   current_wd <- getwd()
   setwd(path)
   on.exit(setwd(current_wd))
+  
   output_method <- match.arg(output_method)
   
   if (!dir.exists("./travis/grattanReport/")){
@@ -109,6 +114,52 @@ checkGrattanReport <- function(path = ".",
   cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
 
   cat("\n")
+  
+  if (compile){
+    cat("Invoking pdflatex\n")
+    # move_dir <- function(to.dir, from.dir = "."){
+    #   x <- list.files(path = from.dir,
+    #                   full.names = TRUE,
+    #                   recursive = TRUE,
+    #                   include.dirs = TRUE)
+    #   dests <- file.path(to.dir, x)
+    #   file.copy(x, dests)
+    # }
+    # 
+    # move_dir(tempdir())
+    
+    options(warn = 2)
+    on.exit({
+      if (file.exists(gsub("\\.tex$", ".log2", filename))){
+        file.remove(gsub("\\.tex$", ".log2", filename))
+      }})
+    system2(command = "pdflatex",
+            args = c("-draftmode", filename),
+            stdout = gsub("\\.tex$", ".log2", filename))
+    
+    
+    system2(command = "biber",
+            args = c("--onlylog", "-V", gsub("\\.tex$", "", filename)),
+            stdout = gsub("\\.tex$", ".log2", filename))
+    
+    check_biber()
+    cat(green(symbol$tick, "biber validated citations.\n"))
+    
+    system2(command = "pdflatex",
+            args = c("-draftmode", filename),
+            stdout = gsub("\\.tex$", ".log2", filename))
+    
+    system2(command = "pdflatex",
+            args = c("-interaction=batchmode", filename),
+            stdout = gsub("\\.tex$", ".log2", filename))
+    
+    check_log()
+    cat(green(symbol$tick, ".log file checked.\n"))
+    
+    check_CenturyFootnote()
+    cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
+    cat("\n")
+  }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
   

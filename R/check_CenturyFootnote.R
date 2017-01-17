@@ -5,6 +5,9 @@
 #' @export 
 
 check_CenturyFootnote <- function(path = "."){
+  # CRAN NOTE avoidance:
+  page <- posx <- column <- NULL
+  
   aux_file <- dir(path = path, pattern = "\\.aux$", full.names = TRUE)
   
   if (length(aux_file) == 0L){

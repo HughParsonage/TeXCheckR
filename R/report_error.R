@@ -77,6 +77,7 @@ report2gmail <- function(preamble = NULL,
                          context = NULL,
                          authors,
                          ...){
+  name <- NULL
   email_addresses <- 
     Grattan_staff[name %in% authors] %>%
     .[["email_address"]]
@@ -84,7 +85,7 @@ report2gmail <- function(preamble = NULL,
   if (file.exists("./travis/grattanReport/gmailr-log.tsv")){
     prev_build_status <-
       fread("./travis/grattanReport/gmailr-log.tsv") %>%
-      utils::tail(., 1) %>%
+      last %>%
       .[["build_status"]]
     build_status <-
       switch(prev_build_status, 

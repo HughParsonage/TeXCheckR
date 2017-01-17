@@ -14,6 +14,19 @@ numbers=noenddot,
 
 % Continuous numbering
 \RequirePackage{chngcntr}
+\RequirePackage{etoolbox}
+\RequirePackage{footmisc}
+\RequirePackage{tablefootnote} % for footnotes within tables
+
+% Record number and page of footnote:
+% http://tex.stackexchange.com/questions/348891/determine-which-page-all-footnotes-landed-on#348940 
+% This must be before hyperref and after
+% etoolbox footmisc tablefootnote
+\patchcmd{\@footnotetext}
+  {#1}
+  {#1\label{footnote@@@\thefootnote}}
+  {}
+  {\ddt}
 
 % avoid non-discretionary hyphens 
 \exhyphenpenalty=100
@@ -32,7 +45,8 @@ numbers=noenddot,
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 \nonfrenchspacing
-\RequirePackage[activate=true, expansion, final, kerning=true, spacing=true]{microtype}
+\iffalse
+\RequirePackage[activate=false, expansion, final, kerning=true, spacing=true]{microtype}
 \microtypecontext{spacing=nonfrench}
 % http://tex.stackexchange.com/questions/303457/setprotrusion-with-helvetica-on-specific-characters
 \SetProtrusion
@@ -43,7 +57,7 @@ numbers=noenddot,
    {
      \textendash = {-25, }, \textemdash = {-25, }  % cancel out left protrusion
    }
-\RequirePackage{footmisc}
+\fi
 \RequirePackage[document]{ragged2e}
 % ------
 % Grattan colors
@@ -75,7 +89,6 @@ numbers=noenddot,
 % ------
 \RequirePackage{colortbl}
 \RequirePackage{array}
-\RequirePackage{tablefootnote} % for footnotes within tables
 \newcommand{\myhline}{\noalign{\global\arrayrulewidth1pt}\hline
                       \noalign{\global\arrayrulewidth1pt}}
 
@@ -109,6 +122,21 @@ numbers=noenddot,
 \patchcmd\cref@old@@vpageref
 {\advance\@tempcnta-2}
 {\advance\@tempcnta-2 }{\typeout{patch ok}}{\ERRORpatchFaild}
+
+% Hack for Chapter references
+% This ensures that chapter hyperlinks hit the page
+% not the baseline below the chapter title.
+\newcommand{\topref}[1]% #1 = label
+{\hyperlink{page.\getpagerefnumber{#1}}{\getrefnumber{#1}}}
+
+\newcommand*{\Chapref}[1]{Chapter~\topref{#1}}
+\newcommand*{\Chapsref}[1]{Chapters~\topref{#1}}
+\newcommand*{\Chaprefrange}[2]{Chapters~\topref{#1} to~\topref{#2}}
+
+% Footnote layout (koma)
+% \makebox left-aligned numbers.
+\deffootnote{2.0em}{1.5em}{\makebox[2.0em][l]{\thefootnotemark.\ }}
+\addtokomafont{footnotereference}{\small}
 
 % Make url formatting the same
 \urlstyle{same}
@@ -368,7 +396,6 @@ numbers=noenddot,
 
 % Ensures hyperlinked chapter headings refer to their referent headings
 % not the preceding baseline
-\RequirePackage{etoolbox}
 % Add extra hyper target for chapter: chapter..\thechapter
 \renewcommand*{\chapterformat}{%
   \mbox{\raisebox{25pt}[0pt][0pt]{\hypertarget{chapter..\thechapter}{}}% Add 
@@ -406,10 +433,7 @@ numbers=noenddot,
 %% ---------------------------------
 \RequirePackage[headsepline=1pt,plainheadsepline,footsepline=1pt,plainfootsepline]{scrlayer-scrpage}
 
-% Footnote layout (koma)
-% \makebox left-aligned numbers.
-\deffootnote{2.0em}{1.5em}{\makebox[2.0em][l]{\thefootnotemark.\ }}
-\addtokomafont{footnotereference}{\small}
+
 
 \clearscrheadings
 \clearscrplain
@@ -556,6 +580,100 @@ numbers=noenddot,
   \counterwithout{table}{chapter}
 }
 
+\newcommand*{\@pagetwo}{%
+  \begin{minipage}[t][0.85\textheight][t]{\columnwidth}
+  \subsection*{Grattan Institute Support}  
+  \begin{multicols}{2}
+  \setlength{\parskip}{5pt plus 8pt minus 5pt}
+  \textbf{\textcolor{theGrey}{\normalsize Founding members}}\hfill\par
+  \vspace{-5pt} 
+  {\centering  
+  
+  \IfFileExists{aus-gov-logo-stacked-black.pdf}%
+    {\includegraphics[width=3.75cm]{aus-gov-logo-stacked-black}}%
+    {\includegraphics[width=3.75cm]{./logos/aus-gov-logo-stacked-black}}
+  
+  \IfFileExists{Vic_Gov_Logo-2016.pdf}%
+    {\includegraphics[width=3.25cm]{Vic_Gov_Logo-2016}}%
+    {\includegraphics[width=3.25cm]{./logos/Vic_Gov_Logo-2016}}
+  
+  \IfFileExists{UOM-Pos_S_PMS.pdf}%
+    % Too much whitespace on top:
+    % l t r b
+    {\includegraphics[trim = {0 2cm 0 2cm}, clip, width=3.5cm]{UOM-Pos_S_PMS}}%
+    {\includegraphics[trim = {0 2cm 0 2cm}, clip, width=3.5cm]{./logos/UOM-Pos_S_PMS}}%
+
+  
+  \IfFileExists{Bhp.pdf}%
+    % Bhp original a little too much whitespace on bottom:
+    {\includegraphics[trim = {0 3.8cm 0 0}, clip, width=3.5cm]{Bhp}}%
+    {\includegraphics[trim = {0 3.8cm 0 0}, clip, width=3.5cm]{./logos/Bhp}}%
+  }
+  \columnbreak\par
+  \textbf{\textcolor{theGrey}{\normalsize Affiliate Partners}}
+  \footnotesize 
+
+  Google 
+
+  Medibank Private
+
+  Susan McKinnon Foundation
+
+  \vspace{27pt}
+
+  \textbf{\textcolor{theGrey}{\normalsize Senior Affiliates}}
+
+  EY
+
+  PwC
+
+  The Scanlon Foundation
+
+  Wesfarmers
+
+  \vspace{27pt}
+
+  \textbf{\textcolor{theGrey}{\normalsize Affiliates}}
+
+  Ashurst
+
+  Corrs
+
+  Deloitte
+
+  GE ANZ
+
+  The Myer Foundation
+
+  Urbis
+
+  Westpac\rule[-1.5ex]{0pt}{0pt} % for BHp
+  \end{multicols}
+  \end{minipage} 
+  \eject \normalsize
+  \begin{minipage}[t][0.85\textheight][t]{\columnwidth}
+    \subsection*{Grattan Institute \@Report\ No. \@GrattanReportNumber, \@MONTH\ \@YEAR}
+    \setlength{\parskip}{5.5pt plus 2pt}
+    \raggedright\@acknowledgements
+  \end{minipage}
+  \twocolumn
+}
+
+\newcommand*{\@checkGrattanReportNumberdefined}{
+  \ifdefempty{\@GrattanReportNumber}%
+    {\ClassError{You have not provided a Grattan Report Number}}%
+    {}%
+}
+
+\DeclareOption{submission}{
+  % A submission has no special page two
+  \renewcommand*{\@pagetwo}{
+    \ifdefempty{\@acknowledgements}{}{\ClassWarning{grattan}{Using option 'submission', but 'acknowledgements' defined.}}
+    \ifdefempty{\@GrattanReportNumber}{}{\ClassWarning{grattan}{Using option 'submission', but 'GrattanReportNumber' defined.}} 
+  }
+  \renewcommand*{\@checkGrattanReportNumberdefined}{}
+}
+
 \ProcessOptions\relax
 
 % Bibliography
@@ -616,6 +734,7 @@ numbers=noenddot,
 \DeclareFieldFormat{type}{\unskip\space} % suppress Tech Rep
 \renewbibmacro{in:}{} % suppress In:
 \renewbibmacro{bbx:editor}{} % suppress Ed:
+
 
 %% Bibliography formatting
 % separating entries
@@ -710,10 +829,10 @@ numbers=noenddot,
   {\usebibmacro{textcite:postnote}}
 \newcommand{\gcite}[1]{{\citeauthor{#1} (\citedate{#1})}}
 % removes intersentence space after et al.
-\xpatchcmd\citeauthor{\begingroup}{\begingroup\aftergroup\@}{}{}
-\xpatchcmd\textcite{\begingroup}{\begingroup\aftergroup\@}{}{}
-%\DefineBibliographyStrings{british}
-%   {andothers = {et al\adddot}}
+%\xpatchcmd\citeauthor{\begingroup}{\begingroup\aftergroup\@}{}{}
+%\xpatchcmd\textcite{\begingroup}{\begingroup\aftergroup\@}{}{}
+\DefineBibliographyStrings{british}
+   {andothers = {et al.\hskip 0pt}}
 
 % biblatex ShareLaTeX version control
 % 2016/09/17
@@ -737,9 +856,7 @@ numbers=noenddot,
 \newcommand{\@GrattanReportNumber}{}
 
 \AtBeginDocument{%
-  \ifdefempty{\@GrattanReportNumber}%
-    {\ClassError{You have not provided a Grattan Report Number}}%
-    {}%
+  \@checkGrattanReportNumberdefined{}
 }
 
 %% BibLaTeX needs to precede acknowledgements (otherwise acknowledgements can't contain citations).
@@ -794,82 +911,7 @@ numbers=noenddot,
 	%
 % Following page.
 \pagestyle{scrheadings}
-\begin{minipage}[t][0.85\textheight][t]{\columnwidth}
-  \subsection*{Grattan Institute Support}  
-  \begin{multicols}{2}
-  \setlength{\parskip}{5pt plus 8pt minus 5pt}
-  \textbf{\textcolor{theGrey}{\normalsize Founding members}}\hfill\par
-  \vspace{-5pt} 
-  {\centering  
-  
-  \IfFileExists{aus-gov-logo-stacked-black.pdf}%
-    {\includegraphics[width=3.75cm]{aus-gov-logo-stacked-black}}%
-    {\includegraphics[width=3.75cm]{./logos/aus-gov-logo-stacked-black}}
-  
-  \IfFileExists{Vic_Gov_Logo-2016.pdf}%
-    {\includegraphics[width=3.25cm]{Vic_Gov_Logo-2016}}%
-    {\includegraphics[width=3.25cm]{./logos/Vic_Gov_Logo-2016}}
-  
-  \IfFileExists{UOM-Pos_S_PMS.pdf}%
-    % Too much whitespace on top:
-    % l t r b
-    {\includegraphics[trim = {0 2cm 0 2cm}, clip, width=3.5cm]{UOM-Pos_S_PMS}}%
-    {\includegraphics[trim = {0 2cm 0 2cm}, clip, width=3.5cm]{./logos/UOM-Pos_S_PMS}}%
-
-  
-  \IfFileExists{Bhp.pdf}%
-    % Bhp original a little too much whitespace on bottom:
-    {\includegraphics[trim = {0 3.8cm 0 0}, clip, width=3.5cm]{Bhp}}%
-    {\includegraphics[trim = {0 3.8cm 0 0}, clip, width=3.5cm]{./logos/Bhp}}%
-  }
-  \columnbreak\par
-  \textbf{\textcolor{theGrey}{\normalsize Affiliate Partners}}
-  \footnotesize 
-
-  Google 
-
-  Medibank Private
-
-  Susan McKinnon Foundation
-
-  \vspace{27pt}
-
-  \textbf{\textcolor{theGrey}{\normalsize Senior Affiliates}}
-
-  EY
-
-  PwC
-
-  The Scanlon Foundation
-
-  Wesfarmers
-
-  \vspace{27pt}
-
-  \textbf{\textcolor{theGrey}{\normalsize Affiliates}}
-
-  Ashurst
-
-  Corrs
-
-  Deloitte
-
-  GE ANZ
-
-  The Myer Foundation
-
-  Urbis
-
-  Westpac\rule[-1.5ex]{0pt}{0pt} % for BHp
-  \end{multicols}
-  \end{minipage} 
-  \eject \normalsize
-  \begin{minipage}[t][0.85\textheight][t]{\columnwidth}
-    \subsection*{Grattan Institute \@Report\ No. \@GrattanReportNumber, \@MONTH\ \@YEAR}
-    \setlength{\parskip}{5.5pt plus 2pt}
-    \raggedright\@acknowledgements
-  \end{minipage}
-  \twocolumn
+\@pagetwo
 }
 
 % Table of contents
@@ -886,7 +928,7 @@ numbers=noenddot,
 \setlength{\overviewExtra}{0pt}
 \newenvironment{overview}[1][]%
 % vspace{-24.5pt} should align Overview baseline with chapter baseline
-  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Overview}\addtolength{\columnsep}{\overviewExtra}\begin{multicols}{2}}%
+  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Overview}\label{chap:Overview}\addtolength{\columnsep}{\overviewExtra}\begin{multicols}{2}}%
   {\end{multicols}\addtolength{\columnsep}{-\overviewExtra}\vss\egroup\hfill\twocolumn}
   
 \newenvironment{summary}%
@@ -900,7 +942,7 @@ numbers=noenddot,
 \newlength{\recommendationExtra}
 \setlength{\recommendationExtra}{0pt}
 \newenvironment{recommendations}[1][]%
-  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Recommendations}\addtolength{\columnsep}{\recommendationExtra}\begin{multicols}{2}}%
+  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Recommendations}\label{chap:Recommendations}\addtolength{\columnsep}{\recommendationExtra}\begin{multicols}{2}}%
   {\end{multicols}\addtolength{\columnsep}{-\recommendationExtra}\vss\egroup\hfill\twocolumn}
 
 \newcounter{reco}
@@ -945,5 +987,13 @@ numbers=noenddot,
   \global\let\@textbottom\mytextbottom
   \global\let\@texttop\mytexttop}}
 
+
+
 % Placed just before footnote exceeds 100. 
-\newcommand*{\CenturyFootnote}{\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
+\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote}\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
+
+% Discretionary commands for consistent treatment of common abbreviations
+\newcommand*{\eg}{\emph{e.g.}}
+\newcommand*{\ie}{\emph{i.e.}}
+\newcommand*{\etc}{\emph{etc.}}
+

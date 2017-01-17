@@ -1,0 +1,238 @@
+\documentclass{grattan}
+% Comments are deployed by the % sign; everything after % is ignored by the compiler.
+% Please do not put comments before \documentclass as these are reserved for TeX directives.
+
+\addbibresource{bib/Grattan-Master-Bibliography.bib}
+
+\author{}
+\title{}
+
+\GrattanReportNumber{2017-00}
+
+\acknowledgements{%
+This 
+%
+}
+
+
+
+
+\begin{document}
+
+
+\begin{overview}
+This is the overview. 
+The word \textbf{Overview} appears in the contentspage at \verb=\contentspage= as an unnumbered entry.
+Set over two columns, the first and last baseline of the text in each column have the same vertical positions.
+
+(But only if the overview is large enough!
+If the text is too brief, the algorithm might prefer some other arrangement.
+This is unlikely.) 
+
+The first line of the overview starts at a fixed vertical position but the height of the text is determined by the constraint of matching the baselines.
+In particular if the overview is too large, it will overflow the page.
+
+Footnotes are not permitted in the overview.
+\end{overview}
+
+\begin{recommendations}
+\recommendation{Recommendation}
+Some text under a recommendation.
+\end{recommendations}
+
+\contentspage
+
+\chapter{Chapter title}\label{chap:example}
+This demonstrates the markup commands for sectioning. 
+If you want to cross-reference a chapter/section/\etc\ later, you need to add a label, as above and below.
+Although \LaTeX{} doesn't require it, every label must have a specific prefix followed by a colon, as throughout this document.
+Furthermore, every chapter must be labelled, even if it is never referenced.
+
+To refer to a chapter, use \Chapref{chap:example}, % not \Vref{chap:example}, 
+otherwise the hyperlink points to the baseline of the first text of the chapter, rather than the chapter title.
+To refer to a chapter range, \Chaprefrange{chap:example}{chap:citations}.
+
+\section{Section title}\label{sec:example}
+\subsection{Subsection title}\label{subsec:example}
+\subsubsection{Sub-subsection title}\label{subsubsec:example}
+Some text in one paragraph. 
+Some text in one paragraph. 
+Some text in one paragraph. 
+
+Some text in the next paragraph. 
+Some text in the next paragraph. 
+Some text in the next paragraph. 
+
+Since single newlines are ignored, put different sentences on different lines.
+
+\begin{enumerate}
+	\item An enumerated list
+	\item Another item
+	\begin{enumerate}
+		\item A sub-item of the second item
+		\item Another sub-item
+
+		New paragraphs are the same as in the body text
+	\end{enumerate}
+\end{enumerate}
+
+Another list:
+\begin{itemize}
+	\item A bulleted/non-enumerated list
+	\item Another item
+	\begin{itemize}
+		\item A sub-item.
+	\end{itemize}
+\end{itemize}
+
+\chapter{Figures and tables}\label{chap:figs-and-tbls}
+An initial cross-reference to \Vref{fig:first-example-figure}.
+
+\begin{figure}
+\caption{Figure caption\label{fig:first-example-figure}}
+\units{Figure units}
+\includegraphics{logos/GrattanSVGLogo.pdf}
+\noteswithsource{Notes}{Source}
+\end{figure}
+
+A cross-reference to \Vref{box:example}.
+
+\begin{verysmallbox}{A very small box}{box:very-small-box-example}
+Contents of very smallbox.
+
+A paragraph with a footnote.
+
+Some text in a very small box. 
+Some text in a very small box. 
+Some text in a very small box. 
+\end{verysmallbox}
+
+\begin{smallbox}{A small box}{box:example}
+A smallbox. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box.%
+\footnote{Footnote entry.}
+
+
+Some text in a small box. 
+Some text in a small box. 
+Some other text in a small box. 
+Some other text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some other text in a small box. 
+Some other text in a small box. 
+Some text in a small box. 
+
+
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box.
+
+Some text in a small box. 
+Some text in a small box. 
+Some other text in a small box. 
+Some other text in a small box. 
+Some text in a small box. 
+
+Some text in a small box. 
+Some text in a small box. 
+Some other text in a small box. 
+Some other text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some other text in a small box. 
+Some other text in a small box. 
+Some text in a small box. 
+
+Some text.%
+\footnote{All footnotes must end with a full stop.} 
+Some other text.%
+\footnote{(Or a closing parenthesis, which itself must be preceded by a full stop.)}
+To refer to a footnote, use footnote~\ref{fn:example} \vpageref{fn:example}, rather than \Vref{fn:example} which will link to a different counter; 
+the label command \emph{must} be inside the footnote.%
+\footnote{\label{fn:example}For example, refer here.}
+\end{smallbox}
+
+A cross-reference to \Vref{fig:2nd-example-figure}, with a different cross-reference that will never print the page number: \Cref{fig:first-example-figure}.
+
+Many governments have tried to change the GST. But few have succeeded.
+
+\begin{figure}
+\caption{A second figure caption\label{fig:2nd-example-figure}}
+\units{Figure units}
+\includegraphics{logos/GrattanSVGLogo.pdf}
+\noteswithsource{Notes}{Source}
+\end{figure}
+
+A table:
+
+\begin{table}
+\caption{Table caption}\label{tbl:one-table}
+\begin{tabularx}{\linewidth}{XXR}
+%
+\toprule
+\textbf{Column title}                           & \textbf{Column type}                              & \textbf{Ragged left title} \\
+\midrule
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\[15.5pt]
+Use the optional argument & to the double backslash & to specify the precise distance between rows. \\
+\cmidrule(lr){2-3}
+Never use vertical rules & But sometimes horizontal rules are appropriate. & Use cmidrule(lr) \\
+\bottomrule
+\end{tabularx}
+\noteswithsource{Notes}{Source}
+
+
+
+\end{table}
+Another table, cross-referenced in the same way \Vref{tbl:one-table}.
+
+A big box, occupying two pages floats with respect to the body text.
+
+\begin{bigbox*}{Big box title}{box:big-example}
+Far far away, behind the word mountains, far from the countries Snoot and Boot, there live the blind texts.
+Separated they live in Bookmarks grove right at the coast of the Semantics, a large language ocean.
+
+A small river named Carlton flows by their place and supplies it with the necessary regalia.
+It is a paradise country, in which roasted parts of sentences fly into your mouth.
+
+Even the all-powerful pointing has no control about the blind texts it is an almost non-orthographic life One day however a small line of blind text by the name of  decided to leave for the far World of Grammar.
+
+The Big Ox advised her not to do so, because there were thousands of bad Commas, wild Question Marks and devious Semi, but the Little Blind Text didn't listen.
+She packed her seven verse, put her initial into the belt and made herself on the way.
+
+When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her home-town Bookmarks grove, the headline of Alphabet Village and the sub-line of her own road, the Line Lane.
+Pitiful a rhetoric question ran over her cheek, then she continued her way.
+
+On her way she met a copy.
+The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word ``and" and the Little Blind Text should turn around and return to its own, safe country.
+But nothing the copy said could convince her and so it didn't take long until a few insidious Copy Writers ambushed her, made her drunk with Long Tongue and Parole and dragged her into their agency, where they abused her for their
+\end{bigbox*}
+
+\chapter{Citations}\label{chap:citations}
+The database is contained in a .bib file.\footnote{A footnote.} 
+Citations to appear in-line with the text are inserted like: \textcite{Daley-etal-2016-SAPTO}.
+Citations to appear in a footnote use the structure of this sentence.\footcite{Daley-etal-2016-Assessing-2016-super-tax-reforms}
+To refer to a page number: \textcite[][30]{Daley-etal-2016-SAPTO}.
+To refer to something other than page number.\footcite[][Chapter~4]{Daley-etal-2016-SAPTO}
+
+Use the plural forms of these commands to cite multiple works (\textcites{Piketty2013}{Leigh-2013-BattlersBillionaires}) at the same point.
+Square brackets / optional arguments are placed before the key.\footcites{AtkinsonStiglitz1976}[][42]{MirrleesAdamBesleyEtAl2011}
+
+You can include a document in the bibliography without it appearing in the main matter: \nocite{*}. 
+The above command cites \emph{all} entries in the document. 
+You should remove this line before compiling. 
+
+\printbibliography
+
+
+\end{document}

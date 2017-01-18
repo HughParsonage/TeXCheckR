@@ -8,13 +8,14 @@
 \title{Report errors to console and twitter}
 \usage{
 report2console(line_no = NULL, context = NULL, error_message = NULL,
-  build_status = NULL, authors = NULL, report_name = NULL, ...)
+  build_status = NULL, authors = NULL, report_name = NULL,
+  extra_cat = NULL)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, ...)
+  line_no = NULL, context = NULL, authors, extra_cat = NULL)
 
 report2gmail(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, ...)
+  line_no = NULL, context = NULL, authors, extra_cat = NULL)
 }
 \arguments{
 \item{line_no}{The line number locating the source of the error.}
@@ -29,7 +30,7 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 
 \item{report_name}{Name of project whose errors are being reported.}
 
-\item{...}{Extra messages.}
+\item{extra_cat}{Character vector extra messages.}
 
 \item{preamble}{Message to appear before other messages.}
 }

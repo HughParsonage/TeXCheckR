@@ -8,7 +8,7 @@
 #' @param build_status What should the build status be reported as?
 #' @param authors Text to alert the authors (such as a twitter handle).
 #' @importFrom twitteR updateStatus
-#' @param ... Extra messages.
+#' @param extra_cat Character vector extra messages.
 
 #' @rdname report_error
 report2console <- function(line_no = NULL,
@@ -17,13 +17,13 @@ report2console <- function(line_no = NULL,
                            build_status = NULL,
                            authors = NULL,
                            report_name = NULL,
-                           ...){
+                           extra_cat = NULL){
   # Printing requirements:
   ## 1. Cross
   ## 2. Line no (if applicable)
   ## 3. Context
   ## 4. Suggeston.
-  cat(bgRed(symbol$cross), " ", line_no, ": ", context, ..., sep = "")
+  cat(bgRed(symbol$cross), " ", line_no, ": ", context, unlist(extra_cat), sep = "")
 }
 
 
@@ -35,7 +35,7 @@ report2twitter <- function(preamble = NULL,
                            line_no = NULL,
                            context = NULL,
                            authors,
-                           ...){
+                           extra_cat = NULL){
   # Printing requirements:
   ## 1. Each author
   ## 2. "<Report title> build failed/still failed/fixed"
@@ -76,7 +76,7 @@ report2gmail <- function(preamble = NULL,
                          line_no = NULL,
                          context = NULL,
                          authors,
-                         ...){
+                         extra_cat = NULL){
   name <- NULL
   email_addresses <- 
     Grattan_staff[name %in% authors] %>%

@@ -9,8 +9,8 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
   
   # Check all captions have a label
   caption_without_label <- 
-    and(grepl("\\caption", lines, fixed = TRUE), 
-        !grepl("\\label", lines, fixed = TRUE))
+    and(grepl("\\caption{", lines, fixed = TRUE), 
+        !grepl("\\label{", lines, fixed = TRUE))
   
   if (any(caption_without_label)){
     .report_error(line_no = which(caption_without_label)[[1]], 

@@ -42,7 +42,7 @@ check_spelling <- function(filename,
     }
   }
 
-  # Do not check the bibliogrpahy filename
+  # Do not check the bibliography filename
   lines <- gsub("\\{.*\\.bib\\}",
                 "\\{bibliography.bib\\}",
                 lines)

@@ -5,8 +5,21 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
     .report_error <- function(...) report2console(...)
   }
 
-  lines <- readLines(filename)
+  lines <- readLines(filename, encoding = "UTF-8")
+  
+  # Check all captions have a label
+  caption_without_label <- 
+    and(grepl("^\\caption", lines, fixed = TRUE), 
+        !grepl("\\label", lines, fixed = TRUE))
+  
+  if (any(caption_without_label)){
+    .report_error(line_no = which(caption_without_label)[[1]], 
+                  context = lines[caption_without_label][[1]], 
+                  error_message = "\\caption present without label. (All captions must have a \\label and the label must occur on the same line.)")
+    stop("\\caption{} present without \\label{}")
+  }
 
+  # Check all labels have a reference
   lines <- gsub("[%].*$", "", lines, perl = TRUE)
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)

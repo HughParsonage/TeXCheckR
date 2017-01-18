@@ -87,7 +87,7 @@ checkGrattanReport <- function(path = ".",
   check_repetitive_xrefs(filename, .report_error = .report_error)
   cat(green(symbol$tick, "No repetitive xrefs.\n"))
 
-  check_sentence_ending_periods(filename)
+  check_sentence_ending_periods(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
 
   check_spelling(filename, .report_error = .report_error)

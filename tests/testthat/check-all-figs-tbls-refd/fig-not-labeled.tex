@@ -1,0 +1,171 @@
+\documentclass{grattan}
+% Comments are deployed by the % sign; everything after % is ignored by the compiler.
+% Please do not put comments before \documentclass as these are reserved for TeX directives.
+
+\addbibresource{bib/Grattan-Master-Bibliography.bib}
+
+\author{}
+\title{}
+
+\GrattanReportNumber{2017-00}
+
+\acknowledgements{%
+This 
+%
+}
+
+
+
+
+\begin{document}
+
+
+\begin{overview}
+This is the overview. 
+The word \textbf{Overview} appears in the contentspage at \verb=\contentspage= as an unnumbered entry.
+Set over two columns, the first and last baseline of the text in each column have the same vertical positions.
+
+(But only if the overview is large enough!
+If the text is too brief, the algorithm might prefer some other arrangement.
+This is unlikely.) 
+
+The first line of the overview starts at a fixed vertical position but the height of the text is determined by the constraint of matching the baselines.
+In particular if the overview is too large, it will overflow the page.
+
+Footnotes are not permitted in the overview.
+\end{overview}
+
+\begin{recommendations}
+\recommendation{Recommendation}
+Some text under a recommendation.
+\end{recommendations}
+
+\contentspage
+
+\chapter{Chapter title}\label{chap:example}
+This demonstrates the markup commands for sectioning. 
+If you want to cross-reference a chapter/section/\etc\ later, you need to add a label, as above and below.
+Although \LaTeX{} doesn't require it, every label must have a specific prefix followed by a colon, as throughout this document.
+Furthermore, every chapter must be labelled, even if it is never referenced.
+
+To refer to a chapter, use \Chapref{chap:example}, % not \Vref{chap:example}, 
+otherwise the hyperlink points to the baseline of the first text of the chapter, rather than the chapter title.
+To refer to a chapter range, \Chaprefrange{chap:example}{chap:citations}.
+
+\section{Section title}\label{sec:example}
+\subsection{Subsection title}\label{subsec:example}
+\subsubsection{Sub-subsection title}\label{subsubsec:example}
+Some text in one paragraph. 
+Some text in one paragraph. 
+Some text in one paragraph. 
+
+Some text in the next paragraph. 
+Some text in the next paragraph. 
+Some text in the next paragraph. 
+
+Since single newlines are ignored, put different sentences on different lines.
+
+\begin{enumerate}
+	\item An enumerated list
+	\item Another item
+	\begin{enumerate}
+		\item A sub-item of the second item
+		\item Another sub-item
+
+		New paragraphs are the same as in the body text
+	\end{enumerate}
+\end{enumerate}
+
+Another list:
+\begin{itemize}
+	\item A bulleted/non-enumerated list
+	\item Another item
+	\begin{itemize}
+		\item A sub-item.
+	\end{itemize}
+\end{itemize}
+
+\chapter{Figures and tables}\label{chap:figs-and-tbls}
+An initial cross-reference to \Vref{fig:first-example-figure}.
+
+\begin{figure}
+\caption{Figure caption\label{fig:first-example-figure}}
+\units{Figure units}
+\includegraphics{logos/GrattanSVGLogo.pdf}
+\noteswithsource{Notes}{Source}
+\end{figure}
+
+A cross-reference to \Vref{box:example}.
+
+\begin{verysmallbox}{A very small box}{box:very-small-box-example}
+Contents of very smallbox.
+
+A paragraph with a footnote.
+
+Some text in a very small box. 
+Some text in a very small box. 
+Some text in a very small box. 
+\end{verysmallbox}
+
+\begin{smallbox}{A small box}{box:example}
+A smallbox. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box. 
+Some text in a small box.%
+\footnote{Footnote entry.}
+
+
+Some text.%
+\footnote{All footnotes must end with a full stop.} 
+Some other text.%
+\footnote{(Or a closing parenthesis, which itself must be preceded by a full stop.)}
+To refer to a footnote, use footnote~\ref{fn:example} \vpageref{fn:example}; % rather than \Vref{fn:example} which will link to a different counter; 
+the label command \emph{must} be inside the footnote.%
+\footnote{\label{fn:example}For example, refer here.}
+\end{smallbox}
+
+A cross-reference to \Vref{fig:2nd-example-figure}, with a different cross-reference that will never print the page number: \Cref{fig:first-example-figure}.
+
+If a sentence ends with a capital letter, you must use backslash-@ immediately before the full stop.
+Many governments have tried to change the GST\@. 
+But few have succeeded.
+
+\begin{figure}
+\caption{A second figure caption\label{fig:2nd-example-figure}}
+\units{Figure units}
+\includegraphics{logos/GrattanSVGLogo.pdf}
+\noteswithsource{Notes}{Source}
+\end{figure}
+
+A table:
+
+\begin{table}
+\caption{Table caption}\label{tbl:one-table}
+\begin{tabularx}{\linewidth}{XXR}
+%
+\toprule
+\textbf{Column title}                           & \textbf{Column type}                              & \textbf{Ragged left title} \\
+\midrule
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\
+Move from one cell to the next cell in the same row by using an ampersand & Move to the next line by using a double backslash & Use toprule, midrule, and bottomrule. \\[15.5pt]
+Use the optional argument & to the double backslash & to specify the precise distance between rows. \\
+\cmidrule(lr){2-3}
+Never use vertical rules & But sometimes horizontal rules are appropriate. & Use cmidrule(lr) \\
+\bottomrule
+\end{tabularx}
+\noteswithsource{Notes}{Source}
+
+
+
+\end{table}
+Another table, cross-referenced in the same way \Vref{tbl:one-table}.
+
+A big box, occupying two pages floats with respect to the body text.
+
+
+
+
+\end{document}

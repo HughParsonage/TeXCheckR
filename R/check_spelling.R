@@ -32,6 +32,14 @@ check_spelling <- function(filename,
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
   }
+  
+  if (any(grepl("\\b((?:etc)|(?:ie)|(?:\eg))\\b", lines, perl = TRUE))){
+    line_no <- grep("\\b((?:etc)|(?:ie)|(?:eg))\\b", lines, perl = TRUE)[[1]]
+    .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
+                  line_no = line_no,
+                  context = lines[[line_no]])
+    stop("Use the commands \\etc.")
+  }
 
   # Check known wrong
   for (wrong in known.wrong){

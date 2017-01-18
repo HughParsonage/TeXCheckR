@@ -9,3 +9,7 @@ test_that("Check spelling of multiple input document", {
   expect_error(check_spelling("./spellcheck_multi_input/spellcheck_multi_input.tex"),
                regexp = "failed on above line")
 })
+
+test_that("Abbreviations", {
+  expect_error(check_spelling("spellcheck-abbrevs.tex"))
+})

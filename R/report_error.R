@@ -7,6 +7,10 @@
 #' @param report_name Name of project whose errors are being reported.
 #' @param build_status What should the build status be reported as?
 #' @param authors Text to alert the authors (such as a twitter handle).
+#' @param globalEnv The environment in which tweet statuses should be assigned. 
+#' The default, \code{NULL}, is an error. The environment must be set by the user
+#' to comply with (reasonable) CRAN requirements to not interfere with the user's 
+#' environment.
 #' @importFrom twitteR updateStatus
 #' @param extra_cat Character vector extra messages.
 
@@ -35,7 +39,11 @@ report2twitter <- function(preamble = NULL,
                            line_no = NULL,
                            context = NULL,
                            authors,
-                           extra_cat = NULL){
+                           extra_cat = NULL,
+                           globalEnv = NULL){
+  if (is.null(globalEnv)){
+    stop("Set globalEnv = .GlobalEnv when using this function so tweets can be deleted if sent by accident.")
+  }
   # Printing requirements:
   ## 1. Each author
   ## 2. "<Report title> build failed/still failed/fixed"
@@ -59,7 +67,7 @@ report2twitter <- function(preamble = NULL,
                       collapse = "\n")
       .Twitter.statuses[[j]] <- updateStatus(text = tweet)
     }
-    assign(".last.Twitter.status", .Twitter.statuses, envir = .GlobalEnv)
+    assign(".last.Twitter.status", .Twitter.statuses, envir = globalEnv)
     cat('.last.Twitter.status\n')
   } else {
     cat((possible_tweet))

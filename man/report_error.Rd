@@ -12,7 +12,8 @@ report2console(line_no = NULL, context = NULL, error_message = NULL,
   extra_cat = NULL)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, extra_cat = NULL)
+  line_no = NULL, context = NULL, authors, extra_cat = NULL,
+  globalEnv = NULL)
 
 report2gmail(preamble = NULL, report_name, build_status, error_message,
   line_no = NULL, context = NULL, authors, extra_cat = NULL)
@@ -33,6 +34,11 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 \item{extra_cat}{Character vector extra messages.}
 
 \item{preamble}{Message to appear before other messages.}
+
+\item{globalEnv}{The environment in which tweet statuses should be assigned. 
+The default, \code{NULL}, is an error. The environment must be set by the user
+to comply with (reasonable) CRAN requirements to not interfere with the user's 
+environment.}
 }
 \description{
 Report errors to console and twitter

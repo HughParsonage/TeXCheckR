@@ -36,7 +36,11 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
                                            warn = FALSE)) %>%
       unlist
     lines <- c(lines, input_lines)
-    inputs <- inputs_of(file.path(filename_path, inputs))
+    inputs <- 
+      file.path(filename_path, inputs) %>%
+      # can't use vapply as might be NULL or char
+      sapply(inputs_of, USE.NAMES = FALSE) %>%
+      unlist
   }
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)

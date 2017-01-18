@@ -52,6 +52,7 @@ can't
 cancelled
 cancelling
 Carmela
+CBD
 Center
 channeling
 Chartpack
@@ -70,6 +71,8 @@ Daley
 Danks
 de
 deadweight
+deflator
+deflators
 Deloitte
 Dept
 didn't
@@ -103,7 +106,9 @@ frontmatter
 Frontmatter
 generalise
 generalised
+GFC
 Gillard
+GNI
 Gonski
 Goodna
 Goss
@@ -116,6 +121,7 @@ gray
 Griffiths
 GST
 Hannebery
+hasn't
 HECS
 HELP
 honourable
@@ -123,6 +129,7 @@ hypothecate
 hypothecated
 hypothecating
 hypothecation
+IMF
 indices
 indigeneity
 initialisms
@@ -137,6 +144,7 @@ key1
 key2
 kJ
 Kleinhenz
+KPMG
 Kwinana
 Labor
 labour
@@ -156,6 +164,7 @@ minimisation
 minimised
 minimising
 misperception
+multifactor
 NAPLAN
 Newstart
 NonCommercial
@@ -177,6 +186,7 @@ pdf
 pdflatex
 pdflink
 phantomsection
+PIIGS
 Plunkett
 politicised
 postnote
@@ -189,6 +199,7 @@ Qld
 quintile
 quo
 ragged2e
+RBA
 reputational
 resourcing
 Retrospectivity
@@ -233,6 +244,7 @@ underruns
 undersupplied
 undersupply
 undersupplying
+unlegislated
 Unported
 unrealised
 uptick

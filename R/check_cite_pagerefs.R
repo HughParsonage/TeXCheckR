@@ -33,7 +33,6 @@ check_cite_pagerefs <- function(filename, .report_error){
       stop("Page ranges should be separated by two hyphens (--).")
     }
   }
-  rm(line)
 
   invisible(NULL)
 }

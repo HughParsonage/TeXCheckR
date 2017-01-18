@@ -21,6 +21,23 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
 
   # Check all labels have a reference
   lines <- gsub("[%].*$", "", lines, perl = TRUE)
+  
+  
+  inputs_of_filename <- inputs_of(filename)
+  # Only have to put all the lines into one object;
+  # order is unimportant
+  inputs <- inputs_of_filename
+  filename_path <- dirname(filename)
+  while (!is.null(inputs)){
+    file_path <- dirname(inputs[[1]])
+    input_lines <- 
+      lapply(inputs, function(x) readLines(file.path(filename_path, x),
+                                           encoding = "UTF-8",
+                                           warn = FALSE)) %>%
+      unlist
+    lines <- c(lines, input_lines)
+    inputs <- inputs_of(file.path(filename_path, inputs))
+  }
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
   label_contents <-

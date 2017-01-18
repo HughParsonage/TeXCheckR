@@ -74,17 +74,38 @@ checkGrattanReport <- function(path = ".",
            }
          })
   
+  cat("\n")
+  
+  
+  
+  check_input <- function(filename){
+    inputs <- inputs_of(filename)
+    if (length(inputs) > 0){
+      for (input in inputs){
+        check_input(input)
+        cat(input, "\n")
+      
+        check_cite_pagerefs(input, .report_error = .report_error)
+        check_dashes(input)#, .report_error = .report_error)
+        check_footnote_typography(input)#, .report_error = .report_error)
+        check_repetitive_xrefs(input)#, .report_error = .report_error)
+        check_sentence_ending_periods(input)#, .report_error = .report_error)
+      }
+    }
+  }
+  check_input(filename)
+  
   check_cite_pagerefs(filename, .report_error = .report_error)
-  cat("\n",
-      green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
+  cat(green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
+
 
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
 
-  suppressMessages(check_footnote_typography(filename))
+  check_footnote_typography(filename)
   cat(green(symbol$tick, "Footnote typography checked.\n"))
-
-  check_repetitive_xrefs(filename, .report_error = .report_error)
+  
+  check_repetitive_xrefs(filename)
   cat(green(symbol$tick, "No repetitive xrefs.\n"))
 
   check_sentence_ending_periods(filename, .report_error = .report_error)

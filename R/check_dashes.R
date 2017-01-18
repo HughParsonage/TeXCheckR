@@ -5,7 +5,7 @@
 #' @export
 
 check_dashes <- function(filename){
-  lines <- readLines(filename)
+  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
 
   lines2 <- lines[!isR_line_in_knitr(lines)]
   for (line in lines2){

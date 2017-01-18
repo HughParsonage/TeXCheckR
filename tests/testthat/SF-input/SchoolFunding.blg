@@ -1,0 +1,50 @@
+[0] Config.pm:354> INFO - This is Biber 2.7
+[0] Config.pm:357> INFO - Logfile is 'SchoolFunding.blg'
+[23] biber-MSWIN64:303> INFO - === 
+[47] Biber.pm:359> INFO - Reading 'SchoolFunding.bcf'
+[115] Biber.pm:835> INFO - Found 85 citekeys in bib section 0
+[130] Biber.pm:3670> INFO - Processing section 0
+[155] Biber.pm:3840> INFO - Looking for bibtex format file 'SchoolFunding.bib' for section 0
+[162] bibtex.pm:1435> INFO - Decoding LaTeX character macros into UTF-8
+[176] bibtex.pm:1292> INFO - Found BibTeX data source 'SchoolFunding.bib'
+[211] Utils.pm:164> WARN - year field 'Cth' in entry '2013AustralianEducationAct' is not an integer - this will probably not sort properly.
+[218] Utils.pm:164> WARN - Datamodel: Entry 'PBO2016PostElectionReport' (SchoolFunding.bib): Field 'institute' invalid in data model - ignoring
+[266] Utils.pm:164> WARN - year field 'n.d' in entry 'Hattie2009VisibleLearningArticle' is not an integer - this will probably not sort properly.
+[292] Utils.pm:164> WARN - Datamodel: Entry 'Hedges1994ExchangePartI' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[292] Utils.pm:164> WARN - Datamodel: Entry 'Greenwald1996EffectSchoolResources' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[292] Utils.pm:164> WARN - Datamodel: Entry 'Krueger2003EconomicConsiderationsClass' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[292] Utils.pm:164> WARN - Datamodel: Entry 'Jackson2016EffectsSchoolSpending' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[292] Utils.pm:164> WARN - Datamodel: Entry 'Card2002Schoolfinancereform' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[293] Utils.pm:164> WARN - Datamodel: Entry 'Lafortune2016SchoolFinanceReform' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[293] Utils.pm:164> WARN - Datamodel: Entry 'Commission2012SchoolWorkforce' (SchoolFunding.bib): Missing mandatory field 'institution'
+[293] Utils.pm:164> WARN - Datamodel: Entry 'PBO2016PostElectionReport' (SchoolFunding.bib): Missing mandatory field 'institution'
+[293] Utils.pm:164> WARN - Datamodel: Entry 'NCA2014TowardsResponsibleGovernment' (SchoolFunding.bib): Missing mandatory field 'institution'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'RBA2016G3InflationExpectations' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'misc'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'Westacott2016FutureEducation' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'misc'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'McKenzie2005Teachersmatterattracting' (SchoolFunding.bib): Invalid field 'type' for entrytype 'book'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Invalid field 'institution' for entrytype 'article'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Invalid field 'location' for entrytype 'article'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Missing mandatory field 'journaltitle'
+[294] Utils.pm:164> WARN - Datamodel: Entry 'Yoon2007ReviewingEvidenceTeacher' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'article'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Yoon2007ReviewingEvidenceTeacher' (SchoolFunding.bib): Missing mandatory field 'journaltitle'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Veen2012WhatMakesTeacher' (SchoolFunding.bib): Missing mandatory field 'booktitle'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Hattie2009VisibleLearningArticle' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Jensen2016PDTeacherProfessional' (SchoolFunding.bib): Missing mandatory field 'institution'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Hill2005EffectsTeachersMathematical' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[295] Utils.pm:164> WARN - Datamodel: Entry 'Chetty2011HowDoesYour' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Gibbons2012Doesadditionalspending' (SchoolFunding.bib): Missing mandatory field 'institution'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Guryan2001DoesMoneyMatter' (SchoolFunding.bib): Missing mandatory field 'institution'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Coleman1966EqualityEducationalOpportunity' (SchoolFunding.bib): Invalid field 'type' for entrytype 'book'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Hanushek1986EconomicsSchoolingProduction' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Cobbold2014MoneyMattersEducation' (SchoolFunding.bib): Invalid field 'institution' for entrytype 'article'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Cobbold2014MoneyMattersEducation' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Gibbons2013effectsresourcesschool' (SchoolFunding.bib): Missing mandatory field 'institution'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Jensen2016SchoolFunding' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'
+[296] Utils.pm:164> WARN - Datamodel: Entry 'Education2015EarlyActionSuccess' (SchoolFunding.bib): Missing mandatory field 'institution'
+[368] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[368] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[368] Biber.pm:3499> INFO - Sorting list 'gratt/global/' of type 'entry' with scheme 'gratt' and locale 'en-US'
+[368] Biber.pm:3505> INFO - No sort tailoring available for locale 'en-US'
+[406] bbl.pm:608> INFO - Writing 'SchoolFunding.bbl' with encoding 'UTF-8'
+[415] bbl.pm:712> INFO - Output to SchoolFunding.bbl
+[417] Biber.pm:109> INFO - WARNINGS: 34

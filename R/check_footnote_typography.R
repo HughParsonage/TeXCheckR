@@ -6,7 +6,7 @@
 #' @export
 
 check_footnote_typography <- function(filename, ignore.lines = NULL){
-  lines <- readLines(filename)
+  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
   if (!is.null(ignore.lines)){
     lines <- lines[-ignore.lines]
   }
@@ -45,7 +45,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       stop("Full stop after footnotemark.")
     }
   }
-  message("No full stops after footnotemarks")
+  cat("\u2014  No full stops after footnotemarks", "\n")
   rm(line)
 
   for (line in lines_with_footnote){
@@ -78,7 +78,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       stop("Space before footnote.")
     }
   }
-  message("No space before footnote marks")
+  cat("\u2014  No space before footnote marks", "\n")
   rm(line)
   invisible(NULL)
 }

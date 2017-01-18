@@ -7,7 +7,7 @@ check_repetitive_xrefs <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- readLines(filename)
+  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
 
   line_nos_with_VrefCref <- grep("[CVcv]ref", lines, perl = TRUE)
 

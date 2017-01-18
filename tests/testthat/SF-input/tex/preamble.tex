@@ -1,0 +1,71 @@
+\usepackage{longtable}
+
+\newlist{littleitemize}{itemize}{1}
+\setlist[littleitemize]{noitemsep,topsep=-1.25ex,label=\color{Orange}\textbullet}
+
+%\newcommand{\warn}[1]{\GenericWarning{LaTeX Warning: #1}{LaTeX Warning: #1}{\textcolor{red}{\XSolidBold} #1 \textcolor{red}{\XSolidBold}}}
+
+\addtolength{\textfloatsep}{1\baselineskip}
+
+\makeatletter
+\newcommand{\@addboxcaption}[1]{%
+\captionsetup{labelfont={bf,Orange},font={bf,Orange},format=plain,justification=raggedright,singlelinecheck=false, skip=0ex, position=above}
+\caption*{#1}
+\captionsetup{format=plain,font={small,bf,theGrey},labelfont={small,bf,theGrey}, position=above, skip=0pt}
+}
+
+\newenvironment{addsmallbox}[3][htb]{%
+\setlength{\currentparskip}{\parskip}% save the value
+\begin{boxe}[#1]
+\begin{mdframed}[style=GrattanFrameBox]%
+\setlength{\parskip}{\currentparskip} % restore the value
+\@addboxcaption{#2\label{#3}}
+\RaggedRight
+}{\end{mdframed}\end{boxe}}
+
+\makeatother
+
+\newcounter{superchapterfigure}
+\newcounter{superchaptertable}
+\newcounter{superchaptersection}
+
+\newcommand{\addindentchap}[1]{%
+	\setcounter{superchapterfigure}{\value{figure}}
+	\setcounter{superchaptertable}{\value{table}}
+	\setcounter{superchaptersection}{\value{section}}
+\addchap[\hspace{1.50em}#1]{#1}
+	\setcounter{figure}{\value{superchapterfigure}}
+	\setcounter{table}{\value{superchaptertable}}
+	\setcounter{section}{\value{superchaptersection}}
+}
+
+\AtBeginEnvironment{boxe}{\citetrackerfalse\citetrackertrue}
+\AtEndEnvironment{boxe}{\citetrackertrue}
+
+\providecommand*\appendixmore{}
+\renewcommand*\appendixmore{%
+    \renewcommand*{\chapterformat}{%
+      \mbox{\appendixname~\thechapter\autodot:\enskip}%
+    }%
+}
+
+\addtokomafont{paragraph}{\bfseries}
+
+% Move Table of contents and List of Figures up 
+% so that List of Figures is on one page
+\setlength\cftbeforetoctitleskip{0pt}
+\setlength\cftaftertoctitleskip{5pt}
+\setlength\cftbeforeloftitleskip{0pt}
+\setlength\cftafterloftitleskip{5pt}
+
+\makeatletter
+\newenvironment{pagesmallbox}[3][p]{%
+\setlength{\currentparskip}{\parskip}% save the value
+\begin{boxe}[#1]
+\begin{minipage}[\textheight]{\linewidth}
+\begin{mdframed}[style=GrattanFrameBox]%
+\setlength{\parskip}{\currentparskip} % restore the value
+\@boxcaption{#2\label{#3}}
+\RaggedRight
+}{\end{mdframed}\null\vspace{0.3\textheight}\null\end{minipage}\end{boxe}} 
+\makeatother

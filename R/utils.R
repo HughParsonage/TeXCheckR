@@ -1,6 +1,9 @@
 
 `%notin%` <- Negate(`%in%`)
 
+AND <- `&&`
+OR <- `||`
+
 not_length0 <- function(x) as.logical(length(x))
 
 # takes a vector of froms and tos and takes their union

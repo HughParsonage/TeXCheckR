@@ -1,9 +1,8 @@
 #' Replace nth arguments
 #' @name argument_parsing
 #' @param tex_lines A character vector of a LaTeX file read in from readLines.
-#' @param command_name The command name, without the initial backslash if \code{fixed = TRUE},
-#' or the pattern of the command.
-#' @param fixed Is \code{command_name} a pattern or a fixed expression?
+#' @param command_name The command name, 
+#' or the pattern of the command, without the initial backslash.
 #' @param n The number of mandatory arguments.
 #' @param replacement What to replace the \code{n}th argument with.
 #' @param .dummy_replacement An intermediate replacement value.
@@ -15,7 +14,6 @@
 #' @export replace_nth_LaTeX_argument
 replace_nth_LaTeX_argument <- function(tex_lines,
                                        command_name,
-                                       fixed = TRUE,
                                        n = 1L,
                                        replacement = "correct",
                                        .dummy_replacement = "Qq"){
@@ -29,11 +27,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
   stopifnot(length(command_name) == 1L)
 
   line_nos_w_command <-
-    grep(if (fixed){
-      sprintf("\\\\%s(?![A-Za-z])", command_name)
-    } else {
-      sprintf("%s(?![A-Za-z])", command_name)
-    }, tex_lines, perl = TRUE)
+    grep(sprintf("\\\\%s(?![A-Za-z])", command_name), tex_lines, perl = TRUE)
 
   tex_lines_with_command_name <-
     tex_lines[line_nos_w_command]
@@ -49,7 +43,6 @@ replace_nth_LaTeX_argument <- function(tex_lines,
   positions_of_nth_arg <-
     nth_arg_positions(tex_lines = tex_lines_with_command_name,
                       command_name = command_name,
-                      fixed = fixed,
                       n = n) %>%
     lapply(function(DT) DT[, "zero_width" := stops == starts + 1L])
 
@@ -92,15 +85,11 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
 #' @rdname argument_parsing
 #' @export nth_arg_positions
-nth_arg_positions <- function(tex_lines, command_name, fixed = TRUE, n = 1L){
+nth_arg_positions <- function(tex_lines, command_name, n = 1L){
   Command_locations <-
     stringi::stri_locate_all_regex(str = tex_lines,
                                    # If command = \a, must not also detect \ab
-                                   pattern = if (fixed){
-                                     sprintf("\\\\%s(?![A-Za-z])", command_name)
-                                   } else {
-                                     sprintf("%s(?![A-Za-z])", command_name)
-                                   })
+                                   pattern = sprintf("\\\\%s(?![A-Za-z])", command_name))
 
   Tex_line_split <- strsplit(tex_lines, split = "")
 

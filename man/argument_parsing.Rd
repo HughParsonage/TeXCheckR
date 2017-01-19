@@ -6,18 +6,16 @@
 \alias{replace_nth_LaTeX_argument}
 \title{Replace nth arguments}
 \usage{
-replace_nth_LaTeX_argument(tex_lines, command_name, fixed = TRUE, n = 1L,
+replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
   replacement = "correct", .dummy_replacement = "Qq")
 
-nth_arg_positions(tex_lines, command_name, fixed = TRUE, n = 1L)
+nth_arg_positions(tex_lines, command_name, n = 1L)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file read in from readLines.}
 
-\item{command_name}{The command name, without the initial backslash if \code{fixed = TRUE},
-or the pattern of the command.}
-
-\item{fixed}{Is \code{command_name} a pattern or a fixed expression?}
+\item{command_name}{The command name, 
+or the pattern of the command, without the initial backslash.}
 
 \item{n}{The number of mandatory arguments.}
 

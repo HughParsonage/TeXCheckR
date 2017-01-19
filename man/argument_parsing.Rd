@@ -29,4 +29,8 @@ This value cannot be present in \code{tex_lines}.}
 \description{
 Replace nth arguments
 }
+\details{
+\code{nth_arg_positions} reports the starts and stops of the command for every line.
+This includes the braces (in order to accommodate instances where the argument is empty).
+}
 

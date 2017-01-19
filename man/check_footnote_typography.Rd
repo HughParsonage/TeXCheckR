@@ -4,12 +4,14 @@
 \alias{check_footnote_typography}
 \title{Check footnote typography}
 \usage{
-check_footnote_typography(filename, ignore.lines = NULL)
+check_footnote_typography(filename, ignore.lines = NULL, .report_error)
 }
 \arguments{
 \item{filename}{A LaTeX file.}
 
 \item{ignore.lines}{Lines to ignore (for example, those using the word 'footnote').}
+
+\item{.report_error}{A function to provide context to any errors.}
 }
 \value{
 Called for its side-effect.

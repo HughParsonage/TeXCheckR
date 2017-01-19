@@ -10,6 +10,8 @@
 #'  This value cannot be present in \code{tex_lines}.
 
 #' @rdname argument_parsing
+#' @details \code{nth_arg_positions} reports the starts and stops of the command for every line.
+#' This includes the braces (in order to accommodate instances where the argument is empty).
 #' @export replace_nth_LaTeX_argument
 replace_nth_LaTeX_argument <- function(tex_lines,
                                        command_name,
@@ -26,13 +28,12 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
   stopifnot(length(command_name) == 1L)
 
-  # For convenience only
-  if (fixed){
-    command_name <- sprintf("\\%s", command_name)
-  }
-
   line_nos_w_command <-
-    grep(command_name, tex_lines, fixed = fixed)
+    grep(if (fixed){
+      sprintf("\\\\%s(?![A-Za-z])", command_name)
+    } else {
+      sprintf("%s(?![A-Za-z])", command_name)
+    }, tex_lines, perl = TRUE)
 
   tex_lines_with_command_name <-
     tex_lines[line_nos_w_command]
@@ -49,22 +50,28 @@ replace_nth_LaTeX_argument <- function(tex_lines,
     nth_arg_positions(tex_lines = tex_lines_with_command_name,
                       command_name = command_name,
                       fixed = fixed,
-                      n = n)
+                      n = n) %>%
+    lapply(function(DT) DT[, "zero_width" := stops == starts + 1L])
 
   for (el in seq_along(tex_lines_with_command_name_split)){
     intervals <- positions_of_nth_arg[[el]]
-    intervals[, "width" := stops - starts]
 
-    if (any(intervals[["width"]] == 0L)){
-      stop("Zero width interval not replaced.")
-    }
+    starts <- .subset2(intervals, "starts")
+    stops  <- .subset2(intervals, "stops")
 
-    starts <- positions_of_nth_arg[[el]][["starts"]]
-    stops  <- positions_of_nth_arg[[el]][["stops"]]
     for (row in 1:nrow(intervals)){
-      tex_lines_with_command_name_split[[el]][
-        seq.int(starts[row], stops[row])
-        ] <- .dummy_replacement
+      if (!.subset2(intervals, "zero_width")[row]){
+        tex_lines_with_command_name_split[[el]][
+          seq.int(starts[row] + 1L, stops[row] - 1L)
+          ] <- .dummy_replacement
+      } else {
+        # {} --> { }
+        #         ^
+        tex_lines_with_command_name_split[[el]] <-
+          c(tex_lines_with_command_name_split[[el]][seq.int(1, starts[row])], 
+            .dummy_replacement,
+            tex_lines_with_command_name_split[[el]][-seq.int(1, starts[row])])
+      }
     }
 
   }
@@ -108,7 +115,7 @@ nth_arg_positions <- function(tex_lines, command_name, fixed = TRUE, n = 1L){
     for (j in seq_along(command_locations)){
       tg <- command_locations[[j]]
       starts[[j]] <-
-        1L + # below tells us the position of the opening *brace*
+        # below tells us the position of the opening *brace*
         nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
                                   seq_along(tex_group) > tg),
                               tex_group == tex_group_lag + 1)),
@@ -118,7 +125,7 @@ nth_arg_positions <- function(tex_lines, command_name, fixed = TRUE, n = 1L){
         nth_min.int(which(and(tex_group == tex_group[tg],
                               and(seq_along(tex_group) > tg,
                                   tex_group == tex_group_lag - 1))),
-                    n = n) - 1L
+                    n = n)
     }
     data.table::data.table(starts = starts, stops = stops)
   })

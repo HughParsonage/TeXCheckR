@@ -25,3 +25,12 @@ test_that("nth argument when command absent", {
                                           replacement = "box:key"),
                c("\\begin{smallbox}{Title}{box:key}", "\\somecommand{a}{bc}"))
 })
+
+test_that("When command_name is a subset of other command", {
+  replace_nth_LaTeX_argument(tex_lines = c("Two commands \\abc{1}{2} and \\ab{1}{2}",
+                                           "nothing",
+                                           "\\abc{1}{2}", 
+                                           "\\ab{1}{2}"),
+                             command_name = "ab")
+})
+

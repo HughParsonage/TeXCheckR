@@ -18,6 +18,12 @@ check_log <- function(path = ".", final = FALSE){
   if (any(grepl("LaTeX Warning: There were multiply-defined labels.", log_file, fixed = TRUE))){
     stop("LaTeX Warning: There were multiply-defined labels.")
   }
+  
+  if (any(grepl("LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.",
+                log_file,
+                fixed = TRUE))){
+    stop("LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.")
+  }
 
   invisible(NULL)
 }

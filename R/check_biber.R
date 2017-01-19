@@ -10,6 +10,24 @@ check_biber <- function(path = "."){
   } else {
     if (length(blg.file) == 1L){
       blg <- readLines(blg.file, warn = FALSE)
+      
+      biber_version <-
+        gsub("^.*This is Biber ([0-9]+\\.[0-9]).*",
+             "\\1",
+             grep("This is Biber",
+                  blg,
+                  fixed = TRUE,
+                  value = TRUE)[[1]],
+             perl = TRUE)
+      
+      if (length(biber_version) == 0L){
+        stop("Biber version could not be detected")
+      }
+      
+      if (biber_version < "2.6"){
+        stop("biber version is ", biber_version, " but >=2.6 is required.")
+      }
+    
       # Remove legislation marks:
       blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)|(NZ)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
 

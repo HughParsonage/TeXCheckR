@@ -1,11 +1,17 @@
 #' Check footnote typography
 #' @param filename A LaTeX file.
 #' @param ignore.lines Lines to ignore (for example, those using the word 'footnote').
+#' @param .report_error A function to provide context to any errors.
 #' @return Called for its side-effect.
 #' @details This function when applied to a LaTeX file will throw an error if: (1) footnotes
 #' @export
 
-check_footnote_typography <- function(filename, ignore.lines = NULL){
+check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error){
+  
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+  
   lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
   if (!is.null(ignore.lines)){
     lines <- lines[-ignore.lines]
@@ -47,6 +53,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       stop("Full stop after footnotemark.")
     }
   }
+  
+  
+  
   cat("\u2014  No full stops after footnotemarks", "\n")
   rm(line)
 
@@ -63,7 +72,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
 
     if (split_line_after_footnote[footnote_closes_at - 1] != "."){
       # OK if full stop is before parenthesis.
-      if (!(split_line_after_footnote[footnote_closes_at - 1] == ")" && split_line_after_footnote[footnote_closes_at - 2] == ".")){
+      if (not(AND(split_line_after_footnote[footnote_closes_at - 1] == ")",
+                  split_line_after_footnote[footnote_closes_at - 2] == "."))){
         cat(paste0(split_line_after_footnote,
                    collapse = ""),
             "\n")
@@ -71,17 +81,23 @@ check_footnote_typography <- function(filename, ignore.lines = NULL){
       }
     }
   }
-
-  for (line in seq_along(lines)){
-    if ((grepl(" \\footnote", lines[[line]], fixed = TRUE) && !grepl("\\s*\\\\footnote", lines[[line]], perl = TRUE)) ||
-        # footnote on new line without protective %
-        (grepl("^\\s*\\\\footnote", lines[[line]], perl = TRUE) && !grepl("(?<! )%$", lines[[line - 1L]], perl = TRUE))){
-      cat(lines[line])
-      stop("Space before footnote.")
+  cat("\u2014  All footnotes end with a full stop.", "\n")
+  
+  for (line_no in seq_along(lines[-1])){
+    x <- lines[[line_no + 1L]]
+    w <- lines[[line_no]]
+    if (OR(AND(grepl(" \\footnote", x, fixed = TRUE),
+               !grepl("\\s*\\\\footnote", x, perl = TRUE)),
+           # footnote on new line without protective %
+           AND(grepl("^\\s*\\\\footnote", x, perl = TRUE),
+               !grepl("(?<! )%$", w, perl = TRUE)))){
+      .report_error(line_no = line_no,
+                    context = x,
+                    error_message = "Space inserted before \\footnote")
+      stop("Space inserted before footnote.")
     }
   }
   cat("\u2014  No space before footnote marks", "\n")
-  rm(line)
   invisible(NULL)
 }
 

@@ -9,6 +9,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom magrittr and
 #' @importFrom magrittr or
+#' @importFrom magrittr not
 #' @importFrom dplyr if_else
 #' @importFrom dplyr lead
 #' @importFrom dplyr lag

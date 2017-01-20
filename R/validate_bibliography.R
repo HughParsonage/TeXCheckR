@@ -18,6 +18,12 @@ validate_bibliography <- function(path = ".", file = NULL){
     readLines(bib_file, warn = FALSE, encoding = "UTF-8") %>%
     trimws %>%
     .[!grepl("% Valid", ., fixed = TRUE)]
+  
+  if (any(grepl(".[}]$", bib, perl = TRUE))){
+    line_no <- grep(".[}]$", bib, perl = TRUE)[[1]]
+    .report_error(line_no = line_no,
+                  context = )
+  }
 
   # Abbreviated names
   inst_pattern <-

@@ -76,3 +76,7 @@ nth_min <- function(x, n){
 nth_min.int <- function(x, n){
   sort.int(x)[n]
 }
+
+strip_comments <- function(lines){
+  gsub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
+}

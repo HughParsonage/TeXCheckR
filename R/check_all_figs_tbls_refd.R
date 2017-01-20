@@ -7,7 +7,7 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
 
   lines <- readLines(filename, encoding = "UTF-8")
   
-  lines <- gsub("[%].*$", "", lines, perl = TRUE)
+  lines <- strip_comments(lines)
   
   # Check all captions have a label
   caption_without_label <- 
@@ -32,7 +32,9 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
       lapply(inputs, function(x) readLines(file.path(filename_path, x),
                                            encoding = "UTF-8",
                                            warn = FALSE)) %>%
-      unlist
+      unlist %>%
+      strip_comments
+    
     lines <- c(lines, input_lines)
     inputs <- 
       file.path(filename_path, inputs) %>%
@@ -42,25 +44,28 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
   }
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
-  label_contents <-
-    lines[lines_with_labels] %>%
-    strsplit(split = "\\", fixed = TRUE) %>%
-    vapply(function(commands){
-      grep("^label", commands, perl = TRUE, value = TRUE) %>%
-        gsub(pattern = "^label[{]([^\\}]+)[}].*$", replacement = "\\1", x = ., perl = TRUE)
-    }, FUN.VALUE = character(1))
-
-  fig_tbl_labels <-
-    paste0("ref{", grep("^((fig)|tbl)[:]",
-                        label_contents,
-                        perl = TRUE,
-                        value = TRUE))
-
-  for (lab in fig_tbl_labels){
-    if (!any(grepl(lab, lines, fixed = TRUE))){
-      lab <- gsub("ref{", "", lab, fixed = TRUE)
-      .report_error(error_message = paste0("Couldn't find a xref to ", lab, "."))
-      stop("Couldn't find a xref to ", lab, ".")
+  
+  if (not_length0(lines_with_labels)){
+    label_contents <-
+      lines[lines_with_labels] %>%
+      strsplit(split = "\\", fixed = TRUE) %>%
+      vapply(function(commands){
+        grep("^label", commands, perl = TRUE, value = TRUE) %>%
+          gsub(pattern = "^label[{]([^\\}]+)[}].*$", replacement = "\\1", x = ., perl = TRUE)
+      }, FUN.VALUE = character(1))
+    
+    fig_tbl_labels <-
+      paste0("ref{", grep("^((fig)|tbl)[:]",
+                          label_contents,
+                          perl = TRUE,
+                          value = TRUE))
+    
+    for (lab in fig_tbl_labels){
+      if (!any(grepl(lab, lines, fixed = TRUE))){
+        lab <- gsub("ref{", "", lab, fixed = TRUE)
+        .report_error(error_message = paste0("Couldn't find a xref to ", lab, "."))
+        stop("Couldn't find a xref to ", lab, ".")
+      }
     }
   }
 

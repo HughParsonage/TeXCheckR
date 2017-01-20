@@ -43,6 +43,10 @@ bib2DT <- function(file.bib, to_sort = FALSE){
 
   line_by_entry_no <- cumsum(is_at)
   keys <- gsub("^.*\\{(.*),$", "\\1", bib[is_at], perl = TRUE)
+  
+  if (uniqueN(keys) != n_ats){
+    stop("Number of unique keys not equal to number of key entries.")
+  }
 
   is_field <-
     !(is_at | is_closing | bib == "")

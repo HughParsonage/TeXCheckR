@@ -2,6 +2,6 @@
 
   # CRAN Note avoidance
   if(getRversion() >= "2.15.1")
-    utils::globalVariables(c(".", "correctly_spelled_words", "wrongly_spelled_words"))
+    utils::globalVariables(c(".", "correctly_spelled_words", "wrongly_spelled_words", "valid_English_contractions", "CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE"))
 
 }

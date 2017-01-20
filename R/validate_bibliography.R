@@ -22,7 +22,9 @@ validate_bibliography <- function(path = ".", file = NULL){
   if (any(grepl(".[}]$", bib, perl = TRUE))){
     line_no <- grep(".[}]$", bib, perl = TRUE)[[1]]
     .report_error(line_no = line_no,
-                  context = )
+                  context = bib[line_no],
+                  error_message = "Each field line in .bib must end with a comma (to allow reordering).")
+    stop("Each field line in .bib must end with a comma (to allow reordering).")
   }
 
   # Abbreviated names

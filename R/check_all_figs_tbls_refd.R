@@ -7,6 +7,8 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
 
   lines <- readLines(filename, encoding = "UTF-8")
   
+  lines <- gsub("[%].*$", "", lines, perl = TRUE)
+  
   # Check all captions have a label
   caption_without_label <- 
     and(grepl("\\caption{", lines, fixed = TRUE), 
@@ -18,10 +20,6 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
                   error_message = "\\caption present without label. (All captions must have a \\label and the label must occur on the same line.)")
     stop("\\caption{} present without \\label{}")
   }
-
-  # Check all labels have a reference
-  lines <- gsub("[%].*$", "", lines, perl = TRUE)
-  
   
   inputs_of_filename <- inputs_of(filename)
   # Only have to put all the lines into one object;

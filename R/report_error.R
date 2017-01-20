@@ -12,7 +12,8 @@
 #' to comply with (reasonable) CRAN requirements to not interfere with the user's 
 #' environment.
 #' @importFrom twitteR updateStatus
-#' @param extra_cat Character vector extra messages.
+#' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
+#' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 
 #' @rdname report_error
 report2console <- function(line_no = NULL,
@@ -21,13 +22,14 @@ report2console <- function(line_no = NULL,
                            build_status = NULL,
                            authors = NULL,
                            report_name = NULL,
-                           extra_cat = NULL){
+                           extra_cat_ante = NULL,
+                           extra_cat_post = NULL){
   # Printing requirements:
   ## 1. Cross
   ## 2. Line no (if applicable)
   ## 3. Context
   ## 4. Suggeston.
-  cat(bgRed(symbol$cross), " ", line_no, ": ", context, unlist(extra_cat), sep = "")
+  cat(bgRed(symbol$cross), " ", line_no, ": ", unlist(extra_cat_ante), context, unlist(extra_cat_post), sep = "")
 }
 
 
@@ -39,7 +41,8 @@ report2twitter <- function(preamble = NULL,
                            line_no = NULL,
                            context = NULL,
                            authors,
-                           extra_cat = NULL,
+                           extra_cat_ante = NULL,
+                           extra_cat_post = NULL,
                            globalEnv = NULL){
   if (is.null(globalEnv)){
     stop("Set globalEnv = .GlobalEnv when using this function so tweets can be deleted if sent by accident.")
@@ -84,7 +87,8 @@ report2gmail <- function(preamble = NULL,
                          line_no = NULL,
                          context = NULL,
                          authors,
-                         extra_cat = NULL){
+                         extra_cat_ante = NULL,
+                         extra_cat_post = NULL){
   name <- NULL
   email_addresses <- 
     Grattan_staff[name %in% authors] %>%

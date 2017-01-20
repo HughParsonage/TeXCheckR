@@ -9,14 +9,15 @@
 \usage{
 report2console(line_no = NULL, context = NULL, error_message = NULL,
   build_status = NULL, authors = NULL, report_name = NULL,
-  extra_cat = NULL)
+  extra_cat_ante = NULL, extra_cat_post = NULL)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, extra_cat = NULL,
-  globalEnv = NULL)
+  line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,
+  extra_cat_post = NULL, globalEnv = NULL)
 
 report2gmail(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, extra_cat = NULL)
+  line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,
+  extra_cat_post = NULL)
 }
 \arguments{
 \item{line_no}{The line number locating the source of the error.}
@@ -31,7 +32,9 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 
 \item{report_name}{Name of project whose errors are being reported.}
 
-\item{extra_cat}{Character vector extra messages.}
+\item{extra_cat_ante}{Character vector extra messages (placed before \code{context}).}
+
+\item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
 
 \item{preamble}{Message to appear before other messages.}
 

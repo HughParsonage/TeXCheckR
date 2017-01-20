@@ -187,6 +187,8 @@ check_spelling <- function(filename,
          "",
          lines,
          perl = TRUE)
+  
+  lines <- remove_valid_contractions(lines)
 
   # Ignore phantoms
   lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
@@ -237,54 +239,67 @@ check_spelling <- function(filename,
   are_misspelt <- vapply(parsed, not_length0, logical(1))
 
   if (any(are_misspelt)){
+    good_words <- c(correctly_spelled_words)
+    # Detect big words first
+    good_words <- good_words[order(-nchar(good_words))]
+    gwp <- sprintf("(?:\\b%s\\b)",
+                   paste0(good_words,
+                          collapse = "\\b)|(?:\\b"))
+    
+    GWP <- sprintf("(?:\\b%s\\b)",
+                   paste0(c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, words_to_add, known.correct),
+                          collapse = "\\b)|(?:\\b"))
     for (line_w_misspell in which(are_misspelt)){
-      bad_words <- parsed[[line_w_misspell]]
-      for (bad_word in bad_words){
-        if (bad_word %notin% c(correctly_spelled_words, words_to_add, known.correct)){
-          bad_line <- lines[[line_w_misspell]]
-          bad_line_corrected <- bad_line
-          for (good_word in c(correctly_spelled_words, words_to_add, known.correct)){
-            bad_line_corrected <- gsub(paste0("\\b", good_word, "\\b"),
-                                       "",
-                                       bad_line_corrected,
-                                       perl = TRUE,
-                                       ignore.case = TRUE)
-          }
-          recheck <- hunspell(bad_line_corrected,
-                              format = "latex",
-                              dict = dictionary("en_GB"))
-
-          if (not_length0(recheck[[1]])){
-            nchar_of_badword <- nchar(bad_word)
-
-            chars_b4_badword <-
-              gsub(sprintf("^(.*)(?:%s).*$", bad_word),
-                   "\\1",
-                   lines[[line_w_misspell]],
-                   perl = TRUE) %>%
-              nchar
-
-            context <-
-              if (chars_b4_badword + nchar_of_badword < 80){
-                substr(lines[[line_w_misspell]], 0, 80)
-              } else {
-                lines[[line_w_misspell]]
-              }
-
-            .report_error(line_no = line_w_misspell,
-                          context = context,
-                          error_message = paste0(c("Spellcheck failed:'", bad_word, "'",
-                                                   collapse = NULL)),
-                          extra_cat = c("\n",
-                                        rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
-                                        rep("^", nchar_of_badword),
-                                        "\n"))
-            stop("Spellcheck failed on above line with '", bad_word, "'")
-          }
+      # If bad words %in% ... don't bother checking
+      bad_words <- setdiff(parsed[[line_w_misspell]],
+                           c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, correctly_spelled_words, words_to_add, known.correct))
+      if (not_length0(bad_words)){
+        bad_line <- lines[[line_w_misspell]]
+        bad_line_corrected <- gsub(gwp,
+                                   "",
+                                   bad_line,
+                                   perl = TRUE,
+                                   ignore.case = TRUE)
+        bad_line_corrected <- gsub(GWP,
+                                   "",
+                                   bad_line_corrected,
+                                   perl = TRUE,
+                                   ignore.case = FALSE)
+        recheck <- hunspell(bad_line_corrected,
+                            format = "latex",
+                            dict = dictionary("en_GB"))
+        
+        if (not_length0(recheck[[1]])){
+          bad_word <- bad_words[[1]]
+          nchar_of_badword <- nchar(bad_word)
+          
+          chars_b4_badword <-
+            gsub(sprintf("^(.*)(?:%s).*$", bad_word),
+                 "\\1",
+                 lines[[line_w_misspell]],
+                 perl = TRUE) %>%
+            nchar
+          
+          context <-
+            if (chars_b4_badword + nchar_of_badword < 80){
+              substr(lines[[line_w_misspell]], 0, 80)
+            } else {
+              lines[[line_w_misspell]]
+            }
+          
+          .report_error(line_no = line_w_misspell,
+                        context = context,
+                        error_message = paste0(c("Spellcheck failed:'", bad_word, "'",
+                                                 collapse = NULL)),
+                        extra_cat = c("\n",
+                                      rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
+                                      rep("^", nchar_of_badword),
+                                      "\n"))
+          stop("Spellcheck failed on above line with '", bad_word, "'")
         }
       }
     }
   }
-
+  
   return(invisible(NULL))
 }

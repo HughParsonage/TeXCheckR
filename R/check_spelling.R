@@ -255,6 +255,7 @@ check_spelling <- function(filename,
                            c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, correctly_spelled_words, words_to_add, known.correct))
       if (not_length0(bad_words)){
         bad_line <- lines[[line_w_misspell]]
+        # For timing
         bad_line_corrected <- gsub(gwp,
                                    "",
                                    bad_line,

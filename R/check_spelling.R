@@ -292,10 +292,10 @@ check_spelling <- function(filename,
                         context = context,
                         error_message = paste0(c("Spellcheck failed:'", bad_word, "'",
                                                  collapse = NULL)),
-                        extra_cat = c("\n",
-                                      rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
-                                      rep("^", nchar_of_badword),
-                                      "\n"))
+                        extra_cat_post = c("\n",
+                                           rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
+                                           rep("^", nchar_of_badword),
+                                           "\n"))
           stop("Spellcheck failed on above line with '", bad_word, "'")
         }
       }

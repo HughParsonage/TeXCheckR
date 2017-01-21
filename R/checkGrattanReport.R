@@ -54,19 +54,13 @@ checkGrattanReport <- function(path = ".",
     stop("path must contain one and only one .tex file.")
   }
   filename <- tex_file[[1]]
-
-  the_authors <-
-    get_authors(filename)
-
-  cat("I see the following as authors:",
-      the_authors, sep = "\n")
-
+  
   .report_error <- function(...){
     report2console(...)
   }
   
   report_name <- gsub("^(.*)\\.tex$", "\\1", tex_file)
-
+  
   switch(output_method, 
          "twitter" = {
            stopifnot(file.exists("~/twitteR/grattan-reporter.R"))
@@ -94,9 +88,15 @@ checkGrattanReport <- function(path = ".",
            }
          })
   
+  check_preamble(filename, .report_error, final = final, release = release)
+
+  the_authors <-
+    get_authors(filename)
+
+  cat("I see the following as authors:",
+      the_authors, sep = "\n")
+  
   cat("\n")
-  
-  
   
   check_input <- function(filename){
     inputs <- inputs_of(filename)

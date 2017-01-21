@@ -19,6 +19,7 @@
 #' @importFrom dplyr lag
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed
+#' @importFrom grDevices embedFonts
 
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
@@ -26,10 +27,6 @@ checkGrattanReport <- function(path = ".",
                                final = FALSE,
                                release = FALSE,
                                .proceed_after_rerun){
-  if (!identical(release, FALSE)){
-    # stop("Release not implemented.")
-  }
-  
   if (release && (!final || !compile)){
     stop("release = TRUE but final and compile are not both TRUE also.")
   }

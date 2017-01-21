@@ -176,6 +176,7 @@ checkGrattanReport <- function(path = ".",
   
   if (compile){
     cat("Invoking pdflatex\n")
+    full_dir_of_path <- getwd()
     move_to <- function(to.dir, from.dir = "."){
       x <- list.files(path = from.dir,
                       pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$",
@@ -248,10 +249,12 @@ checkGrattanReport <- function(path = ".",
       }
       # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
       embedFonts(gsub("\\.tex$", ".pdf", filename),
-                 outfile = file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+                 outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
       cat(green(symbol$tick, "Fonts embedded.\n"))
+      
     }
     
+    setwd(full_dir_of_path)
     cat("\n")
   }
   

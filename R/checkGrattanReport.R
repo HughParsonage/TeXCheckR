@@ -144,11 +144,11 @@ checkGrattanReport <- function(path = ".",
     .[grepl("\\addbibresource", ., fixed = TRUE)] %>%
     trimws %>%
     gsub("^\\\\addbibresource[{](.+\\.bib)[}]$", "\\1", .)
+  
   for (bib_file in bib_files){
     validate_bibliography(file = bib_file)
+    cat(green(symbol$tick, bib_file, "validated.\n"))
   }
-
-  cat(green(symbol$tick, "Bibliography validated.\n"))
 
   check_labels(filename)
 

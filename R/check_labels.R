@@ -8,7 +8,6 @@
 #' \code{sec:},
 #' \code{subsec:},
 #' \code{subsubsec:},
-#' \code{subsubsec:},
 #' \code{para:}
 #' \code{paragraph:}.
 #' Checks also that chapter labels are marked with \code{chap:}.

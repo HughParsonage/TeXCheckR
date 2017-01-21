@@ -26,7 +26,6 @@ Checks each label has a prefix and the prefix is one of the following:
 \code{sec:},
 \code{subsec:},
 \code{subsubsec:},
-\code{subsubsec:},
 \code{para:}
 \code{paragraph:}.
 Checks also that chapter labels are marked with \code{chap:}.

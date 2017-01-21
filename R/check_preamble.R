@@ -116,20 +116,23 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       as.integer
     
     if (length(isbn) != 13){
+      .report_error(context = isbn_line,
+                    error_message = "ISBN provided did not have 13 digits.")
       stop("ISBN provided did not have 13 digits.")
     }
     
     w <- c(1L, 3L, 1L, 3L, 1L, 3L, 1L, 3L, 1L, 3L, 1L, 3L, 1L)
     if (sum(isbn * w) %% 10 != 0){
       check_sum <- sum(isbn * w) %% 10
-      .report_error(error_message = "Invalid ISBN. Checksum was ", check_sum)
-      stop("Invalid ISBN.")
+      .report_error(context = isbn_line, 
+                    error_message = paste0("Invalid ISBN. Checksum was ", check_sum))
+      stop(paste0("Invalid ISBN. Checksum was ", check_sum))
     }
     
     # Check todonotes hl
     todonotes_setinel <- function(filename){
       lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
-      if (any(grepl("usepackage(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
+      if (any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
         .report_error(error_message = paste0("final = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                                              "most likely due to \\usepackage{todonotes}. ",
                                              "These strings are not permitted anywhere in the project ",

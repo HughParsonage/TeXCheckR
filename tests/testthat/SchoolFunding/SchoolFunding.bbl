@@ -62,7 +62,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{6401.0 - Consumer Price Index, Australia, Sep 2016}
-      \field{type}{Generic}
       \field{year}{2016}
       \verb{url}
       \verb http://www.abs.gov.au/ausstats/abs@.nsf/mf/6401.0
@@ -87,7 +86,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{6345.0 - Wage Price Index, Australia, Sep 2016}
-      \field{type}{Generic}
       \field{year}{2016}
       \verb{url}
       \verb http://www.abs.gov.au/ausstats/abs@.nsf/mf/6345.0
@@ -116,7 +114,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Eight Questions on Teacher Preparation: What Does the Research Say? A Summary of the Findings}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2003}
       \verb{url}
       \verb http://eric.ed.gov/?id=ED479051
@@ -155,7 +153,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Closing the Talent Gap: Attracting and Retaining Top-Third Graduates to Careers in Teaching}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2010}
       \verb{url}
       \verb http://mckinseyonsociety.com/closing-the-talent-gap/
@@ -184,7 +182,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Does Money Matter in Education?}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb http://www.shankerinstitute.org/resource/does-money-matter-second-edition
@@ -249,7 +247,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{How the World's Best-Performing School Systems Come out on Top}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2007}
       \verb{url}
       \verb https://mckinseyonsociety.com/downloads/reports/Education/Worlds_School_Systems_Final.pdf
@@ -291,7 +289,7 @@
       \verb http://www.ccsso.org/Resources/Publications/Effects_of_Teacher_Professional_Development_Gains_in_Student_Achievement_How_Meta_Analysis_Provides_Evidence_Useful_to_Education_Leaders_.html
       \endverb
     \endentry
-    \entry{Boston2016WhatGonskiReally}{article}{}
+    \entry{Boston-2016-WhatGonskiReally}{article}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=22c4cb2e102ff2d9bace053c051a060b}{%
            family={Boston},
@@ -310,9 +308,9 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{day}{2}
+      \field{day}{6}
       \field{journaltitle}{Inside Story}
-      \field{month}{11}
+      \field{month}{9}
       \field{title}{What Gonski Really Meant, and How that's been Forgotten Almost Everywhere}
       \field{year}{2016}
       \field{dateera}{ce}
@@ -348,34 +346,10 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{One School Does Not Fit All}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb https://www.cis.org.au/publications/research-reports/one-school-does-not-fit-all
-      \endverb
-    \endentry
-    \entry{Treasury2016BudgetPapers2016}{misc}{}
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=e11a10a6cea6b0f6ff01808948797a38}{%
-           family={{Budget Papers}},
-           familyi={B\bibinitperiod}}}%
-      }
-      \strng{namehash}{e11a10a6cea6b0f6ff01808948797a38}
-      \strng{fullhash}{e11a10a6cea6b0f6ff01808948797a38}
-      \strng{authornamehash}{e11a10a6cea6b0f6ff01808948797a38}
-      \strng{authorfullhash}{e11a10a6cea6b0f6ff01808948797a38}
-      \field{labelalpha}{Budget Papers}
-      \field{sortinit}{B}
-      \field{sortinithash}{5f6fa000f686ee5b41be67ba6ff7962d}
-      \field{labeldatesource}{year}
-      \true{singletitle}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Budget Papers 2016-17}
-      \field{type}{Government Document}
-      \field{year}{2016}
-      \verb{url}
-      \verb http://budget.gov.au/2016-17/content/
       \endverb
     \endentry
     \entry{Card2002Schoolfinancereform}{article}{}
@@ -402,25 +376,24 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{issn}{0047-2727}
       \field{journaltitle}{Journal of public economics}
       \field{number}{1}
       \field{title}{School finance reform, the distribution of school spending, and the distribution of student test scores}
-      \field{type}{Journal Article}
       \field{volume}{83}
       \field{year}{2002}
       \field{pages}{49\bibrangedash 82}
       \range{pages}{34}
-      \verb{url}
-      \verb http://dx.%%doi.org/10.1016/S0047-2727(00)00177-8
+      \verb{doi}
+      \verb 10.1016/S0047-2727(00)00177-8
       \endverb
-      \warn{\item Datamodel: Entry 'Card2002Schoolfinancereform' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Chetty2011HowDoesYour}{article}{}
       \name{author}{6}{}{%
-        {{uniquename=0,hash=a572726d1f98cd7f95ddf70a094849b5}{%
+        {{uniquename=0,hash=7a853740afbc544905334cf607b3cd51}{%
            family={Chetty},
            familyi={C\bibinitperiod},
-           given={R.},
+           given={Raj},
            giveni={R\bibinitperiod}}}%
         {{uniquename=0,hash=028996ab2158494beec16905091087f3}{%
            family={Friedman},
@@ -448,10 +421,10 @@
            given={D.},
            giveni={D\bibinitperiod}}}%
       }
-      \strng{namehash}{be0ba2373d664979543b8914c68e48a8}
-      \strng{fullhash}{5cd6b1a8c548f6a38986df108f1bec03}
-      \strng{authornamehash}{be0ba2373d664979543b8914c68e48a8}
-      \strng{authorfullhash}{5cd6b1a8c548f6a38986df108f1bec03}
+      \strng{namehash}{de9f176c59c95a4d2de134921515d461}
+      \strng{fullhash}{e9ac666324b388d2646457ad33414a3d}
+      \strng{authornamehash}{de9f176c59c95a4d2de134921515d461}
+      \strng{authorfullhash}{e9ac666324b388d2646457ad33414a3d}
       \field{labelalpha}{Chetty+}
       \field{sortinit}{C}
       \field{sortinithash}{095692fd22cc3c74d7fe223d02314dbd}
@@ -462,15 +435,16 @@
       \field{journaltitle}{The Quarterly Journal of Economics}
       \field{number}{4}
       \field{title}{How Does Your Kindergarten Classroom Affect Your Earnings? Evidence from Project Star}
-      \field{type}{Journal Article}
       \field{volume}{126}
       \field{year}{2011}
       \field{pages}{1593\bibrangedash 1660}
       \range{pages}{68}
+      \verb{doi}
+      \verb 10.1093/qje/qjr041
+      \endverb
       \verb{url}
       \verb http://qje.oxfordjournals.org/content/126/4/1593.abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Chetty2011HowDoesYour' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{CIRES2015LowSESSchool}{report}{}
       \name{author}{1}{}{%
@@ -493,13 +467,13 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Low SES School Communities National Partnership: Evaluation of Staffing, Management and Accountability Initiatives}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2015}
       \verb{url}
       \verb https://www.cese.nsw.gov.au/images/stories/PDF/LSES_NP_Final_Report.pdf
       \endverb
     \endentry
-    \entry{Cobbold2014MoneyMattersEducation}{article}{}
+    \entry{Cobbold2014MoneyMattersEducation}{report}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=6cfc737c6a8ea164378d7750d90459b0}{%
            family={Cobbold},
@@ -521,15 +495,12 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Education Research Brief}
       \field{title}{Money Matters in Education}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2014}
       \verb{url}
       \verb http://www.saveourschools.com.au/file_download/165
       \endverb
-      \warn{\item Datamodel: Entry 'Cobbold2014MoneyMattersEducation' (SchoolFunding.bib): Invalid field 'institution' for entrytype 'article'}
-      \warn{\item Datamodel: Entry 'Cobbold2014MoneyMattersEducation' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Coe2014WhatMakesGreat}{report}{}
       \name{author}{4}{}{%
@@ -569,7 +540,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{What Makes Great Teaching? Review of the Underpinning Research}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2014}
       \verb{url}
       \verb http://www.suttontrust.com/researcharchive/great-teaching/
@@ -629,10 +600,8 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Equality of Educational Opportunity [summary report]}
-      \field{type}{Book}
       \field{volume}{2}
       \field{year}{1966}
-      \warn{\item Datamodel: Entry 'Coleman1966EqualityEducationalOpportunity' (SchoolFunding.bib): Invalid field 'type' for entrytype 'book'}
     \endentry
     \entry{Conifer2016GlobalEducationReport}{article}{}
       \name{author}{2}{}{%
@@ -693,7 +662,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Imperatives in Schools Funding: Equity, sustainability and achievement}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2015}
       \verb{url}
       \verb http://research.acer.edu.au/aer/14/
@@ -705,13 +674,13 @@
       \field{sortinithash}{095692fd22cc3c74d7fe223d02314dbd}
       \field{labeldatesource}{year}
       \field{labeltitlesource}{title}
-      \field{title}{{Australian Education Act 2013}}
+      \field{title}{Australian Education Act 2013}
       \field{year}{Cth}
       \verb{url}
       \verb https://www.education.gov.au/australian-education-act-2013
       \endverb
     \endentry
-    \entry{Daley2015FiscalChallengesAustralia}{report}{}
+    \entry{DaleyWood2015FiscalChallenges}{report}{}
       \name{author}{2}{}{%
         {{uniquename=0,hash=c066536e9842423e2d78d979ebeba9a7}{%
            family={Daley},
@@ -738,37 +707,13 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{number}{Working Paper No. 2015-4}
       \field{title}{Fiscal Challenges for Australia}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2015}
       \verb{url}
       \verb https://grattan.edu.au/report/fiscal-challenges-for-australia/
       \endverb
-    \endentry
-    \entry{Education2015EarlyActionSuccess}{report}{}
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=2320617b393cc4747802cf53aa793d28}{%
-           family={{Department of Education and Communities}},
-           familyi={D\bibinitperiod}}}%
-      }
-      \strng{namehash}{2320617b393cc4747802cf53aa793d28}
-      \strng{fullhash}{2320617b393cc4747802cf53aa793d28}
-      \strng{authornamehash}{2320617b393cc4747802cf53aa793d28}
-      \strng{authorfullhash}{2320617b393cc4747802cf53aa793d28}
-      \field{labelalpha}{Department of Education and Communities}
-      \field{sortinit}{D}
-      \field{sortinithash}{d10b5413de1f3d197b20897dd0d565bb}
-      \field{labeldatesource}{year}
-      \true{singletitle}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Early Action for Success: Report on 2014/15 Activity}
-      \field{type}{Report}
-      \field{year}{2015}
-      \verb{url}
-      \verb https://www.det.nsw.edu.au/media/downloads/about-us/our-reforms/early-action-for-success/Early-Action-for-Success-Report-2015.pdf
-      \endverb
-      \warn{\item Datamodel: Entry 'Education2015EarlyActionSuccess' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Desimone2009ImprovingImpactStudies}{article}{}
       \name{author}{1}{}{%
@@ -867,6 +812,32 @@
       \verb http://www.bca.com.au/publications/teaching-talent-the-best-teachers-for-australias-classrooms
       \endverb
     \endentry
+    \entry{Hattie2009VisibleLearningArticle}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=162ca32b947f131bf3e885dc66a43cd9}{%
+           family={Fernström},
+           familyi={F\bibinitperiod},
+           given={Tina},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{162ca32b947f131bf3e885dc66a43cd9}
+      \strng{fullhash}{162ca32b947f131bf3e885dc66a43cd9}
+      \strng{authornamehash}{162ca32b947f131bf3e885dc66a43cd9}
+      \strng{authorfullhash}{162ca32b947f131bf3e885dc66a43cd9}
+      \field{labelalpha}{Fernström}
+      \field{sortinit}{F}
+      \field{sortinithash}{276475738cc058478c1677046f857703}
+      \field{labeldatesource}{year}
+      \true{singletitle}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Göteborg Utbildningsförvaltningen}
+      \field{title}{Interview with John Hattie on Visible Learning}
+      \field{year}{2015}
+      \verb{url}
+      \verb http://www.workingoutwhatworks.com/en-GB/Magazine/2015/2/John_Hattie_interview
+      \endverb
+    \endentry
     \entry{Fullan2011ChoosingWrongDrivers}{book}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=6f082d871f3e80b8b314fc4cb1cd8aa1}{%
@@ -936,6 +907,9 @@
            given={Martina},
            giveni={M\bibinitperiod}}}%
       }
+      \list{institution}{1}{%
+        {Centre for the Economics of Education}%
+      }
       \strng{namehash}{cde303ee0c5de065bc56688cb3e6fee3}
       \strng{fullhash}{2c107b6c5cb5f886bb9f84f480c76260}
       \strng{authornamehash}{cde303ee0c5de065bc56688cb3e6fee3}
@@ -948,13 +922,13 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{month}{9}
       \field{title}{Does additional spending help urban schools? An evaluation using boundary discontinuities}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2012}
       \verb{url}
-      \verb https://ssrn.com/abstract=1994344
+      \verb http://cee.lse.ac.uk/ceedps/ceedp128.pdf
       \endverb
-      \warn{\item Datamodel: Entry 'Gibbons2012Doesadditionalspending' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Gibbons2013effectsresourcesschool}{report}{}
       \name{author}{2}{}{%
@@ -969,6 +943,9 @@
            given={Sandra},
            giveni={S\bibinitperiod}}}%
       }
+      \list{institution}{1}{%
+        {Centre for Economic Performance, LSE}%
+      }
       \strng{namehash}{cde303ee0c5de065bc56688cb3e6fee3}
       \strng{fullhash}{f7f5a1e306bf92cf0f63cc2e13e4dba0}
       \strng{authornamehash}{cde303ee0c5de065bc56688cb3e6fee3}
@@ -981,14 +958,12 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{number}{2042-2695}
       \field{title}{The effects of resources across school phases: A summary of recent evidence}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2013}
       \verb{url}
       \verb http://eprints.lse.ac.uk/51567/
       \endverb
-      \warn{\item Datamodel: Entry 'Gibbons2013effectsresourcesschool' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Gonski2011ReviewFundingSchooling}{report}{}
       \name{author}{6}{}{%
@@ -1046,16 +1021,16 @@
     \endentry
     \entry{Goss2016SchoolFundingRose}{article}{}
       \name{author}{1}{}{%
-        {{uniquename=0,hash=cf723fa6eb96af801bc87d5befdc4e20}{%
+        {{uniquename=0,hash=edfe703451431a1ad5da7b2de3959e7c}{%
            family={Goss},
            familyi={G\bibinitperiod},
-           given={P},
+           given={Peter},
            giveni={P\bibinitperiod}}}%
       }
-      \strng{namehash}{cf723fa6eb96af801bc87d5befdc4e20}
-      \strng{fullhash}{cf723fa6eb96af801bc87d5befdc4e20}
-      \strng{authornamehash}{cf723fa6eb96af801bc87d5befdc4e20}
-      \strng{authorfullhash}{cf723fa6eb96af801bc87d5befdc4e20}
+      \strng{namehash}{edfe703451431a1ad5da7b2de3959e7c}
+      \strng{fullhash}{edfe703451431a1ad5da7b2de3959e7c}
+      \strng{authornamehash}{edfe703451431a1ad5da7b2de3959e7c}
+      \strng{authorfullhash}{edfe703451431a1ad5da7b2de3959e7c}
       \field{labelalpha}{Goss}
       \field{sortinit}{G}
       \field{sortinithash}{618d986594b7198ba52cf8b00d348f3f}
@@ -1072,34 +1047,34 @@
     \endentry
     \entry{Goss2015TargetedTeachingHow}{report}{}
       \name{author}{4}{}{%
-        {{uniquename=0,hash=9177d937e377a9efe3b53e8b631da8a9}{%
+        {{uniquename=0,hash=edfe703451431a1ad5da7b2de3959e7c}{%
            family={Goss},
            familyi={G\bibinitperiod},
-           given={P.},
+           given={Peter},
            giveni={P\bibinitperiod}}}%
-        {{uniquename=0,hash=a6b055e4c101c5b8a5ed939fb6c0ee00}{%
+        {{uniquename=0,hash=d11b7943d98901fd5f05977f9a729007}{%
            family={Hunter},
            familyi={H\bibinitperiod},
-           given={J.},
+           given={Joanna},
            giveni={J\bibinitperiod}}}%
-        {{uniquename=0,hash=b6ce5567249e1ba80e587985898e0412}{%
+        {{uniquename=0,hash=563232639995cbd3f0f253e8f951e466}{%
            family={Romanes},
            familyi={R\bibinitperiod},
-           given={D.},
+           given={Danielle},
            giveni={D\bibinitperiod}}}%
-        {{uniquename=0,hash=e1626f8e6cdf55adbd54d765267eae6c}{%
+        {{uniquename=0,hash=4bda215bfa2fae8d3a46022889f28e14}{%
            family={Parsonage},
            familyi={P\bibinitperiod},
-           given={H.},
+           given={Hugh},
            giveni={H\bibinitperiod}}}%
       }
       \list{institution}{1}{%
         {Grattan Institute}%
       }
-      \strng{namehash}{79810c700c97b59c92bcc24f60ab5b5e}
-      \strng{fullhash}{574e3a3e2c92a64c6d2a9fb11c7c267e}
-      \strng{authornamehash}{79810c700c97b59c92bcc24f60ab5b5e}
-      \strng{authorfullhash}{574e3a3e2c92a64c6d2a9fb11c7c267e}
+      \strng{namehash}{abf184eee3b7cac23158c6ba019e1991}
+      \strng{fullhash}{3ca24c21530d7786ebac5099b0f6bde1}
+      \strng{authornamehash}{abf184eee3b7cac23158c6ba019e1991}
+      \strng{authorfullhash}{3ca24c21530d7786ebac5099b0f6bde1}
       \field{labelalpha}{Goss+}
       \field{sortinit}{G}
       \field{sortinithash}{618d986594b7198ba52cf8b00d348f3f}
@@ -1109,56 +1084,49 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Targeted Teaching: How Better Use of Data can Improve Student Learning}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2015}
       \verb{url}
       \verb https://grattan.edu.au/report/targeted-teaching-how-better-use-of-data-can-improve-student-learning/
       \endverb
     \endentry
-    \entry{Goss2016Wideninggapswhat}{report}{}
-      \name{author}{4}{}{%
-        {{uniquename=0,hash=9177d937e377a9efe3b53e8b631da8a9}{%
+    \entry{Goss-2016-Widening-gaps-NAPLAN}{report}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=edfe703451431a1ad5da7b2de3959e7c}{%
            family={Goss},
            familyi={G\bibinitperiod},
-           given={P.},
+           given={Peter},
            giveni={P\bibinitperiod}}}%
-        {{uniquename=0,hash=4876d0a041b5e9dd36b936b2b2292b30}{%
+        {{uniquename=0,hash=e6136997c03e5b6e67bbaf4b4eba2a8e}{%
            family={Sonnemann},
            familyi={S\bibinitperiod},
-           given={J.},
+           given={Julie},
            giveni={J\bibinitperiod}}}%
-        {{uniquename=0,hash=2b7dc5cee7b22b9def34e3441448c5b5}{%
-           family={Chisholm},
-           familyi={C\bibinitperiod},
-           given={C.},
-           giveni={C\bibinitperiod}}}%
-        {{uniquename=0,hash=d3de31438816ebbc16c604e40bdb1511}{%
-           family={Nelson},
-           familyi={N\bibinitperiod},
-           given={L.},
-           giveni={L\bibinitperiod}}}%
       }
       \list{institution}{1}{%
         {Grattan Institute}%
       }
-      \strng{namehash}{79810c700c97b59c92bcc24f60ab5b5e}
-      \strng{fullhash}{5bfae54f6a9b4aba808d6fedec6fef4f}
-      \strng{authornamehash}{79810c700c97b59c92bcc24f60ab5b5e}
-      \strng{authorfullhash}{5bfae54f6a9b4aba808d6fedec6fef4f}
+      \strng{namehash}{abf184eee3b7cac23158c6ba019e1991}
+      \strng{fullhash}{f0636cb603c32f826cef698ad211645e}
+      \strng{authornamehash}{abf184eee3b7cac23158c6ba019e1991}
+      \strng{authorfullhash}{f0636cb603c32f826cef698ad211645e}
       \field{labelalpha}{Goss+}
       \field{sortinit}{G}
       \field{sortinithash}{618d986594b7198ba52cf8b00d348f3f}
-      \field{labeldatesource}{year}
+      \field{labeldatesource}{}
       \field{extraalpha}{2}
       \true{singletitle}
       \field{labelnamesource}{author}
-      \field{labeltitlesource}{shorttitle}
-      \field{shorttitle}{Widening gaps}
+      \field{labeltitlesource}{title}
+      \field{day}{21}
+      \field{month}{3}
+      \field{number}{Report No. 2016-3}
       \field{title}{Widening gaps: what NAPLAN tells us about student progress}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2016}
+      \field{dateera}{ce}
       \verb{url}
-      \verb https://grattan.edu.au/report/widening-gaps/
+      \verb http://grattan.edu.au/report/widening-gaps/
       \endverb
     \endentry
     \entry{Greenwald1996EffectSchoolResources}{article}{}
@@ -1193,15 +1161,16 @@
       \field{journaltitle}{Review of Educational Research}
       \field{number}{3}
       \field{title}{The Effect of School Resources on Student Achievement}
-      \field{type}{Journal Article}
       \field{volume}{66}
       \field{year}{1996}
       \field{pages}{361\bibrangedash 396}
       \range{pages}{36}
+      \verb{doi}
+      \verb 10.2307/1170528
+      \endverb
       \verb{url}
       \verb http://rer.sagepub.com/content/66/3/361.abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Greenwald1996EffectSchoolResources' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Guryan2001DoesMoneyMatter}{report}{}
       \name{author}{1}{}{%
@@ -1210,6 +1179,9 @@
            familyi={G\bibinitperiod},
            given={Jonathan},
            giveni={J\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {National Bureau of Economic Research}%
       }
       \strng{namehash}{afaf99f2cd8558fc742a3a4428881909}
       \strng{fullhash}{afaf99f2cd8558fc742a3a4428881909}
@@ -1222,13 +1194,17 @@
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{month}{5}
+      \field{number}{8269}
       \field{title}{Does Money Matter? Regression-Discontinuity Estimates from Education Finance Reform in Massachusetts}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2001}
+      \verb{doi}
+      \verb 10.3386/w8269
+      \endverb
       \verb{url}
       \verb http://www.nber.org/papers/w8269
       \endverb
-      \warn{\item Datamodel: Entry 'Guryan2001DoesMoneyMatter' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Hanushek1986EconomicsSchoolingProduction}{article}{}
       \name{author}{1}{}{%
@@ -1252,7 +1228,6 @@
       \field{journaltitle}{Journal of Economic Literature}
       \field{number}{3}
       \field{title}{The Economics of Schooling: Production and Efficiency in Public Schools}
-      \field{type}{Journal Article}
       \field{volume}{24}
       \field{year}{1986}
       \field{pages}{1141\bibrangedash 1177}
@@ -1260,7 +1235,6 @@
       \verb{url}
       \verb http://www.jstor.org.ezp.lib.unimelb.edu.au/stable/2725865
       \endverb
-      \warn{\item Datamodel: Entry 'Hanushek1986EconomicsSchoolingProduction' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Hattie2008visiblelearningsynthesis}{book}{}
       \name{author}{1}{}{%
@@ -1322,7 +1296,6 @@
       \field{journaltitle}{Educational Researcher}
       \field{number}{3}
       \field{title}{An Exchange: Part I: Does Money Matter? A Meta-Analysis of Studies of the Effects of Differential School Inputs on Student Outcomes}
-      \field{type}{Journal Article}
       \field{volume}{23}
       \field{year}{1994}
       \field{pages}{5\bibrangedash 14}
@@ -1330,7 +1303,6 @@
       \verb{url}
       \verb http://edr.sagepub.com/content/23/3/5.abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Hedges1994ExchangePartI' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Helal2012SchoolResourcesAutonomy}{report}{}
       \name{author}{1}{}{%
@@ -1356,7 +1328,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{School Resources, Autonomy and Student Achievement: Evidence from a Regression Discontinuity Design}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2012}
       \verb{url}
       \verb http://www.sole-jole.org/13470.pdf
@@ -1394,7 +1366,6 @@
       \field{journaltitle}{American Educational Research Journal}
       \field{number}{2}
       \field{title}{Effects of Teachers' Mathematical Knowledge for Teaching on Student Achievement}
-      \field{type}{Journal Article}
       \field{volume}{42}
       \field{year}{2005}
       \field{pages}{371\bibrangedash 406}
@@ -1402,7 +1373,6 @@
       \verb{url}
       \verb http://www.jstor.org.ezproxy1.library.usyd.edu.au/stable/3699380
       \endverb
-      \warn{\item Datamodel: Entry 'Hill2005EffectsTeachersMathematical' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Huo2016EffectiveStrategiesImproving}{report}{}
       \name{author}{2}{}{%
@@ -1432,7 +1402,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Effective Strategies for Improving Student Learning: Results from the Low SES NP Evaluation}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb https://www.cese.nsw.gov.au/images/stories/PDF/Low_SES_NP_projectreport_NSW.pdf
@@ -1495,7 +1465,6 @@
       \field{journaltitle}{The Quarterly Journal of Economics}
       \field{number}{1}
       \field{title}{The Effects of School Spending on Educational and Economic Outcomes: Evidence from School Finance Reforms}
-      \field{type}{Journal Article}
       \field{volume}{131}
       \field{year}{2016}
       \field{pages}{157\bibrangedash 218}
@@ -1503,7 +1472,6 @@
       \verb{url}
       \verb http://qje.oxfordjournals.org/content/131/1/157.abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Jackson2016EffectsSchoolSpending' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Jensen2010MeasuringWhatMatters}{report}{}
       \name{author}{3}{}{%
@@ -1553,32 +1521,37 @@
            familyi={J\bibinitperiod},
            given={Ben},
            giveni={B\bibinitperiod}}}%
-        {{uniquename=0,hash=3e72ee1b79b6a72647115eed0547b603}{%
-           family={Reichl},
-           familyi={R\bibinitperiod},
-           given={Julian},
-           giveni={J\bibinitperiod}}}%
+        {{uniquename=0,hash=22dc3bacf1b4bddfc50581ea618bb7b3}{%
+           family={Hunter},
+           familyi={H\bibinitperiod},
+           given={Amélie},
+           giveni={A\bibinitperiod}}}%
       }
       \list{institution}{1}{%
         {Grattan Institute}%
       }
       \strng{namehash}{d1b00ba2520865bf822d4452d9d8325b}
-      \strng{fullhash}{4aad1c390ea621c1facac6ebfec96dbb}
+      \strng{fullhash}{39425649a2a6b28f2408a855fc0ad4ac}
       \strng{authornamehash}{d1b00ba2520865bf822d4452d9d8325b}
-      \strng{authorfullhash}{4aad1c390ea621c1facac6ebfec96dbb}
+      \strng{authorfullhash}{39425649a2a6b28f2408a855fc0ad4ac}
       \field{labelalpha}{Jensen+}
       \field{sortinit}{J}
       \field{sortinithash}{c86bd6cced82a15683b396c2169909ef}
       \field{extrayear}{2}
-      \field{labeldatesource}{year}
+      \field{labeldatesource}{}
       \field{extraalpha}{2}
+      \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{day}{24}
+      \field{month}{5}
+      \field{number}{Report No. 2010-3}
       \field{title}{What teachers want: better teacher management}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2010}
+      \field{dateera}{ce}
       \verb{url}
-      \verb http://grattan.edu.au/wp-content/uploads/2014/04/081_report_teacher_appraisal.pdf
+      \verb https://grattan.edu.au/report/what-teachers-want-better-teacher-management/
       \endverb
     \endentry
     \entry{Jensen2011BetterTeacherAppraisal}{report}{}
@@ -1607,13 +1580,14 @@
       \field{extrayear}{1}
       \field{labeldatesource}{year}
       \field{extraalpha}{3}
+      \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Better Teacher Appraisal and Feedback: Improving Performance}
-      \field{type}{Report}
+      \field{title}{Better teacher appraisal and feedback: Improving performance}
+      \field{type}{techreport}
       \field{year}{2011}
       \verb{url}
-      \verb http://grattan.edu.au/wp-content/uploads/2014/04/081_report_teacher_appraisal.pdf
+      \verb https://grattan.edu.au/report/better-teacher-appraisal-and-feedback-improving-performance/
       \endverb
     \endentry
     \entry{Jensen2016SchoolFunding}{article}{}
@@ -1650,7 +1624,6 @@
       \field{journaltitle}{The Australian Economic Review}
       \field{number}{1}
       \field{title}{The Real Issue in School Funding: an Analysis of Increasing Government School Expenditure and Declining Performance}
-      \field{type}{Journal Article}
       \field{volume}{131}
       \field{year}{2011}
       \field{pages}{157\bibrangedash 218}
@@ -1658,7 +1631,6 @@
       \verb{url}
       \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1467-8462.2011.00647.x/abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Jensen2016SchoolFunding' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Jensen2012CatchingUpLearning}{report}{}
       \name{author}{4}{}{%
@@ -1677,30 +1649,33 @@
            familyi={S\bibinitperiod},
            given={Julie},
            giveni={J\bibinitperiod}}}%
-        {{uniquename=0,hash=4930ac2636be938713f181c069b6ac65}{%
+        {{uniquename=0,hash=71ed7414fc958bc29520d055f97d653f}{%
            family={Burns},
            familyi={B\bibinitperiod},
-           given={Tracey},
+           given={Tracy},
            giveni={T\bibinitperiod}}}%
       }
       \list{institution}{1}{%
         {Grattan Institute}%
       }
       \strng{namehash}{d1b00ba2520865bf822d4452d9d8325b}
-      \strng{fullhash}{c89c64d5a39248fa5463c498c4133b6b}
+      \strng{fullhash}{a0c647b859fa5b89ac8e5af5bd74690f}
       \strng{authornamehash}{d1b00ba2520865bf822d4452d9d8325b}
-      \strng{authorfullhash}{c89c64d5a39248fa5463c498c4133b6b}
+      \strng{authorfullhash}{a0c647b859fa5b89ac8e5af5bd74690f}
       \field{labelalpha}{Jensen+}
       \field{sortinit}{J}
       \field{sortinithash}{c86bd6cced82a15683b396c2169909ef}
-      \field{labeldatesource}{year}
+      \field{labeldatesource}{}
       \field{extraalpha}{5}
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Catching Up: Learning from the Best School Systems in East Asia}
-      \field{type}{Report}
+      \field{day}{17}
+      \field{month}{2}
+      \field{title}{Catching up: learning from the best school systems in East Asia}
+      \field{type}{techreport}
       \field{year}{2012}
+      \field{dateera}{ce}
       \verb{url}
       \verb https://grattan.edu.au/report/catching-up-learning-from-the-best-school-systems-in-east-asia/
       \endverb
@@ -1728,6 +1703,10 @@
            given={Katie},
            giveni={K\bibinitperiod}}}%
       }
+      \list{institution}{2}{%
+        {National Center on Education}%
+        {the Economy}%
+      }
       \strng{namehash}{d1b00ba2520865bf822d4452d9d8325b}
       \strng{fullhash}{7ff3ec8eb2ebf07e2f611bcdeacf1c27}
       \strng{authornamehash}{d1b00ba2520865bf822d4452d9d8325b}
@@ -1741,12 +1720,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Beyond PD: Teacher Professional Learning in High-Performing Systems}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb http://www.ncee.org/beyondpd/
       \endverb
-      \warn{\item Datamodel: Entry 'Jensen2016PDTeacherProfessional' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Justman2013WhatsWrongGonski}{report}{}
       \name{author}{2}{}{%
@@ -1777,7 +1755,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{What's Wrong with the Gonski Report: Funding Reform and Student Achievement?}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2013}
       \verb{url}
       \verb https://www.melbourneinstitute.com/downloads/policy_briefs_series/pb2013n02.pdf
@@ -1909,7 +1887,6 @@
       \field{journaltitle}{The Economic Journal}
       \field{number}{485}
       \field{title}{Economic Considerations and Class Size}
-      \field{type}{Journal Article}
       \field{volume}{113}
       \field{year}{2003}
       \field{pages}{F34\bibrangedash F63}
@@ -1917,7 +1894,6 @@
       \verb{url}
       \verb http://onlinelibrary.wiley.com/doi/10.1111/1468-0297.00098/abstract
       \endverb
-      \warn{\item Datamodel: Entry 'Krueger2003EconomicConsiderationsClass' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Lafortune2016SchoolFinanceReform}{article}{}
       \name{author}{3}{}{%
@@ -1950,13 +1926,11 @@
       \field{labeltitlesource}{title}
       \field{journaltitle}{National Bureau of Economic Research Working Paper Series}
       \field{title}{School Finance Reform and the Distribution of Student Achievement}
-      \field{type}{Journal Article}
       \field{volume}{No. 22011}
       \field{year}{2016}
       \verb{url}
       \verb http://www.nber.org/papers/w22011
       \endverb
-      \warn{\item Datamodel: Entry 'Lafortune2016SchoolFinanceReform' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{McKenzie2005Teachersmatterattracting}{book}{}
       \name{author}{2}{}{%
@@ -1974,8 +1948,9 @@
       \list{location}{1}{%
         {Paris}%
       }
-      \list{publisher}{1}{%
-        {OECD Publishing}%
+      \list{publisher}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{c3fea72ac106fa113b02ff6ccd873883}
       \strng{fullhash}{249dcaf0ff934f0cfdbb8d474ab47d4f}
@@ -1990,13 +1965,11 @@
       \field{labeltitlesource}{title}
       \field{isbn}{9264018026}
       \field{title}{Teachers matter: attracting, developing and retaining effective teachers}
-      \field{type}{Book}
       \field{year}{2005}
       \verb{url}
       \verb http://www.oecd.org/edu/school/attractingdevelopingandretainingeffectiveteachers-finalreportteachersmatter.htm
       \endverb
       \keyw{Education Teachers Supply and demand Training of OECD countries}
-      \warn{\item Datamodel: Entry 'McKenzie2005Teachersmatterattracting' (SchoolFunding.bib): Invalid field 'type' for entrytype 'book'}
     \endentry
     \entry{NationalRCouncil2010soundpolicy}{report}{}
       \name{author}{1}{}{%
@@ -2019,36 +1992,38 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Preparing Teachers: Building Evidence for Sound Policy}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2010}
       \verb{url}
       \verb http://www.paase.org/images/PreparingTeachers2010.pdf
       \endverb
     \endentry
-    \entry{NCA2014TowardsResponsibleGovernment}{report}{}
+    \entry{Education2015EarlyActionSuccess}{report}{}
       \name{author}{1}{}{%
-        {{uniquename=0,hash=5c0b04e2816e40ab73726878fe07a6a2}{%
-           family={NCA},
+        {{uniquename=0,hash=06bf2add9696dd6bff498a4c5c1ec168}{%
+           family={{NSW DEC}},
            familyi={N\bibinitperiod}}}%
       }
-      \strng{namehash}{5c0b04e2816e40ab73726878fe07a6a2}
-      \strng{fullhash}{5c0b04e2816e40ab73726878fe07a6a2}
-      \strng{authornamehash}{5c0b04e2816e40ab73726878fe07a6a2}
-      \strng{authorfullhash}{5c0b04e2816e40ab73726878fe07a6a2}
-      \field{labelalpha}{NCA}
+      \list{institution}{1}{%
+        {Department of Education and Communities}%
+      }
+      \strng{namehash}{06bf2add9696dd6bff498a4c5c1ec168}
+      \strng{fullhash}{06bf2add9696dd6bff498a4c5c1ec168}
+      \strng{authornamehash}{06bf2add9696dd6bff498a4c5c1ec168}
+      \strng{authorfullhash}{06bf2add9696dd6bff498a4c5c1ec168}
+      \field{labelalpha}{NSW DEC}
       \field{sortinit}{N}
       \field{sortinithash}{1163c28585427c673ad5a010cbf82f52}
       \field{labeldatesource}{year}
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Towards Responsible Government: Appendix to the Report of the National Commission of Audit Volume 1}
+      \field{title}{Early Action for Success: Report on 2014/15 Activity}
       \field{type}{techreport}
-      \field{year}{2014}
+      \field{year}{2015}
       \verb{url}
-      \verb http://www.ncoa.gov.au/report/index.html
+      \verb https://www.det.nsw.edu.au/media/downloads/about-us/our-reforms/early-action-for-success/Early-Action-for-Success-Report-2015.pdf
       \endverb
-      \warn{\item Datamodel: Entry 'NCA2014TowardsResponsibleGovernment' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{OECD2009CreatingEffectiveTeaching}{report}{}
       \name{author}{1}{}{%
@@ -2056,8 +2031,9 @@
            family={OECD},
            familyi={O\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{bdbed435a416a918aa494017fda4c7fb}
       \strng{fullhash}{bdbed435a416a918aa494017fda4c7fb}
@@ -2071,7 +2047,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Creating Effective Teaching and Learning Environments: First Results from TALIS}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2009}
       \verb{url}
       \verb http://www.oecd.org/edu/school/creatingeffectiveteachingandlearningenvironmentsfirstresultsfromtalis.htm
@@ -2083,8 +2059,9 @@
            family={OECD},
            familyi={O\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{bdbed435a416a918aa494017fda4c7fb}
       \strng{fullhash}{bdbed435a416a918aa494017fda4c7fb}
@@ -2110,8 +2087,9 @@
            family={OECD},
            familyi={O\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{bdbed435a416a918aa494017fda4c7fb}
       \strng{fullhash}{bdbed435a416a918aa494017fda4c7fb}
@@ -2137,8 +2115,9 @@
            family={OECD},
            familyi={O\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{bdbed435a416a918aa494017fda4c7fb}
       \strng{fullhash}{bdbed435a416a918aa494017fda4c7fb}
@@ -2152,7 +2131,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{PISA 2012 Results: What Makes Schools Successful? Resources, Policies and Practices}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2013}
       \verb{url}
       \verb http://www.oecd-ilibrary.org/education/pisa-2012-results-what-makes-a-school-successful-volume-iv_9789264201156-en
@@ -2164,8 +2143,9 @@
            family={OECD},
            familyi={O\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{bdbed435a416a918aa494017fda4c7fb}
       \strng{fullhash}{bdbed435a416a918aa494017fda4c7fb}
@@ -2191,6 +2171,9 @@
            family={PBO},
            familyi={P\bibinitperiod}}}%
       }
+      \list{institution}{1}{%
+        {Parliamentary Budget Office}%
+      }
       \strng{namehash}{a466c7795edfc3b1490f07bdf64d8ef5}
       \strng{fullhash}{a466c7795edfc3b1490f07bdf64d8ef5}
       \strng{authornamehash}{a466c7795edfc3b1490f07bdf64d8ef5}
@@ -2205,14 +2188,15 @@
       \field{title}{Post Election Report of Election Commitments: 2016 General Election}
       \field{type}{techreport}
       \field{year}{2016}
-      \warn{\item Datamodel: Entry 'PBO2016PostElectionReport' (SchoolFunding.bib): Field 'institute' invalid in data model - ignoring}
-      \warn{\item Datamodel: Entry 'PBO2016PostElectionReport' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Commission2012SchoolWorkforce}{report}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=88dba0c4e2af76447df43d1e31331a3d}{%
            family={PC},
            familyi={P\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Productivity Commission}%
       }
       \strng{namehash}{88dba0c4e2af76447df43d1e31331a3d}
       \strng{fullhash}{88dba0c4e2af76447df43d1e31331a3d}
@@ -2226,12 +2210,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Schools Workforce}
-      \field{type}{Research Report}
+      \field{type}{techreport}
       \field{year}{2012}
       \verb{url}
       \verb http://www.pc.gov.au/inquiries/completed/education-workforce-schools/report
       \endverb
-      \warn{\item Datamodel: Entry 'Commission2012SchoolWorkforce' (SchoolFunding.bib): Missing mandatory field 'institution'}
     \endentry
     \entry{Commission2016NationalEducationEvidence}{report}{}
       \name{author}{1}{}{%
@@ -2255,7 +2238,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{National Education Evidence Base}
-      \field{type}{Research Report}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb http://www.pc.gov.au/inquiries/current/education-evidence#draft
@@ -2310,19 +2293,19 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{National Evaluation for the Low SES National Partnership and the Literacy and Numeracy National Partnership - Impact Stage}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2014}
       \verb{url}
       \verb https://docs.education.gov.au/system/files/doc/other/accessible_-_national_evaluation_for_the_low_ses_national_partnership_and_the_literacy_and_numeracy_national_partnership.pdf
       \endverb
     \endentry
-    \entry{RBA2016G3InflationExpectations}{misc}{}
+    \entry{RBA2016G3InflationExpectations}{report}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=e61529beccb044b2aa77e59d7b897bea}{%
            family={RBA},
            familyi={R\bibinitperiod}}}%
       }
-      \list{publisher}{1}{%
+      \list{institution}{1}{%
         {Reserve Bank of Australia}%
       }
       \strng{namehash}{e61529beccb044b2aa77e59d7b897bea}
@@ -2337,12 +2320,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{G3 Inflation Expectations}
-      \field{type}{Generic}
+      \field{type}{techreport}
       \field{year}{2016}
       \verb{url}
       \verb http://www.rba.gov.au/statistics/tables/#inflation-expectations
       \endverb
-      \warn{\item Datamodel: Entry 'RBA2016G3InflationExpectations' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'misc'}
     \endentry
     \entry{Reeves2016BiologyCorporateSurvival}{report}{}
       \name{author}{3}{}{%
@@ -2406,8 +2388,9 @@
            given={Claire},
            giveni={C\bibinitperiod}}}%
       }
-      \list{institution}{1}{%
-        {OECD Publishing}%
+      \list{institution}{2}{%
+        {Organisation for Economic Co-operation}%
+        {Development}%
       }
       \strng{namehash}{65d8efdec7bd20505363eb92c45ae3cd}
       \strng{fullhash}{fe870c6c3cad47cf0caa0d37e078ae09}
@@ -2421,7 +2404,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{OECD Reviews of Evaluation and Assessment in Education: Australia}
-      \field{type}{Report}
+      \field{type}{techreport}
       \field{year}{2011}
       \verb{url}
       \verb http://www.oecd.org/australia/oecdreviewsofevaluationandassessmentineducationaustralia2011.htm
@@ -2451,7 +2434,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Government Senators' Dissenting Report}
-      \field{type}{Government Document}
       \field{year}{2014}
       \verb{url}
       \verb http://www.aph.gov.au/Parliamentary_Business/Committees/Senate/School_Funding/School_Funding/Report/d02
@@ -2501,7 +2483,6 @@
       \field{day}{22}
       \field{month}{10}
       \field{title}{Supplementary Budget Estimates 2015 - 2016: Department of Education and Training Question No. SQ15-000888}
-      \field{type}{Government Document}
       \field{year}{2015}
       \field{dateera}{ce}
       \verb{url}
@@ -2529,7 +2510,6 @@
       \field{day}{17}
       \field{month}{3}
       \field{title}{Additional Estimates 2014 - 2015: Department of Education and Training Question No. SQ15-000244}
-      \field{type}{Government Document}
       \field{year}{2015}
       \field{dateera}{ce}
       \verb{url}
@@ -2563,6 +2543,51 @@
       \verb http://www.aph.gov.au/~/media/Committees/eet_ctte/estimates/supp_1516/Education/Answers/SQ15-000703.pdf
       \endverb
     \endentry
+    \entry{NCA2014TowardsResponsibleGovernment}{misc}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=a24b7b1d3868f2d5e90f401f978f9785}{%
+           family={Shepherd},
+           familyi={S\bibinitperiod},
+           given={Tony},
+           giveni={T\bibinitperiod}}}%
+        {{uniquename=0,hash=893c9cadc0610f7a4bb01e141cae5f61}{%
+           family={Boxall},
+           familyi={B\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{uniquename=0,hash=c23558852581d5c896c498178e4194fd}{%
+           family={Cole},
+           familyi={C\bibinitperiod},
+           given={Tony},
+           giveni={T\bibinitperiod}}}%
+        {{uniquename=0,hash=bfa1f44b84774d284df5f2d669a342f2}{%
+           family={Fisher},
+           familyi={F\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+        {{uniquename=0,hash=c89116fbf53d19e4d73c49d1bf21edee}{%
+           family={Vanstone},
+           familyi={V\bibinitperiod},
+           given={Amanda},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{1ed950590f7e74820934b5add1bfffea}
+      \strng{fullhash}{691aa343e6699d6c53e41685ffa1d98e}
+      \strng{authornamehash}{1ed950590f7e74820934b5add1bfffea}
+      \strng{authorfullhash}{691aa343e6699d6c53e41685ffa1d98e}
+      \field{labelalpha}{Shepherd+}
+      \field{sortinit}{S}
+      \field{sortinithash}{3c1547c63380458f8ca90e40ed14b83e}
+      \field{labeldatesource}{year}
+      \true{singletitle}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{National Commission of Audit: Toward Responsible Government}
+      \field{year}{2014}
+      \verb{url}
+      \verb http://www.ncoa.gov.au/
+      \endverb
+    \endentry
     \entry{SiMERR2015EvaluationImpactSelected}{report}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=bfab60ad81655d13bf106fa97c677622}{%
@@ -2590,7 +2615,7 @@
       \verb https://www.cese.nsw.gov.au/images/stories/PDF/ITQ_NP_Abridged.pdf
       \endverb
     \endentry
-    \entry{Timperley2007TeacherProfessionalLearning}{article}{}
+    \entry{Timperley2007TeacherProfessionalLearning}{report}{}
       \name{author}{4}{}{%
         {{uniquename=0,hash=342244c650423fa625f1fb803662c84c}{%
            family={Timperley},
@@ -2617,7 +2642,7 @@
         {Ministry of Education}%
       }
       \list{location}{1}{%
-        {Wellington, N.Z.}%
+        {Wellington}%
       }
       \strng{namehash}{4db71d41a495100b0f56b30a2454dc5d}
       \strng{fullhash}{b75130eaf96e3c0458db0a455130ce65}
@@ -2631,89 +2656,85 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Teacher professional learning and development: best evidence synthesis iteration (BES)}
+      \field{type}{techreport}
       \field{year}{2007}
       \verb{url}
       \verb https://www.educationcounts.govt.nz/publications/series/2515/15341
       \endverb
-      \warn{\item Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Invalid field 'institution' for entrytype 'article'}
-      \warn{\item Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Invalid field 'location' for entrytype 'article'}
-      \warn{\item Datamodel: Entry 'Timperley2007TeacherProfessionalLearning' (SchoolFunding.bib): Missing mandatory field 'journaltitle'}
     \endentry
-    \entry{Hattie2009VisibleLearningArticle}{article}{}
+    \entry{Treasury2016BudgetPapers2016}{misc}{}
       \name{author}{1}{}{%
-        {{uniquename=0,hash=0a8fa36dcec8c22b07c8cb32ce9f5faf}{%
-           family={Utbildningsförvaltningen},
-           familyi={U\bibinitperiod},
-           given={Göteborg},
-           giveni={G\bibinitperiod}}}%
+        {{uniquename=0,hash=20e968a2ef4cbdc5bea5e34d0b1e7333}{%
+           family={{Treasury}},
+           familyi={T\bibinitperiod}}}%
       }
-      \strng{namehash}{0a8fa36dcec8c22b07c8cb32ce9f5faf}
-      \strng{fullhash}{0a8fa36dcec8c22b07c8cb32ce9f5faf}
-      \strng{authornamehash}{0a8fa36dcec8c22b07c8cb32ce9f5faf}
-      \strng{authorfullhash}{0a8fa36dcec8c22b07c8cb32ce9f5faf}
-      \field{labelalpha}{Utbildningsförvaltningen}
-      \field{sortinit}{U}
-      \field{sortinithash}{1554584e7f69d2b4fe0a645e73d50194}
+      \strng{namehash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
+      \strng{fullhash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
+      \strng{authornamehash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
+      \strng{authorfullhash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
+      \field{labelalpha}{Treasury}
+      \field{sortinit}{T}
+      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
       \field{labeldatesource}{year}
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{ResearchEd}
-      \field{title}{Interview with John Hattie on Visible Learning}
-      \field{type}{Journal Article}
-      \field{year}{n.d}
+      \field{title}{Budget Papers 2016-17}
+      \field{year}{2016}
       \verb{url}
-      \verb http://www.workingoutwhatworks.com/en-GB/Magazine/2015/2/John_Hattie_interview
+      \verb http://budget.gov.au/2016-17/content/bp2/download/BP2_consolidated.pdf
       \endverb
-      \warn{\item Datamodel: Entry 'Hattie2009VisibleLearningArticle' (SchoolFunding.bib): Invalid field 'type' for entrytype 'article'}
     \endentry
     \entry{Veen2012WhatMakesTeacher}{inbook}{}
       \name{author}{3}{}{%
-        {{uniquename=0,hash=dac0ce9f522126dcaee6c1187cabddf6}{%
-           family={{van Veen}},
-           familyi={v\bibinitperiod},
+        {{uniquename=0,hash=fca700e382e7987d94d98b84902c3a3c}{%
+           family={Veen},
+           familyi={V\bibinitperiod},
            given={K},
-           giveni={K\bibinitperiod}}}%
-        {{uniquename=0,hash=a25619f78d95ee281409d4a7fcbfd92a}{%
+           giveni={K\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{uniquename=0,hash=3db3cced7aa1ecf2ec83851b9e053812}{%
            family={Zwart},
            familyi={Z\bibinitperiod},
-           given={R.},
+           given={R},
            giveni={R\bibinitperiod}}}%
-        {{uniquename=0,hash=a4f8bdec28980f0843857e58fbdea95a}{%
-           family={Meirink},
+        {{uniquename=0,hash=e618e88d1447b4261be8e2599b16c8f7}{%
+           family={Melrink},
            familyi={M\bibinitperiod},
-           given={J.},
+           given={J},
            giveni={J\bibinitperiod}}}%
       }
       \name{editor}{2}{}{%
-        {{hash=fb42fa58cdf096d3063150aea8c4b974}{%
+        {{hash=f2bdaf9f476d122f76eca635a5cc89d9}{%
            family={Kooy},
            familyi={K\bibinitperiod},
-           given={M.},
+           given={Michael},
            giveni={M\bibinitperiod}}}%
-        {{hash=dac0ce9f522126dcaee6c1187cabddf6}{%
-           family={{van Veen}},
-           familyi={v\bibinitperiod},
+        {{hash=fca700e382e7987d94d98b84902c3a3c}{%
+           family={Veen},
+           familyi={V\bibinitperiod},
            given={K},
-           giveni={K\bibinitperiod}}}%
+           giveni={K\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
       }
-      \strng{namehash}{a4165828ada1527e5b2786233eec9f94}
-      \strng{fullhash}{cb55bc00724f32bf5ed46714691d8aac}
-      \strng{authornamehash}{a4165828ada1527e5b2786233eec9f94}
-      \strng{authorfullhash}{cb55bc00724f32bf5ed46714691d8aac}
-      \strng{editornamehash}{c21bdf49733cffc94a3b047c3434caae}
-      \strng{editorfullhash}{814603092cc9b83e3a191928a7f2f220}
-      \field{labelalpha}{van Veen+}
-      \field{sortinit}{v}
+      \strng{namehash}{c90981deb838581e7d3b1a37627dbba9}
+      \strng{fullhash}{47fc0167daf667b5cec19440a9c17096}
+      \strng{authornamehash}{c90981deb838581e7d3b1a37627dbba9}
+      \strng{authorfullhash}{47fc0167daf667b5cec19440a9c17096}
+      \strng{editornamehash}{c6f769592479a64915131ee7f788c8fb}
+      \strng{editorfullhash}{b9a271f3d0a8d4fc4a177e6b643ee574}
+      \field{labelalpha}{Veen+}
+      \field{sortinit}{V}
       \field{sortinithash}{555737dafdcf1396ebfeae5822e5bde2}
       \field{labeldatesource}{year}
       \true{singletitle}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{chapter}{What Makes Teacher Professional Development Effective? A Literature Review}
-      \field{title}{Teacher Learning that Matters: International Perspectives}
+      \field{booktitle}{Teacher Learning that Matters: International Perspectives}
+      \field{title}{What Makes Teacher Professional Development Effective? A Literature Review}
       \field{year}{2012}
-      \warn{\item Datamodel: Entry 'Veen2012WhatMakesTeacher' (SchoolFunding.bib): Missing mandatory field 'booktitle'}
     \endentry
     \entry{Westacott2016FutureEducation}{misc}{}
       \name{author}{1}{}{%
@@ -2722,9 +2743,6 @@
            familyi={W\bibinitperiod},
            given={Jennifer},
            giveni={J\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {Business Council of Australia}%
       }
       \strng{namehash}{0f764ccbe588d1d2c4c20680241b2a46}
       \strng{fullhash}{0f764ccbe588d1d2c4c20680241b2a46}
@@ -2740,13 +2758,11 @@
       \field{day}{11}
       \field{month}{8}
       \field{title}{The Future of Education}
-      \field{type}{Conference Paper}
       \field{year}{2016}
       \field{dateera}{ce}
       \verb{url}
       \verb http://www.bca.com.au/media/the-future-of-education---australian-davos-connection-forum-address-by-jennifer-westacott
       \endverb
-      \warn{\item Datamodel: Entry 'Westacott2016FutureEducation' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'misc'}
     \endentry
     \entry{WorldBank2016WordDevelopmentIndicators}{misc}{}
       \name{author}{1}{}{%
@@ -2771,7 +2787,7 @@
       \verb http://data.worldbank.org/data-catalog/world-development-indicators
       \endverb
     \endentry
-    \entry{Yoon2007ReviewingEvidenceTeacher}{article}{}
+    \entry{Yoon2007ReviewingEvidenceTeacher}{report}{}
       \name{author}{5}{}{%
         {{uniquename=0,hash=019cc0a54a45b4d421b42d2c0a2aff8a}{%
            family={Yoon},
@@ -2799,8 +2815,8 @@
            given={Kathy\bibnamedelima L.},
            giveni={K\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
       }
-      \list{publisher}{1}{%
-        {Regional Educational Laboratory Southwest (NJ1)}%
+      \list{institution}{1}{%
+        {US Department of Education}%
       }
       \strng{namehash}{ebf6bc0fcd42ebfcc2a1f723bb38da3d}
       \strng{fullhash}{ce9ef386805729a26dbb7770e79d6319}
@@ -2814,12 +2830,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Reviewing the Evidence on How Teacher Professional Development Affects Student Achievement. Issues \& Answers}
+      \field{type}{techreport}
       \field{year}{2007}
       \verb{url}
       \verb http://eric.ed.gov/?id=ED498548
       \endverb
-      \warn{\item Datamodel: Entry 'Yoon2007ReviewingEvidenceTeacher' (SchoolFunding.bib): Invalid field 'publisher' for entrytype 'article'}
-      \warn{\item Datamodel: Entry 'Yoon2007ReviewingEvidenceTeacher' (SchoolFunding.bib): Missing mandatory field 'journaltitle'}
     \endentry
     \entry{Zhang2016DevelopingShanghaisTeachers}{book}{}
       \name{author}{3}{}{%

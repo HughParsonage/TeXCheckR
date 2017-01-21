@@ -29,6 +29,7 @@ numbers=noenddot,
   {}
   {\ddt}
 
+
 % avoid non-discretionary hyphens 
 \exhyphenpenalty=100
 \RequirePackage{cmap}
@@ -138,6 +139,15 @@ numbers=noenddot,
 % \makebox left-aligned numbers.
 \deffootnote{2.0em}{1.5em}{\makebox[2.0em][l]{\thefootnotemark.\ }}
 \addtokomafont{footnotereference}{\small}
+
+% Detect the footnote immediately prior to CenturyFootnote
+\newwrite\fnC
+\immediate\openout\fnC=\jobname.fn100
+\let\oldfootnote\footnote
+\renewcommand{\footnote}[1]{\oldfootnote{#1}\immediate\write\fnC{\thefootnote}}
+% Placed just before footnote exceeds 100. 
+\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote@@@\thefootnote}\zsavepos{@CenturyFootnote@z}\immediate\closeout\fnC\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
+
 
 % Make url formatting the same
 \urlstyle{same}
@@ -988,10 +998,6 @@ numbers=noenddot,
   \global\let\@textbottom\mytextbottom
   \global\let\@texttop\mytexttop}}
 
-
-
-% Placed just before footnote exceeds 100. 
-\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote@@@\thefootnote}\zsavepos{@CenturyFootnote@z}\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
 
 % Discretionary commands for consistent treatment of common abbreviations
 \newcommand*{\eg}{\emph{e.g.}}

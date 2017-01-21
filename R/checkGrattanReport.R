@@ -267,7 +267,7 @@ checkGrattanReport <- function(path = ".",
     if (file.exists("./travis/grattanReport/gmailr-log.tsv")){
       prev_build_status <-
         fread("./travis/grattanReport/gmailr-log.tsv") %>%
-        utils::tail(., 1) %>%
+        last %>%
         .[["build_status"]]
       append <- TRUE
     } else {

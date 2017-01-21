@@ -5,16 +5,18 @@
 \title{Check Grattan Report}
 \usage{
 checkGrattanReport(path = ".", output_method = c("console", "twitter",
-  "gmailr"), compile = FALSE, final = FALSE)
+  "gmailr"), compile = FALSE, final = FALSE, release = FALSE)
 }
 \arguments{
-\item{path}{Path to search for the filename.}
+\item{path}{Path to search for the tex source file.}
 
 \item{output_method}{How errors should be reported.}
 
 \item{compile}{Should \code{pdflatex} be run on the report so the log be checked?}
 
-\item{final}{Should the document be assumed to be final?}
+\item{final}{Should the document be assumed to be final? Runs additional checks.}
+
+\item{release}{Should a final pdf be prepared for publication?}
 }
 \value{
 Called for its side-effect.

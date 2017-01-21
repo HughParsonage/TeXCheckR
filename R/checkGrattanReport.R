@@ -1,9 +1,10 @@
 #' Check Grattan Report
 #'
-#' @param path Path to search for the filename.
+#' @param path Path to search for the tex source file.
 #' @param output_method How errors should be reported.
 #' @param compile Should \code{pdflatex} be run on the report so the log be checked?
-#' @param final Should the document be assumed to be final?
+#' @param final Should the document be assumed to be final? Runs additional checks.
+#' @param release Should a final pdf be prepared for publication?
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -19,7 +20,25 @@
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
                                compile = FALSE,
-                               final = FALSE){
+                               final = FALSE,
+                               release = FALSE){
+  if (!identical(release, FALSE)){
+    stop("Release not implemented.")
+  }
+  
+  if (release && (!final || !compile)){
+    stop("release = TRUE but final and compile are not both TRUE also.")
+  }
+  
+  if (final && !compile){
+    stop("final = TRUE but compile = FALSE.")
+  }
+  
+  if (compile && Sys.which("pdflatex") == ""){
+    stop("pdflatex not on System path. Ensure you have LaTeX installed (MiKTeX, MacTeX, TeXLive) and that it is searchable on PATH. ",
+         "(Did you install but leave programs open?)")
+  }
+  
   current_wd <- getwd()
   setwd(path)
   on.exit(setwd(current_wd))

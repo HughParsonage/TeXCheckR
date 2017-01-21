@@ -1,7 +1,7 @@
 
 
 check_log <- function(path = ".", final = FALSE){
-  log_files <- dir(path = path, pattern = "\\.log$")
+  log_files <- dir(path = path, pattern = "\\.log$", full.names = TRUE)
   if (length(log_files) != 1){
     stop("Path does not contain a single log file.")
   }

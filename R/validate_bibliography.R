@@ -157,6 +157,46 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
          "but\n\t",
          "journal = {", incorrect_journal_entries[1][["journal_actual"]], "} .")
   }
+  
+  ## Grattan Institute
+  
+  ## All TechReports should use the /report/ url
+  ## All TechReports should have a number
+  
+  
+  check_Grattan_entries <- function(trimmed_bib){
+    
+    techReport_at <- grepl("^@TechReport", trimmed_bib, perl = TRUE, ignore.case = TRUE)
+    is_closing <- trimmed_bib == "}"
+    
+    is_TechReport <- techReport_at
+    is_TechReport[!or(techReport_at, is_closing)] <- NA
+    
+    is_TechReport <- zoo::na.locf.default(is_TechReport, na.rm = FALSE)
+    is_TechReport[is.na(is_TechReport)] <- FALSE
+    
+    is_GrattanReport_url <-
+      grepl("^url.*https?[:]//grattan\\.edu\\.au", trimmed_bib, perl = TRUE)
+    
+    if (any(and(is_GrattanReport_url & is_TechReport,
+                !grepl("https?[:]//grattan\\.edu\\.au/report/", trimmed_bib, perl = TRUE)))){
+      line_nos <- 
+        which(and(is_GrattanReport_url & is_TechReport,
+                  !grepl("grattan\\.edu\\.au/report/", trimmed_bib, perl = TRUE)))
+      for (x in line_nos)
+        cat(x, ": ", trimmed_bib[[x]], "\n")
+      stop("URL to Grattan Report does not use https://grattan.edu.au/report/ domain.")
+    }
+    
+    
+    if (any(and(is_Grattan_Report_url,
+                grepl(".pdf", trimmed_bib, fixed = TRUE)))){
+      stop("URLs to Grattan Report points to pdf. The URL should be of the landing page.")
+    }
+      
+  }
+  
+  # check_Grattan_entries(bib)
 
 
   # dois should not include the top-level URL

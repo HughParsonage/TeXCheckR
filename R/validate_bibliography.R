@@ -1,6 +1,7 @@
 #' Validate bibliography according Grattan style
 #' @param path Containing the bib file.
 #' @param file The bib file if specified.
+#' @param .report_error How errors should be reported.
 #' @return \code{NULL} if bibliography validated.
 #' @export
 

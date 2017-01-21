@@ -10,6 +10,8 @@ validate_bibliography(path = ".", file = NULL, .report_error)
 \item{path}{Containing the bib file.}
 
 \item{file}{The bib file if specified.}
+
+\item{.report_error}{How errors should be reported.}
 }
 \value{
 \code{NULL} if bibliography validated.

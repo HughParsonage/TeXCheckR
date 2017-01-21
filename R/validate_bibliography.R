@@ -5,7 +5,11 @@
 #' @export
 
 
-validate_bibliography <- function(path = ".", file = NULL){
+validate_bibliography <- function(path = ".", file = NULL, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+  
   if (is.null(file)){
     bib_files <- dir(path = path, pattern = "\\.bib$", full.names = TRUE)
     stopifnot(length(bib_files) == 1L)

@@ -110,10 +110,10 @@ checkGrattanReport <- function(path = ".",
         cat(input, "\n")
       
         check_cite_pagerefs(input, .report_error = .report_error)
-        check_dashes(input)#, .report_error = .report_error)
-        check_footnote_typography(input)#, .report_error = .report_error)
-        check_repetitive_xrefs(input)#, .report_error = .report_error)
-        check_sentence_ending_periods(input)#, .report_error = .report_error)
+        check_dashes(input, .report_error = .report_error)
+        check_footnote_typography(input, .report_error = .report_error)
+        check_repetitive_xrefs(input, .report_error = .report_error)
+        check_sentence_ending_periods(input, .report_error = .report_error)
       }
     }
   }

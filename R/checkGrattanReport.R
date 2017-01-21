@@ -43,11 +43,25 @@ checkGrattanReport <- function(path = ".",
          "(Did you install but leave programs open?)")
   }
   
+  if (release && Sys.getenv("R_GSCMD") == ""){
+    stop("Ghostscript is required but R_GSCMD is not set. Ensure Ghostscript is installed then set R_GSCMD, e.g.\n\t",
+         "Sys.setenv(R_GSCMD = 'C:/Program Files/gs/gs9.20/bin/gswin64c.exe')")
+  }
+  
   current_wd <- getwd()
   setwd(path)
   on.exit(setwd(current_wd))
   
   output_method <- match.arg(output_method)
+  
+  if (final){
+    download_failure <- download.files("https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls",
+                                       destfile = "grattan.cls",
+                                       quiet = TRUE)
+    if (download_failure){
+      stop("grattan.cls failed to download (and be updated).")
+    }
+  }
   
   if (!dir.exists("./travis/grattanReport/")){
     stop("./travis/grattanReport/ does not exist.")

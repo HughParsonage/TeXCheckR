@@ -65,6 +65,8 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     editor <- endyear <- howpublished <- institution <- intra_key_line_no <- line_no <-
     note <- number <- organization <- pages <- publisher <- related <- school <- series <- title <-
     type <- volume <- Year_as_date <- Date <- NULL
+  
+  bib_orig <- field_name <- NULL
 
   data.table(line_no = seq_along(bib),
              bib = bib,
@@ -146,9 +148,9 @@ bib2DT <- function(file.bib, to_sort = FALSE){
                                         "volume", "url", "Year_as_date", "Date", "Surname", "intra_key_line_no", 
                                         "Line_no", "}"), 
                              ordered = TRUE)] %>%
-    .[, bib_org := bib] %>%
-    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:bib_org] %>%
-    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:bib_org] %>%
+    .[, bib_orig := bib] %>%
+    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:bib_orig] %>%
+    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:bib_orig] %>%
     setorder(Surname, Date, title, field_name, Line_no) %>%
     .[]
 }

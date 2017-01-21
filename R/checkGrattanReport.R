@@ -109,7 +109,7 @@ checkGrattanReport <- function(path = ".",
     get_authors(filename)
 
   cat("I see the following as authors:",
-      the_authors, sep = "\n")
+      the_authors, sep = "\n\t")
   
   cat("\n")
   

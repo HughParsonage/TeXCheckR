@@ -69,7 +69,8 @@ bib2DT <- function(file.bib, to_sort = FALSE){
   data.table(line_no = seq_along(bib),
              bib = bib,
              line_by_entry_no = line_by_entry_no,
-             is_field = is_field) %>%
+             is_field = is_field,
+             is_closing = is_closing) %>%
     .[, key := if_else(is_at,
                        gsub("^@[A-Za-z]+\\{(.*),$", "\\1", bib, perl = TRUE),
                        NA_character_)] %>%
@@ -134,9 +135,21 @@ bib2DT <- function(file.bib, to_sort = FALSE){
                            NA_character_)] %>%
     .[, intra_key_line_no := seq_len(.N), by = "key"] %>%
     .[, Line_no := line_no] %>%
-    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:Line_no] %>%
-    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:Line_no] %>%
-    setorder(Surname, Date, title, Line_no) %>%
+    .[, field_name := gsub("[^a-z]", "", gsub("[=].*$", "", bib, perl = TRUE), perl = TRUE)] %>%
+    .[, field_name := if_else(is_at, "AT", field_name)] %>%
+    .[, field_name := if_else(is_closing, "}", field_name)] %>%
+    .[, field_name := factor(field_name,
+                             levels = c("AT", "author", "title", "year", "date", "address", "annote", 
+                                        "booktitle", "chapter", "crossref", "options", "related", "edition", 
+                                        "editor", "howpublished", "institution", "month", "note", "number", 
+                                        "organization", "pages", "publisher", "school", "series", "type", 
+                                        "volume", "url", "Year_as_date", "Date", "Surname", "intra_key_line_no", 
+                                        "Line_no", "}"), 
+                             ordered = TRUE)] %>%
+    .[, bib_org := bib] %>%
+    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:bib_org] %>%
+    .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = TRUE) , by = "key", .SDcols = author:bib_org] %>%
+    setorder(Surname, Date, title, field_name, Line_no) %>%
     .[]
 }
 

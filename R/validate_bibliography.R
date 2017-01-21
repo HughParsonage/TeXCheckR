@@ -190,7 +190,7 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
     }
     
     
-    if (any(and(is_Grattan_Report_url,
+    if (any(and(is_GrattanReport_url,
                 grepl(".pdf", trimmed_bib, fixed = TRUE)))){
       stop("URLs to Grattan Report points to pdf. The URL should be of the landing page.")
     }

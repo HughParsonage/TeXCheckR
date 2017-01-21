@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{grattan}[2016/10/05 Reports of the Grattan Institute, Melbourne]
+\ProvidesClass{grattan}[2017/01/21 Reports of the Grattan Institute, Melbourne]
 
 \LoadClass[%
 a4paper,
@@ -17,6 +17,7 @@ numbers=noenddot,
 \RequirePackage{etoolbox}
 \RequirePackage{footmisc}
 \RequirePackage{tablefootnote} % for footnotes within tables
+\RequirePackage{zref-savepos}
 
 % Record number and page of footnote:
 % http://tex.stackexchange.com/questions/348891/determine-which-page-all-footnotes-landed-on#348940 
@@ -24,7 +25,7 @@ numbers=noenddot,
 % etoolbox footmisc tablefootnote
 \patchcmd{\@footnotetext}
   {#1}
-  {#1\label{footnote@@@\thefootnote}}
+  {\zsavepos{footnote@@@\thefootnote}\label{footnote@@@\thefootnote}#1}
   {}
   {\ddt}
 
@@ -538,37 +539,37 @@ numbers=noenddot,
 
 % Alternatively, if FrontPage is declared, the file there is used as the frontpage picture
 \DeclareOption{FrontPage}{
-	\IfFileExists{./FrontPage/FrontPage.pdf}{%
-	    %\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage}%
-	  }{
-	    \ClassError{grattan}{%
-			'./FrontPage/FrontPage.pdf' does not exist
-	    }{%
-			You have asked for a fullpicture option, but we can't find 
-			a file at './FrontPage/FrontPage.pdf'. Try placing the image
-			there or not using the fullpicture option.
-		}
-	  }
-	\renewcommand\BackgroundPic{%
-		\put(0,0){%
-		\parbox[b][\paperheight]{\paperwidth}{%
-		\vfill
-		\centering
-		% Amend
-		\IfFileExists{./FrontPage/FrontPage.pdf}{%
-			\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage.pdf}%
-		}{
-			\ClassError{grattan}{%
-				'./FrontPage/FrontPage' does not exist
-			}{%
-				You have asked for a fullpicture option, but we can't find 
-				a file at './FrontPage/FrontPage'. Try placing the image
-				there or not using the fullpicture option.
-			}
-		}
-	\vfill
-	}}}
-	\renewcommand{\titleTH}{} % FrontPage should be entire.
+  \IfFileExists{./FrontPage/FrontPage.pdf}{%
+      %\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage}%
+    }{
+      \ClassError{grattan}{%
+      './FrontPage/FrontPage.pdf' does not exist
+      }{%
+      You have asked for a fullpicture option, but we can't find 
+      a file at './FrontPage/FrontPage.pdf'. Try placing the image
+      there or not using the fullpicture option.
+    }
+    }
+  \renewcommand\BackgroundPic{%
+    \put(0,0){%
+    \parbox[b][\paperheight]{\paperwidth}{%
+    \vfill
+    \centering
+    % Amend
+    \IfFileExists{./FrontPage/FrontPage.pdf}{%
+      \includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage.pdf}%
+    }{
+      \ClassError{grattan}{%
+        './FrontPage/FrontPage' does not exist
+      }{%
+        You have asked for a fullpicture option, but we can't find 
+        a file at './FrontPage/FrontPage'. Try placing the image
+        there or not using the fullpicture option.
+      }
+    }
+  \vfill
+  }}}
+  \renewcommand{\titleTH}{} % FrontPage should be entire.
 
 }
 
@@ -896,19 +897,19 @@ numbers=noenddot,
   
 \AtBeginDocument{%
   \pagestyle{empty}
-	\let\mytitle\@title
-	\let\myauthor\@author
-	
-	% TitlePage
-	\onecolumn
-	\AddToShipoutPicture*{\BackgroundPic}
-	\phantom{.}\hfill\titleTH
-	\ClearShipoutPicture
-	\clearpage
-	\twocolumn
+  \let\mytitle\@title
+  \let\myauthor\@author
+  
+  % TitlePage
+  \onecolumn
+  \AddToShipoutPicture*{\BackgroundPic}
+  \phantom{.}\hfill\titleTH
+  \ClearShipoutPicture
+  \clearpage
+  \twocolumn
   % use microtype
   
-	%
+  %
 % Following page.
 \pagestyle{scrheadings}
 \@pagetwo
@@ -990,7 +991,7 @@ numbers=noenddot,
 
 
 % Placed just before footnote exceeds 100. 
-\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote}\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
+\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote@@@\thefootnote}\zsavepos{@CenturyFootnote@z}\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
 
 % Discretionary commands for consistent treatment of common abbreviations
 \newcommand*{\eg}{\emph{e.g.}}

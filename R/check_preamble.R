@@ -63,7 +63,7 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       GrattanReportNumberArg <- gsub("^.*[{](.*)[}].*$", "\\1", GrattanReportNumber, perl = TRUE)
       
       current_year <- 
-        if (any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
+        if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
           format(Sys.Date(), "%Y")
         } else {
           year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE, value = TRUE)

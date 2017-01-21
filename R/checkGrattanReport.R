@@ -2,9 +2,12 @@
 #'
 #' @param path Path to search for the tex source file.
 #' @param output_method How errors should be reported.
-#' @param compile Should \code{pdflatex} be run on the report so the log be checked?
+#' @param compile Should \code{pdflatex} be run on the report so the logs may be checked?
 #' @param final Should the document be assumed to be final? Runs additional checks.
 #' @param release Should a final pdf be prepared for publication?
+#' @param .proceed_after_rerun On the occasions where infinitely many passes of \code{pdflatex} 
+#' are required, include this to skip the error. Note that this will result in false cross-references 
+#' or incompletely formatted bibliographies.
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -21,9 +24,10 @@ checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
                                compile = FALSE,
                                final = FALSE,
-                               release = FALSE){
+                               release = FALSE,
+                               .proceed_after_rerun){
   if (!identical(release, FALSE)){
-    stop("Release not implemented.")
+    # stop("Release not implemented.")
   }
   
   if (release && (!final || !compile)){
@@ -158,22 +162,28 @@ checkGrattanReport <- function(path = ".",
   
   if (compile){
     cat("Invoking pdflatex\n")
-    # move_dir <- function(to.dir, from.dir = "."){
-    #   x <- list.files(path = from.dir,
-    #                   full.names = TRUE,
-    #                   recursive = TRUE,
-    #                   include.dirs = TRUE)
-    #   dests <- file.path(to.dir, x)
-    #   file.copy(x, dests)
-    # }
-    # 
-    # move_dir(tempdir())
+    move_to <- function(to.dir, from.dir = "."){
+      x <- list.files(path = from.dir,
+                      pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$",
+                      full.names = TRUE,
+                      recursive = TRUE,
+                      include.dirs = FALSE)
+      x.dirs <- file.path(to.dir, 
+                          list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
+      dir_create <- function(x) if (!dir.exists(x)) dir.create(x)
+      lapply(x.dirs, dir_create)
+      file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
+      setwd(to.dir)
+      file.remove(gsub("\\.tex", ".pdf", filename))
+      cat(to.dir, "\n")
+    }
+    md5_filename <- tools::md5sum(filename)
+    temp_dir <- file.path(tempdir(), md5_filename)
+    dir.create(temp_dir)
+    move_to(temp_dir)
+    
     
     options(warn = 2)
-    on.exit({
-      if (file.exists(gsub("\\.tex$", ".log2", filename))){
-        file.remove(gsub("\\.tex$", ".log2", filename))
-      }})
     system2(command = "pdflatex",
             args = c("-draftmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
@@ -194,15 +204,47 @@ checkGrattanReport <- function(path = ".",
             args = c("-interaction=batchmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
     
-    check_log()
+    log_result <- check_log(check_for_rerun_only = TRUE)
+    reruns_required <- 2
+    while (!is.null(log_result) && log_result == "Rerun LaTeX."){
+      system2(command = "pdflatex",
+              args = c("-interaction=batchmode", filename),
+              stdout = gsub("\\.tex$", ".log2", filename))
+      log_result <- check_log(check_for_rerun_only = TRUE)
+      
+      reruns_required <- reruns_required + 1
+      if (!missing(.proceed_after_rerun) && reruns_required > .proceed_after_rerun){
+        cat("W: Skipping checking of LaTeX rerun.\n")
+        break
+      }
+      
+      if (missing(.proceed_after_rerun) && reruns_required > 9){
+          stop("Emergency stop: pdflatex had to rerun more than 9 times but could not stabilize cross-references or the bibliography. ",
+               "Consult an expert: Hugh Parsonage or Cameron Chisholm or https://tex.stackexchange.com.")
+      }
+    }
     cat(green(symbol$tick, ".log file checked.\n"))
     
     check_CenturyFootnote()
     cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
+    
+    if (release){
+      if (!dir.exists("RELEASE")){
+        dir.create("RELEASE")
+      }
+      # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
+      embedFonts(gsub("\\.tex$", ".pdf", filename),
+                 outfile = file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+      cat(green(symbol$tick, "Fonts embedded.\n"))
+    }
+    
     cat("\n")
   }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
+  if (release){
+    cat("Releaseable pdf at ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+  }
   
   if (output_method == "gmailr"){
     if (file.exists("./travis/grattanReport/gmailr-log.tsv")){

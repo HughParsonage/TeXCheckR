@@ -5,18 +5,23 @@
 \title{Check Grattan Report}
 \usage{
 checkGrattanReport(path = ".", output_method = c("console", "twitter",
-  "gmailr"), compile = FALSE, final = FALSE, release = FALSE)
+  "gmailr"), compile = FALSE, final = FALSE, release = FALSE,
+  .proceed_after_rerun)
 }
 \arguments{
 \item{path}{Path to search for the tex source file.}
 
 \item{output_method}{How errors should be reported.}
 
-\item{compile}{Should \code{pdflatex} be run on the report so the log be checked?}
+\item{compile}{Should \code{pdflatex} be run on the report so the logs may be checked?}
 
 \item{final}{Should the document be assumed to be final? Runs additional checks.}
 
 \item{release}{Should a final pdf be prepared for publication?}
+
+\item{.proceed_after_rerun}{On the occasions where infinitely many passes of \code{pdflatex} 
+are required, include this to skip the error. Note that this will result in false cross-references 
+or incompletely formatted bibliographies.}
 }
 \value{
 Called for its side-effect.

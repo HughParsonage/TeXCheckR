@@ -20,7 +20,7 @@ check_CenturyFootnote <- function(path = "."){
   
   aux_contents <- readLines(aux_file)
   
-  footnote_locations <-
+  footnote_locations <<-
     grep("zref@newlabel{footnote@@@", aux_contents, fixed = TRUE, value = TRUE) %>%
     {
       data.table(

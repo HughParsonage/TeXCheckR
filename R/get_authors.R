@@ -5,9 +5,35 @@
 
 get_authors <- function(filename){
   lines <- readLines(filename, encoding = "UTF-8")
+  file_path <- dirname(filename)
 
   lines_before_begin_document <-
     lines[1:grep("\\begin{document}", lines, fixed = TRUE)]
+  
+  if (any(grepl("\\input", lines_before_begin_document, fixed = TRUE))){
+    # Ensure the only input in acknowledgements is tex/acknowledgements
+    acknowledgements <- 
+      paste0(lines_before_begin_document, collapse = " ") %>%
+      gsub("^.*\\\\(acknowledgements)", "", ., perl = TRUE)
+    
+    if (any(grepl("\\input", acknowledgements, fixed = TRUE))){
+      inputs <-
+        gsub("^.*\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{]([^\\}]+(?:\\.tex)?)[}].*$",
+             "\\1",
+             acknowledgements,
+             perl = TRUE)
+      
+      if (inputs[[1]] != "tex/acknowledgements"){
+        stop("The only permitted \\input in \\acknowledgements is \\input{tex/acknowledgements}")
+      }
+      
+      lines_before_begin_document <- 
+        c(lines_before_begin_document,
+          readLines(file.path(file_path, "./tex/acknowledgements.tex"),
+                    encoding = "UTF-8",
+                    warn = FALSE))
+    }
+  }
 
   regex_possible_names <-
     sprintf("(%s)",
@@ -35,5 +61,4 @@ get_authors <- function(filename){
     unique
 
   possible_names
-
 }

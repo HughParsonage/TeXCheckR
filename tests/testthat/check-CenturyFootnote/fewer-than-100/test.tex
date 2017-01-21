@@ -20,7 +20,12 @@
 \deffootnote{2.0em}{1.5em}{\makebox[2.0em][l]{\thefootnotemark.\ }}
 \addtokomafont{footnotereference}{\small}
 
-\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote@@@\thefootnote}\zsavepos{@CenturyFootnote@z}\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
+% Detect the footnote immediately prior to CenturyFootnote
+\newwrite\fnC
+\immediate\openout\fnC=\jobname.fn100
+\let\oldfootnote\footnote
+\renewcommand{\footnote}[1]{\oldfootnote{#1}\immediate\write\fnC{\thefootnote}}
+\newcommand*{\CenturyFootnote}{\label{@CenturyFootnote@@@\thefootnote}\zsavepos{@CenturyFootnote@z}\immediate\closeout\fnC\deffootnote{2.4em}{1.9em}{\makebox[2.4em][r]{\thefootnotemark.\ \ }}}
 
 
 

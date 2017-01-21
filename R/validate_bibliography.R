@@ -28,7 +28,7 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
     .report_error(line_no = line_no,
                   context = bib[line_no],
                   error_message = "Each field line in .bib must end with a comma (to allow reordering).")
-    stop("Each field line in .bib must end with a comma (to allow reordering).")
+    stop("Each field line in .bib must end with a comma (to allow intra-entry reordering).")
   }
 
   # Abbreviated names

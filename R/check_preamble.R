@@ -8,6 +8,13 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
   file_path <- dirname(filename)
   lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
   
+  if (!grepl("^\\\\documentclass.*\\{grattan\\}$", lines[[1]], perl = TRUE)){
+    .report_error(line_no = 1, 
+                  context = lines[[1]], 
+                  error_message = "Line 1 was not \\documentclass[<options>]{grattan}")
+    stop("Line 1 was not \\documentclass[<options>]{grattan}")
+  }
+  
   begin_document <- which(lines == "\\begin{document}") - 1L
   if (length(begin_document) != 1L){
     .report_error(error_message = "Missing \\begin{document}. (Must occur on a line alone.)")
@@ -16,7 +23,9 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
   lines_before_begin_document <-
     lines[1:begin_document]
   
-  
+  if (!any(grepl("^\\\\addbibresource", lines_before_begin_document, perl = TRUE))){
+    stop("\\addbibresource not present in document preamble. (Must not be merely present in an \\input .)")
+  }
   
   if (any(grepl("\\input", lines_before_begin_document, fixed = TRUE))){
     # Ensure the only input in acknowledgements is tex/acknowledgements

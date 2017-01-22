@@ -29,7 +29,6 @@ numbers=noenddot,
   {}
   {\ddt}
 
-
 % avoid non-discretionary hyphens 
 \exhyphenpenalty=100
 \RequirePackage{cmap}
@@ -549,37 +548,37 @@ numbers=noenddot,
 
 % Alternatively, if FrontPage is declared, the file there is used as the frontpage picture
 \DeclareOption{FrontPage}{
-  \IfFileExists{./FrontPage/FrontPage.pdf}{%
-      %\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage}%
-    }{
-      \ClassError{grattan}{%
-      './FrontPage/FrontPage.pdf' does not exist
-      }{%
-      You have asked for a fullpicture option, but we can't find 
-      a file at './FrontPage/FrontPage.pdf'. Try placing the image
-      there or not using the fullpicture option.
-    }
-    }
-  \renewcommand\BackgroundPic{%
-    \put(0,0){%
-    \parbox[b][\paperheight]{\paperwidth}{%
-    \vfill
-    \centering
-    % Amend
-    \IfFileExists{./FrontPage/FrontPage.pdf}{%
-      \includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage.pdf}%
-    }{
-      \ClassError{grattan}{%
-        './FrontPage/FrontPage' does not exist
-      }{%
-        You have asked for a fullpicture option, but we can't find 
-        a file at './FrontPage/FrontPage'. Try placing the image
-        there or not using the fullpicture option.
-      }
-    }
-  \vfill
-  }}}
-  \renewcommand{\titleTH}{} % FrontPage should be entire.
+	\IfFileExists{./FrontPage/FrontPage.pdf}{%
+	    %\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage}%
+	  }{
+	    \ClassError{grattan}{%
+			'./FrontPage/FrontPage.pdf' does not exist
+	    }{%
+			You have asked for a fullpicture option, but we can't find 
+			a file at './FrontPage/FrontPage.pdf'. Try placing the image
+			there or not using the fullpicture option.
+		}
+	  }
+	\renewcommand\BackgroundPic{%
+		\put(0,0){%
+		\parbox[b][\paperheight]{\paperwidth}{%
+		\vfill
+		\centering
+		% Amend
+		\IfFileExists{./FrontPage/FrontPage.pdf}{%
+			\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/FrontPage.pdf}%
+		}{
+			\ClassError{grattan}{%
+				'./FrontPage/FrontPage' does not exist
+			}{%
+				You have asked for a fullpicture option, but we can't find 
+				a file at './FrontPage/FrontPage'. Try placing the image
+				there or not using the fullpicture option.
+			}
+		}
+	\vfill
+	}}}
+	\renewcommand{\titleTH}{} % FrontPage should be entire.
 
 }
 
@@ -907,19 +906,19 @@ numbers=noenddot,
   
 \AtBeginDocument{%
   \pagestyle{empty}
-  \let\mytitle\@title
-  \let\myauthor\@author
-  
-  % TitlePage
-  \onecolumn
-  \AddToShipoutPicture*{\BackgroundPic}
-  \phantom{.}\hfill\titleTH
-  \ClearShipoutPicture
-  \clearpage
-  \twocolumn
+	\let\mytitle\@title
+	\let\myauthor\@author
+	
+	% TitlePage
+	\onecolumn
+	\AddToShipoutPicture*{\BackgroundPic}
+	\phantom{.}\hfill\titleTH
+	\ClearShipoutPicture
+	\clearpage
+	\twocolumn
   % use microtype
   
-  %
+	%
 % Following page.
 \pagestyle{scrheadings}
 \@pagetwo
@@ -1004,3 +1003,5 @@ numbers=noenddot,
 \newcommand*{\ie}{\emph{i.e.}}
 \newcommand*{\etc}{\emph{etc.}}
 
+% To detect user's current version
+\listfiles

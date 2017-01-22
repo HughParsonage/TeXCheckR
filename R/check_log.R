@@ -8,6 +8,7 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
 
   log_file <- readLines(log_files[[1]])
   
+  if (FALSE){
   file_list_start <- grep("*File List*", log_file, fixed = TRUE)
   stars <- grep("***********", log_file, fixed = TRUE)
   file_list_stop <- min(stars[stars > file_list_start])
@@ -23,6 +24,7 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
     data.table(package = gsub(file_list_pattern, "\\1", file_list_grep, perl = TRUE),
                date = as.Date(gsub(file_list_pattern, "\\2", file_list_grep, perl = TRUE), format = "%Y/%m/%d"),
                version = gsub(file_list_pattern, "\\3", file_list_grep, perl = TRUE))
+  }
 
   if (any(grepl("undefined references", log_file, fixed = TRUE))){
     stop(grep("undefined references",

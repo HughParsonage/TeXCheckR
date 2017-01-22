@@ -65,6 +65,11 @@ checkGrattanReport <- function(path = ".",
   if (!dir.exists("./travis/grattanReport/")){
     stop("./travis/grattanReport/ does not exist.")
   }
+  
+  if (release && !dir.exists("RELEASE")){
+    warning("release = TRUE but there is no existing RELEASE folder so one will be created.")
+    dir.create("RELEASE")
+  }
 
   tex_file <- dir(path = ".", pattern = "\\.tex$")
   if (length(tex_file) != 1L){

@@ -198,6 +198,16 @@ checkGrattanReport <- function(path = ".",
     }
     md5_filename <- tools::md5sum(filename)
     temp_dir <- file.path(tempdir(), md5_filename)
+    md5_iter <- 1
+    while (dir.exists(temp_dir)){
+      md5_filename <- gsub("^(.)(.+)$", "\\2\\1", md5_filename)
+      temp_dir <- file.path(tempdir(), md5_filename)
+      md5_iter <- md5_iter + 1
+      if (md5_iter > 30){
+        cat(tempdir())
+        stop("Emergency stop: temporary directory full.")
+      }
+    }
     dir.create(temp_dir)
     move_to(temp_dir)
     

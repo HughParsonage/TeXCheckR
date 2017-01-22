@@ -29,6 +29,18 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
   lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)
   lines <- gsub("\\\\footnote(?![{])", "\\\\fnote\\1", lines, perl = TRUE)
+  
+  # More than one footnote on a line won't be good.
+  if (any(grepl("\\\\footnote.*\\\\footnote", 
+                grep("\\footnote", lines, fixed = TRUE),
+                perl = TRUE))){
+    line_no <- grep("\\\\footnote.*\\\\footnote", lines, perl = TRUE)[1]
+    lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+    .report_error(line_no = line_no, 
+                  context = lines[[line_no]], 
+                  error_message = "\\footnote cannot occur twice on the same line in the source. Break this sentence up into multiple lines.")
+    stop("\\footnote cannot occur twice on the same line in the source.")
+  }
 
   combined_lines <- combine_lines(lines)
 
@@ -83,20 +95,33 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   }
   # cat("\u2014  All footnotes end with a full stop.", "\n")
   
-  for (line_no in seq_along(lines[-1])){
-    x <- lines[[line_no + 1L]]
-    w <- lines[[line_no]]
-    if (OR(AND(grepl(" \\footnote", x, fixed = TRUE),
-               !grepl("\\s*\\\\footnote", x, perl = TRUE)),
-           # footnote on new line without protective %
-           AND(grepl("^\\s*\\\\footnote", x, perl = TRUE),
-               !grepl("(?<! )%$", w, perl = TRUE)))){
-      .report_error(line_no = line_no,
-                    context = x,
-                    error_message = "Space inserted before \\footnote")
-      stop("Space inserted before footnote.")
-    }
+  # Space before footnote
+  a1 <- grepl(" \\footnote", lines, fixed = TRUE)
+  
+  # Nothing but spaces before footnote is ok ...
+  b1 <- grepl("^\\s*\\\\footnote", lines, perl = TRUE)
+  # ... provided there is a protective % on the line before {lines[-1]}
+  # and there isn't a space before that. {(?<! )}
+  b2 <- c(!grepl("(?<! )%$", lines[-1], perl = TRUE), FALSE)
+  
+  # a1 b1 b2  Test  Expect  Description
+  #  T  T  T  1     PASS    Tabbed footnote on own line: b2 protects
+  #  T  T  F  2     FAIL    Tabbed footnote without protection.
+  #  T  F  T  3     FAIL    Ordinary space (and txt) before fn: lazy dog \footnote
+  #  T  F  F  4     FAIL    Same as above; % irrelevant -- protective space has no effect
+  #  F  T  T  5     PASS    Non-tabbed footnote \footnote at start of text: b2 protects
+  #  F  T  F  6     FAIL    Non-tabbed footnote without protection
+  #  F  F  T  7     PASS    No footnote
+  #  F  F  F  8     PASS    No footnote
+  
+  if (any(or(a1 & !(b1 & b2), 
+             b1 & !b2))){
+    .report_error(line_no = line_no,
+                  context = x,
+                  error_message = "Space inserted before \\footnote")
+    stop("Space inserted before footnote.")
   }
+  
   # cat("\u2014  No space before footnote marks", "\n")
   invisible(NULL)
 }

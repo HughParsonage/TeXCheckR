@@ -56,7 +56,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   
   
   
-  cat("\u2014  No full stops after footnotemarks", "\n")
+  # cat("\u2014  No full stops after footnotemarks", "\n")
   rm(line)
 
   for (line in lines_with_footnote){
@@ -81,7 +81,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       }
     }
   }
-  cat("\u2014  All footnotes end with a full stop.", "\n")
+  # cat("\u2014  All footnotes end with a full stop.", "\n")
   
   for (line_no in seq_along(lines[-1])){
     x <- lines[[line_no + 1L]]
@@ -97,7 +97,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       stop("Space inserted before footnote.")
     }
   }
-  cat("\u2014  No space before footnote marks", "\n")
+  # cat("\u2014  No space before footnote marks", "\n")
   invisible(NULL)
 }
 

@@ -6,7 +6,11 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
   }
   
   file_path <- dirname(filename)
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- 
+    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    strip_comments %>%
+    trimws
+    
   
   if (!grepl("^\\\\documentclass.*\\{grattan\\}$", lines[[1]], perl = TRUE)){
     .report_error(line_no = 1, 
@@ -41,7 +45,7 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
              perl = TRUE)
       
       if (inputs[[1]] != "tex/acknowledgements"){
-        stop("The only permitted \\input in \\acknowledgements is \\input{tex/acknowledgements}")
+        stop("The only permitted \\input in the preamble after \\acknowledgements is \\input{tex/acknowledgements}")
       }
       
       lines_before_begin_document <- 
@@ -73,21 +77,28 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       
       current_year <- 
         if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
+          year_provided <- FALSE
           format(Sys.Date(), "%Y")
         } else {
-          year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE, value = TRUE)
+          year_provided <- TRUE
+          year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE)
           if (length(year_line) != 1L){
             stop("Multiple \\YEAR provided.")
           }
-          gsub("[^0-9]", "", year_line)
+          gsub("[^0-9]", "", lines_before_begin_document[year_line])
         }
       
-      if (AND(substr(GrattanReportNumberArg, 0, 4) != current_year,
-              !grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
-        stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4), 
-             " for the year of publication, but today's date is ",
-             Sys.Date(), 
-             " and \\YEAR has not been specified.")
+      if (substr(GrattanReportNumberArg, 0, 4) != current_year){
+        if (year_provided){
+          stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4), 
+               " for the year of publication, but today's date is ",
+               Sys.Date(), 
+               " and \\YEAR has not been specified.")
+        } else {
+          stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4), 
+               " for the year of publication, but line ", year_line, " is ",
+               lines_before_begin_document[year_line], ".")
+        }
       }
       
       is.wholenumber <- function(x){
@@ -96,16 +107,31 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
             abs(x - round(x)) < .Machine$double.eps^0.5)
       }
       
-      if (!is.wholenumber(gsub("^.{6}", "", GrattanReportNumberArg))){
+      if (!is.wholenumber(gsub("^.{5}", "", GrattanReportNumberArg))){
         stop("GrattanReportNumber not in the form YYYY-z where z is an integer.")
       }
     }
     
     
+    # Check authors
+    if (!any(grepl("^\\{\\\\footnotesize", lines_before_begin_document, perl = TRUE))){
+      stop("Lines from 'This report may be cited as:' to 'All material ... Unported License' must be \\footnotesize.")
+    }
+    
+    if (!any(lines_before_begin_document == "All material published or otherwise created by Grattan Institute is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\\par")){
+      stop("License line not present and correct. Could not find (as a single line)\n>", 
+           "All material published or otherwise created by Grattan Institute is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\\par<")
+    }
+    licence_line <- which(lines_before_begin_document == "All material published or otherwise created by Grattan Institute is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\\par")
+    
+    if (lines_before_begin_document[licence_line + 1] != "}"){
+      stop("Line after licence line must be a closing brace.")
+    }
+    
     # Check ISBN (13-digit)
     # 978-1-925015-95-9
     
-    isbn_line <- grep("^ISBN:", lines_before_begin_document, perl = TRUE, value = TRUE)
+    isbn_line <- grep("^ISBN:", lines_before_begin_document, perl = TRUE, value = FALSE)
     
     if (length(isbn_line) != 1L){
       if (length(isbn_line) == 0L){
@@ -117,8 +143,13 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       }
     }
     
+    if (isbn_line != licence_line - 2){
+      stop("ISBN: line must be two lines before licence line.")
+    }
+    
     isbn <-
-      isbn_line %>%
+      lines_before_begin_document %>%
+      .[isbn_line] %>%
       gsub("[^0-9]", "", ., perl = TRUE) %>%
       strsplit(split = "") %>%
       unlist %>%
@@ -138,6 +169,34 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       stop(paste0("Invalid ISBN. Checksum was ", check_sum))
     }
     
+    if (!OR(lines_before_begin_document[isbn_line - 3] == "This report may be cited as:",
+            identical(lines_before_begin_document[isbn_line - c(4:3)],
+                      c("This report may be cited as:", "\\newline")))){
+      stop("'This report may be cited as:' not found on the 3rd or 4th before 'ISBN: '.")
+    }
+    
+    project_authors <- get_authors(filename)
+    project_authors_initials <- gsub("^([A-Z])[a-z]+ ", "\\1. ", project_authors, perl = TRUE)
+    project_authors_reversed <- rev_forename_surname_bibtex(project_authors_initials) 
+    project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "), 
+                                       ", and ", 
+                                       last(project_authors_reversed))
+    
+    recommended_citation <- 
+      paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")
+    
+    
+    if (lines_before_begin_document[isbn_line - 2] != recommended_citation){
+      .report_error(error_message = paste0("Recommended citation should be two lines before ISBN: . ",
+                                           "I expected the citation\n\t",
+                                           recommended_citation, 
+                                           "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2]))
+      stop("Recommended citation should be two lines before ISBN: . ",
+           "I expected the citation\n\t",
+           recommended_citation, 
+           "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2])
+    }
+    
     # Check todonotes hl
     todonotes_setinel <- function(filename){
       lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
@@ -145,12 +204,16 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
         .report_error(error_message = paste0("final = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                                              "most likely due to \\usepackage{todonotes}. ",
                                              "These strings are not permitted anywhere in the project ",
-                                             "(even commented out) when preparing a final document."))
+                                             "(even commented out or disabled) when preparing a final document."))
         
         stop(paste0("final = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                     "most likely due to \\usepackage{todonotes}. ",
                     "These strings are not permitted anywhere in the project ",
-                    "(even commented out) when preparing a final document."))
+                    "(even commented out or disabled) when preparing a final document."))
+      }
+      
+      if (any(grepl("\\hl", lines, fixed = TRUE))){
+        stop("Found command \\hl in project.")
       }
       invisible(NULL)
     }

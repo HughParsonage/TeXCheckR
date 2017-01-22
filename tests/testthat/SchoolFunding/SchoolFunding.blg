@@ -1,17 +1,17 @@
 [0] Config.pm:354> INFO - This is Biber 2.7
 [0] Config.pm:357> INFO - Logfile is 'SchoolFunding.blg'
-[23] biber-MSWIN64:303> INFO - === 
-[38] Biber.pm:359> INFO - Reading 'SchoolFunding.bcf'
-[104] Biber.pm:835> INFO - Found 85 citekeys in bib section 0
-[114] Biber.pm:3670> INFO - Processing section 0
-[126] Biber.pm:3840> INFO - Looking for bibtex format file '2016-SchoolFunding.bib' for section 0
-[133] bibtex.pm:1435> INFO - Decoding LaTeX character macros into UTF-8
-[145] bibtex.pm:1292> INFO - Found BibTeX data source '2016-SchoolFunding.bib'
-[172] Utils.pm:164> WARN - year field 'Cth' in entry '2013AustralianEducationAct' is not an integer - this will probably not sort properly.
-[319] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[319] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[319] Biber.pm:3499> INFO - Sorting list 'gratt/global/' of type 'entry' with scheme 'gratt' and locale 'en-US'
-[320] Biber.pm:3505> INFO - No sort tailoring available for locale 'en-US'
-[358] bbl.pm:608> INFO - Writing 'SchoolFunding.bbl' with encoding 'UTF-8'
-[368] bbl.pm:712> INFO - Output to SchoolFunding.bbl
-[370] Biber.pm:109> INFO - WARNINGS: 1
+[21] biber-MSWIN64:303> INFO - === 
+[36] Biber.pm:359> INFO - Reading 'SchoolFunding.bcf'
+[102] Biber.pm:835> INFO - Found 85 citekeys in bib section 0
+[111] Biber.pm:3670> INFO - Processing section 0
+[123] Biber.pm:3840> INFO - Looking for bibtex format file '2016-SchoolFunding.bib' for section 0
+[130] bibtex.pm:1435> INFO - Decoding LaTeX character macros into UTF-8
+[141] bibtex.pm:1292> INFO - Found BibTeX data source '2016-SchoolFunding.bib'
+[168] Utils.pm:164> WARN - year field 'Cth' in entry '2013AustralianEducationAct' is not an integer - this will probably not sort properly.
+[314] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[314] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[314] Biber.pm:3499> INFO - Sorting list 'gratt/global/' of type 'entry' with scheme 'gratt' and locale 'en-US'
+[314] Biber.pm:3505> INFO - No sort tailoring available for locale 'en-US'
+[351] bbl.pm:608> INFO - Writing 'SchoolFunding.bbl' with encoding 'UTF-8'
+[360] bbl.pm:712> INFO - Output to SchoolFunding.bbl
+[363] Biber.pm:109> INFO - WARNINGS: 1

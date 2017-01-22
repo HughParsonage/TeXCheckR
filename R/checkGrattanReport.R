@@ -109,7 +109,7 @@ checkGrattanReport <- function(path = ".",
     get_authors(filename)
 
   cat("I see the following as authors:",
-      the_authors, sep = "\n\t")
+      the_authors, sep = "\n   ")
   
   cat("\n")
   
@@ -118,13 +118,19 @@ checkGrattanReport <- function(path = ".",
     if (length(inputs) > 0){
       for (input in inputs){
         check_input(input)
-        cat(input, "\n")
+        cat(input)
       
         check_cite_pagerefs(input, .report_error = .report_error)
+        cat(".")
         check_dashes(input, .report_error = .report_error)
+        cat(".")
         check_footnote_typography(input, .report_error = .report_error)
+        cat(".")
         check_repetitive_xrefs(input, .report_error = .report_error)
+        cat(".")
         check_sentence_ending_periods(input, .report_error = .report_error)
+        cat(".")
+        cat(" OK\n")
       }
     }
   }
@@ -172,7 +178,6 @@ checkGrattanReport <- function(path = ".",
   cat("\n")
   
   if (compile){
-    cat("Invoking pdflatex\n")
     full_dir_of_path <- getwd()
     move_to <- function(to.dir, from.dir = "."){
       x <- list.files(path = from.dir,
@@ -187,20 +192,20 @@ checkGrattanReport <- function(path = ".",
       file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
       setwd(to.dir)
       file.remove(gsub("\\.tex", ".pdf", filename))
-      cat(to.dir, "\n")
+      cat("Attempting compilation in temp directory:", to.dir, "\n")
     }
     md5_filename <- tools::md5sum(filename)
     temp_dir <- file.path(tempdir(), md5_filename)
     dir.create(temp_dir)
     move_to(temp_dir)
     
-    
+    cat("Invoking pdflatex... ")
     options(warn = 2)
     system2(command = "pdflatex",
             args = c("-draftmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
-    
-    
+    cat("complete.\n")
+    cat("Invoking biber...\n")
     system2(command = "biber",
             args = c("--onlylog", "-V", gsub("\\.tex$", "", filename)),
             stdout = gsub("\\.tex$", ".log2", filename))
@@ -208,17 +213,20 @@ checkGrattanReport <- function(path = ".",
     check_biber()
     cat(green(symbol$tick, "biber validated citations.\n"))
     
+    cat("Rerunning pdflatex. Starting pass number 1")
     system2(command = "pdflatex",
             args = c("-draftmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
     
+    cat(" 2 ")
     system2(command = "pdflatex",
             args = c("-interaction=batchmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
     
     log_result <- check_log(check_for_rerun_only = TRUE)
     reruns_required <- 2
-    while (!is.null(log_result) && log_result == "Rerun LaTeX."){
+    while (final && !is.null(log_result) && log_result == "Rerun LaTeX."){
+      cat(" ", reruns_required + 1, " ", sep = "")
       system2(command = "pdflatex",
               args = c("-interaction=batchmode", filename),
               stdout = gsub("\\.tex$", ".log2", filename))
@@ -226,7 +234,7 @@ checkGrattanReport <- function(path = ".",
       
       reruns_required <- reruns_required + 1
       if (!missing(.proceed_after_rerun) && reruns_required > .proceed_after_rerun){
-        cat("W: Skipping checking of LaTeX rerun.\n")
+        cat("\nW: Skipping checking of LaTeX rerun.")
         break
       }
       
@@ -235,29 +243,33 @@ checkGrattanReport <- function(path = ".",
                "Consult an expert: Hugh Parsonage or Cameron Chisholm or https://tex.stackexchange.com.")
       }
     }
+    cat("\n")
     cat(green(symbol$tick, ".log file checked.\n"))
     
-    check_CenturyFootnote()
-    cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
-    
-    if (release){
-      if (!dir.exists("RELEASE")){
-        dir.create("RELEASE")
-      }
-      # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
-      embedFonts(gsub("\\.tex$", ".pdf", filename),
-                 outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
-      cat(green(symbol$tick, "Fonts embedded.\n"))
+    if (final){
+      check_CenturyFootnote()
+      cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
       
+      if (release){
+        if (!dir.exists("RELEASE")){
+          dir.create("RELEASE")
+        }
+        # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
+        embedFonts(gsub("\\.tex$", ".pdf", filename),
+                   outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+        cat(green(symbol$tick, "Fonts embedded.\n"))
+        
+      }
+      
+      setwd(full_dir_of_path)
+      cat("\n")
     }
-    
-    setwd(full_dir_of_path)
-    cat("\n")
   }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
   if (release){
-    cat("Releaseable pdf at ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+    cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+    cat("\nDONE.")
   }
   
   if (output_method == "gmailr"){

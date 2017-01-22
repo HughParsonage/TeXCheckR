@@ -1,5 +1,6 @@
 #' Check Grattan Report
-#'
+#' @description Check Grattan reports written is LaTeX for typing errors, significant warnings, 
+#' and inconsistent style.
 #' @param path Path to search for the tex source file.
 #' @param output_method How errors should be reported.
 #' @param compile Should \code{pdflatex} be run on the report so the logs may be checked?

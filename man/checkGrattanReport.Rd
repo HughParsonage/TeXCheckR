@@ -27,6 +27,7 @@ or incompletely formatted bibliographies.}
 Called for its side-effect.
 }
 \description{
-Check Grattan Report
+Check Grattan reports written is LaTeX for typing errors, significant warnings, 
+and inconsistent style.
 }
 

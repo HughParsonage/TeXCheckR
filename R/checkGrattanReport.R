@@ -20,6 +20,7 @@
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed
 #' @importFrom grDevices embedFonts
+#' @importFrom utils download.file
 
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
@@ -52,11 +53,11 @@ checkGrattanReport <- function(path = ".",
   output_method <- match.arg(output_method)
   
   if (final){
-    download_failure <- download.files("https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls",
-                                       destfile = "grattan.cls",
-                                       quiet = TRUE)
+    download_failure <- download.file("https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls",
+                                      destfile = "grattan.cls",
+                                      quiet = TRUE)
     if (download_failure){
-      stop("grattan.cls failed to download (and be updated).")
+      stop("grattan.cls failed to download from master branch (and be updated).")
     }
   }
   

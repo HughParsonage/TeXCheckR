@@ -199,6 +199,17 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
   
   # check_Grattan_entries(bib)
 
+  # Peter Goss or Pete Goss?
+  if (OR(any(grepl("Pete Goss", bib, perl = TRUE)),
+         any(grepl("Goss, Pete(?!r)", bib, perl = TRUE)))){
+    line_no <- which(or(grepl("Pete Goss", bib, perl = TRUE),
+                        grepl("Goss, Pete(?!r)", bib, perl = TRUE)))[[1]]
+    .report_error(line_no = line_no,
+                  context = bib[line_no],
+                  error_message = "Use 'Peter Goss', not 'Pete Goss', in bibliography.")
+    
+    stop("Use 'Peter Goss', not 'Pete Goss', in bibliography.")
+  }
 
   # dois should not include the top-level URL
   if (any(grepl("^\\s+(doi).*https?[:][/][/]", bib, perl = TRUE))){

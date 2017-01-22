@@ -129,6 +129,8 @@ checkGrattanReport <- function(path = ".",
       
         check_cite_pagerefs(input, .report_error = .report_error)
         cat(".")
+        check_escapes(input, .report_error = .report_error)
+        cat(".")
         check_dashes(input, .report_error = .report_error)
         cat(".")
         check_footnote_typography(input, .report_error = .report_error)
@@ -146,7 +148,9 @@ checkGrattanReport <- function(path = ".",
   check_cite_pagerefs(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
 
-
+  check_escapes(filename)
+  cat(green(symbol$tick, "Dashes correctly typed.\n"))
+  
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
 

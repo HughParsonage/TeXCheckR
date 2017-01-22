@@ -4,11 +4,13 @@
 \alias{check_spelling}
 \title{Spellchecker for Grattan reports}
 \usage{
-check_spelling(filename, ignore.lines = NULL, known.correct = NULL,
-  known.wrong = NULL, .report_error)
+check_spelling(filename, final = TRUE, ignore.lines = NULL,
+  known.correct = NULL, known.wrong = NULL, .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
+
+\item{final}{Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded.}
 
 \item{ignore.lines}{Integer vector of lines to ignore (due to possibly spurious errors).}
 

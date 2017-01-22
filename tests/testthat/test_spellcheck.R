@@ -13,3 +13,13 @@ test_that("Check spelling of multiple input document", {
 test_that("Abbreviations", {
   expect_error(check_spelling("spellcheck-abbrevs.tex"))
 })
+
+test_that("Add to dictionary, ignore spelling in", {
+  expect_error(check_spelling("./spelling/add_to_dictionary-wrong.tex"), regexp = "[Ss]pellcheck failed")
+  expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", final = FALSE), regexp = "[Ss]pellcheck failed")
+  
+  expect_null(check_spelling("./spelling/add_to_dictionary-ok.tex"))
+  expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", final = FALSE))
+  
+  expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "final = TRUE")
+})

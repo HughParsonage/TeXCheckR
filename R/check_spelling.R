@@ -1,6 +1,7 @@
 #' Spellchecker for Grattan reports
 #'
 #' @param filename Path to a LaTeX file to check.
+#' @param final Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded. 
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
@@ -13,6 +14,7 @@
 #' @export
 
 check_spelling <- function(filename,
+                           final = TRUE,
                            ignore.lines = NULL,
                            known.correct = NULL,
                            known.wrong = NULL,
@@ -199,6 +201,31 @@ check_spelling <- function(filename,
                                       command_name = "begin.(?:(?:(?:very)?small)|(?:big))box[*]?[}]",
                                       n = 2L,
                                       replacement = "box:key")
+  
+  ignore_spelling_in_line_no <-
+    grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
+  
+  if (final && not_length0(ignore_spelling_in_line_no)){
+    line_no <- ignore_spelling_in_line_no[1]
+    context <- lines[line_no]
+    .report_error(line_no = line_no,
+                  context = context, 
+                  error_message = "final = TRUE but 'ignore spelling in' line is present.")
+    stop("final = TRUE but 'ignore spelling in' line was present.")
+  }
+  
+  if (!final){
+    commands_to_ignore <-
+      lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
+      gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
+      trimws %>%
+      strsplit(split = " ", fixed = TRUE) %>%
+      unlist
+    
+    for (command in commands_to_ignore){
+      lines <- replace_nth_LaTeX_argument(lines, command_name = command, replacement = "ignored")
+    }
+  }
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct

@@ -102,13 +102,13 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   b1 <- grepl("^\\s*\\\\footnote", lines, perl = TRUE)
   # ... provided there is a protective % on the line before {lines[-1]}
   # and there isn't a space before that. {(?<! )}
-  b2 <- c(!grepl("(?<! )%$", lines[-1], perl = TRUE), FALSE)
+  b2 <- shift(grepl("(?<! )%$", lines, perl = TRUE), type = "lag", fill = FALSE)
   
   # a1 b1 b2  Test  Expect  Description
   #  T  T  T  1     PASS    Tabbed footnote on own line: b2 protects
   #  T  T  F  2     FAIL    Tabbed footnote without protection.
-  #  T  F  T  3     FAIL    Ordinary space (and txt) before fn: lazy dog \footnote
-  #  T  F  F  4     FAIL    Same as above; % irrelevant -- protective space has no effect
+  #  T  F  T  3     FAIL    Ordinary space (and txt) before fn % irrelevant -- protective space has no effect
+  #  T  F  F  4     FAIL    Ordinary space (and txt) before fn: lazy dog \footnote
   #  F  T  T  5     PASS    Non-tabbed footnote \footnote at start of text: b2 protects
   #  F  T  F  6     FAIL    Non-tabbed footnote without protection
   #  F  F  T  7     PASS    No footnote
@@ -116,8 +116,12 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   
   if (any(or(a1 & !(b1 & b2), 
              b1 & !b2))){
+    line_no <- which(or(a1 & !(b1 & b2), 
+                        b1 & b2))[[1]]
+    context <- 
+      lines[line_no] 
     .report_error(line_no = line_no,
-                  context = x,
+                  context = context,
                   error_message = "Space inserted before \\footnote")
     stop("Space inserted before footnote.")
   }

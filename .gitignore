@@ -4,6 +4,7 @@
 .Ruserdata
 grattanReporter.Rproj
 *.aux
+*.bbl
 *.bcf
 *.lof
 *.log
@@ -13,3 +14,7 @@ grattanReporter.Rproj
 *.toc
 *.idx
 .httr-oauth
+
+tests/testthat/fnote-typogr/*
+!tests/testthat/fnote-typogr/*.tex
+

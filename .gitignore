@@ -5,7 +5,9 @@
 grattanReporter.Rproj
 *.aux
 *.bbl
+*.blg
 *.bcf
+*.fn100
 *.lof
 *.log
 *.out

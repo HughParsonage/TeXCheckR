@@ -156,7 +156,7 @@ checkGrattanReport <- function(path = ".",
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
   
-  check_quote_marks(input, .report_error = .report_error)
+  check_quote_marks(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Opening quotes correctly typed.\n"))
 
   check_footnote_typography(filename)

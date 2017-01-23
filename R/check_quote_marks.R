@@ -16,8 +16,11 @@ check_quote_marks <- function(filename, .report_error){
     line_no <- grep("(^')|( ')", lines, perl = TRUE)[[1]]
     context <- lines[[line_no]]
     
-    position <- gregexpr("(^')|( ')", context, perl = TRUE)[[1]][1] + nchar(line_no) + 5 # to match with X : etc.
-    
+    if (grepl("^'", context, perl = TRUE)){
+      position <- 5
+    } else {
+      position <- gregexpr("( ')", context, perl = TRUE)[[1]][1] + nchar(line_no) + 6 # to match with X : etc.
+    }
     context <- paste0(substr(context, 0, position + 6), "\n", 
                       paste0(rep(" ", position - 1), collapse = ""), "^",
                       collapse = "")

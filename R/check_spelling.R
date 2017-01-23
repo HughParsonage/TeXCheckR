@@ -252,6 +252,13 @@ check_spelling <- function(filename,
            "\\1",
            lines[first_wrong_line_no],
            perl = TRUE)
+    
+    if (wrongly_spelled_word == "percent"){
+      context <- paste0(lines[first_wrong_line_no], "\n",
+                        "Use 'per cent', not 'percent'.")
+    } else {
+      context <- lines[first_wrong_line_no]
+    }
 
     .report_error(line_no = first_wrong_line_no,
                   context = lines[first_wrong_line_no],

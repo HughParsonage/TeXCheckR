@@ -30,4 +30,5 @@ test_that("Space before footnotes.", {
   expect_error(check_footnote_typography("./fnote-typogr/6.tex"))
   expect_null(check_footnote_typography("./fnote-typogr/7.tex"))
   expect_null(check_footnote_typography("./fnote-typogr/8.tex"))
+  expect_null(check_footnote_typography("./fnote-typogr/isOK.tex"))
 })

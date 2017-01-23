@@ -9,7 +9,9 @@ check_quote_marks <- function(filename, .report_error){
     .report_error <- function(...) report2console(...)
   }
   
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- 
+    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    strip_comments
   # Avoid ``ok''
 
   if (any(grepl("(^')|( ')", lines, perl = TRUE))){

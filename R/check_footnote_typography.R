@@ -117,7 +117,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(or(a1 & !(b1 & b2), 
              b1 & !b2))){
     line_no <- which(or(a1 & !(b1 & b2), 
-                        b1 & b2))[[1]]
+                        b1 & !b2))[[1]]
     context <- 
       lines[line_no] 
     .report_error(line_no = line_no,

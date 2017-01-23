@@ -293,9 +293,14 @@ checkGrattanReport <- function(path = ".",
   }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
-  if (release){
-    cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
-    cat("\nDONE.")
+  if (final){
+    if (release){
+      cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+      cat("\nDONE.")
+    }
+    if (any(grepl("XX", readLines(filename, encoding = "UTF-8", warn= FALSE)))){
+      cat("\nWARNING: Found XX in document.")
+    }
   }
   
   if (output_method == "gmailr"){

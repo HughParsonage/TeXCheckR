@@ -5,6 +5,7 @@
 #' or the pattern of the command, without the initial backslash.
 #' @param n The number of mandatory arguments.
 #' @param replacement What to replace the \code{n}th argument with.
+#' @param warn If the nth argument is not present, emit a warning? Set to \code{FALSE} for n-ary commands.
 #' @param .dummy_replacement An intermediate replacement value.
 #'  This value cannot be present in \code{tex_lines}.
 
@@ -16,6 +17,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
                                        command_name,
                                        n = 1L,
                                        replacement = "correct",
+                                       warn = TRUE,
                                        .dummy_replacement = "Qq"){
   # Idea:
   ## 1. Find those lines with the command name
@@ -46,8 +48,16 @@ replace_nth_LaTeX_argument <- function(tex_lines,
                       n = n) %>%
     lapply(function(DT) DT[, "zero_width" := stops == starts + 1L])
 
+  should_warn <- FALSE
   for (el in seq_along(tex_lines_with_command_name_split)){
     intervals <- positions_of_nth_arg[[el]]
+    
+    if (!any(complete.cases(intervals))){
+      if (warn){
+        should_warn <- TRUE
+      }
+      break
+    }
 
     starts <- .subset2(intervals, "starts")
     stops  <- .subset2(intervals, "stops")
@@ -65,6 +75,10 @@ replace_nth_LaTeX_argument <- function(tex_lines,
             .dummy_replacement,
             tex_lines_with_command_name_split[[el]][-seq.int(1, starts[row])])
       }
+    }
+    
+    if (should_warn){
+      warning("Skipped replacing a line as nth-argument was absent there.")
     }
 
   }

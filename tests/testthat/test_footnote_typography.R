@@ -32,3 +32,7 @@ test_that("Space before footnotes.", {
   expect_null(check_footnote_typography("./fnote-typogr/8.tex"))
   expect_null(check_footnote_typography("./fnote-typogr/isOK.tex"))
 })
+
+test_that("Works for footcite mishaps too", {
+  expect_error(check_footnote_typography("./fnote-typogr/fcite/bad.tex"))
+})

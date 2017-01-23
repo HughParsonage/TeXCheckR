@@ -21,14 +21,14 @@ check_quote_marks <- function(filename, .report_error){
     } else {
       position <- gregexpr("( ')", context, perl = TRUE)[[1]][1] + nchar(line_no) + 6 # to match with X : etc.
     }
-    context <- paste0(substr(context, 0, position + 6), "\n", 
-                      paste0(rep(" ", position - 1), collapse = ""), "^",
+    context <- paste0(substr(context, 0, position + 6), if (nchar(context) > position + 6) "...\n" else "\n", 
+                      paste0(rep(" ", position - 1), collapse = ""), "^", 
                       collapse = "")
     
     .report_error(line_no = line_no, 
                   context = context, 
-                  error_message = "Closing quote used at beginning of word.")
-    stop("Closing quote used at beginning of word.")
+                  error_message = "Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")
+    stop("Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")
   }
   invisible(NULL)
 }

@@ -31,7 +31,7 @@ check_dashes <- function(filename, .report_error){
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
       .report_error(line_no = line_no,
-                    contet = lines[line_no],
+                    context = lines[line_no],
                     error_message = "Dash likely masquerading as hyphen. Use -- for a dash.")
       stop("Dash likely masquerading as hyphen. Use -- for a dash.")
     }

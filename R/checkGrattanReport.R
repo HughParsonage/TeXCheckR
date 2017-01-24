@@ -22,6 +22,7 @@
 #' @importFrom crayon green red bgGreen bgRed
 #' @importFrom grDevices embedFonts
 #' @importFrom utils download.file
+#' @importFrom stats complete.cases
 
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
@@ -133,9 +134,11 @@ checkGrattanReport <- function(path = ".",
         cat(".")
         check_dashes(input, .report_error = .report_error)
         cat(".")
+        check_quote_marks(input, .report_error = .report_error)
+        cat(".")
         check_footnote_typography(input, .report_error = .report_error)
         cat(".")
-        check_repetitive_xrefs(input, .report_error = .report_error)
+        check_xrefs(input, .report_error = .report_error)
         cat(".")
         check_sentence_ending_periods(input, .report_error = .report_error)
         cat(".")
@@ -149,15 +152,18 @@ checkGrattanReport <- function(path = ".",
   cat(green(symbol$tick, "Cite and pagerefs checked.\n"), sep = "")
 
   check_escapes(filename)
-  cat(green(symbol$tick, "$ escaped.\n"))
+  cat(green(symbol$tick, "No unescaped $.\n"))
   
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
+  
+  check_quote_marks(filename, .report_error = .report_error)
+  cat(green(symbol$tick, "Opening quotes correctly typed.\n"))
 
   check_footnote_typography(filename)
   cat(green(symbol$tick, "Footnote typography checked.\n"))
   
-  check_repetitive_xrefs(filename)
+  check_xrefs(filename)
   cat(green(symbol$tick, "No repetitive xrefs.\n"))
 
   check_sentence_ending_periods(filename, .report_error = .report_error)
@@ -190,21 +196,6 @@ checkGrattanReport <- function(path = ".",
   
   if (compile){
     full_dir_of_path <- getwd()
-    move_to <- function(to.dir, from.dir = "."){
-      x <- list.files(path = from.dir,
-                      pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$",
-                      full.names = TRUE,
-                      recursive = TRUE,
-                      include.dirs = FALSE)
-      x.dirs <- file.path(to.dir, 
-                          list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
-      dir_create <- function(x) if (!dir.exists(x)) dir.create(x)
-      lapply(x.dirs, dir_create)
-      file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
-      setwd(to.dir)
-      file.remove(gsub("\\.tex", ".pdf", filename))
-      cat("Attempting compilation in temp directory:", to.dir, "\n")
-    }
     md5_filename <- tools::md5sum(filename)
     temp_dir <- file.path(tempdir(), md5_filename)
     md5_iter <- 1
@@ -219,6 +210,7 @@ checkGrattanReport <- function(path = ".",
     }
     dir.create(temp_dir)
     move_to(temp_dir)
+    file.remove(gsub("\\.tex", ".pdf", filename))
     
     cat("Invoking pdflatex... ")
     options(warn = 2)
@@ -288,12 +280,17 @@ checkGrattanReport <- function(path = ".",
   }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
-  if (release){
-    cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
-    cat("\nDONE.")
-    
-    if (!grepl("FrontPage", readLines(filename, encoding = "UTF-8", warn = FALSE))){
-      cat("\n\nNOTE: Did you forget to add the FrontPage to \\documentclass{grattan}?")
+  if (final){
+    if (release){
+      cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+      cat("\nDONE.")
+      
+      if (!grepl("FrontPage", readLines(filename, encoding = "UTF-8", warn = FALSE))){
+        cat("\n\nNOTE: Did you forget to add the FrontPage to \\documentclass{grattan}?")
+      }
+      if (any(grepl("XX", readLines(filename, encoding = "UTF-8", warn= FALSE)))){
+        cat("\nWARNING: Found XX in document.")
+      }
     }
   }
   
@@ -326,4 +323,5 @@ checkGrattanReport <- function(path = ".",
              sep = "\t",
              append = append)
   }
+  invisible(NULL)
 }

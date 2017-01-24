@@ -56,6 +56,19 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
     }
   }
   
+  current_year <- 
+    if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
+      year_provided <- FALSE
+      format(Sys.Date(), "%Y")
+    } else {
+      year_provided <- TRUE
+      year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE)
+      if (length(year_line) != 1L){
+        stop("Multiple \\YEAR provided.")
+      }
+      gsub("[^0-9]", "", lines_before_begin_document[year_line])
+    }
+  
   if (final){
     if (release){
       if (any(grepl("embargo", lines_before_begin_document, fixed = TRUE))){
@@ -74,19 +87,6 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
         }
       }
       GrattanReportNumberArg <- gsub("^.*[{](.*)[}].*$", "\\1", GrattanReportNumber, perl = TRUE)
-      
-      current_year <- 
-        if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
-          year_provided <- FALSE
-          format(Sys.Date(), "%Y")
-        } else {
-          year_provided <- TRUE
-          year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE)
-          if (length(year_line) != 1L){
-            stop("Multiple \\YEAR provided.")
-          }
-          gsub("[^0-9]", "", lines_before_begin_document[year_line])
-        }
       
       if (substr(GrattanReportNumberArg, 0, 4) != current_year){
         if (year_provided){
@@ -212,7 +212,10 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
                     "(even commented out or disabled) when preparing a final document."))
       }
       
-      if (any(grepl("\\hl", lines, fixed = TRUE))){
+      if (any(grepl("\\hl{", lines, fixed = TRUE))){
+        .report_error(context = filename,
+                      extra_cat_post = "Found command \\hl somewhere in ", filename, ". Ensure all comments are removed from the document.",
+                      error_message = "Found command \\hl in project.")
         stop("Found command \\hl in project.")
       }
       invisible(NULL)

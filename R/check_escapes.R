@@ -25,5 +25,15 @@ check_escapes <- function(filename, .report_error){
                   error_message = "Unescaped $. If you meant to print a dollar sign, use \\$. If you want to use math-mode, use \\(...\\), not $...$ .")
     stop("Unescaped $. If you meant to print a dollar sign, use \\$. If you want to use math-mode, use \\(...\\), not $...$ .")
   }
+  
+  if (any(grepl("...", lines, fixed = TRUE)) || any(grepl("\u2026", lines, fixed = TRUE))){
+    line_no <- which(grepl("...", lines, fixed = TRUE) | grepl("\u2026", lines, fixed = TRUE))[[1]]
+    context <- lines[[line_no]]
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Use \\dots{} for an ellipsis, rather than three dots (...) or \\u2026 (\u2026).")
+    stop("Use \\dots{} for an ellipsis, rather than three dots (...) or \\u2026 (\u2026).")
+  }
+  
   invisible(NULL)
 }

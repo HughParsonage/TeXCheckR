@@ -1,4 +1,6 @@
-
+#' Check that citations are all using cites
+#' @param filename TeX document
+#' @param .report_error Function to report errors
 #' @export
 
 check_literal_citations <- function(filename, .report_error){

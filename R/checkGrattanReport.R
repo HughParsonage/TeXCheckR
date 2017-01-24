@@ -291,6 +291,10 @@ checkGrattanReport <- function(path = ".",
   if (release){
     cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
     cat("\nDONE.")
+    
+    if (!grepl("FrontPage", readLines(filename, encoding = "UTF-8", warn = FALSE))){
+      cat("\n\nNOTE: Did you forget to add the FrontPage to \\documentclass{grattan}?")
+    }
   }
   
   if (output_method == "gmailr"){

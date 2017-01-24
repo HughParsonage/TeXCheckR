@@ -8,7 +8,7 @@ prohibit_figure_placement <- function(filename, .report_error){
   
   if (any(grepl("\\begin{figure}[", lines, fixed = TRUE))){
     line_no <- grep("\\begin{figure}[", lines, fixed = TRUE)
-    context <- lines[[lines_no]]
+    context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,
                   error_message = "Manual placement of figures is not permitted.")

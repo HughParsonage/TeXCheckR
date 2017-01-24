@@ -1,6 +1,6 @@
 Package: grattanReporter
 Type: Package
-Title: Parses Grattan Reports, possibly creating PDFs also.
+Title: Parses Grattan Reports, possibly creating PDFs also
 Date: 2016-01-25
 Version: 0.6.0
 Author: Hugh Parsonage

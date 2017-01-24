@@ -22,6 +22,7 @@
 #' @importFrom crayon green red bgGreen bgRed
 #' @importFrom grDevices embedFonts
 #' @importFrom utils download.file
+#' @importFrom stats complete.cases
 
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),

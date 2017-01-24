@@ -80,3 +80,18 @@ nth_min.int <- function(x, n){
 strip_comments <- function(lines){
   gsub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
 }
+
+move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$"){
+  x <- list.files(path = from.dir,
+                  pattern = pattern,
+                  full.names = TRUE,
+                  recursive = TRUE,
+                  include.dirs = FALSE)
+  x.dirs <- file.path(to.dir, 
+                      list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
+  dir_create <- function(x) if (!dir.exists(x)) dir.create(x)
+  lapply(x.dirs, dir_create)
+  file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
+  setwd(to.dir)
+  cat("Attempting compilation in temp directory:", to.dir, "\n")
+}

@@ -196,21 +196,6 @@ checkGrattanReport <- function(path = ".",
   
   if (compile){
     full_dir_of_path <- getwd()
-    move_to <- function(to.dir, from.dir = "."){
-      x <- list.files(path = from.dir,
-                      pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$",
-                      full.names = TRUE,
-                      recursive = TRUE,
-                      include.dirs = FALSE)
-      x.dirs <- file.path(to.dir, 
-                          list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
-      dir_create <- function(x) if (!dir.exists(x)) dir.create(x)
-      lapply(x.dirs, dir_create)
-      file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
-      setwd(to.dir)
-      file.remove(gsub("\\.tex", ".pdf", filename))
-      cat("Attempting compilation in temp directory:", to.dir, "\n")
-    }
     md5_filename <- tools::md5sum(filename)
     temp_dir <- file.path(tempdir(), md5_filename)
     md5_iter <- 1
@@ -225,6 +210,7 @@ checkGrattanReport <- function(path = ".",
     }
     dir.create(temp_dir)
     move_to(temp_dir)
+    file.remove(gsub("\\.tex", ".pdf", filename))
     
     cat("Invoking pdflatex... ")
     options(warn = 2)

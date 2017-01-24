@@ -294,19 +294,20 @@ checkGrattanReport <- function(path = ".",
     }
   }
   
-  if (output_method == "gmailr"){
-    if (file.exists("./travis/grattanReport/gmailr-log.tsv")){
-      prev_build_status <-
-        fread("./travis/grattanReport/gmailr-log.tsv") %>%
-        last %>%
-        .[["build_status"]]
-      append <- TRUE
-    } else {
-      prev_build_status <- "None"
-      append <- FALSE
-    }
-    
-    if (prev_build_status %in% c("None", "Broken", "Still failing")){
+  if (file.exists("./travis/grattanReport/error-log.tsv")){
+    prev_build_status <-
+      fread("./travis/grattanReport/error-log.tsv") %>%
+      last %>%
+      .[["build_status"]]
+    append <- TRUE
+  } else {
+    prev_build_status <- "None"
+    append <- FALSE
+  }
+  
+  if (prev_build_status %in% c("None", "Broken", "Still failing")){
+    build_status <- "Fixed"
+    if (output_method == "gmailr"){
       message <- gmailr::mime(
         To = "hugh.parsonage@gmail.com", #email_addresses, 
         From = "hugh.parsonage@gmail.com",
@@ -315,13 +316,15 @@ checkGrattanReport <- function(path = ".",
         gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
       gmailr::send_message(message)
     }
-    
-    data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-               build_status = "OK", 
-               error_message = "") %>%
-      fwrite("./travis/grattanReport/gmailr-log.tsv",
-             sep = "\t",
-             append = append)
+  } else {
+    build_status <- "OK"
   }
+    
+  data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+             build_status = build_status, 
+             error_message = "NA") %>%
+    fwrite("./travis/grattanReport/error-log.tsv",
+           sep = "\t",
+           append = append)
   invisible(NULL)
 }

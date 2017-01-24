@@ -285,10 +285,12 @@ checkGrattanReport <- function(path = ".",
       cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
       cat("\nDONE.")
       
-      if (!grepl("FrontPage", readLines(filename, encoding = "UTF-8", warn = FALSE))){
+      lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+      if (!any(grepl("FrontPage", lines))){
         cat("\n\nNOTE: Did you forget to add the FrontPage to \\documentclass{grattan}?")
       }
-      if (any(grepl("XX", readLines(filename, encoding = "UTF-8", warn= FALSE)))){
+      if (any(grepl("XX", lines[!or(grepl("tabularx", lines, perl = TRUE),
+                                    grepl("^%", lines, perl = TRUE))]))){
         cat("\nWARNING: Found XX in document.")
       }
     }

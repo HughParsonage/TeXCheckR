@@ -137,7 +137,7 @@ checkGrattanReport <- function(path = ".",
         cat(".")
         check_footnote_typography(input, .report_error = .report_error)
         cat(".")
-        check_repetitive_xrefs(input, .report_error = .report_error)
+        check_xrefs(input, .report_error = .report_error)
         cat(".")
         check_sentence_ending_periods(input, .report_error = .report_error)
         cat(".")
@@ -162,7 +162,7 @@ checkGrattanReport <- function(path = ".",
   check_footnote_typography(filename)
   cat(green(symbol$tick, "Footnote typography checked.\n"))
   
-  check_repetitive_xrefs(filename)
+  check_xrefs(filename)
   cat(green(symbol$tick, "No repetitive xrefs.\n"))
 
   check_sentence_ending_periods(filename, .report_error = .report_error)

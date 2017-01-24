@@ -15,6 +15,7 @@ grattanReporter.Rproj
 *.run.xml
 *.toc
 *.idx
+*.tsv
 .httr-oauth
 
 tests/testthat/fnote-typogr/*

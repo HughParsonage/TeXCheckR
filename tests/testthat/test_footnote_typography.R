@@ -34,9 +34,9 @@ test_that("Space before footnotes.", {
 })
 
 test_that("Works for footcite mishaps too", {
-  expect_error(check_footnote_typography("./fnote-typogr/fcite/bad.tex"))
+  expect_error(check_footnote_typography("./fnote-typogr/bad.tex"))
 })
 
 test_that("Leading space in footnote text", {
-  expect_error(check_footnote_typography("./fnote-typogr/fcite/space-footnotetext.tex"))
+  expect_error(check_footnote_typography("./fnote-typogr/space-footnotetext.tex"))
 })

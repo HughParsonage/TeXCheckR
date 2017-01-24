@@ -336,5 +336,15 @@ check_spelling <- function(filename,
     }
   }
   
+  # Forgotten full stop.
+  if (any(grepl("[a-z]\\.[A-Z]", lines, perl = TRUE))){
+    line_no <- grep("[a-z]\\.[A-Z]", lines, perl = TRUE)[[1]]
+    context <- lines[[line_no]]
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Lower-case letter followed by capital letter. Likely reason: forgotten space.")
+    stop("Lower-case letter followed by capital letter. Likely reason: forgotten space.")
+  }
+  
   return(invisible(NULL))
 }

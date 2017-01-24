@@ -72,7 +72,7 @@ checkGrattanReport <- function(path = ".",
       dir.create("RELEASE")
     } else {
       if (length(list.files(path = "./RELEASE", pattern = "\\.pdf$")) > 0){
-        invisible(lapply(list.files(path = "./RELEASE", pattern = "\\.pdf$"), file.remove))
+        invisible(lapply(list.files(path = "./RELEASE", pattern = "\\.pdf$", full.names = TRUE), file.remove))
         message("RELEASE contained pdf files. These have been deleted.")
       }
     }
@@ -83,7 +83,7 @@ checkGrattanReport <- function(path = ".",
       dir.create("PRE-RELEASE")
     } else {
       if (length(list.files(path = "./PRE-RELEASE", pattern = "\\.pdf$")) > 0){
-        invisible(lapply(list.files(path = "./PRE-RELEASE", pattern = "\\.pdf$"), file.remove))
+        invisible(lapply(list.files(path = "./PRE-RELEASE", pattern = "\\.pdf$", full.names = TRUE), file.remove))
         message("PRE-RELEASE contained pdf files. These have been deleted.")
       }
     }
@@ -227,7 +227,9 @@ checkGrattanReport <- function(path = ".",
     }
     dir.create(temp_dir)
     move_to(temp_dir)
-    file.remove(gsub("\\.tex", ".pdf", filename))
+    if (file.exists(gsub("\\.tex", ".pdf", filename))){
+      file.remove(gsub("\\.tex", ".pdf", filename))
+    }
     
     cat("   Invoking pdflatex... ")
     options(warn = 2)

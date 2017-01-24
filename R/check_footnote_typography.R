@@ -32,7 +32,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   
   # More than one footnote on a line won't be good.
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
-                grep("\\foot(?:(?:note)|(?:cite))", lines, fixed = TRUE),
+                lines,
                 perl = TRUE))){
     lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
     line_no <- grep("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", lines, perl = TRUE)[1]
@@ -169,6 +169,15 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                   context = context,
                   error_message = "Space inserted before \\footnote")
     stop("Space inserted before footnote.")
+  }
+  
+  if (any(grepl("\\footnote{ ", lines, fixed = TRUE))){
+    line_no <- grep("\\footnote{ ", lines, fixed = TRUE)[[1]]
+    context <- lines[[line_no]]
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Leading spacing in footnotetext.")
+    stop("Leading spacing in footnotetext.")
   }
   
   # cat("\u2014  No space before footnote marks", "\n")

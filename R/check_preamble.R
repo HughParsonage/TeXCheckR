@@ -1,6 +1,6 @@
 
 
-check_preamble <- function(filename, .report_error, final = FALSE, release = FALSE){
+check_preamble <- function(filename, .report_error, pre_release = FALSE, release = FALSE){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
@@ -69,7 +69,7 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
       gsub("[^0-9]", "", lines_before_begin_document[year_line])
     }
   
-  if (final){
+  if (pre_release){
     if (release){
       if (any(grepl("embargo", lines_before_begin_document, fixed = TRUE))){
         .report_error(error_message = "String 'embargo' found before \\begin{document} while attempting to release a report.")
@@ -201,15 +201,15 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
     todonotes_setinel <- function(filename){
       lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
       if (any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
-        .report_error(error_message = paste0("final = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
+        .report_error(error_message = paste0("pre_release = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                                              "most likely due to \\usepackage{todonotes}. ",
                                              "These strings are not permitted anywhere in the project ",
-                                             "(even commented out or disabled) when preparing a final document."))
+                                             "(even commented out or disabled) when preparing a finished document."))
         
-        stop(paste0("final = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
+        stop(paste0("pre_release = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                     "most likely due to \\usepackage{todonotes}. ",
                     "These strings are not permitted anywhere in the project ",
-                    "(even commented out or disabled) when preparing a final document."))
+                    "(even commented out or disabled) when preparing a finished document."))
       }
       
       if (any(grepl("\\hl{", lines, fixed = TRUE))){

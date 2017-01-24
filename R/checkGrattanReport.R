@@ -4,7 +4,7 @@
 #' @param path Path to search for the tex source file.
 #' @param output_method How errors should be reported.
 #' @param compile Should \code{pdflatex} be run on the report so the logs may be checked?
-#' @param final Should the document be assumed to be final? Runs additional checks.
+#' @param pre_release Should the document be assumed to be final? Runs additional checks.
 #' @param release Should a final pdf be prepared for publication?
 #' @param .proceed_after_rerun On the occasions where infinitely many passes of \code{pdflatex} 
 #' are required, include this to skip the error. Note that this will result in false cross-references 
@@ -27,19 +27,19 @@
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),
                                compile = FALSE,
-                               final = FALSE,
+                               pre_release = FALSE,
                                release = FALSE,
                                .proceed_after_rerun){
-  if (release && (!final || !compile)){
+  if (release && (!pre_release || !compile)){
     stop("release = TRUE but final and compile are not both TRUE also.")
   }
   
-  if (final && !compile){
+  if (pre_release && !compile){
     stop("final = TRUE but compile = FALSE.")
   }
   
   if (compile && Sys.which("pdflatex") == ""){
-    stop("pdflatex not on System path. Ensure you have LaTeX installed (MiKTeX, MacTeX, TeXLive) and that it is searchable on PATH. ",
+    stop("pdflatex not on system path. Ensure you have LaTeX installed (MiKTeX, MacTeX, TeXLive) and that it is searchable on PATH. ",
          "(Did you install but leave programs open?)")
   }
   
@@ -54,7 +54,7 @@ checkGrattanReport <- function(path = ".",
   
   output_method <- match.arg(output_method)
   
-  if (final){
+  if (pre_release){
     download_failure <- download.file("https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls",
                                       destfile = "grattan.cls",
                                       quiet = TRUE)
@@ -67,9 +67,26 @@ checkGrattanReport <- function(path = ".",
     stop("./travis/grattanReport/ does not exist.")
   }
   
-  if (release && !dir.exists("RELEASE")){
-    warning("release = TRUE but there is no existing RELEASE folder so one will be created.")
-    dir.create("RELEASE")
+  if (release){
+    if (!dir.exists("RELEASE")){
+      dir.create("RELEASE")
+    } else {
+      if (length(list.files(path = "./RELEASE", pattern = "\\.pdf$")) > 0){
+        invisible(lapply(list.files(path = "./RELEASE", pattern = "\\.pdf$"), file.remove))
+        message("RELEASE contained pdf files. These have been deleted.")
+      }
+    }
+  }
+  
+  if (pre_release){
+    if (!dir.exists("PRE-RELEASE")){
+      dir.create("PRE-RELEASE")
+    } else {
+      if (length(list.files(path = "./PRE-RELEASE", pattern = "\\.pdf$")) > 0){
+        invisible(lapply(list.files(path = "./PRE-RELEASE", pattern = "\\.pdf$"), file.remove))
+        message("PRE-RELEASE contained pdf files. These have been deleted.")
+      }
+    }
   }
 
   tex_file <- dir(path = ".", pattern = "\\.tex$")
@@ -111,7 +128,7 @@ checkGrattanReport <- function(path = ".",
            }
          })
   
-  check_preamble(filename, .report_error, final = final, release = release)
+  check_preamble(filename, .report_error, pre_release = pre_release, release = release)
 
   the_authors <-
     get_authors(filename)
@@ -212,13 +229,13 @@ checkGrattanReport <- function(path = ".",
     move_to(temp_dir)
     file.remove(gsub("\\.tex", ".pdf", filename))
     
-    cat("Invoking pdflatex... ")
+    cat("   Invoking pdflatex... ")
     options(warn = 2)
     system2(command = "pdflatex",
             args = c("-draftmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
     cat("complete.\n")
-    cat("Invoking biber...\n")
+    cat("   Invoking biber...\n")
     system2(command = "biber",
             args = c("--onlylog", "-V", gsub("\\.tex$", "", filename)),
             stdout = gsub("\\.tex$", ".log2", filename))
@@ -226,7 +243,7 @@ checkGrattanReport <- function(path = ".",
     check_biber()
     cat(green(symbol$tick, "biber validated citations.\n"))
     
-    cat("Rerunning pdflatex. Starting pass number 1")
+    cat("   Rerunning pdflatex. Starting pass number 1")
     system2(command = "pdflatex",
             args = c("-draftmode", filename),
             stdout = gsub("\\.tex$", ".log2", filename))
@@ -238,7 +255,7 @@ checkGrattanReport <- function(path = ".",
     
     log_result <- check_log(check_for_rerun_only = TRUE)
     reruns_required <- 2
-    while (final && !is.null(log_result) && log_result == "Rerun LaTeX."){
+    while (pre_release && !is.null(log_result) && log_result == "Rerun LaTeX."){
       cat(" ", reruns_required + 1, " ", sep = "")
       system2(command = "pdflatex",
               args = c("-interaction=batchmode", filename),
@@ -259,7 +276,7 @@ checkGrattanReport <- function(path = ".",
     cat("\n")
     cat(green(symbol$tick, ".log file checked.\n"))
     
-    if (final){
+    if (pre_release){
       check_CenturyFootnote()
       cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
       
@@ -272,6 +289,10 @@ checkGrattanReport <- function(path = ".",
                    outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
         cat(green(symbol$tick, "Fonts embedded.\n"))
         
+      } else {
+        file.copy(paste0(report_name, ".pdf"), file.path(full_dir_of_path, 
+                                                         "PRE-RELEASE", 
+                                                         paste0(report_name, ".pdf")))
       }
       
       setwd(full_dir_of_path)
@@ -280,7 +301,7 @@ checkGrattanReport <- function(path = ".",
   }
   
   cat(bgGreen(symbol$tick, "Report checked.\n"))
-  if (final){
+  if (pre_release){
     if (release){
       cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
       cat("\nDONE.")
@@ -293,6 +314,8 @@ checkGrattanReport <- function(path = ".",
                                     grepl("^%", lines, perl = TRUE))]))){
         cat("\nWARNING: Found XX in document.")
       }
+    } else {
+      
     }
   }
   

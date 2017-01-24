@@ -9,8 +9,8 @@ test_that("SchoolFunding.tex doesn't fail", {
     file.remove("./SchoolFunding/RELEASE/SchoolFunding.pdf")
   }
   
-  checkGrattanReport(path = "./SchoolFunding", compile = TRUE, final = TRUE, release = FALSE)
+  checkGrattanReport(path = "./SchoolFunding", compile = TRUE, pre_release = TRUE, release = FALSE)
   
-  expect_true(file.exists("./SchoolFunding/RELEASE/SchoolFunding.pdf"))
+  expect_true(file.exists("./SchoolFunding/PRE-RELEASE/SchoolFunding.pdf"))
   
 })

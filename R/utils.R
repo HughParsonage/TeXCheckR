@@ -93,5 +93,5 @@ move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(st
   lapply(x.dirs, dir_create)
   file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
   setwd(to.dir)
-  cat("Attempting compilation in temp directory:", to.dir, "\n")
+  cat("   Attempting compilation in temp directory:", to.dir, "\n")
 }

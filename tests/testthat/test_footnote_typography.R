@@ -40,3 +40,9 @@ test_that("Works for footcite mishaps too", {
 test_that("Leading space in footnote text", {
   expect_error(check_footnote_typography("./fnote-typogr/space-footnotetext.tex"))
 })
+
+test_that("Two footnotes same line will error", {
+  expect_error(check_footnote_typography("./fnote-typogr/two-footnotes-same-line.tex"),
+               regexp = "cannot occur twice")
+})
+

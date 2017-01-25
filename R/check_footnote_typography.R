@@ -59,8 +59,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       break
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
     if (length(split_line_after_footnote) > footnote_closes_at && split_line_after_footnote[footnote_closes_at + 1] %in% c(".", ",")){
-      cat(paste0(split_line_after_footnote,
-                 collapse = ""),
+      cat(paste0("\\footnote\n         ",
+                 paste0(split_line_after_footnote[1:(footnote_closes_at + 1)], 
+                        collapse = "")),
           "\n")
       stop("Full stop after footnotemark.")
     }

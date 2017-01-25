@@ -155,6 +155,8 @@ checkGrattanReport <- function(path = ".",
         cat(".")
         check_footnote_typography(input, .report_error = .report_error)
         cat(".")
+        check_labels(input)
+        cat(".")
         check_xrefs(input, .report_error = .report_error)
         cat(".")
         check_sentence_ending_periods(input, .report_error = .report_error)

@@ -132,6 +132,10 @@ checkGrattanReport <- function(path = ".",
 
   the_authors <-
     get_authors(filename)
+  
+  if (length(the_authors) == 0L){
+    stop("No authors detectable in document.")
+  }
 
   cat("I see the following as authors:",
       the_authors, sep = "\n   ")

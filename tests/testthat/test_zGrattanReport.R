@@ -1,7 +1,7 @@
 context("GrattanReport")
 
 test_that("SchoolFunding.tex doesn't fail", {
-  expect_null(checkGrattanReport(path = "./SchoolFunding", compile = TRUE))
+  expect_null(checkGrattanReport(path = "./SchoolFunding"))
 })
 
 test_that("SchoolFunding.tex", {

@@ -21,7 +21,7 @@ check_labels <- function(filename, .report_error){
   }
   lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
 
-  lines <- gsub("[%].*$", "", lines, perl = TRUE)
+  lines <- strip_comments(lines)
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
   label_contents <-
@@ -31,6 +31,15 @@ check_labels <- function(filename, .report_error){
       grep("^label", commands, perl = TRUE, value = TRUE) %>%
         gsub(pattern = "^label[{]([^\\}]+)[}].*$", replacement = "\\1", x = ., perl = TRUE)
     }, FUN.VALUE = character(1))
+  
+  if (any(grepl("^app(endix)?[:]", label_contents, perl = TRUE))){
+    line_no <- grep("\\\\label\\{app(endix)?[:]", lines, perl = TRUE)[[1]]
+    context <- lines[line_no]
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
+    stop("Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
+  }
 
   wrong_lines <-
     lines_with_labels %>%
@@ -82,7 +91,7 @@ check_labels <- function(filename, .report_error){
          value = TRUE)
 
   if (length(chapter_xref_lines) > 0){
-    .report_error(chapter_xref_lines[[1]])
+    .report_error(context = chapter_xref_lines[[1]])
     stop("Cross-references to chapters must use Chapref or topref.")
   }
 

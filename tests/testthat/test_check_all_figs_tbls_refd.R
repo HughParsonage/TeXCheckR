@@ -5,7 +5,7 @@ test_that("Error when not refd", {
 })
 
 test_that("Error when not labeled", {
-  expect_error(check_all_figs_tbls_refd("./check-all-figs-tbls-refd/fig-not-labeled.tex"))
+  expect_error(check_labels("./check-all-figs-tbls-refd/fig-not-labeled.tex"))
 })
 
 test_that("No error when commented out", {

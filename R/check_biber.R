@@ -40,6 +40,8 @@ check_biber <- function(path = "."){
         if (grepl("I didn't find a database entry for '.'", first_bad_entry, fixed = TRUE)){
           extra_text <- 
             "Probable reason: use of \\footcites or \\textcites but omitting the last key.\n  e.g.\n\t\\textcites{Knuth}.\n  or\n\t\\textcites[][33]{Knuth}[][3]."
+        } else {
+          extra_text <- NULL
         }
 
         cat(sub("^.*WARN ", "WARN", first_bad_entry), "\n", extra_text)

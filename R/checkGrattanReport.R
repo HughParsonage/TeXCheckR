@@ -188,7 +188,7 @@ checkGrattanReport <- function(path = ".",
   check_sentence_ending_periods(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
 
-  check_spelling(filename, .report_error = .report_error)
+  check_spelling(filename, .report_error = .report_error, final = pre_release)
   cat(green(symbol$tick, "Spellcheck complete.\n"))
 
   # To check the bibliography

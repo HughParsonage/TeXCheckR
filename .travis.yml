@@ -16,3 +16,6 @@ r_packages:
 
 after_success:
   - Rscript -e 'covr::codecov()'
+
+after_failure:
+  - Rscript -e 'cat(readLines("./tests/testthat/SchoolFunding/SchoolFunding.log"), sep = "\n")'

@@ -35,8 +35,8 @@ check_spelling <- function(filename,
     lines[ignore.lines] <- ""
   }
   
-  if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", lines, perl = TRUE))){
-    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", lines, perl = TRUE)[[1]]
+  if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", strip_comments(lines), perl = TRUE))){
+    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", strip_comments(lines), perl = TRUE)[[1]]
     .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
                   line_no = line_no,
                   context = lines[[line_no]])
@@ -89,6 +89,7 @@ check_spelling <- function(filename,
         cat(input, "\n")
         check_spelling(filename = file.path(file_path,
                                             paste0(input, ".tex")),
+                       final = final,
                        known.correct = known.correct,
                        known.wrong = known.wrong)
       }

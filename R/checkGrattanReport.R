@@ -31,11 +31,11 @@ checkGrattanReport <- function(path = ".",
                                release = FALSE,
                                .proceed_after_rerun){
   if (release && (!pre_release || !compile)){
-    stop("release = TRUE but final and compile are not both TRUE also.")
+    stop("release = TRUE but pre_release and compile are not both TRUE also.")
   }
   
   if (pre_release && !compile){
-    stop("final = TRUE but compile = FALSE.")
+    stop("pre_release = TRUE but compile = FALSE.")
   }
   
   if (compile && Sys.which("pdflatex") == ""){

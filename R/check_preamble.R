@@ -56,6 +56,21 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     }
   }
   
+  if (AND(any(grepl("\\ReportOrWorkingPaper{Working Paper}", 
+                    lines_before_begin_document,
+                    fixed = TRUE)),
+              any(grepl("This report was written by", 
+                        lines_before_begin_document, 
+                        perl = TRUE)))){
+    stop("\\ReportOrWorkingPaper set to {Working Paper} but statement\n\t'This report was written by'\nstill present in document.")
+  }
+  
+  if (any(grepl("This working paper was written by", 
+                lines_before_begin_document, 
+                perl = TRUE))){
+    stop("\\ReportOrWorkingPaper not set to {Working Paper} but\n\t'This working paper was written by'\nexists in document.")
+  }
+          
   current_year <- 
     if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
       year_provided <- FALSE

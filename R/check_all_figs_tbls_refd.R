@@ -33,6 +33,9 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
   
+  all_figs_tbls_refd <- TRUE
+  figs_tbls_not_refd <- character(0)
+  
   if (not_length0(lines_with_labels)){
     label_contents <-
       lines[lines_with_labels] %>%
@@ -57,16 +60,15 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
             stop("Couldn't find a xref to ", lab, ".")
           } else {
             warning("Couldn't find a xref to ", lab, ".")
-            assign("not_all_figs_tbls_refd", value = TRUE, pos = parent.frame(n = 2))
-            assign("not_all_figs_tbls_refd.lab", value = lab, pos = parent.frame(n = 2))
           }
-        } else {
-          assign("not_all_figs_tbls_refd", value = TRUE, pos = parent.frame(n = 2))
-          assign("not_all_figs_tbls_refd.lab", value = lab, pos = parent.frame(n = 2))
-        }
+        } 
+        all_figs_tbls_refd <- FALSE
+        figs_tbls_not_refd <- c(figs_tbls_not_refd, lab)
       }
     }
+    
   }
-
+  assign("all_figs_tbls_refd", value = all_figs_tbls_refd, pos = parent.frame(n = 2))
+  assign("figs_tbls_not_refd", value = figs_tbls_not_refd, pos = parent.frame(n = 2))
 }
 

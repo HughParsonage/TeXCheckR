@@ -155,6 +155,8 @@ checkGrattanReport <- function(path = ".",
         cat(".")
         check_dashes(input, .report_error = .report_error)
         cat(".")
+        check_spacing(input, .report_error = .report_error)
+        cat(".")
         check_quote_marks(input, .report_error = .report_error)
         cat(".")
         check_footnote_typography(input, .report_error = .report_error)
@@ -181,6 +183,9 @@ checkGrattanReport <- function(path = ".",
   
   check_dashes(filename)
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
+  
+  check_spacing(filename, .report_error = .report_error)
+  cat(green(symbol$tick, "No spacing issues around abbreviations."))
   
   check_quote_marks(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Opening quotes correctly typed.\n"))
@@ -227,7 +232,7 @@ checkGrattanReport <- function(path = ".",
     if (!all_figs_tbls_refd){
       cat(if (compile) "WARNING:" else  "NOTE:", 
           "Not all figures and tables referenced. ", 
-          not_all_figs_tbls_refd.lab)
+          figs_tbls_not_refd)
     }
   }
 

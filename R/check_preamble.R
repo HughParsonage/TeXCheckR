@@ -58,6 +58,29 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
                     error_message = "First author does not appear to be a member of Grattan staff.")
       stop("First author does not appear to be a member of Grattan staff.")
     }
+    
+    title_line_no <- grep("^\\\\title", lines_before_begin_document, perl = TRUE)
+    len_title_lines <- length(title_line_no)
+    
+    if (len_title_lines == 0L){
+      stop("\\title line not present in document preamble.")
+    }
+    
+    if (len_title_lines != 1L){
+      stop("More than one \\title line in document preamble.")
+    }
+    
+    the_title <- gsub("^\\\\title\\{(.*)\\}\\s*$",
+                      "\\1",
+                      lines_before_begin_document[title_line_no],
+                      perl = TRUE)
+    if (nchar(the_title) < 2){
+      .report_error(line_no = title_line_no,
+                    context = lines_before_begin_document[title_line_no], 
+                    error_message = "Title is too short.")
+      stop("Title is too short (possibly empty).")
+    }
+    
   }
   
   
@@ -199,6 +222,16 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
       strsplit(split = "") %>%
       unlist %>%
       as.integer
+    
+    if (identical(isbn, 
+                  as.integer(c(9, 7, 8, 1, 9, 2, 5, 0, 1, 5, 9, 6, 6)))){
+      if (the_title != "Circuit breaker: a new compact for school funding"){
+        .report_error(line_no = isbn_line, 
+                      context = lines_before_begin_document[isbn_line],
+                      error_message = "ISBN has already been used.")
+        stop("ISBN has already been used in 'Circuit breaker'.")
+      }
+    }
     
     if (length(isbn) != 13){
       .report_error(context = isbn_line,

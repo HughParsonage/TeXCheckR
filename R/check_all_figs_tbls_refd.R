@@ -1,6 +1,6 @@
 
 
-check_all_figs_tbls_refd <- function(filename, .report_error){
+check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, pre_release = FALSE){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
@@ -51,8 +51,19 @@ check_all_figs_tbls_refd <- function(filename, .report_error){
     for (lab in fig_tbl_labels){
       if (!any(grepl(lab, lines, fixed = TRUE))){
         lab <- gsub("ref{", "", lab, fixed = TRUE)
-        .report_error(error_message = paste0("Couldn't find a xref to ", lab, "."))
-        stop("Couldn't find a xref to ", lab, ".")
+        if (compile){
+          .report_error(error_message = paste0("Couldn't find a xref to ", lab, "."))
+          if (pre_release){
+            stop("Couldn't find a xref to ", lab, ".")
+          } else {
+            warning("Couldn't find a xref to ", lab, ".")
+            assign("not_all_figs_tbls_refd", value = TRUE, pos = parent.frame(n = 2))
+            assign("not_all_figs_tbls_refd.lab", value = lab, pos = parent.frame(n = 2))
+          }
+        } else {
+          assign("not_all_figs_tbls_refd", value = TRUE, pos = parent.frame(n = 2))
+          assign("not_all_figs_tbls_refd.lab", value = lab, pos = parent.frame(n = 2))
+        }
       }
     }
   }

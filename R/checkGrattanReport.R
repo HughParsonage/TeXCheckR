@@ -211,15 +211,24 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "Labels checked.\n"))
 
-  check_all_figs_tbls_refd(filename)
+  check_all_figs_tbls_refd(filename, compile = compile, pre_release = pre_release)
 
-  cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
+  if (pre_release || AND(exists("not_all_figs_tbls_refd"), !not_all_figs_tbls_refd)){
+    cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
+  } else {
+    if (exists("not_all_figs_tbls_refd") && not_all_figs_tbls_refd){
+      cat(if (compile) "WARNING:" else  "NOTE:", 
+          "Not all figures and tables referenced. ", 
+          not_all_figs_tbls_refd.lab)
+    }
+  }
 
   cat("\n")
   
   if (compile){
     full_dir_of_path <- getwd()
-    md5_filename <- tools::md5sum(filename)
+    md5_filename <- paste0(substr(tools::md5sum(filename), 0, 10),
+                           substr(tools::md5sum(bib_file), 0, 10))
     temp_dir <- file.path(tempdir(), md5_filename)
     md5_iter <- 1
     while (dir.exists(temp_dir)){

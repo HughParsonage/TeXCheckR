@@ -214,12 +214,13 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "Labels checked.\n"))
 
+  not_all_figs_tbls_refd <- NULL
   check_all_figs_tbls_refd(filename, compile = compile, pre_release = pre_release)
 
-  if (pre_release || AND(exists("not_all_figs_tbls_refd"), !not_all_figs_tbls_refd)){
+  if (pre_release){
     cat(green(symbol$tick, "All figures and tables have a Xref.\n"))
   } else {
-    if (exists("not_all_figs_tbls_refd") && not_all_figs_tbls_refd){
+    if (!is.null(not_all_figs_tbls_refd)){
       cat(if (compile) "WARNING:" else  "NOTE:", 
           "Not all figures and tables referenced. ", 
           not_all_figs_tbls_refd.lab)

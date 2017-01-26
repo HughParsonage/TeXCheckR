@@ -128,6 +128,10 @@ checkGrattanReport <- function(path = ".",
            }
          })
   
+  # Actual checking begins here
+  notes <- 0L
+  
+  
   check_preamble(filename, .report_error, pre_release = pre_release, release = release)
 
   the_authors <-
@@ -185,7 +189,7 @@ checkGrattanReport <- function(path = ".",
   cat(green(symbol$tick, "Dashes correctly typed.\n"))
   
   check_spacing(filename, .report_error = .report_error)
-  cat(green(symbol$tick, "No spacing issues around abbreviations."))
+  cat(green(symbol$tick, "No spacing issues around abbreviations.\n"))
   
   check_quote_marks(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Opening quotes correctly typed.\n"))
@@ -199,10 +203,7 @@ checkGrattanReport <- function(path = ".",
 
   check_sentence_ending_periods(filename, .report_error = .report_error)
   cat(green(symbol$tick, "Sentence-ending periods ok.\n"))
-
-  check_spelling(filename, .report_error = .report_error, final = pre_release)
-  cat(green(symbol$tick, "Spellcheck complete.\n"))
-
+  
   # To check the bibliography
   bib_files <-
     readLines(filename, warn = FALSE) %>%
@@ -214,6 +215,22 @@ checkGrattanReport <- function(path = ".",
     validate_bibliography(file = bib_file)
     cat(green(symbol$tick, bib_file, "validated.\n"))
   }
+
+  check_spelling(filename, 
+                 .report_error = .report_error,
+                 pre_release = pre_release,
+                 bib_files = bib_files)
+  if (!pre_release && !is.null(authors_in_bib_and_doc)){
+    notes <- notes + 1L
+    
+    authors_in_bib_and_doc <- 
+      authors_in_bib_and_doc[seq.int(1L, min(length(authors_in_bib_and_doc), 5L))]
+    
+    cat("NOTE: Skipped spell check for authors in bibliography.",
+        "Please include the line\n\n\t% add_to_dictionary:", paste0(authors_in_bib_and_doc, collapse = " "), 
+        "\n\nto your .tex file if these have been spelled correctly. (Author names will NOT be skipped at pre-release.)\n")
+  }
+  cat(green(symbol$tick, "Spellcheck complete.\n"))
 
   check_labels(filename)
 
@@ -230,6 +247,7 @@ checkGrattanReport <- function(path = ".",
     }
     
     if (!all_figs_tbls_refd){
+      notes <- notes + 1L
       cat(if (compile) "WARNING:" else  "NOTE:", 
           "Not all figures and tables referenced. ", 
           figs_tbls_not_refd)
@@ -381,5 +399,13 @@ checkGrattanReport <- function(path = ".",
     fwrite("./travis/grattanReport/error-log.tsv",
            sep = "\t",
            append = append)
+  if (notes > 0){
+    if (notes > 1){
+      cat("\n\tThere were", notes, "notes.")
+    } else {
+      cat("\n\tThere was 1 note.")
+    }
+        
+  }
   invisible(NULL)
 }

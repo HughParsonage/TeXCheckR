@@ -36,6 +36,31 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     stop("\\addbibresource not present in document preamble. (Must not be merely present in an \\input .)")
   }
   
+  if (pre_release){
+    author_line_no <- grep("^\\\\author", lines_before_begin_document, perl = TRUE)
+    len_author_lines <- length(author_line_no)
+    
+    if (len_author_lines == 0L){
+      stop("\\author line not present in document preamble.")
+    }
+    
+    if (len_author_lines != 1L){
+      stop("More than one \\author line in document preamble.")
+    }
+    
+    first_author <- gsub("^\\\\author\\{(\\w+\\s\\w).*$", 
+                         "\\1", 
+                         lines_before_begin_document[author_line_no], 
+                         perl = TRUE)
+    if (first_author %notin% Grattan_staff[["name"]]){
+      .report_error(line_no = author_line_no[[1]],
+                    context = lines_before_begin_document[author_line_no[[1]]],
+                    error_message = "First author does not appear to be a member of Grattan staff.")
+      stop("First author does not appear to be a member of Grattan staff.")
+    }
+  }
+  
+  
   if (any(grepl("\\input", lines_before_begin_document, fixed = TRUE))){
     # Ensure the only input in acknowledgements is tex/acknowledgements
     acknowledgements <- 

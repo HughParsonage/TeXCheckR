@@ -29,7 +29,7 @@ check_literal_xrefs <- function(filename, .report_error){
                          "[^\\}]*", 
                          "\\}"), 
                       ")+")),
-                "cite[][ignored]{", 
+                "cite[][ignored]{<key>}", 
                 lines, 
                 perl = TRUE)
     

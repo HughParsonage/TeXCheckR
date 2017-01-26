@@ -1,4 +1,9 @@
-
+#' Check the preamble of a document
+#' @param filename .tex file to check for errors
+#' @param .report_error How should errors be reported
+#' @param pre_release See \code{\link{checkGrattanReport}}.
+#' @param release See \code{\link{checkGrattanReport}}.
+#' @export 
 
 check_preamble <- function(filename, .report_error, pre_release = FALSE, release = FALSE){
   if (missing(.report_error)){

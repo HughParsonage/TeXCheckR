@@ -1,6 +1,11 @@
+#' Check the preamble of a document
+#' @param filename .tex file to check for errors
+#' @param .report_error How should errors be reported
+#' @param pre_release See \code{\link{checkGrattanReport}}.
+#' @param release See \code{\link{checkGrattanReport}}.
+#' @export 
 
-
-check_preamble <- function(filename, .report_error, final = FALSE, release = FALSE){
+check_preamble <- function(filename, .report_error, pre_release = FALSE, release = FALSE){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
@@ -56,7 +61,35 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
     }
   }
   
-  if (final){
+  if (AND(any(grepl("\\ReportOrWorkingPaper{Working Paper}", 
+                    lines_before_begin_document,
+                    fixed = TRUE)),
+              any(grepl("This report was written by", 
+                        lines_before_begin_document, 
+                        perl = TRUE)))){
+    stop("\\ReportOrWorkingPaper set to {Working Paper} but statement\n\t'This report was written by'\nstill present in document.")
+  }
+  
+  if (any(grepl("This working paper was written by", 
+                lines_before_begin_document, 
+                perl = TRUE))){
+    stop("\\ReportOrWorkingPaper not set to {Working Paper} but\n\t'This working paper was written by'\nexists in document.")
+  }
+          
+  current_year <- 
+    if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
+      year_provided <- FALSE
+      format(Sys.Date(), "%Y")
+    } else {
+      year_provided <- TRUE
+      year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE)
+      if (length(year_line) != 1L){
+        stop("Multiple \\YEAR provided.")
+      }
+      gsub("[^0-9]", "", lines_before_begin_document[year_line])
+    }
+  
+  if (pre_release){
     if (release){
       if (any(grepl("embargo", lines_before_begin_document, fixed = TRUE))){
         .report_error(error_message = "String 'embargo' found before \\begin{document} while attempting to release a report.")
@@ -74,19 +107,6 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
         }
       }
       GrattanReportNumberArg <- gsub("^.*[{](.*)[}].*$", "\\1", GrattanReportNumber, perl = TRUE)
-      
-      current_year <- 
-        if (!any(grepl("\\YEAR", lines_before_begin_document, fixed = TRUE))){
-          year_provided <- FALSE
-          format(Sys.Date(), "%Y")
-        } else {
-          year_provided <- TRUE
-          year_line <- grep("\\YEAR", lines_before_begin_document, fixed = TRUE)
-          if (length(year_line) != 1L){
-            stop("Multiple \\YEAR provided.")
-          }
-          gsub("[^0-9]", "", lines_before_begin_document[year_line])
-        }
       
       if (substr(GrattanReportNumberArg, 0, 4) != current_year){
         if (year_provided){
@@ -201,18 +221,21 @@ check_preamble <- function(filename, .report_error, final = FALSE, release = FAL
     todonotes_setinel <- function(filename){
       lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
       if (any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
-        .report_error(error_message = paste0("final = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
+        .report_error(error_message = paste0("pre_release = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                                              "most likely due to \\usepackage{todonotes}. ",
                                              "These strings are not permitted anywhere in the project ",
-                                             "(even commented out or disabled) when preparing a final document."))
+                                             "(even commented out or disabled) when preparing a finished document."))
         
-        stop(paste0("final = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
+        stop(paste0("pre_release = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                     "most likely due to \\usepackage{todonotes}. ",
                     "These strings are not permitted anywhere in the project ",
-                    "(even commented out or disabled) when preparing a final document."))
+                    "(even commented out or disabled) when preparing a finished document."))
       }
       
-      if (any(grepl("\\hl", lines, fixed = TRUE))){
+      if (any(grepl("\\hl{", lines, fixed = TRUE))){
+        .report_error(context = filename,
+                      extra_cat_post = "Found command \\hl somewhere in ", filename, ". Ensure all comments are removed from the document.",
+                      error_message = "Found command \\hl in project.")
         stop("Found command \\hl in project.")
       }
       invisible(NULL)

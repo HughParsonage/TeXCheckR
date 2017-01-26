@@ -12,4 +12,11 @@ In the working directory containing your report, run
 library(grattanReporter)
 checkGrattanReport()
 ```
+Before your report can be released you must run
+
+```r
+library(grattanReporter)
+checkGrattanReport(compile = TRUE, pre_release = TRUE, release = TRUE)
+```
+which, provided your system meets the requirements and your report has no errors, will write a releasable PDF to a folder `RELEASE`.
 

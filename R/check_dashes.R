@@ -31,11 +31,42 @@ check_dashes <- function(filename, .report_error){
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
       .report_error(line_no = line_no,
-                    contet = lines[line_no],
+                    context = lines[line_no],
                     error_message = "Dash likely masquerading as hyphen. Use -- for a dash.")
-      stop("Dash likely masquerading as hyphen. Use -- for a dash.")
+      stop("Hyphen likely masquerading as dash. Use -- for a dash.")
     }
     
   }
+  
+  if (any(grepl("\\\\label[^\\}]*\\s[^\\}]*\\}", trimws(lines), perl = TRUE))){
+    line_no <- grep("\\\\label[^\\}]*\\s[^\\}]*\\}", trimws(lines), perl = TRUE)[[1]]
+    nchars_b4 <- stringi::stri_locate_all_regex(pattern = "\\\\label[^\\}]*\\s", str = trimws(lines[[line_no]]), perl = TRUE)
+    context <- paste0(trimws(lines[[line_no]]), "\n",
+                      paste0(rep(" ", nchars_b4[[1]][[2]] - 2 + 5 + nchar(line_no)), collapse = ""), "^^")
+    .report_error(line_no = line_no,
+                  context = context, 
+                  error_message = "Space somewhere after \\label . Spaces are not permitted in \\label.")
+    stop("Space somewhere after \\label. Spaces are not permitted in \\label.")
+  }
+  
+  are_emdash_lines <- 
+    lines %>%
+    grep("---", ., fixed = TRUE, value = TRUE) %>%
+    gsub("\\{[^\\s\\}]+\\}", "\\{\\}", x = ., perl = TRUE) %>%
+    grepl("---", ., fixed = TRUE)
+    
+  
+  if (any(are_emdash_lines)){
+    emdash_lines <- 
+      lines %>%
+      gsub("\\{[^\\s\\}]+\\}", "\\{\\}", x = ., perl = TRUE) %>%
+      grep("---", x = ., fixed = TRUE, value = TRUE)
+    line_no <- emdash_lines[[1]]
+    .report_error(line_no = line_no,
+                  context = lines[line_no], 
+                  error_message = "Em-dashes not permitted.")
+    stop("Em-dashes not permitted.")
+  }
+  
   invisible(NULL)
 }

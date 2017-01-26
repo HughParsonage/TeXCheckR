@@ -1,1 +1,2 @@
 (?:(?:[Hh]igh)|(?:[Ll]ow)|(?:[Mm]edium)) (?:(?:income)|(?:wealth)) (?:(?:individuals?)|(?:households?)|(?:students?)|(?:families)|(?:family))
+(?:\\bpercent\\b)

@@ -5,7 +5,7 @@
 \title{Check Grattan Report}
 \usage{
 checkGrattanReport(path = ".", output_method = c("console", "twitter",
-  "gmailr"), compile = FALSE, final = FALSE, release = FALSE,
+  "gmailr"), compile = FALSE, pre_release = FALSE, release = FALSE,
   .proceed_after_rerun)
 }
 \arguments{
@@ -15,7 +15,7 @@ checkGrattanReport(path = ".", output_method = c("console", "twitter",
 
 \item{compile}{Should \code{pdflatex} be run on the report so the logs may be checked?}
 
-\item{final}{Should the document be assumed to be final? Runs additional checks.}
+\item{pre_release}{Should the document be assumed to be final? Runs additional checks.}
 
 \item{release}{Should a final pdf be prepared for publication?}
 

@@ -238,17 +238,10 @@ numbers=noenddot,
 
 % Big boxes -- over the whole page
 % It is recommended to surround this with an \afterpage{% 
-\newenvironment{bigbox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
-\begin{boxe}
-\begin{mdframed}[style=GrattanFrameBox]%
-\setlength{\columnsep}{33pt}
-\begin{multicols}{2}
-\setlength{\parskip}{\currentparskip}% restore the value
- \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=raggedright,singlelinecheck=false}
- \caption{#1}\label{#2}%
- %\RaggedRight
+\newenvironment{bigbox}[2]{
+\begin{bigbox*}{#1}{#2}
 }{
-\end{multicols}\end{mdframed}\end{boxe}\twocolumn}
+\end{bigbox*}}
 
 % dbl floats
 \newenvironment{bigbox*}[2]{%

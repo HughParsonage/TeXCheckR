@@ -24,6 +24,23 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   if (!is.null(md5sum.ok) && md5sum_latex_file == md5sum.ok){
     return(NULL)
   }
+  if (!dir.exists(file.path(tempdir(), "consecutive-words"))){
+    dir.create(file.path(tempdir(), "consecutive-words"))
+  }
+  
+  time <- format(Sys.time(), "%Y-%m-%d-%H%M")
+  if (!dir.exists(file.path(tempdir(), "consecutive-words", time))){
+    dir.create(file.path(tempdir(), "consecutive-words", time))
+  }
+  move_to(file.path(tempdir(), "consecutive-words", time), pattern = NULL)
+  
+  # Avoid spurious marks on 'Grattan Institute' or the name of the report
+  grattan.cls <- readLines("grattan.cls")
+  grattan.cls %>%
+    gsub("\\normalfont Grattan Institute \\@YEAR", "\\normalfont", ., fixed = TRUE) %>%
+    gsub("\\thepage", "\\phantom{\\thepage}", ., fixed = TRUE) %>%
+    gsub("\\mytitle", "\\phantom{\\mytitle}", ., fixed = TRUE) %>%
+    writeLines("grattan.cls")
 
   if (file.exists("CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")){
     stop('"CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex" exists in the path. This was unexpected.')

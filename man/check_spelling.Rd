@@ -4,19 +4,21 @@
 \alias{check_spelling}
 \title{Spellchecker for Grattan reports}
 \usage{
-check_spelling(filename, final = TRUE, ignore.lines = NULL,
-  known.correct = NULL, known.wrong = NULL, .report_error)
+check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
+  known.correct = NULL, known.wrong = NULL, bib_files, .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
 
-\item{final}{Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded.}
+\item{pre_release}{Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded.}
 
 \item{ignore.lines}{Integer vector of lines to ignore (due to possibly spurious errors).}
 
 \item{known.correct}{Character vector of patterns known to be correct (which will never be raised by this function).}
 
 \item{known.wrong}{Character vector of patterns known to be wrong.}
+
+\item{bib_files}{Bibliography files (containing possible clues to misspellings).}
 
 \item{.report_error}{A function to provide context to any errors.}
 }

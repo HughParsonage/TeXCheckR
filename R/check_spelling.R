@@ -1,10 +1,11 @@
 #' Spellchecker for Grattan reports
 #'
 #' @param filename Path to a LaTeX file to check.
-#' @param final Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded. 
+#' @param pre_release Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded. 
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
+#' @param bib_files Bibliography files (containing possible clues to misspellings).
 #' @param .report_error A function to provide context to any errors.
 #' @return If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 #' @details Uses the \code{en_AU} hunspell dictionary.
@@ -14,10 +15,11 @@
 #' @export
 
 check_spelling <- function(filename,
-                           final = TRUE,
+                           pre_release = TRUE,
                            ignore.lines = NULL,
                            known.correct = NULL,
                            known.wrong = NULL,
+                           bib_files,
                            .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
@@ -89,7 +91,7 @@ check_spelling <- function(filename,
         cat(input, "\n")
         check_spelling(filename = file.path(file_path,
                                             paste0(input, ".tex")),
-                       final = final,
+                       pre_release = pre_release,
                        known.correct = known.correct,
                        known.wrong = known.wrong)
       }
@@ -206,16 +208,16 @@ check_spelling <- function(filename,
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
   
-  if (final && not_length0(ignore_spelling_in_line_no)){
+  if (pre_release && not_length0(ignore_spelling_in_line_no)){
     line_no <- ignore_spelling_in_line_no[1]
     context <- lines[line_no]
     .report_error(line_no = line_no,
                   context = context, 
-                  error_message = "final = TRUE but 'ignore spelling in' line is present.")
-    stop("final = TRUE but 'ignore spelling in' line was present.")
+                  error_message = "pre_release = TRUE but 'ignore spelling in' line is present.")
+    stop("pre_release = TRUE but 'ignore spelling in' line was present.")
   }
   
-  if (!final){
+  if (!pre_release){
     commands_to_ignore <-
       lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
       gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
@@ -272,9 +274,17 @@ check_spelling <- function(filename,
   words_to_add <- c(extract_validate_abbreviations(lines), words_to_add)
 
   parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
+  all_bad_words <- unlist(parsed)
+  
+  all_bad_words<- setdiff(all_bad_words, 
+                          c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, 
+                            correctly_spelled_words,
+                            words_to_add, 
+                            known.correct))
 
   are_misspelt <- vapply(parsed, not_length0, logical(1))
 
+  notes <- NULL
   if (any(are_misspelt)){
     good_words <- c(correctly_spelled_words)
     # Detect big words first
@@ -286,11 +296,33 @@ check_spelling <- function(filename,
     GWP <- sprintf("(?:\\b%s\\b)",
                    paste0(c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, words_to_add, known.correct),
                           collapse = "\\b)|(?:\\b"))
+    # Consult the bibliography
+    # if any proper nouns
+    if (!pre_release && !missing(bib_files) && any(grepl("^[A-Z]", all_bad_words, perl = TRUE))){
+      authors_in_bib <- 
+        lapply(bib_files, extract_authors_from_bib) %>%
+        unlist
+      
+      authors_in_bib_and_doc <- 
+        intersect(grep("^[A-Z]", all_bad_words,
+                       value = TRUE, perl = TRUE),
+                  authors_in_bib)
+    } else {
+      authors_in_bib <- authors_in_bib_and_doc <- NULL
+    }
+    assign("authors_in_bib_and_doc", value = authors_in_bib_and_doc, pos = parent.frame())
+    
     for (line_w_misspell in which(are_misspelt)){
       # If bad words %in% ... don't bother checking
       bad_words <- setdiff(parsed[[line_w_misspell]],
                            c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, correctly_spelled_words, words_to_add, known.correct))
       
+      if (!pre_release){
+        if (!is.null(authors_in_bib_and_doc)){
+          bad_words_no_proper_nouns <- setdiff(bad_words, authors_in_bib)
+          bad_words <- bad_words_no_proper_nouns
+        }
+      }
       
       if (not_length0(bad_words)){
         bad_line <- lines[[line_w_misspell]]

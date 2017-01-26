@@ -95,3 +95,10 @@ move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(st
   setwd(to.dir)
   cat("   Attempting compilation in temp directory:", to.dir, "\n")
 }
+
+r2 <- function(a, b) sprintf("%s%s", a, b)
+r3 <- function(a, b, d) sprintf("%s%s%s", a, b, d)
+r4 <- function(a, b, d, e) sprintf("%s%s%s%s", a, b, d, e)
+r5 <- function(a, b, d, e, f) sprintf("%s%s%s%s%s", a, b, d, e, f)
+r9 <- function(a1, a2, a3, a4, a5, a6, a7, a8, a9) sprintf("%s%s%s%s%s%s%s%s%s", a1, a2, a3, a4, a5, a6, a7, a8, a9)
+

@@ -12,17 +12,23 @@ check_literal_xrefs <- function(filename, .report_error){
   }
   lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
   
+  lines <- strip_comments(lines)
+  
   # excl_citations
-  lines <- gsub(paste0("cite", 
-                       "(",
-                       # prenote-postnote
-                       "\\[",
-                       "\\]",
-                       "\\[", 
-                       "[^\\]+]", 
-                       "\\]", 
-                       ")", 
-                       "\\{"),
+  lines <- gsub(r2("cites?", 
+                   r4("(",
+                      # prenote-postnote
+                      r3("(?:",
+                         r5("\\[",
+                            "\\]",
+                            "\\[", 
+                            "[^\\]]*", 
+                            "\\]"), 
+                         ")?"), 
+                      r3("\\{", 
+                         "[^\\}]*", 
+                         "\\}"), 
+                      ")+")),
                 "cite[][ignored]{", 
                 lines, 
                 perl = TRUE)

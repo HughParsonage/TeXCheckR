@@ -16,10 +16,10 @@ test_that("Abbreviations", {
 
 test_that("Add to dictionary, ignore spelling in", {
   expect_error(check_spelling("./spelling/add_to_dictionary-wrong.tex"), regexp = "[Ss]pellcheck failed")
-  expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", final = FALSE), regexp = "[Ss]pellcheck failed")
+  expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", pre_release = FALSE), regexp = "[Ss]pellcheck failed")
   
   expect_null(check_spelling("./spelling/add_to_dictionary-ok.tex"))
-  expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", final = FALSE))
+  expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", pre_release = FALSE))
   
-  expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "final = TRUE")
+  expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
 })

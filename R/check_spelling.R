@@ -268,6 +268,8 @@ check_spelling <- function(filename,
                   "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")
   }
+  
+  words_to_add <- c(extract_validate_abbreviations(lines), words_to_add)
 
   parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
 
@@ -288,6 +290,8 @@ check_spelling <- function(filename,
       # If bad words %in% ... don't bother checking
       bad_words <- setdiff(parsed[[line_w_misspell]],
                            c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, correctly_spelled_words, words_to_add, known.correct))
+      
+      
       if (not_length0(bad_words)){
         bad_line <- lines[[line_w_misspell]]
         # For timing

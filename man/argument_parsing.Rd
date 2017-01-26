@@ -7,7 +7,7 @@
 \title{Replace nth arguments}
 \usage{
 replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
-  replacement = "correct", .dummy_replacement = "Qq")
+  replacement = "correct", warn = TRUE, .dummy_replacement = "Qq")
 
 nth_arg_positions(tex_lines, command_name, n = 1L)
 }
@@ -20,6 +20,8 @@ or the pattern of the command, without the initial backslash.}
 \item{n}{The number of mandatory arguments.}
 
 \item{replacement}{What to replace the \code{n}th argument with.}
+
+\item{warn}{If the nth argument is not present, emit a warning? Set to \code{FALSE} for n-ary commands.}
 
 \item{.dummy_replacement}{An intermediate replacement value.
 This value cannot be present in \code{tex_lines}.}

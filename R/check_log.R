@@ -27,10 +27,9 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
   }
 
   if (any(grepl("undefined references", log_file, fixed = TRUE))){
-    stop(grep("undefined references",
-              log_file,
-              fixed = TRUE,
-              value = TRUE)[[1]])
+    which_line <- grep("undefined references", log_file, fixed = TRUE)
+    cat(which_line, "\n", log_files[which_line])
+    stop("Undefined references.")
   }
 
   if (any(grepl("LaTeX Warning: There were multiply-defined labels.", log_file, fixed = TRUE))){

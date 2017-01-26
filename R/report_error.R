@@ -30,8 +30,36 @@ report2console <- function(line_no = NULL,
   ## 3. Context
   ## 4. Suggeston.
   cat("\n", bgRed(symbol$cross), " ", line_no, ": ", unlist(extra_cat_ante), context, unlist(extra_cat_post), sep = "")
+  
+  # To return the directory if applicable
+  on.exit({
+    if (dir.exists("travis") && dir.exists("travis/grattanReport")){
+      if (file.exists("./travis/grattanReport/error-log.tsv")){
+        prev_build_status <-
+          fread("./travis/grattanReport/error-log.tsv") %>%
+          last %>%
+          .[["build_status"]]
+        append <- TRUE
+      } else {
+        prev_build_status <- "None"
+        append <- FALSE
+      }
+      
+      if (prev_build_status %in% c("Broken", "Still failing")){
+        build_status <- "Still failing"
+      } else {
+        build_status <- "Broken"
+      }
+      
+      data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+                 build_status = build_status, 
+                 error_message = error_message) %>%
+        fwrite("./travis/grattanReport/error-log.tsv",
+               sep = "\t",
+               append = append)
+    }
+  }, add = TRUE)
 }
-
 
 #' @rdname report_error
 report2twitter <- function(preamble = NULL,

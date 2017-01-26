@@ -3,4 +3,4 @@
 ^\.travis\.yml$
 ^data-raw$
 ^\.httr-oauth$
-^\.deploy.sh$
+^deploy.sh$

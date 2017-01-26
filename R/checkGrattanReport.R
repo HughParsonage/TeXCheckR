@@ -236,7 +236,7 @@ checkGrattanReport <- function(path = ".",
 
   cat(green(symbol$tick, "Labels checked.\n"))
 
-  all_figs_tbls_refd <- NULL
+  all_figs_tbls_refd <- figs_tbls_not_refd <- NULL
   check_all_figs_tbls_refd(filename, compile = compile, pre_release = pre_release)
 
   if (pre_release){

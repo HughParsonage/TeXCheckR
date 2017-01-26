@@ -1,4 +1,9 @@
-
+#' Check for hard-coded cross-references
+#' @param filename The TeX file to check
+#' @param .report_error How errors should be reported.
+#' @return An error, or if none found, \code{NULL} invisibly.
+#' @export
+#' 
 
 
 check_literal_xrefs <- function(filename, .report_error){
@@ -41,7 +46,8 @@ check_literal_xrefs <- function(filename, .report_error){
                          "|", 
                          "(?:Box)",
                          ")", 
-                         "(?![:\\}])")
+                         "(?![:\\}])",
+                         "(( [0-9]))")
   if (any(grepl(xref_pattern, lines, perl = TRUE, ignore.case = TRUE))){
     line_no <- grep(xref_pattern, lines, perl = TRUE, ignore.case = TRUE)[[1]]
     context <- lines[line_no]

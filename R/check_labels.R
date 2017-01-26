@@ -99,11 +99,12 @@ check_labels <- function(filename, .report_error){
   chapter_xref_lines <-
     grep("[VvCc]ref(range)?[{]chap[:]",
          lines,
-         perl = TRUE,
-         value = TRUE)
+         perl = TRUE)
 
   if (length(chapter_xref_lines) > 0){
-    .report_error(context = chapter_xref_lines[[1]])
+    .report_error(line_no = chapter_xref_lines[[1]], 
+                  context = lines[chapter_xref_lines],
+                  error_message = "Cross-references to chapters must use Chapref or topref.")
     stop("Cross-references to chapters must use Chapref or topref.")
   }
 

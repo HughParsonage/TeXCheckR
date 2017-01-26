@@ -13,15 +13,23 @@ check_quote_marks <- function(filename, .report_error){
     readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
     strip_comments
   # Avoid ``ok''
+  
+  bad_open_quote_regex <- 
+    sprintf("%s|%s|%s|%s|%s", 
+            "(^')",
+            "( ')",
+            "(\\(')",
+            "(\\[')",
+            "(-')")
 
-  if (any(grepl("(^')|( ')", lines, perl = TRUE))){
-    line_no <- grep("(^')|( ')", lines, perl = TRUE)[[1]]
+  if (any(grepl(bad_open_quote_regex, lines, perl = TRUE))){
+    line_no <- grep(bad_open_quote_regex, lines, perl = TRUE)[[1]]
     context <- lines[[line_no]]
     
     if (grepl("^'", context, perl = TRUE)){
       position <- 5
     } else {
-      position <- gregexpr("( ')", context, perl = TRUE)[[1]][1] + nchar(line_no) + 6 # to match with X : etc.
+      position <- gregexpr(bad_open_quote_regex, context, perl = TRUE)[[1]][1] + nchar(line_no) + 6 # to match with X : etc.
     }
     context <- paste0(substr(context, 0, position + 6), if (nchar(context) > position + 6) "...\n" else "\n", 
                       paste0(rep(" ", position - 1), collapse = ""), "^", 

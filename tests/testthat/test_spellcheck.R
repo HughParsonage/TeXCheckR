@@ -20,6 +20,7 @@ test_that("Add to dictionary, ignore spelling in", {
   
   expect_null(check_spelling("./spelling/add_to_dictionary-ok.tex"))
   expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", pre_release = FALSE))
+  expect_null(check_spelling("./spelling/ignore_spelling_in-ok-2.tex", pre_release = FALSE))
   
   expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
 })

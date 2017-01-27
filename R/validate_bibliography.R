@@ -35,16 +35,18 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
   # Abbreviated names
   inst_pattern <-
     paste0("^\\s+(author).*",
-           "(",
-           "(Productivity Commission)",
+           "(?:",
+           "(?:(?:Australian )?Bureau of Statistics)",
            "|",
-           "((Australian )?Bureau of Statistics)",
+           "(?:Australian Labor Party)",
            "|",
-           "(Australian Labor Party)",
+           "(?:Australian Institute of Health and Welfare)",
            "|",
-           "(Australian Institute of Health and Welfare)",
+           "(?:Australian Taxation Office)",
            "|",
-           "(Word Health Organi[sz]ation)",
+           "(?:Productivity Commission)",
+           "|",
+           "(?:World Health Organi[sz]ation)",
            ")")
 
   if (any(grepl(inst_pattern, bib, perl = TRUE))){

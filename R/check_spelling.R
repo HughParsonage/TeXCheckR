@@ -37,34 +37,52 @@ check_spelling <- function(filename,
     lines[ignore.lines] <- ""
   }
   
-  if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", strip_comments(lines), perl = TRUE))){
-    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:ie)|(?:eg)))\\b", strip_comments(lines), perl = TRUE)[[1]]
+  if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
+    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.e)|(?:e\\.g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
     .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
                   line_no = line_no,
                   context = lines[[line_no]])
-    stop("Use the commands \\etc.")
+    stop("Use the commands \\ie \\eg and \\etc rather than hard-coding.")
   }
-
-  # Check known wrong
-  for (wrong in known.wrong){
-    if (any(grepl(wrong, lines, perl = TRUE))){
-      cat(grep(wrong, lines, perl = TRUE)[[1]])
-      cat(wrong)
-      stop("A pattern you have raised was detected in the document.")
-    }
+  
+  if (any(grepl("^[%] stop_if_present[:]", lines, perl = TRUE))){
+    extra_known_wrong <-
+      lines[grepl("^[%] stop_if_present[:]", lines, perl = TRUE)] %>%
+      gsub("% stop_if_present: ", "", ., fixed = TRUE) %>%
+      trimws %>%
+      strsplit(split = " ", fixed = TRUE) %>%
+      unlist
+    
+    known.wrong <- c(known.wrong, extra_known_wrong)
   }
 
   # Do not check the bibliography filename
   lines <- gsub("\\{.*\\.bib\\}",
                 "\\{bibliography.bib\\}",
                 lines)
+  
+  
 
-  lines_after_begin_document <-
+  
     if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
-      lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
+      document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
+      lines_after_begin_document <- lines[-c(1:document_starts_at)]
     } else {
-      lines
+      document_starts_at <- 1
+      lines_after_begin_document <- lines
     }
+  
+  # Check known wrong
+  for (wrong in known.wrong){
+    if (any(grepl(wrong, lines_after_begin_document, perl = TRUE))){
+      line_no <- grep(wrong, lines_after_begin_document, perl = TRUE)[[1]]
+      context <- lines_after_begin_document[[line_no]]
+      .report_error(line_no = line_no + document_starts_at,
+                    context = context,
+                    error_message = paste0("'", wrong, "' present but prohibited in preamble."))
+      stop(paste0("'", wrong, "' present but prohibited in preamble."))
+    }
+  }
 
   # inputs and includes
   inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))",

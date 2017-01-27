@@ -23,3 +23,12 @@ test_that("Add to dictionary, ignore spelling in", {
   
   expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
 })
+
+test_that("Stop if present", {
+  expect_error(check_spelling("./stop_if_present/should-stop.tex"), regexp = "skillset")
+  expect_error(check_spelling("./stop_if_present/should-stop-2.tex"), regexp = "skillset")
+  expect_error(check_spelling("./stop_if_present/stop_even_if_added.tex"), regexp = "skillset")
+  expect_error(check_spelling("./stop_if_present_inputs/stop-if-held-in-inputs.tex"), regexp = "skillset")
+  expect_error(check_spelling("./stop_if_present/should-stop-3.tex"), regexp = "percent")
+  expect_null(check_spelling("./stop_if_present/should-not-stop.tex"))
+})

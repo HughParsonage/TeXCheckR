@@ -161,11 +161,33 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
          "journal = {", incorrect_journal_entries[1][["journal_actual"]], "} .")
   }
   
+  check_legislation <- function(bb){
+    is_bill_title <- 
+      and(grepl("^(?:@Misc).*(?:Bill)", 
+                shift(bib, type = "lag"),
+                perl = TRUE, 
+                ignore.case = TRUE),
+          grepl("^(?:title).*(?:Bill)",
+                bib, 
+                perl = TRUE, 
+                ignore.case = TRUE))
+    
+    if (any(!grepl("\\textup", bb[is_bill_title], fixed = TRUE))){
+      .report_error(line_no = which(is_bill_title)[1], 
+                    context = bb[is_bill_title[1]], 
+                    error_message = "Bill title in upright font.")
+      stop("When citing a Bill of Parliament, the title must be in upright font.", "\n",
+           "Use\n\ttitle = {\\textup{...}},\n\t\t\t\t\tin the .bib file.")
+    }
+      
+  }
+  
+  check_legislation(bib)
+  
   ## Grattan Institute
   
   ## All TechReports should use the /report/ url
   ## All TechReports should have a number
-  
   
   check_Grattan_entries <- function(trimmed_bib){
     

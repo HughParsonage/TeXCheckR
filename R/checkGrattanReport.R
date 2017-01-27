@@ -23,6 +23,7 @@
 #' @importFrom grDevices embedFonts
 #' @importFrom utils download.file
 #' @importFrom stats complete.cases
+#' @importFrom readr read_lines
 
 checkGrattanReport <- function(path = ".",
                                output_method = c("console", "twitter", "gmailr"),

@@ -52,7 +52,7 @@ check_labels <- function(filename, .report_error){
     cat(bgRed(symbol$cross), " ",
         first_wrong_line, ": ", lines[first_wrong_line],
         sep = "")
-    stop("Each \\label should contain a prefix.")
+    stop("Each \\label must contain a prefix.")
   }
   
   # Check all captions have a label

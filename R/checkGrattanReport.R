@@ -68,7 +68,7 @@ checkGrattanReport <- function(path = ".",
   }
   
   if (!dir.exists("./travis/grattanReport/")){
-    stop("./travis/grattanReport/ does not exist.")
+    stop("./travis/grattanReport/ does not exist. Create this directory and try again.")
   }
   
   if (release){
@@ -76,8 +76,19 @@ checkGrattanReport <- function(path = ".",
       dir.create("RELEASE")
     } else {
       if (length(list.files(path = "./RELEASE", pattern = "\\.pdf$")) > 0){
-        invisible(lapply(list.files(path = "./RELEASE", pattern = "\\.pdf$", full.names = TRUE), file.remove))
-        message("RELEASE contained pdf files. These have been deleted.")
+        # If there are any files in the RELEASE directory, move them (file.rename)
+        # to a subdirectory named by their creation time.
+        invisible({
+          lapply(list.files(path = "./RELEASE", pattern = "\\.pdf$", full.names = TRUE), 
+                 function(file){
+                   date_created <- format(file.info(file)$ctime, format = "%Y-%m-%d-%H%M")
+                   if (!dir.exists(file.path("RELEASE", date_created))){
+                     dir.create(file.path("RELEASE", date_created))
+                   }
+                   file.rename(file, file.path("RELEASE", date_created, basename(file)))
+                 })
+        })
+        message("RELEASE contained pdf files. These have been moved.")
       }
     }
   }
@@ -308,7 +319,7 @@ checkGrattanReport <- function(path = ".",
     log_result <- check_log(check_for_rerun_only = TRUE)
     reruns_required <- 2
     while (pre_release && !is.null(log_result) && log_result == "Rerun LaTeX."){
-      cat(" ", reruns_required + 1, " ", sep = "")
+      cat(reruns_required + 1, " ", sep = "")
       system2(command = "pdflatex",
               args = c("-interaction=batchmode", filename),
               stdout = gsub("\\.tex$", ".log2", filename))
@@ -367,7 +378,8 @@ checkGrattanReport <- function(path = ".",
         cat("\nWARNING: Found XX in document.")
       }
     } else {
-      
+      cat("Pre-release version written to ", file.path(path, "PRE-RELEASE", gsub("\\.tex$", ".pdf", filename)))
+      cat("\nDONE.")
     }
   }
   

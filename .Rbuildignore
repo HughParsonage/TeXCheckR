@@ -2,5 +2,6 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^data-raw$
+^timings$
 ^\.httr-oauth$
 ^deploy.sh$

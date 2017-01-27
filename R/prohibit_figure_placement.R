@@ -4,7 +4,7 @@ prohibit_figure_placement <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   
   if (any(grepl("\\begin{figure}[", lines, fixed = TRUE))){
     line_no <- grep("\\begin{figure}[", lines, fixed = TRUE)

@@ -5,7 +5,7 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
     .report_error <- function(...) report2console(...)
   }
 
-  lines <- readLines(filename, encoding = "UTF-8")
+  lines <- read_lines(filename)
   
   lines <- strip_comments(lines)
   

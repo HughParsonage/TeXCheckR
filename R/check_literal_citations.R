@@ -15,7 +15,7 @@ check_literal_citations <- function(filename, .report_error){
 
 which_literal_citations <- function(filename){
   lines <- 
-    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    read_lines(filename) %>%
     strip_comments
   
   lines_with_et_al <-

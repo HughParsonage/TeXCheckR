@@ -8,7 +8,7 @@ check_xrefs <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   
   if (any(grepl("\\\\[cv]ref\\{", lines, perl = TRUE, ignore.case = FALSE))){
     if (any(grepl("\\\\cref\\{", lines, perl = TRUE, ignore.case = FALSE))){

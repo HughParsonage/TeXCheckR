@@ -2,7 +2,7 @@
 
 inputs_of <- function(filename, append.tex = TRUE){
   file_path <- dirname(filename)
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   
   lines_after_begin_document <-
     if (any(grepl("\\begin{document}", lines, fixed = TRUE))){

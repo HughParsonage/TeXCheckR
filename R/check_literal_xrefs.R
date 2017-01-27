@@ -10,7 +10,7 @@ check_literal_xrefs <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   
   lines <- strip_comments(lines)
   

@@ -12,7 +12,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
   
   file_path <- dirname(filename)
   lines <- 
-    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    read_lines(filename) %>%
     strip_comments %>%
     trimws
     
@@ -277,7 +277,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     
     # Check todonotes hl
     todonotes_setinel <- function(filename){
-      lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+      lines <- read_lines(filename)
       if (any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
         .report_error(error_message = paste0("pre_release = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
                                              "most likely due to \\usepackage{todonotes}. ",

@@ -4,7 +4,7 @@ check_cite_pagerefs <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- readLines(filename, warn = FALSE)
+  lines <- read_lines(filename)
 
   line_nos_with_cites <-
     which(or(grepl("cite[", lines, fixed = TRUE),

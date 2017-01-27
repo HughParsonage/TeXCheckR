@@ -4,7 +4,7 @@
 #' @export
 
 get_authors <- function(filename){
-  lines <- readLines(filename, encoding = "UTF-8")
+  lines <- read_lines(filename)
   file_path <- dirname(filename)
 
   lines_before_begin_document <-

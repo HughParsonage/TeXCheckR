@@ -10,7 +10,7 @@ check_quote_marks <- function(filename, .report_error){
   }
   
   lines <- 
-    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    read_lines(filename) %>%
     strip_comments
   # Avoid ``ok''
   

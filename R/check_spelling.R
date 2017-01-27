@@ -27,7 +27,7 @@ check_spelling <- function(filename,
 
   file_path <- dirname(filename)
   lines <-
-    readLines(filename, warn = FALSE, encoding = "UTF-8")
+    read_lines(filename)
 
   if (any(grepl("\\documentclass", lines, fixed = TRUE))){
     lines <- gsub("{grattan}", "{report}", lines, fixed = TRUE)

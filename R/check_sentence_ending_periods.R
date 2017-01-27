@@ -5,7 +5,7 @@ check_sentence_ending_periods <- function(filename, .report_error){
     .report_error <- function(...) report2console(...)
   }
   lines <- 
-    readLines(filename, encoding = "UTF-8", warn = FALSE) %>%
+    read_lines(filename) %>%
     .[!isR_line_in_knitr(.)] %>%
     gsub("((?<!(\\\\))%).*$", "", ., perl = TRUE) %>%
     trimws

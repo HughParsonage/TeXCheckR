@@ -11,7 +11,7 @@ check_dashes <- function(filename, .report_error){
     .report_error <- function(...) report2console(...)
   }
   
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   
   lines[isR_line_in_knitr(lines)] <- "%"
   

@@ -12,7 +12,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     .report_error <- function(...) report2console(...)
   }
   
-  lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+  lines <- read_lines(filename)
   if (!is.null(ignore.lines)){
     lines <- lines[-ignore.lines]
   }
@@ -34,7 +34,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,
                 perl = TRUE))){
-    lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+    lines <- read_lines(filename)
     line_no <- grep("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", lines, perl = TRUE)[1]
     .report_error(line_no = line_no, 
                   context = lines[[line_no]], 

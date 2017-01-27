@@ -9,7 +9,7 @@ check_biber <- function(path = "."){
     stop("More than one blg file.")
   } else {
     if (length(blg.file) == 1L){
-      blg <- readLines(blg.file, warn = FALSE)
+      blg <- read_lines(blg.file)
       
       biber_version <-
         gsub("^.*This is Biber ([0-9]+\\.[0-9]).*",

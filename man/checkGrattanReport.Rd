@@ -6,7 +6,7 @@
 \usage{
 checkGrattanReport(path = ".", output_method = c("console", "twitter",
   "gmailr"), compile = FALSE, pre_release = FALSE, release = FALSE,
-  .proceed_after_rerun)
+  .proceed_after_rerun, .no_log = FALSE)
 }
 \arguments{
 \item{path}{Path to search for the tex source file.}
@@ -22,6 +22,9 @@ checkGrattanReport(path = ".", output_method = c("console", "twitter",
 \item{.proceed_after_rerun}{On the occasions where infinitely many passes of \code{pdflatex} 
 are required, include this to skip the error. Note that this will result in false cross-references 
 or incompletely formatted bibliographies.}
+
+\item{.no_log}{Make no entry in the log file on the check's outcome. 
+Set to \code{TRUE} for debugging or repetitive use (as in benchmarking).}
 }
 \value{
 Called for its side-effect.

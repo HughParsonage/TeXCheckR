@@ -17,6 +17,7 @@ Imports: magrittr,
   crayon,
   gmailr,
   twitteR,
+  readr,
   zoo
 LazyData: TRUE
 RoxygenNote: 5.0.1

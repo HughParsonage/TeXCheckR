@@ -6,7 +6,7 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
     stop("Path does not contain a single log file.")
   }
 
-  log_file <- readLines(log_files[[1]])
+  log_file <- read_lines(log_files[[1]])
   
   if (FALSE){
   file_list_start <- grep("*File List*", log_file, fixed = TRUE)

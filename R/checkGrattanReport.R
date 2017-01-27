@@ -9,6 +9,8 @@
 #' @param .proceed_after_rerun On the occasions where infinitely many passes of \code{pdflatex} 
 #' are required, include this to skip the error. Note that this will result in false cross-references 
 #' or incompletely formatted bibliographies.
+#' @param .no_log Make no entry in the log file on the check's outcome. 
+#' Set to \code{TRUE} for debugging or repetitive use (as in benchmarking). 
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -30,7 +32,8 @@ checkGrattanReport <- function(path = ".",
                                compile = FALSE,
                                pre_release = FALSE,
                                release = FALSE,
-                               .proceed_after_rerun){
+                               .proceed_after_rerun,
+                               .no_log = FALSE){
   if (release && (!pre_release || !compile)){
     stop("release = TRUE but pre_release and compile are not both TRUE also.")
   }
@@ -207,7 +210,7 @@ checkGrattanReport <- function(path = ".",
   
   # To check the bibliography
   bib_files <-
-    readLines(filename, warn = FALSE) %>%
+    read_lines(filename) %>%
     .[grepl("\\addbibresource", ., fixed = TRUE)] %>%
     trimws %>%
     gsub("^\\\\addbibresource[{](.+\\.bib)[}]$", "\\1", .)
@@ -355,7 +358,7 @@ checkGrattanReport <- function(path = ".",
       cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
       cat("\nDONE.")
       
-      lines <- readLines(filename, encoding = "UTF-8", warn = FALSE)
+      lines <- read_lines(filename)
       if (!any(grepl("FrontPage", lines))){
         cat("\n\nNOTE: Did you forget to add the FrontPage to \\documentclass{grattan}?")
       }
@@ -394,19 +397,20 @@ checkGrattanReport <- function(path = ".",
     build_status <- "OK"
   }
     
-  data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-             build_status = build_status, 
-             error_message = "NA") %>%
-    fwrite("./travis/grattanReport/error-log.tsv",
-           sep = "\t",
-           append = append)
-  if (notes > 0){
-    if (notes > 1){
-      cat("\n\tThere were", notes, "notes.")
-    } else {
-      cat("\n\tThere was 1 note.")
-    }
-        
+  if (!.no_log){
+    data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+               build_status = build_status, 
+               error_message = "NA") %>%
+      fwrite("./travis/grattanReport/error-log.tsv",
+             sep = "\t",
+             append = append)
+    if (notes > 0){
+      if (notes > 1){
+        cat("\n\tThere were", notes, "notes.")
+      } else {
+        cat("\n\tThere was 1 note.")
+      }
+    } 
   }
   invisible(NULL)
 }

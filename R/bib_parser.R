@@ -16,7 +16,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
   }
 
   bib <-
-    readLines(file.bib, encoding = "UTF-8") %>%
+    read_lines(file.bib) %>%
     # Avoid testing }\\s+$ rather than just == }
     trimws %>%
     .[!grepl("@Comment", ., fixed = TRUE)]

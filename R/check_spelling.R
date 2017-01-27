@@ -64,13 +64,13 @@ check_spelling <- function(filename,
   
 
   
-    if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
-      document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
-      lines_after_begin_document <- lines[-c(1:document_starts_at)]
-    } else {
-      document_starts_at <- 1
-      lines_after_begin_document <- lines
-    }
+  if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
+    document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
+    lines_after_begin_document <- lines[-c(1:document_starts_at)]
+  } else {
+    document_starts_at <- 1
+    lines_after_begin_document <- lines
+  }
   
   # Check known wrong
   for (wrong in known.wrong){

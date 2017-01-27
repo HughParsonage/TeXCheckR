@@ -20,7 +20,7 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
   }
 
   bib <-
-    readLines(bib_file, warn = FALSE, encoding = "UTF-8") %>%
+    read_lines(bib_file) %>%
     trimws %>%
     .[!grepl("% Valid", ., fixed = TRUE)]
   

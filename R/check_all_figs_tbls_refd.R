@@ -17,9 +17,7 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
   while (!is.null(inputs)){
     file_path <- dirname(inputs[[1]])
     input_lines <- 
-      lapply(inputs, function(x) readLines(file.path(filename_path, x),
-                                           encoding = "UTF-8",
-                                           warn = FALSE)) %>%
+      lapply(inputs, function(x) read_lines(file.path(filename_path, x))) %>%
       unlist %>%
       strip_comments
     

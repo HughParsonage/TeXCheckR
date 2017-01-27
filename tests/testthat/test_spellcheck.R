@@ -14,6 +14,11 @@ test_that("Abbreviations", {
   expect_error(check_spelling("spellcheck-abbrevs.tex"))
 })
 
+test_that("Initalisms", {
+  expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok.tex"))
+  expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok-2.tex"))
+})
+
 test_that("Add to dictionary, ignore spelling in", {
   expect_error(check_spelling("./spelling/add_to_dictionary-wrong.tex"), regexp = "[Ss]pellcheck failed")
   expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", pre_release = FALSE), regexp = "[Ss]pellcheck failed")

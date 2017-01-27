@@ -224,7 +224,7 @@ checkGrattanReport <- function(path = ".",
                  .report_error = .report_error,
                  pre_release = pre_release,
                  bib_files = bib_files)
-  if (!pre_release && exists("authors_in_bib_and_doc") && !is.null(authors_in_bib_and_doc)){
+  if (!pre_release && exists("authors_in_bib_and_doc") && not_length0(authors_in_bib_and_doc)){
     notes <- notes + 1L
     
     authors_in_bib_and_doc <- 

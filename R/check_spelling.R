@@ -396,8 +396,8 @@ check_spelling <- function(filename,
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,
-                  error_message = "Lower-case letter followed by capital letter. Likely reason: forgotten space.")
-    stop("Lower-case letter followed by capital letter. Likely reason: forgotten space.")
+                  error_message = "Missing space between sentence. Likely reason: forgotten space.")
+    stop("Missing space between sentence. Lower-case letter followed by full stop followed by capital letter.")
   }
   
   return(invisible(NULL))

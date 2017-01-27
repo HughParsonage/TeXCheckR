@@ -227,8 +227,8 @@ checkGrattanReport <- function(path = ".",
       authors_in_bib_and_doc[seq.int(1L, min(length(authors_in_bib_and_doc), 5L))]
     
     cat("NOTE: Skipped spell check for authors in bibliography.",
-        "Please include the line\n\n\t% add_to_dictionary:", paste0(authors_in_bib_and_doc, collapse = " "), 
-        "\n\nto your .tex file if these have been spelled correctly. (Author names will NOT be skipped at pre-release.)\n")
+        "Please use \\citeauthor{} (preferred) or include the line\n\n\t% add_to_dictionary:", paste0(authors_in_bib_and_doc, collapse = " "), 
+        "\n\nin your .tex file if the names have been spelled correctly. (Author names will NOT be skipped at pre-release.)\n")
   }
   cat(green(symbol$tick, "Spellcheck complete.\n"))
 

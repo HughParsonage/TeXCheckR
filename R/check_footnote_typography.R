@@ -21,6 +21,20 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # Need to include percentage signs though
 
   lines <- gsub("((?<!(\\\\))%).*$", "%", lines, perl = TRUE)
+  
+  # Check overview for footnotes
+  overview_start <- lines == "\\begin{overview}"
+  overview_end <- lines == "\\end{overview}"
+  if (any(overview_start)){
+    is_overview <- as.logical(cumsum(overview_start) - cumsum(overview_end))
+    if (any(grepl("\\footnote", lines[is_overview], fixed = TRUE))){
+      if (!any(overview_end)){
+        stop("Emergency stop: No \\end{overview} found in document. Check your LaTeX syntax and try again")
+      } else {
+        stop("Footnote detected in overview. Remove any footnotes in the overview.")
+      }
+    }
+  }
 
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)

@@ -61,6 +61,20 @@ check_spelling <- function(filename,
                 "\\{bibliography.bib\\}",
                 lines)
   
+  if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
+    document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
+    lines_after_begin_document <- lines[-c(1:document_starts_at)]
+  } else {
+    document_starts_at <- 1
+    lines_after_begin_document <- lines
+  }
+  
+  if (AND(pre_release,
+          any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))){
+    .report_error(error_message = "When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
+    stop("When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
+  }
+  
   words_to_add <- NULL
   if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
     words_to_add <-
@@ -76,13 +90,7 @@ check_spelling <- function(filename,
   
 
   
-  if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
-    document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
-    lines_after_begin_document <- lines[-c(1:document_starts_at)]
-  } else {
-    document_starts_at <- 1
-    lines_after_begin_document <- lines
-  }
+  
   
   # Check known wrong
   for (wrong in known.wrong){

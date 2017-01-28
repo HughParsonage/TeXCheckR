@@ -110,7 +110,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     chars_after_footcite <- gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcite, perl = TRUE)
     
     if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))){
-      stop("Punctuation mark after footcite")
+      stop("Punctuation mark after footcite number ", which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
     }
   }
   

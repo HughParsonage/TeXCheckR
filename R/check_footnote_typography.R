@@ -147,7 +147,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       # OK if full stop is before parenthesis.
       if (not(AND(split_line_after_footnote[footnote_closes_at - 1] == ")",
                   split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?")))){
-        cat("\\footnote\n       ",
+        cat("\n\\footnote\n       ",
             paste0(split_line_after_footnote[1:footnote_closes_at],
                    collapse = ""),
             "\n")

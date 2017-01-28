@@ -299,7 +299,9 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
       }
       invisible(NULL)
     }
-    invisible(lapply(list.files(path = file_path, pattern = "\\.tex", recursive = TRUE, full.names = TRUE), todonotes_setinel))
+    invisible(lapply(setdiff(list.files(path = file_path, pattern = "\\.tex", recursive = TRUE, full.names = TRUE), 
+                             "./doc/grattexDocumentation.tex"),
+                     todonotes_setinel))
   }
   
 }

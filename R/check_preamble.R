@@ -225,7 +225,8 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     
     if (identical(isbn, 
                   as.integer(c(9, 7, 8, 1, 9, 2, 5, 0, 1, 5, 9, 6, 6)))){
-      if (the_title != "Circuit breaker: a new compact for school funding"){
+      if (AND(the_title != "Circuit breaker: a new compact for school funding",
+              !identical(Sys.getenv("TRAVIS"), "true"))){
         .report_error(line_no = isbn_line, 
                       context = lines_before_begin_document[isbn_line],
                       error_message = "ISBN has already been used.")

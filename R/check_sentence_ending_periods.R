@@ -23,8 +23,8 @@ check_sentence_ending_periods <- function(filename, .report_error){
     if (grepl("[A-Z]\\.\\s+[A-Z]", lines[first_line_no], perl = TRUE)){
       context <- lines[first_line_no]
     } else {
-      context <- lines[c(first_line_no - 1, first_line_no)]
-      first_line_no <- c(first_line_no - 1, first_line_no)
+      context <- paste0(lines[c(first_line_no - 1, first_line_no)], collapse = " ")
+      first_line_no <- paste0(c(first_line_no - 1, first_line_no), collapse = "-")
     }
     
     .report_error(line_no = first_line_no, 

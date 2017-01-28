@@ -61,6 +61,18 @@ check_spelling <- function(filename,
                 "\\{bibliography.bib\\}",
                 lines)
   
+  words_to_add <- NULL
+  if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
+    words_to_add <-
+      lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
+      gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
+      trimws %>%
+      strsplit(split = " ", fixed = TRUE) %>%
+      unlist
+    
+    known.correct <- c(known.correct, words_to_add)
+  }
+  
   
 
   
@@ -252,16 +264,6 @@ check_spelling <- function(filename,
   # e.g. 'urgently phas[e] out' is correct
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
-
-  words_to_add <- NULL
-  if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
-    words_to_add <-
-      lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
-      gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
-      trimws %>%
-      strsplit(split = " ", fixed = TRUE) %>%
-      unlist
-  }
 
   if (any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE))){
     first_wrong_line_no <-

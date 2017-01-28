@@ -19,8 +19,16 @@ check_sentence_ending_periods <- function(filename, .report_error){
                and(lag(grepl("[A-Z]\\.$", lines, perl = TRUE)),
                    grepl("^[A-Z]", lines, perl = TRUE))))
     
-    .report_error(line_no = line_nos[[1]], 
-                  context = lines[line_nos[[1]]], 
+    first_line_no <- line_nos[[1]]
+    if (grepl("[A-Z]\\.\\s+[A-Z]", lines[first_line_no], perl = TRUE)){
+      context <- lines[first_line_no]
+    } else {
+      context <- lines[c(first_line_no - 1, first_line_no)]
+      first_line_no <- c(first_line_no - 1, first_line_no)
+    }
+    
+    .report_error(line_no = first_line_no, 
+                  context = context, 
                   error_message = paste0("Sentences which end with a capital letter ",
                                          "need to be signalled with a sentence-ending period. (\\@.)"))
     stop(paste0("Sentences which end with a capital letter ",

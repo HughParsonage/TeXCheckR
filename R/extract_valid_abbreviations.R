@@ -7,7 +7,10 @@
 
 
 extract_validate_abbreviations <- function(lines){
-  lines_w_abbrev <- grep("\\([A-Z]+\\)", lines, perl = TRUE, value = TRUE)
+  # Note the inner (capturing) parentheses
+  abbrev_pattern <- "\\(([A-Z][A-Za-z]*[A-Z])\\)"
+  
+  lines_w_abbrev <- grep(abbrev_pattern, lines, perl = TRUE, value = TRUE)
   if (not_length0(lines_w_abbrev)){
     lines_w_abbrev_last <- 
       lines_w_abbrev %>%
@@ -17,21 +20,50 @@ extract_validate_abbreviations <- function(lines){
       # Split if ends with A-Z)
       strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
       unlist %>%
-      .[grepl("\\([A-Z]+\\)$", ., perl = TRUE)]
+      .[grepl(paste0(abbrev_pattern, "$"), ., perl = TRUE)]
     
-    NN <- abbrev <- expected_abbrev <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- NULL
+    lines_w_abbrev_last_incl_stops <- 
+      lines_w_abbrev %>%
+      gsub("[{,.]", " ", x = ., perl = TRUE) %>%
+      # Exclude this line:
+      # gsub("\\s+(?:(?:of)|(?:and)|(?:the))\\s+", " ", x = ., perl = TRUE) %>%
+      gsub("\\s+", " ", x = ., perl = TRUE) %>%
+      # Split if ends with A-Z)
+      strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
+      unlist %>%
+      .[grepl(paste0(abbrev_pattern, "$"), ., perl = TRUE)]
+    
+    NN <- abbrev <- expected_abbrev <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
     data.table(
       line = lines_w_abbrev_last,
-      abbrev = gsub("^(.*)\\(([A-Z]+)\\)$", "\\2", lines_w_abbrev_last, perl = TRUE),
-      prefix = trimws(gsub("^(.*)\\(([A-Z]+)\\)$", "\\1", lines_w_abbrev_last, perl = TRUE))) %>%
+      abbrev = gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\2", lines_w_abbrev_last, perl = TRUE),
+      prefix = trimws(gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\1", lines_w_abbrev_last, perl = TRUE)),
+      prefix_incl_stops = trimws(gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\1", lines_w_abbrev_last_incl_stops, perl = TRUE))
+      ) %>%
       # Look at the n words previous where n is the nchar
       .[, nchars_abbrev := nchar(abbrev)] %>%
       .[, NN := seq.int(1, .N)] %>%
-      .[, expected_abbrev := lapply(strsplit(prefix, split = " "), function(words){
-        toupper(paste0(substr(words[seq.int(to = length(words), length.out = nchars_abbrev)], 0, 1), 
-                       collapse = ""))
-      }) %>% unlist, by = NN] %>% 
-      .[abbrev == expected_abbrev] %>%
+      .[, expected_abbrev := lapply(strsplit(prefix, split = " "),
+                                    function(words){
+                                      toupper(paste0(substr(words[seq.int(to = length(words), 
+                                                                          length.out = nchars_abbrev)], 
+                                                            0, 
+                                                            1), 
+                                                     collapse = ""))
+                                    }) %>% 
+          unlist#
+        , by = NN] %>% 
+      .[, expected_abbrev2 := lapply(strsplit(prefix_incl_stops, split = " "),
+                                     function(words){
+                                       toupper(paste0(substr(words[seq.int(to = length(words), 
+                                                                           length.out = nchars_abbrev)], 
+                                                             0, 
+                                                             1), 
+                                                      collapse = ""))
+                                     }) %>% 
+          unlist#
+        , by = NN] %>% 
+      .[toupper(abbrev) == expected_abbrev | toupper(abbrev) == expected_abbrev2] %>%
       .[["abbrev"]]
   } else {
     invisible(NULL)

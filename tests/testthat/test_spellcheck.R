@@ -17,6 +17,8 @@ test_that("Abbreviations", {
 test_that("Initalisms", {
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok.tex"))
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok-2.tex"))
+  expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-defd-ok-stopwords.tex")), 
+               c("QXFEoC", "AIAS"))
 })
 
 test_that("Add to dictionary, ignore spelling in", {

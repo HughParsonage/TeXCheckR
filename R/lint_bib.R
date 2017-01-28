@@ -24,11 +24,11 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
     if (is_field[line]){
     spaces_req <- widest_field - field_width[line]
     out[line] <-
-      gsub("^\\s*(\\w+)\\s*[=]",
+      gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
            paste0(paste0(rep(" ", leading_spaces), collapse = ""),
                   "\\1",
                   paste0(rep(" ", spaces_req), collapse = ""),
-                  " ="),
+                  " = {"),
            bib[line],
            perl = TRUE)
     }

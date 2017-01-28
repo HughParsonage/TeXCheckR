@@ -48,7 +48,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
       stop("More than one \\author line in document preamble.")
     }
     
-    first_author <- gsub("^\\\\author\\{(\\w+\\s\\w+)\\s.*$", 
+    first_author <- gsub("^\\\\author\\{(\\w+\\s\\w+)\\b.*$", 
                          "\\1", 
                          lines_before_begin_document[author_line_no], 
                          perl = TRUE)

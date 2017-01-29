@@ -37,6 +37,9 @@ check_spelling <- function(filename,
     lines[ignore.lines] <- ""
   }
   
+  # Never check URLS
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
+  
   if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
     line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
     .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",

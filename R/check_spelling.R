@@ -38,7 +38,7 @@ check_spelling <- function(filename,
   }
   
   if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
-    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.e)|(?:e\\.g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
+    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
     .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
                   line_no = line_no,
                   context = lines[[line_no]])

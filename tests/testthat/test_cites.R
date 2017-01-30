@@ -13,3 +13,8 @@ test_that("Postnotes detected", {
 #   expect_true(deleteStatus(.last.Twitter.status[[1]]))
 #   rm(".last.Twitter.status", inherits = TRUE, envir = .GlobalEnv)
 # })
+
+
+test_that("Singular text/footcite with two keys should error", {
+  expect_error(check_cite_pagerefs("./check-cite-pagerefs/29-bad-singular-cite.tex"))
+})

@@ -251,7 +251,8 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     if (!OR(lines_before_begin_document[isbn_line - 3] == "This report may be cited as:",
             identical(lines_before_begin_document[isbn_line - c(4:3)],
                       c("This report may be cited as:", "\\newline")))){
-      stop("'This report may be cited as:' not found on the 3rd or 4th before 'ISBN: '.")
+      stop("When parsing the document preamble, I could not find 'This report may be cited as:' on the 3rd or 4th lines before 'ISBN: '.", "\n",
+           "You must place that line on one of those lines for the check to continue.")
     }
     
     project_authors <- get_authors(filename)

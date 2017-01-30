@@ -7,9 +7,9 @@
 #' @param to_sort Include only author, title, year, and date.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
-#' @export bib2DT
+#' @export bib2DT fread_bib
 
-bib2DT <- function(file.bib, to_sort = FALSE){
+fread_bib <- function(file.bib){
   stopifnot(length(file.bib) == 1L)
   if (!grepl("\\.bib$", file.bib)){
     warning("File extension is not '.bib'.")
@@ -20,9 +20,64 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     # Avoid testing }\\s+$ rather than just == }
     trimws %>%
     .[!grepl("@Comment", ., fixed = TRUE)]
-  is_at <- grepl("^@", bib, perl = TRUE)
+  is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
   is_closing <- bib == "}"
+  
+  sep_candidate <- NULL
+  # Can't use = as separator (almost certainly occurs in a URL)
+  # Try these:
+  for (sep_candidate in c("\t", "^", "|")){
+    if (!any(grepl(sep_candidate, bib, fixed = TRUE))){
+      sep <- sep_candidate
+      break
+    }
+  }
+  if (is.null(sep_candidate)){
+    stop("No suitable separator found for bibliography file. That is, all candidates tried already appeared in the file")
+  }
+  
+  bib_just_key_and_fields <- bib
+  bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
+  bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
+  
+  bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
+  used_line_nos <- which(!is.na(bib_just_key_and_fields))
+  bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
+  
+  bibDT <- data.table(line_no = used_line_nos,
+                      x = bib_just_key_and_fields)
+  bibDT[, c("field", "value") := tstrsplit(x, sep, fixed = TRUE)]
+  bibDT[, is_key := field == "key"]
+  
+  
+  # input <- paste0(bib_just_key_and_fields, collapse = "\n")
+  # bibDT <- fread(input = paste0(bib_just_key_and_fields, collapse = "\n"), sep = sep_candidate, header = FALSE)
+  # setnames(bibDT,
+  #          old = c("V1", "V2"),
+  #          new = c("field", "orig"))
+  bibDT[, key_line := if_else(is_key, value, NA_character_)]
+  bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
+  bibDT <- bibDT[(!is_key)]
+  bibDT[, x := NULL]
+  bibDT[, lapply(.SD, trimws)]
+  bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
+  bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
+}
 
+bib2DT <- function(file.bib, to_sort = FALSE){
+  stopifnot(length(file.bib) == 1L)
+    if (!grepl("\\.bib$", file.bib)){
+      warning("File extension is not '.bib'.")
+    }
+    
+    bib <-
+      read_lines(file.bib) %>%
+      # Avoid testing }\\s+$ rather than just == }
+      trimws %>%
+      .[!grepl("@Comment", ., fixed = TRUE)]
+    is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
+    is_closing <- bib == "}"
+    entry_no <- cumsum(is_at)
   # We make assumptions about the structure
   # Namely that the closing brace for each entry
   # is the only character on its own line.

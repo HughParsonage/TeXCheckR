@@ -9,10 +9,10 @@
 extract_validate_abbreviations <- function(lines){
   # Note the inner (capturing) parentheses
   abbrev_pattern <- "\\(([A-Z][A-Za-z]*[A-Z])\\)"
-  
+
   lines_w_abbrev <- grep(abbrev_pattern, lines, perl = TRUE, value = TRUE)
   if (not_length0(lines_w_abbrev)){
-    lines_w_abbrev_last <- 
+    lines_w_abbrev_last <-
       lines_w_abbrev %>%
       gsub("[{,.]", " ", x = ., perl = TRUE) %>%
       gsub("\\s+(?:(?:of)|(?:and)|(?:the))\\s+", " ", x = ., perl = TRUE) %>%
@@ -21,8 +21,8 @@ extract_validate_abbreviations <- function(lines){
       strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
       unlist %>%
       .[grepl(paste0(abbrev_pattern, "$"), ., perl = TRUE)]
-    
-    lines_w_abbrev_last_incl_stops <- 
+
+    lines_w_abbrev_last_incl_stops <-
       lines_w_abbrev %>%
       gsub("[{,.]", " ", x = ., perl = TRUE) %>%
       # Exclude this line:
@@ -32,8 +32,9 @@ extract_validate_abbreviations <- function(lines){
       strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
       unlist %>%
       .[grepl(paste0(abbrev_pattern, "$"), ., perl = TRUE)]
-    
-    NN <- abbrev <- expected_abbrev <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
+
+    NN <- abbrev <- expected_abbrev <-
+      expected_abbrev_with_stops <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
     data.table(
       line = lines_w_abbrev_last,
       abbrev = gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\2", lines_w_abbrev_last, perl = TRUE),
@@ -45,25 +46,25 @@ extract_validate_abbreviations <- function(lines){
       .[, NN := seq.int(1, .N)] %>%
       .[, expected_abbrev := lapply(strsplit(prefix, split = " "),
                                     function(words){
-                                      toupper(paste0(substr(words[seq.int(to = length(words), 
-                                                                          length.out = nchars_abbrev)], 
-                                                            0, 
-                                                            1), 
+                                      toupper(paste0(substr(words[seq.int(to = length(words),
+                                                                          length.out = nchars_abbrev)],
+                                                            0,
+                                                            1),
                                                      collapse = ""))
-                                    }) %>% 
+                                    }) %>%
           unlist#
-        , by = NN] %>% 
-      .[, expected_abbrev2 := lapply(strsplit(prefix_incl_stops, split = " "),
-                                     function(words){
-                                       toupper(paste0(substr(words[seq.int(to = length(words), 
-                                                                           length.out = nchars_abbrev)], 
-                                                             0, 
-                                                             1), 
-                                                      collapse = ""))
-                                     }) %>% 
+        , by = NN] %>%
+      .[, expected_abbrev_with_stops := lapply(strsplit(prefix_incl_stops, split = " "),
+                                               function(words){
+                                                 toupper(paste0(substr(words[seq.int(to = length(words),
+                                                                                     length.out = nchars_abbrev)],
+                                                                       0,
+                                                                       1),
+                                                                collapse = ""))
+                                               }) %>%
           unlist#
-        , by = NN] %>% 
-      .[toupper(abbrev) == expected_abbrev | toupper(abbrev) == expected_abbrev2] %>%
+        , by = NN] %>%
+      .[toupper(abbrev) == expected_abbrev | toupper(abbrev) == expected_abbrev_with_stops] %>%
       .[["abbrev"]]
   } else {
     invisible(NULL)

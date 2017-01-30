@@ -22,7 +22,7 @@ fread_bib <- function(file.bib){
     .[!grepl("@Comment", ., fixed = TRUE)]
   is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
   is_closing <- bib == "}"
-  
+
   sep_candidate <- NULL
   # Can't use = as separator (almost certainly occurs in a URL)
   # Try these:
@@ -35,26 +35,32 @@ fread_bib <- function(file.bib){
   if (is.null(sep_candidate)){
     stop("No suitable separator found for bibliography file. That is, all candidates tried already appeared in the file")
   }
-  
+
   bib_just_key_and_fields <- bib
   bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
   bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
-  
+
   bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
-  
+
+  x <- line_no <- NULL
   bibDT <- data.table(line_no = used_line_nos,
                       x = bib_just_key_and_fields)
+
+  field <- value <- NULL
   bibDT[, c("field", "value") := tstrsplit(x, sep, fixed = TRUE)]
+
+  is_key <- NULL
   bibDT[, is_key := field == "key"]
-  
-  
+
+
   # input <- paste0(bib_just_key_and_fields, collapse = "\n")
   # bibDT <- fread(input = paste0(bib_just_key_and_fields, collapse = "\n"), sep = sep_candidate, header = FALSE)
   # setnames(bibDT,
   #          old = c("V1", "V2"),
   #          new = c("field", "orig"))
+  key_line <- NULL
   bibDT[, key_line := if_else(is_key, value, NA_character_)]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
@@ -64,12 +70,14 @@ fread_bib <- function(file.bib){
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
 }
 
+#' @rdname bib_parser
+
 bib2DT <- function(file.bib, to_sort = FALSE){
   stopifnot(length(file.bib) == 1L)
     if (!grepl("\\.bib$", file.bib)){
       warning("File extension is not '.bib'.")
     }
-    
+
     bib <-
       read_lines(file.bib) %>%
       # Avoid testing }\\s+$ rather than just == }
@@ -98,7 +106,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
 
   line_by_entry_no <- cumsum(is_at)
   keys <- gsub("^.*\\{(.*),$", "\\1", bib[is_at], perl = TRUE)
-  
+
   if (uniqueN(keys) != n_ats){
     stop("Number of unique keys not equal to number of key entries.")
   }
@@ -120,7 +128,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     editor <- endyear <- howpublished <- institution <- intra_key_line_no <- line_no <-
     note <- number <- organization <- pages <- publisher <- related <- school <- series <- title <-
     type <- volume <- Year_as_date <- Date <- NULL
-  
+
   bib_orig <- field_name <- NULL
 
   data.table(line_no = seq_along(bib),
@@ -196,12 +204,12 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     .[, field_name := if_else(is_at, "AT", field_name)] %>%
     .[, field_name := if_else(is_closing, "}", field_name)] %>%
     .[, field_name := factor(field_name,
-                             levels = c("AT", "author", "title", "year", "date", "address", "annote", 
-                                        "booktitle", "chapter", "crossref", "options", "related", "edition", 
-                                        "editor", "howpublished", "institution", "month", "note", "number", 
-                                        "organization", "pages", "publisher", "school", "series", "type", 
-                                        "volume", "url", "Year_as_date", "Date", "Surname", "intra_key_line_no", 
-                                        "Line_no", "}"), 
+                             levels = c("AT", "author", "title", "year", "date", "address", "annote",
+                                        "booktitle", "chapter", "crossref", "options", "related", "edition",
+                                        "editor", "howpublished", "institution", "month", "note", "number",
+                                        "organization", "pages", "publisher", "school", "series", "type",
+                                        "volume", "url", "Year_as_date", "Date", "Surname", "intra_key_line_no",
+                                        "Line_no", "}"),
                              ordered = TRUE)] %>%
     .[, bib_orig := bib] %>%
     .[, lapply(.SD, zoo::na.locf, na.rm = FALSE, fromLast = FALSE), by = "key", .SDcols = author:bib_orig] %>%

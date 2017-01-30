@@ -16,5 +16,6 @@ test_that("Postnotes detected", {
 
 
 test_that("Singular text/footcite with two keys should error", {
-  expect_error(check_cite_pagerefs("./check-cite-pagerefs/29-bad-singular-cite.tex"))
+  expect_error(check_cite_pagerefs("./check-cite-pagerefs/29-bad-singular-cite.tex"),
+               regexp = "Use of singular form")
 })

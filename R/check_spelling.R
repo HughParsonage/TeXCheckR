@@ -276,6 +276,37 @@ check_spelling <- function(filename,
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
 
+  lc_govt_pattern <-
+    paste0("(?:",
+           paste0("(?:Federal)",
+                  "|",
+                  "(?:Commonwealth)",
+                  "|",
+                  "(?:N(?:ew )S(?:outh )W(?:ales))",
+                  "|",
+                  "(?:Vic(?:torian?))",
+                  "|",
+                  "(?:Q(?:ueens)l(?:an)d)",
+                  "|",
+                  "(?:S(?:outh )A(?:ustralian?))",
+                  "|",
+                  "(?:W(?:estern )A(?:ustralian?))",
+                  "|",
+                  "(?:N(?:orthern? )T(?:erritory))",
+                  "|",
+                  "(?:A(?:ustralian )|C(?:apital )T(?:erritory))"),
+           ") government",
+           "(?!\\s(?:schools?))")
+
+  if (any(grepl(lc_govt_pattern, lines, perl = TRUE))){
+    line_no <- grep(lc_govt_pattern, lines, perl = TRUE)[[1]]
+    context <- lines[line_no]
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Should be upper case G in government.")
+    stop("Should be upper case G in government.")
+  }
+
   if (any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE))){
     first_wrong_line_no <-
       grep(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE) %>%

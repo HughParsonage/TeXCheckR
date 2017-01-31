@@ -23,6 +23,10 @@ check_labels <- function(filename, .report_error){
 
   lines <- strip_comments(lines)
 
+  if (any(lines == "\\begin{document}")){
+    lines <- lines[seq_along(lines) > which(lines == "\\begin{document}")]
+  }
+
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
   label_contents <-
     lines[lines_with_labels] %>%

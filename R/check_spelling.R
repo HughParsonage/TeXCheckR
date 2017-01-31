@@ -271,6 +271,9 @@ check_spelling <- function(filename,
     }
   }
 
+  # Now we can strip comments as all the directives have been used
+  lines <- strip_comments(lines)
+
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct
   # Need to avoid optional arguments to commands: use the spaces?

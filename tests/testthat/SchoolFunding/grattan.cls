@@ -931,7 +931,8 @@ numbers=noenddot,
 \setlength{\overviewExtra}{0pt}
 \newenvironment{overview}[1][]%
 % vspace{-24.5pt} should align Overview baseline with chapter baseline
-  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Overview}\label{chap:Overview}\addtolength{\columnsep}{\overviewExtra}\begin{multicols}{2}}%
+% Putting \label outside \addchap causes inconsistent chapter breaks
+  {\onecolumn\vtop to 0pt\bgroup\ifstrempty{#1}{\vspace{-24.5pt}}{\vspace{#1}}\addchap{Overview\label{chap:Overview}}\addtolength{\columnsep}{\overviewExtra}\begin{multicols}{2}}%
   {\end{multicols}\addtolength{\columnsep}{-\overviewExtra}\vss\egroup\hfill\twocolumn}
   
 \newenvironment{summary}%

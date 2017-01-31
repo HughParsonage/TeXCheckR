@@ -1,7 +1,7 @@
 context("Spellchecker")
 
 test_that("School funding report checks out", {
-  expect_null(check_spelling("./SchoolFunding/SchoolFunding.tex", 
+  expect_null(check_spelling("./SchoolFunding/SchoolFunding.tex",
                              known.correct = c("SRS", "SE.XPD.TOTL.GD.XS", "WDI", "SSNP", "underfunded", "overfund[a-z]*", "NMS", "WPI", "DET", "phas", "NP", "SATs", "ENG", "th", "stds", "RCTs", "CAGR"), ignore.lines = 1551))
 })
 
@@ -17,18 +17,18 @@ test_that("Abbreviations", {
 test_that("Initalisms", {
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok.tex"))
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok-2.tex"))
-  expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-defd-ok-stopwords.tex")), 
+  expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-defd-ok-stopwords.tex")),
                c("QXFEoC", "AIAS"))
 })
 
 test_that("Add to dictionary, ignore spelling in", {
   expect_error(check_spelling("./spelling/add_to_dictionary-wrong.tex"), regexp = "[Ss]pellcheck failed")
   expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", pre_release = FALSE), regexp = "[Ss]pellcheck failed")
-  
+
   expect_null(check_spelling("./spelling/add_to_dictionary-ok.tex"))
   expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", pre_release = FALSE))
   expect_null(check_spelling("./spelling/ignore_spelling_in-ok-2.tex", pre_release = FALSE))
-  
+
   expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
 })
 
@@ -40,3 +40,12 @@ test_that("Stop if present", {
   expect_error(check_spelling("./stop_if_present/should-stop-3.tex"), regexp = "percent")
   expect_null(check_spelling("./stop_if_present/should-not-stop.tex"))
 })
+
+test_that("Lower-case governments should error", {
+  expect_error(check_spelling("./spelling/Govt/NSWgovt.tex"), regexp = "uppercase G")
+  expect_error(check_spelling("./spelling/Govt/ACTgovt.tex"), regexp = "uppercase G")
+  expect_error(check_spelling("./spelling/Govt/NTgovt.tex"), regexp = "uppercase G")
+  expect_error(check_spelling("./spelling/Govt/Queenslandgovt.tex"), regexp = "uppercase G")
+  expect_error(check_spelling("./spelling/Govt/WAgovt.tex"), regexp = "uppercase G")
+})
+

@@ -282,19 +282,19 @@ check_spelling <- function(filename,
                   "|",
                   "(?:Commonwealth)",
                   "|",
-                  "(?:N(?:ew )S(?:outh )W(?:ales))",
+                  "(?:N(?:ew )?S(?:outh )?W(?:ales)?)",
                   "|",
-                  "(?:Vic(?:torian?))",
+                  "(?:Vic(?:torian?)?)",
                   "|",
-                  "(?:Q(?:ueens)l(?:an)d)",
+                  "(?:Q(?:ueens)?l(?:an)?d)",
                   "|",
                   "(?:S(?:outh )A(?:ustralian?))",
                   "|",
-                  "(?:W(?:estern )A(?:ustralian?))",
+                  "(?:W(?:estern )?A(?:ustralian?)?)",
                   "|",
-                  "(?:N(?:orthern? )T(?:erritory))",
+                  "(?:N(?:orthern? )?T(?:erritory)?)",
                   "|",
-                  "(?:A(?:ustralian )|C(?:apital )T(?:erritory))"),
+                  "(?:A(?:ustralian )?|C(?:apital )?T(?:erritory)?)"),
            ") government",
            "(?!\\s(?:schools?))")
 
@@ -304,7 +304,7 @@ check_spelling <- function(filename,
     .report_error(line_no = line_no,
                   context = context,
                   error_message = "Should be upper case G in government.")
-    stop("Should be upper case G in government.")
+    stop("Wrong case: 'government' should start with uppercase G in this context.")
   }
 
   if (any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE))){

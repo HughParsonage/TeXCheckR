@@ -15,3 +15,8 @@ test_that("Hyphens adjacent are noticed", {
   expect_error(check_dashes("./check-dashes/hyphens-adj-dash-2.tex"),
                regexp = "[Hh]yphen adjacent to en-dash.")
 })
+
+test_that("Emdashes detected", {
+  expect_error(check_dashes("./check-dashes/has-emdash-1.tex"),
+               regexp = "[Ee]m-dash")
+})

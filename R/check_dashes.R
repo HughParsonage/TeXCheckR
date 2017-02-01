@@ -46,7 +46,8 @@ check_dashes <- function(filename, .report_error){
                grepl("\u2013-", lines, fixed = TRUE))) %>%
       .[1]
     .report_error(line_no = line_no,
-                  context = lines[[line_no]])
+                  context = lines[[line_no]],
+                  error_message = "Hyphen adjacent to en-dash.")
     stop("Hyphen adjacent to en-dash. (Did you copy this line from Word?) ",
          "Make sure anything you intend as an en-dash is entered as ' -- '")
   }
@@ -70,11 +71,14 @@ check_dashes <- function(filename, .report_error){
     grepl("---", ., fixed = TRUE)
 
 
-  if (any(are_emdash_lines)){
+  if (any(are_emdash_lines) || any(grepl("\u2014", lines, fixed = TRUE))){
     emdash_lines <-
       lines %>%
       gsub("\\{[^\\s\\}]+\\}", "\\{\\}", x = ., perl = TRUE) %>%
       grep("---", x = ., fixed = TRUE, value = TRUE)
+
+    emdash_lines <- union(emdash_lines,
+                          grep("\u2014", lines, fixed = TRUE))
     line_no <- emdash_lines[[1]]
     .report_error(line_no = line_no,
                   context = lines[line_no],

@@ -83,34 +83,61 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   }
   
   line_nos_with_footcite <- 
-    grepl("\\footcite", lines, fixed = TRUE)
+    grepl("\\\\footcite(?!s)", lines, perl = TRUE)
   
+  line_nos_with_footcites <-
+    grepl("\\footcites", lines, fixed = TRUE)
+  
+  # Have to separate otherwise the replacement occurs on the wrong command name
   if (any(line_nos_with_footcite)){
-    lines_with_footcite <- 
-      lines %>%
-      .[line_nos_with_footcite] %>%
-      gsub(paste0("((?:footcites?)|(?:\\}))", 
-                  "\\[\\]", 
-                  "\\[", "[^\\]]+", "\\]\\{"), 
-           "\\1\\{",
-           x = .,
-           perl = TRUE)
+    lines_with_footcite <- lines[line_nos_with_footcite] 
     
-    sup_braces_after_footcite <- 
-      gsub("[^\\}]+", "", gsub("^.*footcite", "", lines_with_footcite)) %>%
+    lines_with_footcite_noarg <- lines_with_footcite
+    lines_with_footcite_noarg <- replace_nth_LaTeX_argument(lines_with_footcite_noarg, 
+                                                            command_name = "footcite",
+                                                            n = 1L,
+                                                            replacement = "")
+    
+    chars_after_footcite <- gsub("^.*\\\\footcite\\{\\}\\s*(.)?.*$", 
+                                "\\1", 
+                                lines_with_footcite_noarg, 
+                                perl = TRUE)
+    
+    if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))){
+      first_footcite_w_punct <- which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))[[1]]
+      .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
+                    context = lines[line_no], 
+                    error_message = "Punctuation mark after footcite number ", first_footcite_w_punct, ".")
+      stop("Punctuation mark after footcite number ", first_footcite_w_punct, ".")
+    }
+  }
+  
+  if (any(line_nos_with_footcites)){
+    # We can't just gsub {[A-Za-z]} because we don't know how many braces are needed.
+    lines_with_footcites <- lines[line_nos_with_footcites] 
+    
+    sup_braces_after_footcites <- 
+      gsub("[^\\}]+", "", gsub("^.*footcite", "", lines_with_footcites)) %>%
       nchar %>%
       max
     
-    lines_with_footcite <- replace_nth_LaTeX_argument(lines_with_footcite, "footcite", n = 1, replacement = "")
+    lines_with_footcites_noarg <- lines_with_footcites
     
-    for (n in 1:max(sup_braces_after_footcite)){
-      lines_with_footcite <- replace_nth_LaTeX_argument(lines_with_footcite, "footcites", n = n, replacement = "", warn = FALSE)
+    for (n in seq_len(sup_braces_after_footcites)){
+      lines_with_footcites_noarg <-
+        replace_nth_LaTeX_argument(lines_with_footcites_noarg,
+                                   "footcites",
+                                   n = n,
+                                   replacement = "",
+                                   warn = FALSE)
     }
     
-    chars_after_footcite <- gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcite, perl = TRUE)
+    # Now that footcites are just {} (repeated), find the first char thereafter.
+    chars_after_footcites <- gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcites_noarg, perl = TRUE)
     
-    if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))){
-      stop("Punctuation mark after footcite number ", which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
+    if (any(chars_after_footcites %in% c(".", ",", ":", ";", "'", '"', "?"))){
+      stop("Punctuation mark after \\footcites number ",
+           which(chars_after_footcites %in% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
     }
   }
   

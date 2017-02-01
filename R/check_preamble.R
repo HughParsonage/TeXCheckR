@@ -278,32 +278,53 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     }
     
     # Check todonotes hl
-    todonotes_setinel <- function(filename){
+    todonotes_sentinel <- function(filename){
       lines <- read_lines(filename)
-      if (any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))){
-        .report_error(error_message = paste0("pre_release = TRUE but found string 'usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
-                                             "most likely due to \\usepackage{todonotes}. ",
-                                             "These strings are not permitted anywhere in the project ",
-                                             "(even commented out or disabled) when preparing a finished document."))
-        
-        stop(paste0("pre_release = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ", filename, ",",
-                    "most likely due to \\usepackage{todonotes}. ",
-                    "These strings are not permitted anywhere in the project ",
-                    "(even commented out or disabled) when preparing a finished document."))
-      }
-      
-      if (any(grepl("\\hl{", lines, fixed = TRUE))){
-        .report_error(context = filename,
-                      extra_cat_post = "Found command \\hl somewhere in ", filename, ". Ensure all comments are removed from the document.",
-                      error_message = "Found command \\hl in project.")
-        stop("Found command \\hl in project.")
-      }
-      invisible(NULL)
+      any(grepl("\\\\usepackage.*(?:(?:\\{todonotes\\})|(?:\\{soul\\}))", lines, perl = TRUE))
     }
-    invisible(lapply(setdiff(list.files(path = file_path, pattern = "\\.tex", recursive = TRUE, full.names = TRUE), 
-                             "./doc/grattexDocumentation.tex"),
-                     todonotes_setinel))
+
+    filenames_to_guard <-
+      setdiff(list.files(path = file_path,
+                         pattern = "\\.tex",
+                         recursive = TRUE,
+                         full.names = TRUE),
+              "./doc/grattexDocumentation.tex")
+
+    has_todonotes <-
+      vapply(filenames_to_guard,
+             todonotes_sentinel,
+             logical(1))
+
+    if (any(has_todonotes)){
+      files_w_todonotes <- filenames_to_guard[has_todonotes]
+      .report_error(error_message = paste0("Found todonotes"))
+
+      stop(paste0("pre_release = TRUE but found string usepackage{todonotes}' or 'usepackage{soul}' in ",
+                  "the following:\n\t", paste0(filename, collapse = "\n\t"), "\n\n",
+                  "most likely due to \\usepackage{todonotes}. ",
+                  "These strings are not permitted anywhere in the project ",
+                  "(even commented out or disabled) when preparing a finished document."))
+    }
+
+    hl_sentinel <- function(filename){
+      any(grepl("\\hl{", lines, fixed = TRUE))
+    }
+
+    has_hl <-
+      vapply(filenames_to_guard,
+             hl_sentinel,
+             logical(1))
+
+    if (any(has_hl)){
+      filenames <- filenames_to_guard[has_hl]
+      filename <- filenames[[1]]
+      .report_error(context = filename,
+                    extra_cat_post = "Found command \\hl somewhere in ", filename, ". Ensure all comments are removed from the document.",
+                    error_message = "Found command \\hl in project.")
+      stop("Found command \\hl in project while attempting to prepare a final document. ",
+           "Commands such as these are not permitted anywhere in the project area when a final document is being prepared.")
+    }
+
   }
-  
 }
 

@@ -13,7 +13,7 @@ check_cite_pagerefs <- function(filename, .report_error){
     line_no <- line_nos_with_cites[grepl("cites?\\[[^\\]]+\\][{]", lines[line_nos_with_cites], perl = TRUE)][[1]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
-                  context = line,
+                  context = context,
                   error_message = "Use postnote for pagerefs.")
     stop("Use postnote for pagerefs.")
   }
@@ -29,7 +29,7 @@ check_cite_pagerefs <- function(filename, .report_error){
                                         perl = TRUE)][[1]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
-                  context = line,
+                  context = context,
                   error_message = "Unnecessary p in postnote.")
     stop("Unnecessary p in postnote.")
   }
@@ -40,7 +40,7 @@ check_cite_pagerefs <- function(filename, .report_error){
                                          perl = TRUE)][[1]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
-                  context = line,
+                  context = context,
                   error_message = "Page ranges should be separated by two hyphens (--).")
     stop("Page ranges should be separated by two hyphens (--).")
   }

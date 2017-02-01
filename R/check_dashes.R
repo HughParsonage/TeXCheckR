@@ -33,7 +33,10 @@ check_dashes <- function(filename, .report_error){
       .report_error(line_no = line_no,
                     context = lines[line_no],
                     error_message = "Dash likely masquerading as hyphen. Use -- for a dash.")
-      stop("Hyphen likely masquerading as dash. Use -- for a dash.")
+      stop("Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.\n",
+           "\nIMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  \u2013\n",
+           "If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). ",
+           "As always, visually check the result in the PDF.")
     }
 
   }

@@ -8,3 +8,15 @@ test_that("Errors if hyphen wrongly typed", {
   expect_error(check_dashes(filename = "./check-dashes/bad-hyphen.tex"),
                regexp = "[Hh]yphen")
 })
+
+test_that("Hyphens adjacent are noticed", {
+  expect_error(check_dashes("./check-dashes/hyphens-adj-dash-1.tex"),
+               regexp = "[Hh]yphen adjacent to en-dash.")
+  expect_error(check_dashes("./check-dashes/hyphens-adj-dash-2.tex"),
+               regexp = "[Hh]yphen adjacent to en-dash.")
+})
+
+test_that("Emdashes detected", {
+  expect_error(check_dashes("./check-dashes/has-emdash-1.tex"),
+               regexp = "[Ee]m-dash")
+})

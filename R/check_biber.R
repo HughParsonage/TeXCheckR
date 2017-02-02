@@ -3,6 +3,8 @@
 #' @param path Containing the blg file.
 #' @export
 
+
+
 check_biber <- function(path = "."){
   blg.file <- dir(path = path, pattern = "blg$", full.names = TRUE)
   if (length(blg.file) > 1L){
@@ -30,7 +32,7 @@ check_biber <- function(path = "."){
     
       # Remove legislation marks:
       blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)|(NZ)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
-
+      blg <- blg[!grepl("n.d.", blg, fixed = TRUE)]
       # WARN not WARNINGS
       if (any(grepl("WARN ", blg, fixed = TRUE))){
         first_bad_entry <-

@@ -1,0 +1,71 @@
+\documentclass{grattan}
+\input{tex/preamble}
+% Comments are deployed by the % sign; everything after % is ignored by the compiler.
+% Please do not put comments before \documentclass as these are reserved for TeX directives.
+
+\makeatletter
+\newcommand{\@addboxcaption}[1]{%
+\captionsetup{labelfont={bf,Orange},font={bf,Orange},format=plain,justification=raggedright,singlelinecheck=false, skip=0ex, position=above}
+\caption*{#1}
+\captionsetup{format=plain,font={small,bf,theGrey},labelfont={small,bf,theGrey}, position=above, skip=0pt}
+}
+
+\newenvironment{addsmallbox}[3][htb]{%
+\setlength{\currentparskip}{\parskip}% save the value
+\begin{boxe}[#1]
+\begin{mdframed}[style=GrattanFrameBox]%
+\setlength{\parskip}{\currentparskip} % restore the value
+\@addboxcaption{#2\label{#3}}
+\RaggedRight
+}{\end{mdframed}\end{boxe}}
+
+\makeatother
+
+\addbibresource{bib/Grattan-Master-Bibliography.bib}
+
+\author{Peter Goss and Julie Sonnemann}
+\title{Engaging students: creating classrooms that improve learning [Embargoed until 9pm, Sunday 5 February, 2017]}
+
+\GrattanReportNumber{2017-00}
+
+% add_to_dictionary: htpb Carnellor Cain McCombs Noddings Galton with-it-ness Clearinghouse Seligman PERMA TEMAG 
+% add_to_dictionary: Marzano
+% add_to_dictionary: preservice TALIS PBL ABA PBIS htbp
+
+% add_to_dictionary: Dunson
+% stop_if_present: diffuse
+
+\acknowledgements{%
+This report was written by Peter Goss, Julie Sonnemann, and Kate Griffiths.
+
+
+We would like to thank the members of Grattan Institute's School Education Program Reference Group for their helpful comments, as well as numerous government and industry participants and officials for their input.
+
+The opinions in this report are those of the authors and do not necessarily represent the views of Grattan Institute's founding members, affiliates, individual board members reference group members or reviewers.
+Any remaining errors or omissions are the responsibility of the authors.
+
+Grattan Institute is an independent think-tank focused on Australian public policy.
+Our work is independent, practical and rigorous.
+We aim to improve policy outcomes by engaging with both decision-makers and the community.
+
+For further information on the Institute's programs, or to join our mailing list, please go to: \textcolor{blue}{\url{http://www.grattan.edu.au/}}.
+
+{\footnotesize
+This report may be cited as:
+Goss, P., Sonnemann, J., and Griffiths, K. (2017). \emph{\mytitle}. Grattan Institute.
+
+ISBN: 978-1-925015-98-0
+
+All material published or otherwise created by Grattan Institute is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\par
+}
+}
+
+\begin{document}
+
+In addition, teachers in low-SES schools are particularly stressed by student behaviour, as \Vref{fig:more-teachers-stressed-low-SES} shows. Disengaged behaviours are reported more frequently in these schools (for reasons discussed earlier in \Vref{subsec:low-engagement-higher}).\footcite{Sullivan2014PunishThemEngage}
+
+Lastly, casual and part-time teachers call for extra support in engaging and managing students.\footcites{Buchanan2013TeacherRetentionAttrition}{TEMAG2016ActionNowClassroom}{Mayer2014LongitudinalTeacherEducation}. Such teachers may not have the benefit of time or continuity in developing strong student relationships and in setting clear expectations and class routines.
+
+\end{document}
+
+

@@ -46,3 +46,8 @@ test_that("Two footnotes same line will error", {
                regexp = "cannot occur twice")
 })
 
+test_that("Footcites and footcite in same document don't get confused about dots after", {
+  expect_error(check_footnote_typography("./fnote-typogr/dot-after-footcites.tex"), 
+               regexp = "Punctuation mark")
+})
+

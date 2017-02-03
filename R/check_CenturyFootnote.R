@@ -181,7 +181,7 @@ check_CenturyFootnote <- function(path = ".", strict = FALSE){
             "\nI may have been too pendantic, however. ",
             "So visually check the column with the 100th footnote, ",
             "and the column preceding it. If it looks good to you, ", 
-            "I was indeed too pedantic, and I apologize.", sep = "")
+            "I was indeed too pedantic, and I apologize.\n", sep = "")
       }
     } else {
       # does it occur after the last footnote in that column?

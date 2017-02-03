@@ -4,10 +4,12 @@
 \alias{check_CenturyFootnote}
 \title{Check location of century footnote}
 \usage{
-check_CenturyFootnote(path = ".")
+check_CenturyFootnote(path = ".", strict = FALSE)
 }
 \arguments{
 \item{path}{Directory containing the \strong{aux} file. In particular, \code{pdflatex} must be run before running this function.}
+
+\item{strict}{Stop if suspected of incorrect placement. Otherwise a note.}
 }
 \value{
 If CenturyFootnote correctly placed, \code{NULL} invisibly. Otherwise, an error.

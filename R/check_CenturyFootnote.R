@@ -1,10 +1,11 @@
 #' Check location of century footnote
 #' @description The formatting of footnote text should be redefined when there are more than 99 footnotes in the document.
 #' @param path Directory containing the \strong{aux} file. In particular, \code{pdflatex} must be run before running this function.
+#' @param strict Stop if suspected of incorrect placement. Otherwise a note.
 #' @return If CenturyFootnote correctly placed, \code{NULL} invisibly. Otherwise, an error.
 #' @export 
 
-check_CenturyFootnote <- function(path = "."){
+check_CenturyFootnote <- function(path = ".", strict = FALSE){
   # CRAN NOTE avoidance:
   page <- posx <- column <- NULL
   
@@ -86,6 +87,8 @@ check_CenturyFootnote <- function(path = "."){
   footnote_by_page_and_postion <- 
     footnote_by_page[footnote_locations]
   
+  CenturyFootnote_suspect <- FALSE
+  
   if (any(footnote_locations[["fno."]] >= 100) || 
       any(grepl("CenturyFootnote", aux_contents, fixed = TRUE))){
     
@@ -160,12 +163,26 @@ check_CenturyFootnote <- function(path = "."){
     # list(x = whereis_fn100, page_middle = page_middle)
     if (!identical(where_should_CenturyFootnote_go,
                    whereis_CenturyFootnote)){
-      stop("\\CenturyFootnote fell in p.",
-           whereis_CenturyFootnote[["page"]], ", column ",
-           whereis_CenturyFootnote[["column"]], ". ",
-           "It should fall in p.",
-           where_should_CenturyFootnote_go[["page"]], ", column ",
-           where_should_CenturyFootnote_go[["column"]], ". ")
+      CenturyFootnote_suspect <- TRUE
+      if (strict){
+        stop("\\CenturyFootnote fell in p.",
+             whereis_CenturyFootnote[["page"]], ", column ",
+             whereis_CenturyFootnote[["column"]], ". ",
+             "It should fall in p.",
+             where_should_CenturyFootnote_go[["page"]], ", column ",
+             where_should_CenturyFootnote_go[["column"]], ". ")
+      } else {
+        cat("NOTE: \\CenturyFootnote fell in p.",
+            whereis_CenturyFootnote[["page"]], ", column ",
+            whereis_CenturyFootnote[["column"]], ". ",
+            "I suspect it should have fallen in p.",
+            where_should_CenturyFootnote_go[["page"]], ", column ",
+            where_should_CenturyFootnote_go[["column"]], ". ",
+            "\nI may have been too pendantic, however. ",
+            "So visually check the column with the 100th footnote, ",
+            "and the column preceding it. If it looks good to you, ", 
+            "I was indeed too pedantic, and I apologize.", sep = "")
+      }
     } else {
       # does it occur after the last footnote in that column?
       prev_column_footnotes <- 
@@ -193,6 +210,7 @@ check_CenturyFootnote <- function(path = "."){
     }
   }
   invisible(NULL) 
+  assign("CenturyFootnote_suspect", CenturyFootnote_suspect, pos = parent.frame())
   
 }
 

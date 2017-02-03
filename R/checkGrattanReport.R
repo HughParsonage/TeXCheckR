@@ -342,8 +342,13 @@ checkGrattanReport <- function(path = ".",
     cat(green(symbol$tick, ".log file checked.\n"))
     
     if (pre_release){
+      CenturyFootnote_suspect <- NULL
       check_CenturyFootnote()
-      cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
+      if (!CenturyFootnote_suspect){
+        cat(green(symbol$tick, "\\CenturyFootnote correctly placed.\n"))
+      } else {
+        notes <- notes + 1
+      }
       
       if (release){
         if (!dir.exists("RELEASE")){
@@ -391,51 +396,47 @@ checkGrattanReport <- function(path = ".",
     }
   }
   
-  tryCatch({
-    if (file.exists("./travis/grattanReport/error-log.tsv")){
-      prev_build_status <-
-        fread("./travis/grattanReport/error-log.tsv") %>%
-        last %>%
-        .[["build_status"]]
-      append <- TRUE
-    } else {
-      prev_build_status <- "None"
-      append <- FALSE
-    }
-    
-    if (prev_build_status %in% c("None", "Broken", "Still failing")){
-      build_status <- "Fixed"
-      if (output_method == "gmailr"){
-        message <- gmailr::mime(
-          To = "hugh.parsonage@gmail.com", #email_addresses, 
-          From = "hugh.parsonage@gmail.com",
-          Subject = paste0("Fixed: ", report_name)
-        ) %>%
-          gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
-        gmailr::send_message(message)
-      }
-    } else {
-      build_status <- "OK"
-    }
-    
-    if (!.no_log){
-      tryCatch({
-        data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-                   build_status = build_status, 
-                   error_message = "NA") %>%
-          fwrite("./travis/grattanReport/error-log.tsv",
-                 sep = "\t",
-                 append = append)
-      }, error = function(e) NULL)
-      if (notes > 0){
-        if (notes > 1){
-          cat("\n\tThere were", notes, "notes.")
-        } else {
-          cat("\n\tThere was 1 note.")
-        }
-      } 
-    }
-  }, error = function(e) NULL)
+  if (file.exists("./travis/grattanReport/error-log.tsv")){
+    prev_build_status <-
+      fread("./travis/grattanReport/error-log.tsv") %>%
+      last %>%
+      .[["build_status"]]
+    append <- TRUE
+  } else {
+    prev_build_status <- "None"
+    append <- FALSE
+  }
   
-  invisible(NULL)
+  if (prev_build_status %in% c("None", "Broken", "Still failing")){
+    build_status <- "Fixed"
+    if (output_method == "gmailr"){
+      message <- gmailr::mime(
+        To = "hugh.parsonage@gmail.com", #email_addresses, 
+        From = "hugh.parsonage@gmail.com",
+        Subject = paste0("Fixed: ", report_name)
+      ) %>%
+        gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
+      gmailr::send_message(message)
+    }
+  } else {
+    build_status <- "OK"
+  }
+  
+  if (!.no_log){
+    data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+               build_status = build_status, 
+               error_message = "NA") %>%
+      fwrite("./travis/grattanReport/error-log.tsv",
+             sep = "\t",
+             append = append)
+    if (notes > 0){
+      if (notes > 1){
+        cat("\n\tThere were", notes, "notes.")
+      } else {
+        cat("\n\tThere was 1 note.")
+      }
+    } 
+  }
+  
+invisible(NULL)
 }

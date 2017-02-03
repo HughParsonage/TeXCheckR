@@ -6,7 +6,7 @@
 \usage{
 checkGrattanReport(path = ".", output_method = c("console", "twitter",
   "gmailr"), compile = FALSE, pre_release = FALSE, release = FALSE,
-  .proceed_after_rerun, .no_log = FALSE)
+  .proceed_after_rerun, .no_log = FALSE, embed = TRUE)
 }
 \arguments{
 \item{path}{Path to search for the tex source file.}
@@ -23,7 +23,9 @@ checkGrattanReport(path = ".", output_method = c("console", "twitter",
 are required, include this to skip the error. Note that this will result in false cross-references 
 or incompletely formatted bibliographies.}
 
-\item{.no_log}{Make no entry in the log file on the check's outcome. 
+\item{.no_log}{Make no entry in the log file on the check's outcome.}
+
+\item{embed}{If \code{FALSE}, not attempt to embed the fonts using Ghostscript is attempted. Useful if Ghostscript cannot easily be installed.
 Set to \code{TRUE} for debugging or repetitive use (as in benchmarking).}
 }
 \value{

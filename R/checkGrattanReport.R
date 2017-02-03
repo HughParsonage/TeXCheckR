@@ -9,7 +9,8 @@
 #' @param .proceed_after_rerun On the occasions where infinitely many passes of \code{pdflatex} 
 #' are required, include this to skip the error. Note that this will result in false cross-references 
 #' or incompletely formatted bibliographies.
-#' @param .no_log Make no entry in the log file on the check's outcome. 
+#' @param .no_log Make no entry in the log file on the check's outcome.
+#' @param embed If \code{FALSE}, not attempt to embed the fonts using Ghostscript is attempted. Useful if Ghostscript cannot easily be installed.
 #' Set to \code{TRUE} for debugging or repetitive use (as in benchmarking). 
 #' @return Called for its side-effect.
 #' @export
@@ -33,7 +34,8 @@ checkGrattanReport <- function(path = ".",
                                pre_release = FALSE,
                                release = FALSE,
                                .proceed_after_rerun,
-                               .no_log = FALSE){
+                               .no_log = FALSE, 
+                               embed = TRUE){
   if (release && (!pre_release || !compile)){
     stop("release = TRUE but pre_release and compile are not both TRUE also.")
   }
@@ -47,7 +49,7 @@ checkGrattanReport <- function(path = ".",
          "(Did you install but leave programs open?)")
   }
   
-  if (release && Sys.getenv("R_GSCMD") == ""){
+  if (embed && release && Sys.getenv("R_GSCMD") == ""){
     stop("Ghostscript is required but R_GSCMD is not set. Ensure Ghostscript is installed then set R_GSCMD, e.g.\n\t",
          "Sys.setenv(R_GSCMD = 'C:/Program Files/gs/gs9.20/bin/gswin64c.exe')")
   }
@@ -348,9 +350,15 @@ checkGrattanReport <- function(path = ".",
           dir.create("RELEASE")
         }
         # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
-        embedFonts(gsub("\\.tex$", ".pdf", filename),
-                   outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
-        cat(green(symbol$tick, "Fonts embedded.\n"))
+        if (embed){
+          embedFonts(gsub("\\.tex$", ".pdf", filename),
+                     outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+          cat(green(symbol$tick, "Fonts embedded.\n"))
+        } else {
+          file.copy(gsub("\\.tex$", ".pdf", filename), 
+                    file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+          cat("NOTE: Fonts not embedded, as requested.\n")
+        }
         
       } else {
         file.copy(paste0(report_name, ".pdf"), file.path(full_dir_of_path, 
@@ -383,46 +391,51 @@ checkGrattanReport <- function(path = ".",
     }
   }
   
-  if (file.exists("./travis/grattanReport/error-log.tsv")){
-    prev_build_status <-
-      fread("./travis/grattanReport/error-log.tsv") %>%
-      last %>%
-      .[["build_status"]]
-    append <- TRUE
-  } else {
-    prev_build_status <- "None"
-    append <- FALSE
-  }
-  
-  if (prev_build_status %in% c("None", "Broken", "Still failing")){
-    build_status <- "Fixed"
-    if (output_method == "gmailr"){
-      message <- gmailr::mime(
-        To = "hugh.parsonage@gmail.com", #email_addresses, 
-        From = "hugh.parsonage@gmail.com",
-        Subject = paste0("Fixed: ", report_name)
-      ) %>%
-        gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
-      gmailr::send_message(message)
+  tryCatch({
+    if (file.exists("./travis/grattanReport/error-log.tsv")){
+      prev_build_status <-
+        fread("./travis/grattanReport/error-log.tsv") %>%
+        last %>%
+        .[["build_status"]]
+      append <- TRUE
+    } else {
+      prev_build_status <- "None"
+      append <- FALSE
     }
-  } else {
-    build_status <- "OK"
-  }
     
-  if (!.no_log){
-    data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-               build_status = build_status, 
-               error_message = "NA") %>%
-      fwrite("./travis/grattanReport/error-log.tsv",
-             sep = "\t",
-             append = append)
-    if (notes > 0){
-      if (notes > 1){
-        cat("\n\tThere were", notes, "notes.")
-      } else {
-        cat("\n\tThere was 1 note.")
+    if (prev_build_status %in% c("None", "Broken", "Still failing")){
+      build_status <- "Fixed"
+      if (output_method == "gmailr"){
+        message <- gmailr::mime(
+          To = "hugh.parsonage@gmail.com", #email_addresses, 
+          From = "hugh.parsonage@gmail.com",
+          Subject = paste0("Fixed: ", report_name)
+        ) %>%
+          gmailr::html_body(body = paste0(c("grattanReporter returned no error.")))
+        gmailr::send_message(message)
       }
-    } 
-  }
+    } else {
+      build_status <- "OK"
+    }
+    
+    if (!.no_log){
+      tryCatch({
+        data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+                   build_status = build_status, 
+                   error_message = "NA") %>%
+          fwrite("./travis/grattanReport/error-log.tsv",
+                 sep = "\t",
+                 append = append)
+      }, error = function(e) NULL)
+      if (notes > 0){
+        if (notes > 1){
+          cat("\n\tThere were", notes, "notes.")
+        } else {
+          cat("\n\tThere was 1 note.")
+        }
+      } 
+    }
+  }, error = function(e) NULL)
+  
   invisible(NULL)
 }

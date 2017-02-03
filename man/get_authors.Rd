@@ -4,10 +4,12 @@
 \alias{get_authors}
 \title{Extract authors from report}
 \usage{
-get_authors(filename)
+get_authors(filename, include_editors = TRUE)
 }
 \arguments{
 \item{filename}{The filename whose preamble contains the names of the authors.}
+
+\item{include_editors}{(logical) Should editorial members of staff be included?}
 }
 \value{
 The names of Grattan staff who were authors in \code{filename}.
@@ -15,4 +17,3 @@ The names of Grattan staff who were authors in \code{filename}.
 \description{
 Extract authors from report
 }
-

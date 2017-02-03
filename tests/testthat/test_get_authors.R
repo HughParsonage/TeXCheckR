@@ -9,3 +9,8 @@ test_that("Authors (any order) found in input: tex/acknowledgements", {
   expect_equal(sort(get_authors("./get-authors/input.tex")),
                c("Hal Swerissen", "Stephen Duckett", "Trent Wiltshire"))
 })
+
+test_that("Editorial authors not returned", {
+  expect_equal(get_authors("./get-authors/editorial-authors.tex", include_editors = FALSE), 
+               c("Stephen Duckett", "Hal Swerissen"))
+})

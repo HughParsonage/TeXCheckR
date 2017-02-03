@@ -103,8 +103,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                 lines_with_footcite_noarg, 
                                 perl = TRUE)
     
-    if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))){
-      first_footcite_w_punct <- which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?"))[[1]]
+    if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))){
+      first_footcite_w_punct <- which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))[[1]]
       .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
                     context = lines[line_no], 
                     error_message = "Punctuation mark after footcite number ", first_footcite_w_punct, ".")

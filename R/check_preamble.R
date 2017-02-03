@@ -139,7 +139,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
 
   if (pre_release){
     if (release){
-      if (any(grepl("embargo", lines_before_begin_document, fixed = TRUE, ignore.case = TRUE))){
+      if (any(grepl("embargo", lines_before_begin_document, perl = TRUE, ignore.case = TRUE))){
         .report_error(error_message = "String 'embargo' found before begin{document} while attempting to release a report.")
         stop("String 'embargo' found before \\begin{document} while attempting to release a document.")
       }

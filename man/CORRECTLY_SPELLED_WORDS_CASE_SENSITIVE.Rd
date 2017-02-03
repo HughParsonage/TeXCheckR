@@ -12,4 +12,3 @@ CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE
 List of correctly spelled, case-sensitive words
 }
 \keyword{datasets}
-

@@ -19,4 +19,3 @@ validate_bibliography(path = ".", file = NULL, .report_error)
 \description{
 Validate bibliography according Grattan style
 }
-

@@ -33,4 +33,3 @@ Called for its side-effect.
 Check Grattan reports written is LaTeX for typing errors, significant warnings, 
 and inconsistent style.
 }
-

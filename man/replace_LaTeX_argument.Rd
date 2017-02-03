@@ -26,4 +26,3 @@ A character vector with the first argument of \code{command_name} replaced with 
 \description{
 Replace contents of LaTeX argument
 }
-

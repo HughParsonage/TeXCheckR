@@ -15,4 +15,3 @@ isR_line_in_knitr(lines)
 \description{
 Is a line in knitr R or not?
 }
-

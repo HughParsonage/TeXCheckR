@@ -12,4 +12,3 @@ check_biber(path = ".")
 \description{
 Check biber
 }
-

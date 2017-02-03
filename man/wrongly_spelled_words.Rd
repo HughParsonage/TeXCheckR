@@ -12,4 +12,3 @@ wrongly_spelled_words
 List of wrongly spelled words
 }
 \keyword{datasets}
-

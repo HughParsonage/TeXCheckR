@@ -15,4 +15,3 @@ NULL. The function is called for its side-effect: rewriting \code{filename} with
 \description{
 Put sentences on their own line
 }
-

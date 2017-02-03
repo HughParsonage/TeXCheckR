@@ -17,4 +17,3 @@ An error, or if none found, \code{NULL} invisibly.
 \description{
 Check for hard-coded cross-references
 }
-

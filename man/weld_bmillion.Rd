@@ -17,4 +17,3 @@ NULL. This function is called for its side-effect: rewriting \code{filename} wit
 \description{
 Unbreaking spaces between billion and million
 }
-

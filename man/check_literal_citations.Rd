@@ -14,4 +14,3 @@ check_literal_citations(filename, .report_error)
 \description{
 Check that citations are all using cites
 }
-

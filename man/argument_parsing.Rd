@@ -2,8 +2,8 @@
 % Please edit documentation in R/nth_arg_positions.R
 \name{argument_parsing}
 \alias{argument_parsing}
-\alias{nth_arg_positions}
 \alias{replace_nth_LaTeX_argument}
+\alias{nth_arg_positions}
 \title{Replace nth arguments}
 \usage{
 replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
@@ -33,4 +33,3 @@ Replace nth arguments
 \code{nth_arg_positions} reports the starts and stops of the command for every line.
 This includes the braces (in order to accommodate instances where the argument is empty).
 }
-

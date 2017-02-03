@@ -27,4 +27,3 @@ The end (or start if end = FALSE) of the location of command
 \description{
 Position of strings
 }
-

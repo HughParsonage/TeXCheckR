@@ -14,4 +14,3 @@ check_quote_marks(filename, .report_error)
 \description{
 Checks whether a closing quote has been used at the start of a word.
 }
-

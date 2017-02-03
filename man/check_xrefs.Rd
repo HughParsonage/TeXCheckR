@@ -14,4 +14,3 @@ check_xrefs(filename, .report_error)
 \description{
 Check cross-references that are repetitive or incorrect case.
 }
-

@@ -13,4 +13,3 @@ rm_editorial_square_brackets(tex_lines)
 Change text such as \code{phas[e] out} to \code{phase out},
 without removing square brackets denoting optional arguments.
 }
-

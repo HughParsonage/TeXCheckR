@@ -18,4 +18,3 @@ Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in Te
 \description{
 Check dashes entered as hyphens
 }
-

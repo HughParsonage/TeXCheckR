@@ -19,4 +19,3 @@ check_preamble(filename, .report_error, pre_release = FALSE,
 \description{
 Check the preamble of a document
 }
-

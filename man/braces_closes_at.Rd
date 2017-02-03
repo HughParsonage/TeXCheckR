@@ -17,4 +17,3 @@ The positions of the closing brace matching the opening braces at \code{position
 \description{
 Where do braces close?
 }
-

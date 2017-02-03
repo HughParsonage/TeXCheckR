@@ -15,4 +15,3 @@ valid_English_contractions
 List of words which should never raise a spelling error.
 }
 \keyword{datasets}
-

@@ -19,4 +19,3 @@ Tidy bibliography so equals signs align
 \details{
 Aligns the equals signs in \code{bib_file} and puts a constant
 }
-

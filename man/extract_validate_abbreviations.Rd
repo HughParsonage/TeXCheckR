@@ -20,4 +20,3 @@ Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \
 of the three words before
 (excluding some common words like \code{of}, \code{and}, etc.) are 'a', 'b', 'c'.
 }
-

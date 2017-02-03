@@ -21,4 +21,3 @@ Lastly the \code{tools::md5sum} of the file is returned in the error message, so
 \description{
 Check consecutive typeset words
 }
-

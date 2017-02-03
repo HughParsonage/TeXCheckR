@@ -22,4 +22,3 @@ Check footnote typography
 \details{
 This function when applied to a LaTeX file will throw an error if: (1) footnotes
 }
-

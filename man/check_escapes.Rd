@@ -19,4 +19,3 @@ Checks file for unescaped dollar signs.
 With these present, there is a risk of constructions like \code{We gave $10 to a million people at a cost of $10~million dollars.},
 which is valid syntax, but incorrectly formatted. Accordingly, math-mode must be more assertively requested using \code{\(..\)}.
 }
-

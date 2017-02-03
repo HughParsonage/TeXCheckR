@@ -31,4 +31,3 @@ Spellchecker for Grattan reports
 \details{
 Uses the \code{en_AU} hunspell dictionary.
 }
-

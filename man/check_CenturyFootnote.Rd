@@ -15,4 +15,3 @@ If CenturyFootnote correctly placed, \code{NULL} invisibly. Otherwise, an error.
 \description{
 The formatting of footnote text should be redefined when there are more than 99 footnotes in the document.
 }
-

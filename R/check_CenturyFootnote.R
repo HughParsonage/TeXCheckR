@@ -209,8 +209,8 @@ check_CenturyFootnote <- function(path = ".", strict = FALSE){
       }
     }
   }
-  invisible(NULL) 
-  assign("CenturyFootnote_suspect", CenturyFootnote_suspect, pos = parent.frame())
   
+  assign("CenturyFootnote_suspect", CenturyFootnote_suspect, pos = parent.frame())
+  invisible(NULL) 
 }
 

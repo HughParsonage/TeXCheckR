@@ -255,7 +255,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
            "You must place that text on one of those lines for the check to continue.")
     }
 
-    project_authors <- get_authors(filename)
+    project_authors <- get_authors(filename, include_editors = FALSE)
     project_authors_initials <- gsub("^([A-Z])[a-z]+ ", "\\1. ", project_authors, perl = TRUE)
     project_authors_reversed <- rev_forename_surname_bibtex(project_authors_initials)
     project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),

@@ -1,9 +1,10 @@
 #' Extract authors from report
 #' @param filename The filename whose preamble contains the names of the authors.
+#' @param include_editors (logical) Should editorial members of staff be included?
 #' @return The names of Grattan staff who were authors in \code{filename}.
 #' @export
 
-get_authors <- function(filename){
+get_authors <- function(filename, include_editors = TRUE){
   lines <- read_lines(filename)
   file_path <- dirname(filename)
 
@@ -59,6 +60,21 @@ get_authors <- function(filename){
          "\\1",
          .) %>%
     unique
-
-  possible_names
+  
+  if (include_editors){
+    return(possible_names)
+  } else {
+    if (any(grepl("^[%] editorial_author_only: [A-Z]", lines_before_begin_document, perl = TRUE))){
+      editorial_authors <-
+        gsub("^[%] editorial_author_only: (.+)\\s*$", 
+             "\\1", 
+             grep("^[%] editorial_author_only: [A-Z]",
+                  lines_before_begin_document,
+                  value = TRUE,
+                  perl = TRUE))
+      return(setdiff(possible_names, editorial_authors))
+    } else {
+      return(possible_names)
+    }
+  }
 }

@@ -362,7 +362,8 @@ checkGrattanReport <- function(path = ".",
           read_lines(filename) %>%
           grep("^\\\\title\\{", ., perl = TRUE, value = TRUE) %>% 
           gsub("^\\\\title\\{(.+)\\}$", "\\1", ., perl = TRUE) %>%
-          gsub("[^A-Za-z]", "-", ., perl = TRUE)
+          gsub("[^A-Za-z]", "-", ., perl = TRUE) %>%
+          paste0(".pdf")
         
         # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
         if (embed){

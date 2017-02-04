@@ -163,6 +163,8 @@ checkGrattanReport <- function(path = ".",
   
   cat("\n")
   
+  cat(green(symbol$tick, "Preamble OK.\n"), sep = "")
+  
   check_input <- function(filename){
     inputs <- inputs_of(filename)
     if (length(inputs) > 0){
@@ -351,24 +353,33 @@ checkGrattanReport <- function(path = ".",
       }
       
       if (release){
+        cat("Now preparing a release...\n")
         if (!dir.exists("RELEASE")){
           dir.create("RELEASE")
         }
+        
+        new_filename <- 
+          read_lines(filename) %>%
+          grep("^\\\\title\\{", ., perl = TRUE, value = TRUE) %>% 
+          gsub("^\\\\title\\{(.+)\\}$", "\\1", ., perl = TRUE) %>%
+          gsub("[^A-Za-z]", "-", ., perl = TRUE)
+        
         # Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.20/bin/gswin64c.exe")
         if (embed){
           embedFonts(gsub("\\.tex$", ".pdf", filename),
-                     outfile = file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+                     outfile = file.path(full_dir_of_path, "RELEASE", new_filename))
           cat(green(symbol$tick, "Fonts embedded.\n"))
         } else {
           file.copy(gsub("\\.tex$", ".pdf", filename), 
-                    file.path(full_dir_of_path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+                    file.path(full_dir_of_path, "RELEASE", new_filename))
           cat("NOTE: Fonts not embedded, as requested.\n")
         }
         
       } else {
-        file.copy(paste0(report_name, ".pdf"), file.path(full_dir_of_path, 
-                                                         "PRE-RELEASE", 
-                                                         paste0(report_name, ".pdf")))
+        file.copy(paste0(report_name, ".pdf"), 
+                  file.path(full_dir_of_path,
+                            "PRE-RELEASE",
+                            paste0(report_name, ".pdf")))
       }
       
       setwd(full_dir_of_path)
@@ -379,7 +390,7 @@ checkGrattanReport <- function(path = ".",
   cat(bgGreen(symbol$tick, "Report checked.\n"))
   if (pre_release){
     if (release){
-      cat("Releaseable pdf written to ", file.path(path, "RELEASE", gsub("\\.tex$", ".pdf", filename)))
+      cat("Releaseable pdf written to ", file.path(path, "RELEASE", new_filename))
       cat("\nDONE.")
       
       lines <- read_lines(filename)

@@ -260,7 +260,9 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     project_authors_reversed <- rev_forename_surname_bibtex(project_authors_initials)
     project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),
                                        ", and ",
-                                       last(project_authors_reversed))
+                                       gsub("\\.$", 
+                                            "\\\\@\\.",
+                                            last(project_authors_reversed)))
 
     recommended_citation <-
       paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")

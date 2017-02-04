@@ -68,6 +68,33 @@ fread_bib <- function(file.bib){
   bibDT[, lapply(.SD, trimws)]
   bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
+  bibDT[, field := trimws(field)]
+  bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  
+  duplicate_fields <-
+    bibDT[, .(dups = anyDuplicated(field)), by = key]
+  
+  if (any(duplicate_fields[["dups"]])){
+    keys <-
+      duplicate_fields %>%
+      .[as.logical(dups)] %>%
+      .[["key"]]
+
+    n_keys <- length(keys)
+
+    if (n_keys <= 5L){
+      top_keys <- keys
+      stop("Duplicate fields found in ", keys, ".")
+    } else {
+      top_keys <- keys[1:5]
+      if (n_keys == 6L){
+        stop("Duplicate fields found in ", keys, ".")
+      } else {
+        stop("Duplicate fields found in ", keys, " and ", n_keys - 5L, " others.")
+      }
+    }
+  }
+  bibDT
 }
 
 #' @rdname bib_parser

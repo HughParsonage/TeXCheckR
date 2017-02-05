@@ -7,6 +7,6 @@ test_that("Bills of Parliament", {
 })
 
 test_that("Duplicate fields noticed", {
-  expect_error(fread_bib("./tests/validate-bib/dup_fields.bib"), 
+  expect_error(fread_bib("./validate-bib/dup_fields.bib"), 
                regexp = "Duplicate fields found in RMS2010Hunter")
 })

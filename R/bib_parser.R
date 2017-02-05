@@ -56,12 +56,6 @@ fread_bib <- function(file.bib){
   is_key <- NULL
   bibDT[, is_key := field == "key"]
 
-
-  # input <- paste0(bib_just_key_and_fields, collapse = "\n")
-  # bibDT <- fread(input = paste0(bib_just_key_and_fields, collapse = "\n"), sep = sep_candidate, header = FALSE)
-  # setnames(bibDT,
-  #          old = c("V1", "V2"),
-  #          new = c("field", "orig"))
   key_line <- NULL
   bibDT[, key_line := if_else(is_key, value, NA_character_)]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]

@@ -46,7 +46,7 @@ any_bib_duplicates <- function(bib.files){
   
   
   
-  if (F && anyDuplicated(bibDT, by = c("Author", "Year", "Title"))){
+  if (anyDuplicated(bibDT, by = c("Author", "Year", "Title"))){
     dups_head <- duplicated(bibDT, by = c("Author", "Year", "Title"))
     dups_tail <- duplicated(bibDT, by = c("Author", "Year", "Title"), fromLast = TRUE)
     DT_with_all_duplicates <- 

@@ -29,7 +29,7 @@ any_bib_duplicates <- function(bib.files){
   if ("title" %notin% names(bibDT)){
     bibDT[, title := NA_character_]
   }
-  
+  Author <- Title <- Year <- NULL
   bibDT %>%
     .[, Year := if_else(is.na(year),
                         if_else(is.na(date),

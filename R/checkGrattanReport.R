@@ -234,6 +234,9 @@ checkGrattanReport <- function(path = ".",
     validate_bibliography(file = bib_file)
     cat(green(symbol$tick, bib_file, "validated.\n"))
   }
+  
+  any_bib_duplicates(bib.files = bib_files)
+  cat(green(symbol$tick, "No obvious duplicates in bibliography.\n"))
 
   check_spelling(filename, 
                  .report_error = .report_error,

@@ -10,3 +10,8 @@ test_that("Duplicate fields noticed", {
   expect_error(fread_bib("./validate-bib/dup_fields.bib"), 
                regexp = "Duplicate fields found in RMS2010Hunter")
 })
+
+test_that("Duplicate entries error", {
+  expect_error(any_bib_duplicates("./validate-bib/dup_entries.bib"), 
+               regexp = "[Dd]uplicate entries in bibliography")
+})

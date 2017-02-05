@@ -4,10 +4,12 @@
 \alias{any_bib_duplicates}
 \title{Are any bib entries duplicated?}
 \usage{
-any_bib_duplicates(bib.files)
+any_bib_duplicates(bib.files, .report_error)
 }
 \arguments{
 \item{bib.files}{File to check for duplicates}
+
+\item{.report_error}{How errors should be logged.}
 }
 \description{
 Are any bib entries duplicated?

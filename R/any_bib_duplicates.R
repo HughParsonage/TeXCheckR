@@ -1,9 +1,13 @@
 #' Are any bib entries duplicated?
 #' @param bib.files File to check for duplicates
+#' @param .report_error How errors should be logged.
 #' @export 
 
 
-any_bib_duplicates <- function(bib.files){
+any_bib_duplicates <- function(bib.files, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
   key <- field <- NULL
   bibDT <- 
     lapply(bib.files, fread_bib) %>% 

@@ -1,0 +1,28 @@
+
+\newcommand*{\Vanish}[1]{}
+
+\newcounter{superchapterfigure}
+\newcounter{superchaptertable}
+\newcounter{superchaptersection}
+
+\newcommand{\addindentchap}[1]{%
+	\setcounter{superchapterfigure}{\value{figure}}
+	\setcounter{superchaptertable}{\value{table}}
+	\setcounter{superchaptersection}{\value{section}}
+	%\addtocontents{toc}{\protect\setcounter{temptocdepth}{\value{tocdepth}}}
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+	% So perhaps:
+\addsec[#1]{\Large #1}  % [what appears in the toc]{what appears in the document}
+	\setcounter{figure}{\value{superchapterfigure}}
+	\setcounter{table}{\value{superchaptertable}}
+	\setcounter{section}{\value{superchaptersection}}
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+}
+
+\usepackage{multirow,bigdelim}
+
+\newcommand\MyLBrace[2]{%
+ \color{Orange}{ \left.\rule{0pt}{#1}\right]}\color{black}{\text{\hspace{1ex}#2}}}
+ 
+ \newcommand{\tabitem}{\color{Orange}{~~\llap{\textbullet}~~}\color{black}}
+

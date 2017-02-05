@@ -1,9 +1,13 @@
 #' Are any bib entries duplicated?
 #' @param bib.files File to check for duplicates
+#' @param .report_error How errors should be logged.
 #' @export 
 
 
-any_bib_duplicates <- function(bib.files){
+any_bib_duplicates <- function(bib.files, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
   key <- field <- NULL
   bibDT <- 
     lapply(bib.files, fread_bib) %>% 
@@ -56,6 +60,9 @@ any_bib_duplicates <- function(bib.files){
       .[order(Author, Title)]
     
     stopifnot(nrow(DT_with_all_duplicates) %% 2 == 0, nrow(DT_with_all_duplicates) > 1)
+    
+    .report_error(line_no = NULL, context = "Possible duplicates in bibliographies.")
+    
     for (dup in 1:(nrow(DT_with_all_duplicates) / 2)){
       if (dup == 6){
         break

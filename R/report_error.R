@@ -29,7 +29,7 @@ report2console <- function(line_no = NULL,
   ## 2. Line no (if applicable)
   ## 3. Context
   ## 4. Suggeston.
-  cat("\n", bgRed(symbol$cross), " ", line_no, ": ", unlist(extra_cat_ante), context, unlist(extra_cat_post), sep = "")
+  cat("\n", bgRed(symbol$cross), " ", red(line_no), ": ", unlist(extra_cat_ante), red(context), unlist(extra_cat_post), sep = "")
   
   # To return the directory if applicable
   on.exit({

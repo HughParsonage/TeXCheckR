@@ -7,7 +7,7 @@
 any_bib_duplicates(bib.files)
 }
 \arguments{
-\item{bib.file}{File to check for duplicates}
+\item{bib.files}{File to check for duplicates}
 }
 \description{
 Are any bib entries duplicated?

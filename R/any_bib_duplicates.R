@@ -1,5 +1,5 @@
 #' Are any bib entries duplicated?
-#' @param bib.file File to check for duplicates
+#' @param bib.files File to check for duplicates
 #' @export 
 
 
@@ -11,7 +11,8 @@ any_bib_duplicates <- function(bib.files){
     .[field != "abstract"] %>%
     dcast.data.table(formula = key ~ field, value.var = "value")
   
-  if ("origyear" %in% names(bibDT)){  
+  if ("origyear" %in% names(bibDT)){
+    origyear <- NULL
     bibDT <- bibDT[is.na(origyear)]
   }
   

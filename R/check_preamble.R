@@ -147,36 +147,34 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
 
 
       GrattanReportNumber <- grep("\\GrattanReportNumber", lines_before_begin_document, fixed = TRUE, value = TRUE)
-      if (length(GrattanReportNumber) != 1L){
-        if (length(GrattanReportNumber) == 0L){
-          stop("\\GrattanReportNumber not found in preamble.")
-        } else {
+      if (length(GrattanReportNumber) >= 1L){
+        if (length(GrattanReportNumber) > 1L){
           stop("Multiple \\GrattanReportNumbers in document.")
+        } 
+        GrattanReportNumberArg <- gsub("^.*[{](.*)[}].*$", "\\1", GrattanReportNumber, perl = TRUE)
+        
+        if (substr(GrattanReportNumberArg, 0, 4) != current_year){
+          if (year_provided){
+            stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4),
+                 " for the year of publication, but today's date is ",
+                 Sys.Date(),
+                 " and \\YEAR has not been specified.")
+          } else {
+            stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4),
+                 " for the year of publication, but line ", year_line, " is ",
+                 lines_before_begin_document[year_line], ".")
+          }
         }
-      }
-      GrattanReportNumberArg <- gsub("^.*[{](.*)[}].*$", "\\1", GrattanReportNumber, perl = TRUE)
-
-      if (substr(GrattanReportNumberArg, 0, 4) != current_year){
-        if (year_provided){
-          stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4),
-               " for the year of publication, but today's date is ",
-               Sys.Date(),
-               " and \\YEAR has not been specified.")
-        } else {
-          stop("GrattanReportNumber using ", substr(GrattanReportNumberArg, 0, 4),
-               " for the year of publication, but line ", year_line, " is ",
-               lines_before_begin_document[year_line], ".")
+        
+        is.wholenumber <- function(x){
+          x <- as.integer(x)
+          and(!is.na(x),
+              abs(x - round(x)) < .Machine$double.eps^0.5)
         }
-      }
-
-      is.wholenumber <- function(x){
-        x <- as.integer(x)
-        and(!is.na(x),
-            abs(x - round(x)) < .Machine$double.eps^0.5)
-      }
-
-      if (!is.wholenumber(gsub("^.{5}", "", GrattanReportNumberArg))){
-        stop("GrattanReportNumber not in the form YYYY-z where z is an integer.")
+        
+        if (!is.wholenumber(gsub("^.{5}", "", GrattanReportNumberArg))){
+          stop("GrattanReportNumber not in the form YYYY-z where z is an integer.")
+        }
       }
     }
 

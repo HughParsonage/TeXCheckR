@@ -73,6 +73,7 @@ fread_bib <- function(file.bib){
   bibDT[, field := trimws(field)]
   bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
+  dups <- NULL
   duplicate_fields <-
     bibDT[, .(dups = anyDuplicated(field)), by = key]
   

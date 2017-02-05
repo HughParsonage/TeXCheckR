@@ -61,7 +61,7 @@ any_bib_duplicates <- function(bib.files, .report_error){
     
     stopifnot(nrow(DT_with_all_duplicates) %% 2 == 0, nrow(DT_with_all_duplicates) > 1)
     
-    .report_error(line_no = NULL, context = "Possible duplicates in bibliographies.")
+    .report_error(line_no = NULL, context = "Possible duplicates in bibliographies.", error_message = "Possible duplicates in bibliography.")
     
     for (dup in 1:(nrow(DT_with_all_duplicates) / 2)){
       if (dup == 6){

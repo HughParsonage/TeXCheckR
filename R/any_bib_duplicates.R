@@ -56,6 +56,9 @@ any_bib_duplicates <- function(bib.files){
       .[order(Author, Title)]
     
     stopifnot(nrow(DT_with_all_duplicates) %% 2 == 0, nrow(DT_with_all_duplicates) > 1)
+    
+    .report_error(line_no = NULL, context = "Possible duplicates in bibliographies.")
+    
     for (dup in 1:(nrow(DT_with_all_duplicates) / 2)){
       if (dup == 6){
         break

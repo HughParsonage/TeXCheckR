@@ -263,6 +263,8 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
         bad_entry[4], "\n")
     stop("Date and year should not both appear in bibliography.")
   }
+  
+  any_bib_duplicates(bib.file = bib_file)
 
   invisible(NULL)
 }

@@ -35,19 +35,37 @@ check_biber <- function(path = "."){
       blg <- blg[!grepl("n.d.", blg, fixed = TRUE)]
       # WARN not WARNINGS
       if (any(grepl("WARN ", blg, fixed = TRUE))){
-        first_bad_entry <-
-          blg[grepl("WARN ", blg, fixed = TRUE)] %>%
-          .[1]
+        all_bad_entries <- 
+          blg[grepl("WARN ", blg, fixed = TRUE)]
         
-        if (grepl("I didn't find a database entry for '.'", first_bad_entry, fixed = TRUE)){
-          extra_text <- 
-            "Probable reason: use of \\footcites or \\textcites but omitting the last key.\n  e.g.\n\t\\textcites{Knuth}.\n  or\n\t\\textcites[][33]{Knuth}[][3]."
-        } else {
-          extra_text <- NULL
+        n_bad_entries <- length(all_bad_entries)
+        for (j in seq_along(all_bad_entries)){
+          first_bad_entry <-
+            all_bad_entries %>%
+            .[j]
+          
+          if (grepl("I didn't find a database entry for '.'", first_bad_entry, fixed = TRUE)){
+            extra_text <- 
+              paste0("Probable reason: use of \\footcites or \\textcites but omitting the last key.\n",
+                     "e.g.\n\t\\textcites{Knuth}.\n  or\n\t\\textcites[][33]{Knuth}[][3].")
+          } else {
+            extra_text <- NULL
+          }
+          
+          cat(crayon::bgRed(sub("^.*WARN ", "WARN", first_bad_entry)), "\n", extra_text)
+          if (j == 5){
+            break
+          }
         }
-
-        cat(sub("^.*WARN ", "WARN", first_bad_entry), "\n", extra_text)
-        stop("Biber emitted a warning.")
+        if (n_bad_entries > 1){
+          if (n_bad_entries > 5){
+            stop("Biber emitted a warning. See the above WARN messages. (Only the first five are given; there were ", n_bad_entries, " in total.")
+          } else {
+            stop("Biber emitted a warning. See the above WARN messages.")
+          }
+        } else {
+          stop("Biber emitted a warning. See the above WARN message.")
+        }
       }
     }
   }

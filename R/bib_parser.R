@@ -40,6 +40,8 @@ fread_bib <- function(file.bib){
   bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
   bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
+  # Make sure the sep is detected (in case of >author   ={John Daley}<)
+  bib_just_key_and_fields <- gsub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
   bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
@@ -54,12 +56,6 @@ fread_bib <- function(file.bib){
   is_key <- NULL
   bibDT[, is_key := field == "key"]
 
-
-  # input <- paste0(bib_just_key_and_fields, collapse = "\n")
-  # bibDT <- fread(input = paste0(bib_just_key_and_fields, collapse = "\n"), sep = sep_candidate, header = FALSE)
-  # setnames(bibDT,
-  #          old = c("V1", "V2"),
-  #          new = c("field", "orig"))
   key_line <- NULL
   bibDT[, key_line := if_else(is_key, value, NA_character_)]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
@@ -68,6 +64,34 @@ fread_bib <- function(file.bib){
   bibDT[, lapply(.SD, trimws)]
   bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
+  bibDT[, field := trimws(field)]
+  bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  
+  dups <- NULL
+  duplicate_fields <-
+    bibDT[, .(dups = anyDuplicated(field)), by = key]
+  
+  if (any(duplicate_fields[["dups"]])){
+    keys <-
+      duplicate_fields %>%
+      .[as.logical(dups)] %>%
+      .[["key"]]
+
+    n_keys <- length(keys)
+
+    if (n_keys <= 5L){
+      top_keys <- keys
+      stop("Duplicate fields found in ", keys, ".")
+    } else {
+      top_keys <- keys[1:5]
+      if (n_keys == 6L){
+        stop("Duplicate fields found in ", keys, ".")
+      } else {
+        stop("Duplicate fields found in ", keys, " and ", n_keys - 5L, " others.")
+      }
+    }
+  }
+  bibDT
 }
 
 #' @rdname bib_parser

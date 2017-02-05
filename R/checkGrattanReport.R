@@ -234,6 +234,9 @@ checkGrattanReport <- function(path = ".",
     validate_bibliography(file = bib_file)
     cat(green(symbol$tick, bib_file, "validated.\n"))
   }
+  
+  any_bib_duplicates(bib.files = bib_files)
+  cat(green(symbol$tick, "No obvious duplicates in bibliography.\n"))
 
   check_spelling(filename, 
                  .report_error = .report_error,
@@ -374,6 +377,7 @@ checkGrattanReport <- function(path = ".",
           file.copy(gsub("\\.tex$", ".pdf", filename), 
                     file.path(full_dir_of_path, "RELEASE", new_filename))
           cat("NOTE: Fonts not embedded, as requested.\n")
+          notes <- notes + 1
         }
         
       } else {

@@ -377,6 +377,7 @@ checkGrattanReport <- function(path = ".",
           file.copy(gsub("\\.tex$", ".pdf", filename), 
                     file.path(full_dir_of_path, "RELEASE", new_filename))
           cat("NOTE: Fonts not embedded, as requested.\n")
+          notes <- notes + 1
         }
         
       } else {

@@ -3,11 +3,12 @@
 #' @export 
 
 
-any_bib_duplicates <- function(bib.file){
+any_bib_duplicates <- function(bib.files){
   key <- field <- NULL
   bibDT <- 
-    fread_bib(bib.file) %>% 
-    .[field != "absract"] %>%
+    lapply(bib.files, fread_bib) %>% 
+    rbindlist(use.names = TRUE, fill = TRUE) %>%
+    .[field != "abstract"] %>%
     dcast.data.table(formula = key ~ field, value.var = "value")
   
   if ("origyear" %in% names(bibDT)){  

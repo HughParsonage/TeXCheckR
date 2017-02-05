@@ -4,7 +4,7 @@
 \alias{any_bib_duplicates}
 \title{Are any bib entries duplicated?}
 \usage{
-any_bib_duplicates(bib.file)
+any_bib_duplicates(bib.files)
 }
 \arguments{
 \item{bib.file}{File to check for duplicates}

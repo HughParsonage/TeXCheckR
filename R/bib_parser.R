@@ -40,6 +40,8 @@ fread_bib <- function(file.bib){
   bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
   bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
+  # Make sure the sep is detected (in case of >author   ={John Daley}<)
+  bib_just_key_and_fields <- gsub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
   bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]

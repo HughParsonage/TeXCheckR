@@ -46,21 +46,39 @@ extract_validate_abbreviations <- function(lines){
       .[, NN := seq.int(1, .N)] %>%
       .[, expected_abbrev := lapply(strsplit(prefix, split = " "),
                                     function(words){
-                                      toupper(paste0(substr(words[seq.int(to = length(words),
-                                                                          length.out = nchars_abbrev)],
-                                                            0,
-                                                            1),
-                                                     collapse = ""))
+                                      get_initials_from_words <- 
+                                        seq.int(to = length(words), length.out = nchars_abbrev)
+                                      # Don't look back further than the number of words in line
+                                      # (else you'll get negative subscript errors)
+                                      if (all(get_initials_from_words > 0)){
+                                        out <- 
+                                          words[get_initials_from_words] %>%
+                                          substr(0, 1) %>%
+                                          paste0(collapse = "") %>%
+                                          toupper
+                                      } else {
+                                        out <- ""
+                                      }
+                                      out
                                     }) %>%
           unlist#
         , by = NN] %>%
       .[, expected_abbrev_with_stops := lapply(strsplit(prefix_incl_stops, split = " "),
                                                function(words){
-                                                 toupper(paste0(substr(words[seq.int(to = length(words),
-                                                                                     length.out = nchars_abbrev)],
-                                                                       0,
-                                                                       1),
-                                                                collapse = ""))
+                                                 get_initials_from_words <- 
+                                                   seq.int(to = length(words), length.out = nchars_abbrev)
+                                                 # Don't look back further than the number of words in line
+                                                 # (else you'll get negative subscript errors)
+                                                 if (all(get_initials_from_words > 0)){
+                                                   out <- 
+                                                     words[get_initials_from_words] %>%
+                                                     substr(0, 1) %>%
+                                                     paste0(collapse = "") %>%
+                                                     toupper
+                                                 } else {
+                                                   out <- ""
+                                                 }
+                                                 out
                                                }) %>%
           unlist#
         , by = NN] %>%

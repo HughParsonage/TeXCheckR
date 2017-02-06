@@ -152,6 +152,8 @@ indigeneity
 initialisms
 inline
 Institute's
+interconnector
+interconnectors
 Invargson
 itemsep
 Ittima
@@ -264,6 +266,7 @@ Toowoomba
 toprule
 topsep
 trade-offs
+trilemma
 Tullamarine
 Turnbull
 underfull

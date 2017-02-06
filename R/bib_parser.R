@@ -64,7 +64,7 @@ fread_bib <- function(file.bib){
   bibDT[, lapply(.SD, trimws)]
   bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
-  bibDT[, field := trimws(field)]
+  bibDT[, field := tolower(trimws(field))]
   bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
   dups <- NULL

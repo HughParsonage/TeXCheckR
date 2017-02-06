@@ -53,7 +53,7 @@ report2console <- function(line_no = NULL,
       
       data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
                  build_status = build_status, 
-                 error_message = error_message) %>%
+                 error_message = if (is.null(error_message)) "(No error msg provided.)" else error_message) %>%
         fwrite("./travis/grattanReport/error-log.tsv",
                sep = "\t",
                append = append)

@@ -31,6 +31,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       if (!any(overview_end)){
         stop("Emergency stop: No \\end{overview} found in document. Check your LaTeX syntax and try again")
       } else {
+        line_no <- grep("\\footnote", lines[is_overview], fixed = TRUE)
+        .report_error(line_no = line_no,
+                      context = lines[line_no], 
+                      error_message = "Footnote detected in overview.")
         stop("Footnote detected in overview. Remove any footnotes in the overview.")
       }
     }

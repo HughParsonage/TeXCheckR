@@ -48,9 +48,9 @@ check_labels <- function(filename, .report_error){
 
   wrong_lines <-
     lines_with_labels %>%
-    grep("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
-         label_contents,
-         perl = TRUE)
+    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
+             label_contents,
+             perl = TRUE)]
 
   if (length(wrong_lines) > 0){
     first_wrong_line <- wrong_lines[[1]]

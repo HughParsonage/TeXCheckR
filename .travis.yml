@@ -11,8 +11,10 @@ addons:
 r_packages:
 - covr
 - drat
+- devtools
 
 after_success:
+- Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'
 - test $TRAVIS_PULL_REQUEST == "false" && 
         test $TRAVIS_BRANCH == "master" && 

@@ -32,7 +32,9 @@ report2console <- function(line_no = NULL,
   
   # crayon::red(NULL) -> Error in mypaste(...) need character strings
   Red <- function(x) if (!is.character(x)) x else red(x)
-  cat("\n", bgRed(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), sep = "")
+  cat("\n", 
+      bold(red(error_message)), "\n",
+      bgRed(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), sep = "")
   
   # To return the directory if applicable
   on.exit({

@@ -4,6 +4,7 @@
 #' @param line_no The line number locating the source of the error.
 #' @param context THe content of the file to provide context to the error.
 #' @param error_message The error message to display beyond the console.
+#' @param advice Advice to the user: how should the detected error be resolved in general?
 #' @param report_name Name of project whose errors are being reported.
 #' @param build_status What should the build status be reported as?
 #' @param authors Text to alert the authors (such as a twitter handle).

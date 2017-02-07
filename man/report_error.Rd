@@ -26,6 +26,8 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 
 \item{error_message}{The error message to display beyond the console.}
 
+\item{advice}{Advice to the user: how should the detected error be resolved in general?}
+
 \item{build_status}{What should the build status be reported as?}
 
 \item{authors}{Text to alert the authors (such as a twitter handle).}

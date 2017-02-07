@@ -24,7 +24,7 @@
 #' @importFrom dplyr lead
 #' @importFrom dplyr lag
 #' @importFrom clisymbols symbol
-#' @importFrom crayon green red bgGreen bgRed
+#' @importFrom crayon green red bgGreen bgRed bold
 #' @importFrom grDevices embedFonts
 #' @importFrom utils download.file
 #' @importFrom stats complete.cases

@@ -48,11 +48,12 @@ check_labels <- function(filename, .report_error){
 
   wrong_lines <-
     lines_with_labels %>%
-    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
-             label_contents,
-             perl = TRUE)]
+    grep("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
+         label_contents,
+         perl = TRUE)
 
   if (length(wrong_lines) > 0){
+    first_wrong_line <- wrong_lines[[1]]
     .report_error(line_no = first_wrong_line, 
                   context = lines[[first_wrong_line]], 
                   error_message = "\\label used without prefix.",

@@ -1,7 +1,8 @@
 context("check_labels")
 
 test_that("Stops on absent prefixes", {
-  expect_error(check_labels("check-labels/label-without-prefix.tex"))
+  expect_error(check_labels("check-labels/label-without-prefix.tex"), 
+               regexp = "must contain a prefix")
 })
 
 test_that("Stops when chapter prefixes wrong", {

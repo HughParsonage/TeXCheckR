@@ -12,3 +12,7 @@ test_that("Stops when chapter prefixes wrong", {
 test_that("Stops when chapref not used", {
   expect_error(check_labels("./check-labels/chapter-using-Vref.tex"), regexp = "Chapref")
 })
+
+test_that("Stops when Chapref is unlinked", {
+  expect_error(check_all_figs_tbls_refd("./check-labels/Chapref-not-linked.tex"), regexp = "empty cross-reference")
+})

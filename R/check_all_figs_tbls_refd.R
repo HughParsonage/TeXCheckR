@@ -29,7 +29,7 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
       unlist
   }
 
-  lines_with_labels <- grep("\\label", lines, fixed = TRUE)
+  lines_with_labels <- grep("\\\\caption.*\\\\label", lines, perl = TRUE)
 
   all_figs_tbls_refd <- TRUE
   figs_tbls_not_refd <- character(0)

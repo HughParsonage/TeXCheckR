@@ -22,7 +22,8 @@ check_escapes <- function(filename, .report_error){
                       collapse = "")
     .report_error(line_no = line_no, 
                   context = context, 
-                  error_message = "Unescaped $. If you meant to print a dollar sign, use \\$. If you want to use math-mode, use \\(...\\), not $...$ .")
+                  error_message = "Unescaped $.",
+                  advice = "If you meant to print a dollar sign, use \\$. If you want to use math-mode, use \\(...\\), not $...$ .")
     stop("Unescaped $. If you meant to print a dollar sign, use \\$. If you want to use math-mode, use \\(...\\), not $...$ .")
   }
   
@@ -31,7 +32,8 @@ check_escapes <- function(filename, .report_error){
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,
-                  error_message = "Use \\dots{} for an ellipsis, rather than three dots (...) or \\u2026 (\u2026).")
+                  error_message = "Ellipsis typed without using macro.",
+                  advice = "Use \\dots{} for an ellipsis, rather than three dots (...) or \\u2026 (\u2026).")
     stop("Use \\dots{} for an ellipsis, rather than three dots (...) or \\u2026 (\u2026).")
   }
   

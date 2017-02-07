@@ -78,7 +78,7 @@ check_dashes <- function(filename, .report_error){
     emdash_lines <-
       lines %>%
       gsub("\\{[^\\s\\}]+\\}", "\\{\\}", x = ., perl = TRUE) %>%
-      grep("---", x = ., fixed = TRUE, value = TRUE)
+      grep("---", x = ., fixed = TRUE)
 
     emdash_lines <- union(emdash_lines,
                           grep("\u2014", lines, fixed = TRUE))

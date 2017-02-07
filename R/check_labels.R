@@ -106,8 +106,9 @@ check_labels <- function(filename, .report_error){
          perl = TRUE)
 
   if (length(chapter_xref_lines) > 0){
-    .report_error(line_no = chapter_xref_lines[[1]], 
-                  context = lines[chapter_xref_lines],
+    line_no <- chapter_xref_lines[[1]]
+    .report_error(line_no = line_no,
+                  context = lines[line_no],
                   error_message = "Cross-references to chapters must use Chapref or topref.")
     stop("Cross-references to chapters must use Chapref or topref.")
   }

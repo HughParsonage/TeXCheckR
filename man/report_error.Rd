@@ -8,8 +8,8 @@
 \title{Report errors to console and twitter}
 \usage{
 report2console(line_no = NULL, context = NULL, error_message = NULL,
-  build_status = NULL, authors = NULL, report_name = NULL,
-  extra_cat_ante = NULL, extra_cat_post = NULL)
+  advice = NULL, build_status = NULL, authors = NULL,
+  report_name = NULL, extra_cat_ante = NULL, extra_cat_post = NULL)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
   line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,

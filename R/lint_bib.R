@@ -33,5 +33,9 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
            perl = TRUE)
     }
   }
+  
+  # Add commas: 
+  out[is_field] <- gsub("\\}$", "\\},", out[is_field], perl = TRUE)
+  
   writeLines(out, outfile, useBytes = TRUE)
 }

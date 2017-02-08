@@ -34,6 +34,12 @@ any_bib_duplicates <- function(bib.files, .report_error){
   if ("title" %notin% names(bibDT)){
     bibDT[, title := NA_character_]
   }
+  
+  volume <- NULL
+  if ("volume" %notin% names(bibDT)){
+    bibDT[, volume := NA_character_]
+  }
+  
   Author <- Title <- Year <- NULL
   bibDT %>%
     .[, Year := if_else(is.na(year),

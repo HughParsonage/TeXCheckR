@@ -41,7 +41,8 @@ check_labels <- function(filename, .report_error){
     context <- lines[line_no]
     .report_error(line_no = line_no,
                   context = context,
-                  error_message = "Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
+                  error_message = "Appendix \\label using appendix:",
+                  advice = "Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
     stop("Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
   }
 
@@ -53,9 +54,10 @@ check_labels <- function(filename, .report_error){
 
   if (length(wrong_lines) > 0){
     first_wrong_line <- wrong_lines[[1]]
-    cat(bgRed(symbol$cross), " ",
-        first_wrong_line, ": ", lines[first_wrong_line],
-        sep = "")
+    .report_error(line_no = first_wrong_line, 
+                  context = lines[[first_wrong_line]], 
+                  error_message = "\\label used without prefix.",
+                  advice = "Use fig: tbl: box: chap: subsec: paragraph: rec: fn: in every label.")
     stop("Each \\label must contain a prefix.")
   }
   
@@ -67,7 +69,8 @@ check_labels <- function(filename, .report_error){
   if (any(caption_without_label)){
     .report_error(line_no = which(caption_without_label)[[1]], 
                   context = lines[caption_without_label][[1]], 
-                  error_message = "\\caption present without label. (All captions must have a \\label and the label must occur on the same line.)")
+                  error_message = "\\caption present without label.",
+                  advice = "(All captions must have a \\label and the label must occur on the same line.)")
     stop("\\caption{} present without \\label{}")
   }
 
@@ -97,6 +100,11 @@ check_labels <- function(filename, .report_error){
         first_wrong_line_no, ": ",
         lines[first_wrong_line_no],
         sep = "")
+    .report_error(line_no = first_wrong_line_no, 
+                  context = lines[[first_wrong_line_no]], 
+                  error_message = "Unlabelled chapter or \\label without chap: prefix.", 
+                  advice = "For every \\chapter{} ensure there is a \\label{chap:...} on the same line.")
+    
     stop("Chapters must be labelled and have prefix 'chap:'.")
   }
 
@@ -106,9 +114,11 @@ check_labels <- function(filename, .report_error){
          perl = TRUE)
 
   if (length(chapter_xref_lines) > 0){
-    .report_error(line_no = chapter_xref_lines[[1]], 
-                  context = lines[chapter_xref_lines],
-                  error_message = "Cross-references to chapters must use Chapref or topref.")
+    line_no <- chapter_xref_lines[[1]]
+    .report_error(line_no = line_no,
+                  context = lines[line_no],
+                  error_message = "Cross-reference to chapter using Vref or Cref.",
+                  advice = "Cross-references to chapters must use Chapref or topref.")
     stop("Cross-references to chapters must use Chapref or topref.")
   }
 

@@ -12,6 +12,7 @@ r_packages:
 - covr
 - drat
 - devtools
+- roxygen2
 
 after_success:
 - Rscript -e 'devtools::test()'

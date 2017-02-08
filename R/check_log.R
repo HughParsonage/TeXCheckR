@@ -1,6 +1,10 @@
 
 
-check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
+check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+  
   log_files <- dir(path = path, pattern = "\\.log$", full.names = TRUE)
   if (length(log_files) != 1){
     stop("Path does not contain a single log file.")
@@ -29,10 +33,14 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
   if (any(grepl("undefined references", log_file, fixed = TRUE))){
     which_line <- grep("undefined references", log_file, fixed = TRUE)
     cat(which_line, "\n", log_files[which_line])
+    .report_error(error_message = "Undefined cross-references.", 
+                  advice = "Check each use of Vref and Cref and that it contains a valid \\label.")
     stop("Undefined references.")
   }
 
   if (any(grepl("LaTeX Warning: There were multiply-defined labels.", log_file, fixed = TRUE))){
+    .report_error(error_message = "Multiply-defined labels",
+                  advice = "You have used \\label{} with the same key more than once.")
     stop("LaTeX Warning: There were multiply-defined labels.")
   }
   

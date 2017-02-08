@@ -51,9 +51,9 @@ any_bib_duplicates <- function(bib.files, .report_error){
   
   
   
-  if (anyDuplicated(bibDT, by = c("Author", "Year", "Title"))){
-    dups_head <- duplicated(bibDT, by = c("Author", "Year", "Title"))
-    dups_tail <- duplicated(bibDT, by = c("Author", "Year", "Title"), fromLast = TRUE)
+  if (anyDuplicated(bibDT, by = c("Author", "Year", "Title", "volume"))){
+    dups_head <- duplicated(bibDT, by = c("Author", "Year", "Title", "volume"))
+    dups_tail <- duplicated(bibDT, by = c("Author", "Year", "Title", "volume"), fromLast = TRUE)
     DT_with_all_duplicates <- 
       bibDT %>%
       .[dups_tail | dups_head, .(key, Author, Title, date, year)] %>%

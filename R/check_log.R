@@ -1,6 +1,10 @@
 
 
-check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE){
+check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE, .report_error){
+  if (missing(.report_error)){
+    .report_error <- function(...) report2console(...)
+  }
+  
   log_files <- dir(path = path, pattern = "\\.log$", full.names = TRUE)
   if (length(log_files) != 1){
     stop("Path does not contain a single log file.")

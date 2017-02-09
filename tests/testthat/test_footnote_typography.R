@@ -11,7 +11,7 @@ test_that("Invalid typography stops", {
   expect_error(check_footnote_typography("./fnote-typogr/full-stop-after.tex"),
                regexp = "[pP]unctuation after footnote")
   expect_error(check_footnote_typography("./fnote-typogr/full-stop-after-fcite.tex"),
-               regexp = "[pP]unctuation after footnote")
+               regexp = "[pP]unctuation mark after footcite")
 })
 
 test_that("Space before footnotes.", {

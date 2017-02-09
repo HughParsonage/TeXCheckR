@@ -28,11 +28,19 @@ check_dashes <- function(filename, .report_error){
   if (any(possible_hyphen)){
     excluding_mathmode <-
       if_else(possible_hyphen,
-              gsub(paste0("\\\\[(\\[]", "[^\\)\\]]*", "\\\\[)\\]]"),
+              gsub(paste0("\\\\[(]", "[^\\)]*", "\\\\[)]"),
                    "",
                    lines,
                    perl = TRUE),
               lines)
+    
+    excluding_mathmode <-
+      if_else(possible_hyphen,
+              gsub("\\\\\\[.*$",
+                   "",
+                   excluding_mathmode,
+                   perl = TRUE),
+              excluding_mathmode)
 
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]

@@ -14,6 +14,12 @@ check_dashes <- function(filename, .report_error){
   lines <- read_lines(filename)
 
   lines[isR_line_in_knitr(lines)] <- "%"
+  if (any(lines == "\\begin{align*}")){
+    math_environ <- 
+      which(cumsum(lines == "\\begin{align*}") - cumsum(lines == "\\end{align*}") == 1L)
+    
+    lines[math_environ] <- "% align environment"
+  }
 
   lines <- strip_comments(lines)
 
@@ -22,7 +28,7 @@ check_dashes <- function(filename, .report_error){
   if (any(possible_hyphen)){
     excluding_mathmode <-
       if_else(possible_hyphen,
-              gsub(paste0("\\\\[(]", "[^\\)]*", "\\\\[)]"),
+              gsub(paste0("\\\\[(\\[]", "[^\\)\\]]*", "\\\\[)\\]]"),
                    "",
                    lines,
                    perl = TRUE),
@@ -32,7 +38,10 @@ check_dashes <- function(filename, .report_error){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
       .report_error(line_no = line_no,
                     context = lines[line_no],
-                    error_message = "Dash likely masquerading as hyphen. Use -- for a dash.")
+                    error_message = "Dash likely masquerading as hyphen. Use -- for a dash.", 
+                    advice = "\nIMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  \u2013\n",
+                    "If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). ",
+                    "As always, visually check the result in the PDF.")
       stop("Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.\n",
            "\nIMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  \u2013\n",
            "If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). ",

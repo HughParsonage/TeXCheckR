@@ -15,12 +15,18 @@ check_quote_marks <- function(filename, .report_error){
   # Avoid ``ok''
   
   bad_open_quote_regex <- 
-    sprintf("%s|%s|%s|%s|%s", 
+    sprintf("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s", 
             "(^')",
             "( ')",
             "(\\(')",
             "(\\[')",
-            "(-')")
+            "(-')",
+            # Double quotes too:
+            '(^")',
+            '( ")',
+            '(\\(")',
+            '(\\[")',
+            '(-")')
 
   if (any(grepl(bad_open_quote_regex, lines, perl = TRUE))){
     line_no <- grep(bad_open_quote_regex, lines, perl = TRUE)[[1]]

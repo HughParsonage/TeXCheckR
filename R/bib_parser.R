@@ -81,13 +81,13 @@ fread_bib <- function(file.bib){
 
     if (n_keys <= 5L){
       top_keys <- keys
-      stop("Duplicate fields found in ", keys, ".")
+      stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
     } else {
       top_keys <- keys[1:5]
       if (n_keys == 6L){
-        stop("Duplicate fields found in ", keys, ".")
+        stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
       } else {
-        stop("Duplicate fields found in ", keys, " and ", n_keys - 5L, " others.")
+        stop("Duplicate fields found in ", paste0(keys, collapse = " "), " and ", n_keys - 5L, " others.")
       }
     }
   }

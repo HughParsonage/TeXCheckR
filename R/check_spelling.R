@@ -336,7 +336,9 @@ check_spelling <- function(filename,
     stop("Common spelling error detected.")
   }
 
-  words_to_add <- c(extract_validate_abbreviations(lines), words_to_add)
+  valid_abbreviations <- extract_validate_abbreviations(lines)
+  
+  words_to_add <- c(valid_abbreviations, paste0(valid_abbreviations, "s"), words_to_add)
 
   parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
   all_bad_words <- unlist(parsed)

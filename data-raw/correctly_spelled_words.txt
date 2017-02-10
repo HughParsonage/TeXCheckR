@@ -283,6 +283,7 @@ underruns
 undersupplied
 undersupply
 undersupplying
+unfranked
 unlegislated
 Unported
 unrealised

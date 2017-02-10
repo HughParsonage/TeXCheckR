@@ -183,7 +183,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'")),
                  AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'"))))){
-        .report_error(context = paste0("\n\\footnote\n       ",
+        .report_error(context = paste0("\n\\footnote\n         ",
                                        paste0(split_line_after_footnote[1:footnote_closes_at],
                                               collapse = ""),
                                        "\n"), 

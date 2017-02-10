@@ -129,7 +129,9 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
   if (AND(any(grepl("This working paper was written by",
                     lines_before_begin_document,
                     perl = TRUE)), 
-          !any(grepl("\\ReportOrWorkingPaper{Working Paper}")))){
+          !any(grepl("\\ReportOrWorkingPaper{Working Paper}", 
+                     lines_before_begin_document, 
+                     fixed = TRUE)))){
     .report_error(error_message = "Working paper / Report inconsistency",
                   advice = paste0("\\ReportOrWorkingPaper not set to {Working Paper} but statement\n\t'This working paper was written by'\nstill present in document.",
                                   "\n\n",

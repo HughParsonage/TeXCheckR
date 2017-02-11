@@ -26,12 +26,16 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
     out[line] <-
       gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
            paste0(paste0(rep(" ", leading_spaces), collapse = ""),
-                  "\\1",
+                  "\\L\\1",
                   paste0(rep(" ", spaces_req), collapse = ""),
                   " = {"),
            bib[line],
            perl = TRUE)
     }
   }
+  
+  # Add commas: 
+  out[is_field] <- gsub("\\}$", "\\},", out[is_field], perl = TRUE)
+  
   writeLines(out, outfile, useBytes = TRUE)
 }

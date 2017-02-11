@@ -29,7 +29,7 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
       unlist
   }
 
-  lines_with_labels <- grep("\\label", lines, fixed = TRUE)
+  lines_with_labels <- grep("\\\\caption.*\\\\label", lines, perl = TRUE)
 
   all_figs_tbls_refd <- TRUE
   figs_tbls_not_refd <- character(0)
@@ -53,7 +53,8 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
       if (!any(grepl(lab, lines, fixed = TRUE))){
         lab <- gsub("ref{", "", lab, fixed = TRUE)
         if (compile){
-          .report_error(error_message = paste0("Couldn't find a xref to ", lab, "."))
+          .report_error(error_message = "Unreferenced figure or table",
+                        advice = paste0("Couldn't find a xref to ", lab, "."))
           if (pre_release){
             stop("Couldn't find a xref to ", lab, ".")
           } else {
@@ -168,14 +169,18 @@ check_all_figs_tbls_refd <- function(filename, .report_error, compile = FALSE, p
       if (not_length0(Chapref_range_2nd)){
         ante_note <- "There were also empty cross-reference targets for the *2nd* argument of Chaprefrange."
       }
+      
+      error_message <- "Mislabeled or empty cross-references target for Chapref or topref"
+      context <-
+        paste0("Mislabeled / empty cross-reference target for a \\Chapref / \\topref etc. ",
+               "You have entered a \\Chapref to cross-reference a chapter (which is correct!). ",
+               "However the label you have referenced does not exist (perhaps it was renamed or removed?). ",
+               "I saw:\n\t", paste0(offending_xrefs, collapse = "\n\t"), "\n",
+               "Yet the only valid labels are:\n\t", paste0(labels_following_chapters, collapse = "\n\t"))
 
-      stop("Mislabeled / empty cross-reference target for a \\Chapref / \\topref etc. ",
-           "You have entered a \\Chapref to cross-reference a chapter (which is correct!). ",
-           "However the label you have referenced does not exist (perhaps it was renamed or removed?). ",
-           "I saw:\n\t", paste0(offending_xrefs, collapse = "\n\t"), "\n",
-           "Yet the only valid labels are:\n\t", paste0(labels_following_chapters, collapse = "\n\t"))
-
-
+      .report_error(error_message = "Mislabeled or empty cross-references target for Chapref or topref",
+                    context = context)
+      stop(error_message, context)
     }
   }
 

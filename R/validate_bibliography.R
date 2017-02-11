@@ -21,8 +21,29 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
 
   bib <-
     read_lines(bib_file) %>%
-    trimws %>%
-    .[!grepl("% Valid", ., fixed = TRUE)]
+    trimws 
+  
+  # Protect from misshapen bibliography entries
+  is_key <- grepl("^@", bib, perl = TRUE)
+  is_field <- grepl("^[a-z]+\\s* = \\{", bib, perl = TRUE)
+  is_closing = bib == "}"
+  is_null <- bib == ""
+  
+  if (!all(is_key | is_field | is_closing | is_null)){
+    bad_lines <- which(!(is_key | is_field | is_closing | is_null))
+    first_bad_line <- bad_lines[[1]]
+    .report_error(line_no = first_bad_line,
+                  context = bib[first_bad_line],
+                  error_message = paste0(bib_file, " contains line which is neither a key, nor field, nor closing.") 
+                  # ,advice = paste0("Ensure every line in bibliography is one:\n\t@<EntryType>,\n\t",
+                  #                 "field = {  <- including spaces around equals sign\n\t", 
+                  #                 "or is a single closing brace, or a blank line.")
+                  )
+    stop(bib_file, " contains line which is neither a key, nor field, nor closing.")
+  }
+  
+  bib <- 
+    bib[!grepl("% Valid", bib, fixed = TRUE)]
   
   if (any(grepl(".[}]$", bib, perl = TRUE))){
     line_no <- grep(".[}]$", bib, perl = TRUE)[[1]]
@@ -149,8 +170,16 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
     journal_actual_vs_journal_expected[journal_actual != journal]
 
   if (nrow(incorrect_journal_entries) > 0){
-    cat(crayon::bgRed(symbol$cross, "Inconsistent treatment of article journal.\n"))
+    cat(red(symbol$cross), red("Inconsistent treatment of article journal.\n"))
     print(incorrect_journal_entries)
+    .report_error(context = paste0("In entry", "\n\t",
+                                   incorrect_journal_entries[1][["key"]], "\n\n",
+                                   "I see:", "\n\t",
+                                   "url = {", incorrect_journal_entries[1][["url"]], "}", "\n\n",
+                                   "which suggests", "\n\t",
+                                   "journal = {", incorrect_journal_entries[1][["journal"]], "} ,", "\n\n",
+                                   "but\n\t",
+                                   "journal = {", incorrect_journal_entries[1][["journal_actual"]], "} ."))
     stop("In entry", "\n\t",
          incorrect_journal_entries[1][["key"]], "\n\n",
          "I see:", "\n\t",

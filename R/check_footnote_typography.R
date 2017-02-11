@@ -31,6 +31,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       if (!any(overview_end)){
         stop("Emergency stop: No \\end{overview} found in document. Check your LaTeX syntax and try again")
       } else {
+        line_no <- grep("\\footnote", lines[is_overview], fixed = TRUE)
+        .report_error(line_no = line_no,
+                      context = lines[line_no], 
+                      error_message = "Footnote detected in overview.")
         stop("Footnote detected in overview. Remove any footnotes in the overview.")
       }
     }
@@ -105,6 +109,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     
     if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))){
       first_footcite_w_punct <- which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))[[1]]
+      line_no <- line_nos_with_footcite[first_footcite_w_punct]
       .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
                     context = lines[line_no], 
                     error_message = "Punctuation mark after footcite number ", first_footcite_w_punct, ".")
@@ -164,9 +169,11 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
 
     if (length(split_line_after_footnote[footnote_closes_at - 1] != ".") == 0){
-      cat(paste0(split_line_after_footnote,
-                 collapse = ""),
-          "\n")
+      .report_error(error_message = "Couldn't determine where footnotes closed.",
+                    context = paste0(split_line_after_footnote,
+                                     "\n",
+                                     collapse = ""),
+                    advice = "Examine this line for multiple paragraphs or unclosed footnotes.")
       stop("Argument length 0. You may want to consider ignoring this line.")
     }
 
@@ -176,10 +183,11 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'")),
                  AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'"))))){
-        cat("\n\\footnote\n       ",
-            paste0(split_line_after_footnote[1:footnote_closes_at],
-                   collapse = ""),
-            "\n")
+        .report_error(context = paste0("\n\\footnote\n         ",
+                                       paste0(split_line_after_footnote[1:footnote_closes_at],
+                                              collapse = ""),
+                                       "\n"), 
+                      error_message = "Footnote does not end with full stop.")
         stop("Footnote does not end with full stop.")
       }
     }

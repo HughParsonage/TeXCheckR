@@ -2,6 +2,8 @@ context("Check dashes")
 
 test_that("Does not error in math mode", {
   expect_null(check_dashes(filename = "./check-dashes/ok-despite-math.tex"))
+  expect_null(check_dashes(filename = "./check-dashes/ok-despite-math-2.tex"))
+  expect_null(check_dashes(filename = "./check-dashes/ok-despite-math-3.tex"))
 })
 
 test_that("Errors if hyphen wrongly typed", {

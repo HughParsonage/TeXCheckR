@@ -115,12 +115,30 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
               any(grepl("This report was written by",
                         lines_before_begin_document,
                         perl = TRUE)))){
+    
+    .report_error(error_message = "Working paper / Report inconsistency",
+                  advice = paste0("\\ReportOrWorkingPaper set to {Working Paper} but statement\n\t'This report was written by'\nstill present in document.",
+                                  "\n\n",
+                                  "If your report is a working paper, say 'This working paper was written by'; ",
+                                  "\n\n",
+                                  "otherwise, do not include\n\t\\ReportOrWorkingPaper{Working Paper}",
+                                  collapse = ""))
     stop("\\ReportOrWorkingPaper set to {Working Paper} but statement\n\t'This report was written by'\nstill present in document.")
   }
 
-  if (any(grepl("This working paper was written by",
-                lines_before_begin_document,
-                perl = TRUE))){
+  if (AND(any(grepl("This working paper was written by",
+                    lines_before_begin_document,
+                    perl = TRUE)), 
+          !any(grepl("\\ReportOrWorkingPaper{Working Paper}", 
+                     lines_before_begin_document, 
+                     fixed = TRUE)))){
+    .report_error(error_message = "Working paper / Report inconsistency",
+                  advice = paste0("\\ReportOrWorkingPaper not set to {Working Paper} but statement\n\t'This working paper was written by'\nstill present in document.",
+                                  "\n\n",
+                                  "If your report is a working paper, put\n\t\\ReportOrWorkingPaper{Working Paper}",
+                                  "\n\n",
+                                  "otherwise, say\n\t'This report was written by'",
+                                  collapse = ""))
     stop("\\ReportOrWorkingPaper not set to {Working Paper} but\n\t'This working paper was written by'\nexists in document.")
   }
 

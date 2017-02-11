@@ -39,6 +39,7 @@ check_biber <- function(path = "."){
           blg[grepl("WARN ", blg, fixed = TRUE)]
         
         n_bad_entries <- length(all_bad_entries)
+        cat(red(symbol$cross), ": ", "biber warnings:\n")
         for (j in seq_along(all_bad_entries)){
           first_bad_entry <-
             all_bad_entries %>%
@@ -52,7 +53,7 @@ check_biber <- function(path = "."){
             extra_text <- NULL
           }
           
-          cat(crayon::bgRed(sub("^.*WARN ", "WARN", first_bad_entry)), "\n", extra_text)
+          cat(crayon::red(sub("^.*WARN ", "WARN", first_bad_entry)), "\n", extra_text)
           if (j == 5){
             break
           }

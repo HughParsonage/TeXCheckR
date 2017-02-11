@@ -8,8 +8,8 @@
 \title{Report errors to console and twitter}
 \usage{
 report2console(line_no = NULL, context = NULL, error_message = NULL,
-  build_status = NULL, authors = NULL, report_name = NULL,
-  extra_cat_ante = NULL, extra_cat_post = NULL)
+  advice = NULL, build_status = NULL, authors = NULL,
+  report_name = NULL, extra_cat_ante = NULL, extra_cat_post = NULL)
 
 report2twitter(preamble = NULL, report_name, build_status, error_message,
   line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,
@@ -25,6 +25,8 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 \item{context}{THe content of the file to provide context to the error.}
 
 \item{error_message}{The error message to display beyond the console.}
+
+\item{advice}{Advice to the user: how should the detected error be resolved in general?}
 
 \item{build_status}{What should the build status be reported as?}
 

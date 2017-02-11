@@ -12,6 +12,8 @@
 #' @param .no_log Make no entry in the log file on the check's outcome.
 #' @param embed If \code{FALSE}, not attempt to embed the fonts using Ghostscript is attempted. Useful if Ghostscript cannot easily be installed.
 #' Set to \code{TRUE} for debugging or repetitive use (as in benchmarking). 
+#' @param update_grattan.cls Download \code{grattan.cls} from \url{https://github.com/HughParsonage/grattex/blob/master/grattan.cls}? 
+#' Set to \code{FALSE} when checking the \code{grattex} repo itself.
 #' @return Called for its side-effect.
 #' @export
 #' @importFrom magrittr %>%
@@ -22,7 +24,7 @@
 #' @importFrom dplyr lead
 #' @importFrom dplyr lag
 #' @importFrom clisymbols symbol
-#' @importFrom crayon green red bgGreen bgRed
+#' @importFrom crayon green red bgGreen bgRed bold
 #' @importFrom grDevices embedFonts
 #' @importFrom utils download.file
 #' @importFrom stats complete.cases
@@ -35,7 +37,8 @@ checkGrattanReport <- function(path = ".",
                                release = FALSE,
                                .proceed_after_rerun,
                                .no_log = FALSE, 
-                               embed = TRUE){
+                               embed = TRUE, 
+                               update_grattan.cls = TRUE){
   if (release && (!pre_release || !compile)){
     stop("release = TRUE but pre_release and compile are not both TRUE also.")
   }
@@ -60,7 +63,7 @@ checkGrattanReport <- function(path = ".",
   
   output_method <- match.arg(output_method)
   
-  if (pre_release){
+  if (pre_release && update_grattan.cls && !identical(tolower(Sys.getenv("TRAVIS_REPO_SLUG")), "hughparsonage/grattex")){
     download_failure <- download.file("https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls",
                                       destfile = "grattan.cls",
                                       quiet = TRUE)

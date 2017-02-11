@@ -29,8 +29,9 @@ check_sentence_ending_periods <- function(filename, .report_error){
     
     .report_error(line_no = first_line_no, 
                   context = context, 
-                  error_message = paste0("Sentences which end with a capital letter ",
-                                         "need to be signalled with a sentence-ending period. (\\@.)"))
+                  error_message = "Capital letter ends sentence, but sentence-ending period mark absent.",
+                  advice = paste0("Sentences which end with a capital letter ",
+                                  "need to be signalled with a sentence-ending period. (\\@.)"))
     stop(paste0("Sentences which end with a capital letter ",
                 "need to be signalled with a sentence-ending period. (\\@.)"))
   }

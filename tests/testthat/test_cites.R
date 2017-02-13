@@ -19,3 +19,11 @@ test_that("Singular text/footcite with two keys should error", {
   expect_error(check_cite_pagerefs("./check-cite-pagerefs/29-bad-singular-cite.tex"),
                regexp = "Use of singular form")
 })
+
+
+test_that("Page reference ok if in correct format", {
+  expect_null(check_cite_pagerefs("./check-cite-pagerefs/ok-page-ref-roman.tex"))
+  expect_null(check_cite_pagerefs("./check-cite-pagerefs/cite-p-in-text-postnote.tex"))
+  expect_error(check_cite_pagerefs("./check-cite-pagerefs/bad-cite-p-in-text-postnote-2.tex"), regexp = "Page reference not in correct format")
+  expect_error(check_cite_pagerefs("./check-cite-pagerefs/bad-cite-p-in-text-postnote.tex"), regexp = "Page reference not in correct format")
+})

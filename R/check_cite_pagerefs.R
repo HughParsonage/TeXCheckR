@@ -4,7 +4,9 @@ check_cite_pagerefs <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- read_lines(filename)
+  lines <- 
+    read_lines(filename) %>% 
+    strip_comments
 
   line_nos_with_cites <-
     grep("cites?[\\[\\{]", lines, perl = TRUE)

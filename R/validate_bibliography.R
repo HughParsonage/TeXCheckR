@@ -35,9 +35,10 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
     .report_error(line_no = first_bad_line,
                   context = bib[first_bad_line],
                   error_message = paste0(bib_file, " contains line which is neither a key, nor field, nor closing.") 
-                  # ,advice = paste0("Ensure every line in bibliography is one:\n\t@<EntryType>,\n\t",
-                  #                 "field = {  <- including spaces around equals sign\n\t", 
-                  #                 "or is a single closing brace, or a blank line.")
+                  ,advice = paste0("Ensure every line in bibliography is one:\n\t@<EntryType>,\n\t",
+                                  "field = {  <- including spaces around equals sign\n\t",
+                                  "or is a single closing brace, or a blank line. ",
+                                  "If you can, run\n\tlint_bib('", bib_file, "')")
                   )
     stop(bib_file, " contains line which is neither a key, nor field, nor closing.")
   }

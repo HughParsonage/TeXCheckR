@@ -59,7 +59,9 @@ check_literal_xrefs <- function(filename, .report_error){
     context <- lines[line_no]
     .report_error(line_no = line_no,
                   context = context,
-                  error_message = "Hard-coded xref in document. All xrefs need to use \\Cref or \\Vref (or \\Chapref for cross-references to chapters).")
+                  error_message = "Hard-coded xref in document.", 
+                  advice = paste0("All xrefs need to use \\Cref or \\Vref (or \\Chapref for cross-references to chapters).", 
+                                  " If you need to use this phrase, you can use a non-breaking space e.g. 'Section~81 of the Constitution."))
     stop("Hard-coded xref in document. All xrefs need to use \\Cref or \\Vref (or \\Chapref for cross-references to chapters).")
   }
   

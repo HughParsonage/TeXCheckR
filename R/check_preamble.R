@@ -273,22 +273,29 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
 
     project_authors <- get_authors(filename, include_editors = FALSE)
     project_authors_initials <- gsub("^([A-Z])[a-z]+ ", "\\1. ", project_authors, perl = TRUE)
-    project_authors_reversed <- rev_forename_surname_bibtex(project_authors_initials)
-    project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),
+    project_authors_reversed_inits <- rev_forename_surname_bibtex(project_authors_initials)
+    project_authors_textcite_inits <- paste0(paste0(project_authors_reversed_inits[-length(project_authors_reversed_inits)], collapse = ", "),
                                        ", and ",
                                        gsub("\\.$", 
                                             "\\\\@\\.",
-                                            last(project_authors_reversed)))
+                                            last(project_authors_reversed_inits)))
+    project_authors_reversed <- rev_forename_surname_bibtex(project_authors)
+    project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),
+                                       ", and ",
+                                       last(project_authors_reversed))
 
-    recommended_citation <-
-      paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")
+    recommended_citations <-
+      c(paste0(project_authors_textcite_inits, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
+        paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
+        paste0(project_authors, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."))
 
 
-    if (lines_before_begin_document[isbn_line - 2] != recommended_citation){
+    if (lines_before_begin_document[isbn_line - 2] %notin% recommended_citations){
       .report_error(error_message = "Recommended citation not present.")
+      cat("\n")
       stop("Recommended citation should be two lines before ISBN: . ",
-           "I expected the citation\n\t",
-           recommended_citation,
+           "I expected one of the the citations\n\t",
+           paste0(recommended_citations, collapse = "\n"),
            "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2])
     }
 

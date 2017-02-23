@@ -283,11 +283,16 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),
                                        ", and ",
                                        last(project_authors_reversed))
+    
+    project_authors_textcite_full <- paste0(paste0(project_authors[-length(project_authors)], collapse = ", "),
+                                            ", and ",
+                                            last(project_authors), 
+                                            ".")
 
     recommended_citations <-
       c(paste0(project_authors_textcite_inits, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
-        paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
-        paste0(project_authors, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."))
+        # paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
+        paste0(paste0(project_authors_textcite_full, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")))
 
 
     if (lines_before_begin_document[isbn_line - 2] %notin% recommended_citations){
@@ -295,7 +300,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
       cat("\n")
       stop("Recommended citation should be two lines before ISBN: . ",
            "I expected one of the the citations\n\t",
-           paste0(recommended_citations, collapse = "\n"),
+           paste0(recommended_citations, collapse = "\n\t"),
            "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2])
     }
 

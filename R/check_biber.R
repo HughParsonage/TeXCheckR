@@ -32,6 +32,7 @@ check_biber <- function(path = "."){
     
       # Remove legislation marks:
       blg <- blg[!grepl("WARN - year field .((Cth)|(NSW)|(Vic)|(SA)|(Tas)|(Qld)|(WA)|(ACT)|(NT)|(NZ)). in entry .*((Act)|(Reg)|(Bill))", blg, perl = TRUE)]
+      blg <- blg[!grepl("Entry .*((Act)|(Reg)|(Bill)).*Missing mandatory field", blg, perl = TRUE)]
       blg <- blg[!grepl("n.d.", blg, fixed = TRUE)]
       # WARN not WARNINGS
       if (any(grepl("WARN ", blg, fixed = TRUE))){

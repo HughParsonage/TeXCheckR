@@ -295,7 +295,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
       cat("\n")
       stop("Recommended citation should be two lines before ISBN: . ",
            "I expected one of the the citations\n\t",
-           paste0(recommended_citations, collapse = "\n"),
+           paste0(recommended_citations, collapse = "\n\t"),
            "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2])
     }
 

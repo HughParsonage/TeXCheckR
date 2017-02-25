@@ -286,8 +286,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     
     project_authors_textcite_full <- paste0(paste0(project_authors[-length(project_authors)], collapse = ", "),
                                             ", and ",
-                                            last(project_authors), 
-                                            ".")
+                                            last(project_authors))
 
     recommended_citations <-
       c(paste0(project_authors_textcite_inits, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 

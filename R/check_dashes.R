@@ -28,9 +28,18 @@ check_dashes <- function(filename, .report_error){
   if (any(possible_hyphen)){
     excluding_mathmode <-
       if_else(possible_hyphen,
-              gsub(paste0("\\\\[(]", "[^\\)]*", "\\\\[)]"),
-                   "",
-                   lines,
+              # Cheat: 
+              #  - remove % signs (so they don't interfere later). This is ok as we've stripped comments
+              #  - replace equations delimeters with % %. Struggled to match closing brackets otherwise (don't want to miss dashes between equations)
+              #  - replace anything between %s with 
+              gsub(paste0("%", "[^%]*", "%"),
+                   "math-mode",
+                   gsub("\\\\[()]", "%",
+                        gsub("%",
+                             "", 
+                             lines),
+                        
+                        perl = TRUE),
                    perl = TRUE),
               lines)
     

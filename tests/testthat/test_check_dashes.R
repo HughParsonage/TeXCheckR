@@ -4,10 +4,13 @@ test_that("Does not error in math mode", {
   expect_null(check_dashes(filename = "./check-dashes/ok-despite-math.tex"))
   expect_null(check_dashes(filename = "./check-dashes/ok-despite-math-2.tex"))
   expect_null(check_dashes(filename = "./check-dashes/ok-despite-math-3.tex"))
+  expect_null(check_dashes(filename = "./check-dashes/ok-despite-math-4.tex"))
 })
 
 test_that("Errors if hyphen wrongly typed", {
   expect_error(check_dashes(filename = "./check-dashes/bad-hyphen.tex"),
+               regexp = "[Hh]yphen")
+  expect_error(check_dashes(filename = "./check-dashes/bad-outside-math-1.tex"),
                regexp = "[Hh]yphen")
 })
 

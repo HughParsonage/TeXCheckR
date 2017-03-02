@@ -276,9 +276,13 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     project_authors_reversed_inits <- rev_forename_surname_bibtex(project_authors_initials)
     project_authors_textcite_inits <-
       switch(pmin.int(length(project_authors), 3),
-             project_authors_reversed_inits,
+             gsub("\\.$", 
+                  "\\\\@\\.",
+                  project_authors_reversed_inits),
              
-             paste0(project_authors_reversed_inits[1], " and ", project_authors_reversed_inits[2]),
+             paste0(project_authors_reversed_inits[1], " and ", gsub("\\.$", 
+                                                                     "\\\\@\\.", 
+                                                                     project_authors_reversed_inits[2])),
              
              paste0(paste0(project_authors_reversed_inits[-length(project_authors_reversed_inits)], collapse = ", "),
                     ", and ",
@@ -301,14 +305,12 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
              project_authors_reversed_inits,
              
              # 2
-             paste0(project_authors_reversed_inits[1], " and ", project_authors_reversed_inits[2]),
+             paste0(project_authors_textcite[1], " and ", project_authors_textcite[2]),
              
              # >= 3
-             paste0(paste0(project_authors_reversed_inits[-length(project_authors_reversed_inits)], collapse = ", "),
-                      ", and ",
-                      gsub("\\.$", 
-                           "\\\\@\\.",
-                           last(project_authors_reversed_inits))))
+             paste0(paste0(project_authors_textcite[-length(project_authors_textcite)], collapse = ", "),
+                    ", and ",
+                    last(project_authors_textcite)))
     
     recommended_citations <-
       c(paste0(project_authors_textcite_inits, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 

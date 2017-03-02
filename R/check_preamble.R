@@ -275,7 +275,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
     project_authors_initials <- gsub("^([A-Z])[a-z]+ ", "\\1. ", project_authors, perl = TRUE)
     project_authors_reversed_inits <- rev_forename_surname_bibtex(project_authors_initials)
     project_authors_textcite_inits <-
-      switch(pmax.int(length(project_authors), 3),
+      switch(pmin.int(length(project_authors), 3),
              project_authors_reversed_inits,
              
              paste0(project_authors_reversed_inits[1], " and ", project_authors_reversed_inits[2]),
@@ -296,7 +296,7 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
                                             last(project_authors))
     
     project_authors_textcite_full <- 
-      switch(pmax.int(length(project_authors), 3),
+      switch(pmin.int(length(project_authors), 3),
              # 1
              project_authors_reversed_inits,
              

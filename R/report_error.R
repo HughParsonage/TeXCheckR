@@ -38,7 +38,7 @@ report2console <- function(line_no = NULL,
   cat("\n", 
       bold(red(error_message)), "\n",
       bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
-      bold_red(advice),
+      bold_red(advice), "\n",
       sep = "")
   
   # To return the directory if applicable

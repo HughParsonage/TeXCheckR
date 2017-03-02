@@ -173,7 +173,8 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error){
   if (nrow(incorrect_journal_entries) > 0){
     cat(red(symbol$cross), red("Inconsistent treatment of article journal.\n"))
     print(incorrect_journal_entries)
-    .report_error(context = paste0("In entry", "\n\t",
+    .report_error(error_message = "",
+                  context = paste0("In entry", "\n\t",
                                    incorrect_journal_entries[1][["key"]], "\n\n",
                                    "I see:", "\n\t",
                                    "url = {", incorrect_journal_entries[1][["url"]], "}", "\n\n",

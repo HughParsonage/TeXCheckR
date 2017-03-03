@@ -61,6 +61,17 @@ get_authors <- function(filename, include_editors = TRUE){
          .) %>%
     unique
   
+  if (any(grepl("^[%] add_author_to_recommended_citation: ", lines_before_begin_document, perl = TRUE))){
+    possible_names <-
+      c(possible_names,
+        gsub("^.*add_author_to_recommended_citation: ",
+             "",
+             grep("^[%] add_author_to_recommended_citation: ", lines_before_begin_document, perl = TRUE,
+                  value = TRUE)))
+  }
+  
+  possible_names <- trimws(possible_names)
+  
   if (include_editors){
     return(possible_names)
   } else {

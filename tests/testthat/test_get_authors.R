@@ -14,3 +14,8 @@ test_that("Editorial authors not returned", {
   expect_equal(get_authors("./get-authors/editorial-authors.tex", include_editors = FALSE), 
                c("Stephen Duckett", "Hal Swerissen"))
 })
+
+test_that("Additional authors are returned", {
+  expect_equal(get_authors("./get-authors/add-authors-to-citation.tex", include_editors = FALSE), 
+               c("Stephen Duckett", "Hal Swerissen", "Lemony Snicket"))
+})

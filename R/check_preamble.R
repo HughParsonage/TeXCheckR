@@ -273,22 +273,57 @@ check_preamble <- function(filename, .report_error, pre_release = FALSE, release
 
     project_authors <- get_authors(filename, include_editors = FALSE)
     project_authors_initials <- gsub("^([A-Z])[a-z]+ ", "\\1. ", project_authors, perl = TRUE)
-    project_authors_reversed <- rev_forename_surname_bibtex(project_authors_initials)
+    project_authors_reversed_inits <- rev_forename_surname_bibtex(project_authors_initials)
+    project_authors_textcite_inits <-
+      switch(pmin.int(length(project_authors), 3),
+             gsub("\\.$", 
+                  "\\\\@\\.",
+                  project_authors_reversed_inits),
+             
+             paste0(project_authors_reversed_inits[1], " and ", gsub("\\.$", 
+                                                                     "\\\\@\\.", 
+                                                                     project_authors_reversed_inits[2])),
+             
+             paste0(paste0(project_authors_reversed_inits[-length(project_authors_reversed_inits)], collapse = ", "),
+                    ", and ",
+                    gsub("\\.$", 
+                         "\\\\@\\.",
+                         last(project_authors_reversed_inits))))
+           
+    project_authors_reversed <- rev_forename_surname_bibtex(project_authors)
     project_authors_textcite <- paste0(paste0(project_authors_reversed[-length(project_authors_reversed)], collapse = ", "),
                                        ", and ",
-                                       gsub("\\.$", 
-                                            "\\\\@\\.",
-                                            last(project_authors_reversed)))
+                                       last(project_authors_reversed))
+    
+    project_authors_textcite_full <- paste0(paste0(project_authors[-length(project_authors)], collapse = ", "),
+                                            ", and ",
+                                            last(project_authors))
+    
+    project_authors_textcite_full <- 
+      switch(pmin.int(length(project_authors), 3),
+             # 1
+             project_authors_reversed_inits,
+             
+             # 2
+             paste0(project_authors_textcite[1], " and ", project_authors_textcite[2]),
+             
+             # >= 3
+             paste0(paste0(project_authors_textcite[-length(project_authors_textcite)], collapse = ", "),
+                    ", and ",
+                    last(project_authors_textcite)))
+    
+    recommended_citations <-
+      c(paste0(project_authors_textcite_inits, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
+        # paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute."), 
+        paste0(paste0(project_authors_textcite_full, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")))
 
-    recommended_citation <-
-      paste0(project_authors_textcite, " (", current_year, "). ", "\\emph{\\mytitle}. Grattan Institute.")
 
-
-    if (lines_before_begin_document[isbn_line - 2] != recommended_citation){
+    if (lines_before_begin_document[isbn_line - 2] %notin% recommended_citations){
       .report_error(error_message = "Recommended citation not present.")
+      cat("\n")
       stop("Recommended citation should be two lines before ISBN: . ",
-           "I expected the citation\n\t",
-           recommended_citation,
+           "I expected one of the the citations\n\t",
+           paste0(recommended_citations, collapse = "\n\t"),
            "\nbut saw\n\t", lines_before_begin_document[isbn_line - 2])
     }
 

@@ -19,6 +19,8 @@ test_that("Initalisms", {
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok-2.tex"))
   expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-defd-ok-stopwords.tex")),
                c("QXFEoC", "AIAS"))
+  expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-plural.tex")),
+               c("LVR"))
 })
 
 test_that("Initialism checking doesn't fail if at start of sentence", {

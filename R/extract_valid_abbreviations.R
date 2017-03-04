@@ -8,15 +8,17 @@
 
 extract_validate_abbreviations <- function(lines){
   # Note the inner (capturing) parentheses
-  abbrev_pattern <- "\\(([A-Z][A-Za-z]*[A-Z])\\)"
+  abbrev_pattern <- "\\(([A-Z][A-Za-z]*[A-Z])s?\\)"
 
   lines_w_abbrev <- grep(abbrev_pattern, lines, perl = TRUE, value = TRUE)
   if (not_length0(lines_w_abbrev)){
     lines_w_abbrev_last <-
       lines_w_abbrev %>%
       gsub("[{,.]", " ", x = ., perl = TRUE) %>%
-      gsub("\\s+(?:(?:of)|(?:and)|(?:the))\\s+", " ", x = ., perl = TRUE) %>%
+      gsub("\\s+(?:(?:of)|(?:and)|(?:the)|(?:to))\\s+", " ", x = ., perl = TRUE) %>%
       gsub("\\s+", " ", x = ., perl = TRUE) %>%
+      # drop the plural
+      gsub("s)", ")", x = ., fixed = TRUE) %>%
       # Split if ends with A-Z)
       strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
       unlist %>%
@@ -28,6 +30,8 @@ extract_validate_abbreviations <- function(lines){
       # Exclude this line:
       # gsub("\\s+(?:(?:of)|(?:and)|(?:the))\\s+", " ", x = ., perl = TRUE) %>%
       gsub("\\s+", " ", x = ., perl = TRUE) %>%
+      # drop the plural
+      gsub("s)", ")", x = ., fixed = TRUE) %>%
       # Split if ends with A-Z)
       strsplit(split = "(?<=([A-Z]\\)))", perl = TRUE) %>%
       unlist %>%
@@ -37,9 +41,9 @@ extract_validate_abbreviations <- function(lines){
       expected_abbrev_with_stops <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
     data.table(
       line = lines_w_abbrev_last,
-      abbrev = gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\2", lines_w_abbrev_last, perl = TRUE),
-      prefix = trimws(gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\1", lines_w_abbrev_last, perl = TRUE)),
-      prefix_incl_stops = trimws(gsub(paste0("^(.*)", abbrev_pattern, "$"), "\\1", lines_w_abbrev_last_incl_stops, perl = TRUE))
+      abbrev = gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\2", lines_w_abbrev_last, perl = TRUE),
+      prefix = trimws(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last, perl = TRUE)),
+      prefix_incl_stops = trimws(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last_incl_stops, perl = TRUE))
       ) %>%
       # Look at the n words previous where n is the nchar
       .[, nchars_abbrev := nchar(abbrev)] %>%

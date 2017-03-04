@@ -2,6 +2,7 @@ context("Footnote typography")
 
 test_that("Valid typography passes", {
   expect_null(check_footnote_typography("valid-footnote-typography.tex"))
+  expect_null(check_footnote_typography("./fnote-typogr/ok-ends-with-dbl-quote.tex"))
 })
 
 test_that("Invalid typography stops", {

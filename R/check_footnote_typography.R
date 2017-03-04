@@ -47,6 +47,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
   lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)
   lines <- gsub("\\\\footnote(?![{])", "\\\\fnote\\1", lines, perl = TRUE)
+  # Treat double quotes as singles (for checking whether footnote ends in full stop.)
+  lines <- gsub("''", "'", lines, perl = TRUE)
   
   # More than one footnote on a line won't be good.
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
@@ -178,8 +180,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     }
 
     if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", "?")){
-      # OK if full stop is before parenthesis.
-      if (not(OR(AND(split_line_after_footnote[footnote_closes_at - 1] == ")",
+      # OK if full stop is before parenthesis or quotes.
+      if (not(OR(AND(split_line_after_footnote[footnote_closes_at - 1] %in% c(")", "'"),
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'")),
                  AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                      split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'"))))){

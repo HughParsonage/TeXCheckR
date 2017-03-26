@@ -330,7 +330,6 @@ check_spelling <- function(filename,
 
     .report_error(line_no = first_wrong_line_no,
                   context = lines[first_wrong_line_no],
-                  preamble = NULL,
                   "\n",
                   "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")

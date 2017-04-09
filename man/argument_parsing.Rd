@@ -33,3 +33,8 @@ Replace nth arguments
 \code{nth_arg_positions} reports the starts and stops of the command for every line.
 This includes the braces (in order to accommodate instances where the argument is empty).
 }
+\examples{
+nth_arg_positions("This is a \\\\textbf{strong} statement.", "textbf")
+replace_nth_LaTeX_argument("This is a \\\\textbf{strong} statement.", "textbf")
+
+}

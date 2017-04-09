@@ -14,3 +14,12 @@ check_quote_marks(filename, .report_error)
 \description{
 Checks whether a closing quote has been used at the start of a word.
 }
+\examples{
+\dontrun{
+  tex_file <- tempfile(fileext = ".tex")
+  cat("This is the wrong 'quote' mark.", file = tex_file)
+  check_quote_marks(tex_file)
+  file.remove(tex_file)
+}
+
+}

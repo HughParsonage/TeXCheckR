@@ -3,6 +3,15 @@
 #' @param filename LaTeX filename.
 #' @param .report_error A function determining how errors will be reported.
 #' @export
+#' 
+#' @examples 
+#' \dontrun{
+#'   tex_file <- tempfile(fileext = ".tex")
+#'   cat("This is the wrong 'quote' mark.", file = tex_file)
+#'   check_quote_marks(tex_file)
+#'   file.remove(tex_file)
+#' }
+#' 
 
 check_quote_marks <- function(filename, .report_error){
   if (missing(.report_error)){

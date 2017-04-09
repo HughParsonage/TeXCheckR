@@ -3,7 +3,14 @@
 #' @param ignore.lines Lines to ignore (for example, those using the word 'footnote').
 #' @param .report_error A function to provide context to any errors.
 #' @return Called for its side-effect.
-#' @details This function when applied to a LaTeX file will throw an error if: (1) footnotes
+#' @details See \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for full set of error conditions.
+#' @examples 
+#' \dontrun{
+#'   tex_file <- tempfile(fileext = ".tex")
+#'   cat("Footnote not ending with full stop.\\footnote{No sentence}", file = tex_file)
+#'   check_footnote_typography(tex_file)
+#' }
+#' 
 #' @export
 
 check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error){

@@ -20,5 +20,13 @@ Called for its side-effect.
 Check footnote typography
 }
 \details{
-This function when applied to a LaTeX file will throw an error if: (1) footnotes
+See \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for full set of error conditions.
+}
+\examples{
+\dontrun{
+  tex_file <- tempfile(fileext = ".tex")
+  cat("Footnote not ending with full stop.\\\\footnote{No sentence}", file = tex_file)
+  check_footnote_typography(tex_file)
+}
+
 }

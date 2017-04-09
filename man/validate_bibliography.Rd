@@ -2,7 +2,7 @@
 % Please edit documentation in R/validate_bibliography.R
 \name{validate_bibliography}
 \alias{validate_bibliography}
-\title{Validate bibliography according Grattan style}
+\title{Validate bibliography according to Grattan style}
 \usage{
 validate_bibliography(path = ".", file = NULL, .report_error)
 }
@@ -17,5 +17,29 @@ validate_bibliography(path = ".", file = NULL, .report_error)
 \code{NULL} if bibliography validated.
 }
 \description{
-Validate bibliography according Grattan style
+Validate bibliography according to Grattan style
+}
+\details{
+This is a highly fastidious test of the bibliography. Useful for collaboration to ensure consistent style.
+}
+\examples{
+\dontrun{
+bib_temp <- tempfile(fileext = ".bib")
+url_bib <- 
+  paste0("https://raw.githubusercontent.com/HughParsonage/",
+         "grattex/e6cab97145d38890e44e83d122e995e3b8936fc6",
+         "/bib/Grattan-Master-Bibliography.bib")
+
+download.file(url_bib, destfile = bib_temp)
+validate_bibliography(file = bib_temp)
+
+bib_temp <- tempfile(fileext = ".bib")
+url_bib <- 
+  paste0("https://raw.githubusercontent.com/HughParsonage/",
+         "grattex/8f7f52a28789d12a363ceb30cea3b41f590ae58a",
+         "/bib/Grattan-Master-Bibliography.bib")
+download.file(url_bib, destfile = bib_temp)
+validate_bibliography(file = bib_temp)
+}
+
 }

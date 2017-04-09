@@ -1,4 +1,4 @@
-#' Spellchecker for Grattan reports
+#' Spellchecker
 #'
 #' @param filename Path to a LaTeX file to check.
 #' @param pre_release Should the document be assumed to be final?
@@ -36,6 +36,15 @@
 #' \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
 #' Some checks have been omitted in this package.
 #' 
+#' @examples 
+#' 
+#' \dontrun{
+#' url_bib <- 
+#' paste0("https://raw.githubusercontent.com/HughParsonage/",
+#'        "grattex/e6cab97145d38890e44e83d122e995e3b8936fc6/",
+#'        "Report.tex")
+#' check_spelling(url_bib)
+#' }
 #' 
 #' @export
 #' 

@@ -5,12 +5,15 @@
 \title{Spellchecker for Grattan reports}
 \usage{
 check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
-  known.correct = NULL, known.wrong = NULL, bib_files, .report_error)
+  known.correct = NULL, known.wrong = NULL, bib_files, check_etcs = TRUE,
+  .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
 
-\item{pre_release}{Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded.}
+\item{pre_release}{Should the document be assumed to be final?
+Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits \code{add_to_dictionary} to be
+present outside the document preamble.}
 
 \item{ignore.lines}{Integer vector of lines to ignore (due to possibly spurious errors).}
 
@@ -20,14 +23,35 @@ check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
 
 \item{bib_files}{Bibliography files (containing possible clues to misspellings).}
 
+\item{check_etcs}{If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)}
+
 \item{.report_error}{A function to provide context to any errors.}
 }
 \value{
-If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
+Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 }
 \description{
 Spellchecker for Grattan reports
 }
 \details{
-Uses the \code{en_AU} hunspell dictionary.
+Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
+in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write
+\code{\% add_to_dictionary: foobaz} on a single line. The advantage of this method is that you can collaborate
+on the document without having to keep track of which spelling errors are genuine. You can also add the 
+directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
+of \code{\\mycmd}.
+
+Other advantages include skipping the contents of certain commands, the spelling of which need not be checked 
+as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments.
+
+The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
+dictionary.  
+
+This function should be quite fast. I aim for less than 500 ms on a real-world report of around 100 pages.
+The function is slower when consulting \code{bib_files}, though I recommend adding authors, titles, etc. 
+explicitly, or using \code{citeauthor} and friends. 
+
+This function is forked from \url{https://github.com/hughparsonage/grattanReporter} to parse reports of the Grattan Institute, Melbourne for errors. See
+\url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
+Some checks have been omitted in this package.
 }

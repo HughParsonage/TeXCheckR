@@ -7,10 +7,22 @@
 any_bib_duplicates(bib.files, .report_error)
 }
 \arguments{
-\item{bib.files}{File to check for duplicates}
+\item{bib.files}{Files to check for duplicates}
 
 \item{.report_error}{How errors should be logged.}
 }
+\value{
+Called for its side-effect. If duplicates are detected, the first six are printed as a \code{data.table};
+otherwise, \code{NULL}, invisibly.
+}
 \description{
 Are any bib entries duplicated?
+}
+\details{
+This function is very fastidious about the format of \code{bib.files}.
+Run \code{\link{lint_bib}} (noting that this will overwrite your bibliography) if it complains.
+
+This function finds exact duplicates in the author title date/year and volume fields.
+Note that it is not possible in general to detect actual duplicates; you will still
+need to inspect the printed bibliography.
 }

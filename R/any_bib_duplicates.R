@@ -1,6 +1,14 @@
 #' Are any bib entries duplicated?
-#' @param bib.files File to check for duplicates
+#' @param bib.files Files to check for duplicates
 #' @param .report_error How errors should be logged.
+#' @details This function is very fastidious about the format of \code{bib.files}.
+#' Run \code{\link{lint_bib}} (noting that this will overwrite your bibliography) if it complains.
+#' 
+#' This function finds exact duplicates in the author title date/year and volume fields.
+#' Note that it is not possible in general to detect actual duplicates; you will still
+#' need to inspect the printed bibliography. 
+#' @return Called for its side-effect. If duplicates are detected, the first six are printed as a \code{data.table};
+#' otherwise, \code{NULL}, invisibly.
 #' @export 
 
 

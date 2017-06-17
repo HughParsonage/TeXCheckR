@@ -9,6 +9,7 @@
 #' @param known.wrong Character vector of patterns known to be wrong.
 #' @param bib_files Bibliography files (containing possible clues to misspellings).
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
+#' @param dict_lang Passed to \code{hunspell::dictionary}.
 #' @param .report_error A function to provide context to any errors.
 #' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 #' @importFrom hunspell hunspell
@@ -56,6 +57,7 @@ check_spelling <- function(filename,
                            known.wrong = NULL,
                            bib_files,
                            check_etcs = TRUE,
+                           dict_lang = "en_GB",
                            .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
@@ -370,14 +372,14 @@ check_spelling <- function(filename,
   
   words_to_add <- c(valid_abbreviations, paste0(valid_abbreviations, "s"), words_to_add)
 
-  parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
+  parsed <- hunspell(lines, format = "latex", dict = dictionary(dict_lang))
   all_bad_words <- unlist(parsed)
 
-  all_bad_words<- setdiff(all_bad_words,
-                          c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE,
-                            correctly_spelled_words,
-                            words_to_add,
-                            known.correct))
+  all_bad_words <- setdiff(all_bad_words,
+                           c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE,
+                             correctly_spelled_words,
+                             words_to_add,
+                             known.correct))
 
   are_misspelt <- vapply(parsed, not_length0, logical(1))
 

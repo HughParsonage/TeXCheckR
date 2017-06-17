@@ -6,7 +6,7 @@
 \usage{
 check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
   known.correct = NULL, known.wrong = NULL, bib_files, check_etcs = TRUE,
-  .report_error)
+  dict_lang = "en_GB", .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
@@ -24,6 +24,8 @@ present outside the document preamble.}
 \item{bib_files}{Bibliography files (containing possible clues to misspellings).}
 
 \item{check_etcs}{If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)}
+
+\item{dict_lang}{Passed to \code{hunspell::dictionary}.}
 
 \item{.report_error}{A function to provide context to any errors.}
 }

@@ -1,7 +1,7 @@
 context("lint_bib")
 
 test_that("Correctly tidies known input", {
-  skip("Not supported in R 3.5.0.")
+  # skip("Not supported in R 3.5.0.")
   
   if (file.exists("lint_bib_out.bib")) file.remove("lint_bib_out.bib")
   lint_bib("lint_bib_in.bib", "lint_bib_out.bib")

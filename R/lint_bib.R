@@ -6,6 +6,9 @@
 #' @export
 
 lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
+  if (getRversion() > "3.4.0") {
+    stop("Not supported in R 3.5.0")
+  }
   stopifnot(length(bib_file) == 1L, grepl("\\.bib$", bib_file, perl = TRUE))
 
   bib <- readLines(bib_file, encoding = "UTF-8", warn = FALSE)

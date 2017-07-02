@@ -43,13 +43,15 @@ on the document without having to keep track of which spelling errors are genuin
 directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
 of \code{\\mycmd}.
 
-Other advantages include skipping the contents of certain commands, the spelling of which need not be checked 
-as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments.
+Other advantages included skipping the contents of certain commands, the spelling of which need not be checked 
+as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. These
+have been fixed by \code{hunspell} since then.
 
 The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
 dictionary.  
 
-This function should be quite fast. I aim for less than 500 ms on a real-world report of around 100 pages.
+This function should be quite fast, but slower than \code{hunspell::hunspell} (which it invokes). 
+I aim for less than 500 ms on a real-world report of around 100 pages.
 The function is slower when consulting \code{bib_files}, though I recommend adding authors, titles, etc. 
 explicitly, or using \code{citeauthor} and friends. 
 

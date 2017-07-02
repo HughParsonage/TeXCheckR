@@ -1,0 +1,72 @@
+\documentclass[a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{RJournal}
+\usepackage{amsmath,amssymb,array}
+\usepackage{booktabs}
+
+
+
+\begin{document}
+%% do not edit, for illustration only
+\sectionhead{Contributed research article}
+\volume{XX}
+\volnumber{YY}
+\year{20ZZ}
+\month{AAAA}
+\begin{article}
+\title{TeXCheckR}
+\author{Hugh Parsonage}
+
+\maketitle
+
+\abstract{
+Checking a report for typos is a task for computers. 
+Yet tools used for proof-reading are often misused or not appropriate for the task.
+The package TeXCheckR is designed to provide flexible rules, enforced rigidly, for \LaTeX{} documents.
+}
+
+
+
+\section{Introduction}
+Everyone makes typos.
+And everyone notices them.
+Although some tasks in the domain of proof-reading are only possible or still most efficiently done by humans, many tasks would be far better delegated to computers.
+
+Spell-checkers are interesting in this respect. 
+A few subtleties aside, there is nothing difficult in a writing a spell-checker: collect all the words in a document, find the ones that are not matched with a given dictionary, and return those errors. 
+However, I claim that the presence of typos in published works shows that current applications are failing this basic task.
+In practice there are two difficulties than typical spell-checkers do poorly: 
+(1) the ability to add words to the dictionary of the \emph{document}, and
+(2) the ability to enforce spell-checking on authors.
+Put another way, spell-checkers are too independent of the document being written, do not provide enough flexibility to authors, and do not have enough authority over authors.
+
+There are other typing errors that occur when producing \LaTeX{} documents in particular, such as accidental whitespace, as well as rules concerning style -- for example, requiring all figures and tables are referenced in the body text. 
+
+\section{hunspell}
+The hunspell package does the bulk of the work in checking the spelling.
+However, hunspell cannot overcome the two difficulties mentioned in the introduction.
+Firstly, hunspell does an admirable job in parsing \LaTeX{} documents, but throws spurious errors that are relevant to \LaTeX{}.
+For example, the contents of \verb=\label= are not printed, and indeed authors using conventional \LaTeX{} style will enter non-dictionary words; similarly, 
+the contents of \texttt{biblatex} commands are very unlikely to be spelled correctly.
+
+Secondly, hunspell does not provide authors with the ability to add words to its dictionaries on-the-fly or in documents themselves. 
+In large documents, or documents with a technical focus, this leads to numerous false positives, which, in practice are typically ignored, which defeat its purpose.
+
+Lastly, hunspell may provide false negatives: in certain cases, an author may want to forbid certain spellings from appearing to enforce a style.
+Both ``authorise'' and ``authorize'' are equally valid in Australian and British English, but an author should be able to pick one and flag the other as a spelling error. 
+
+\subsection{Acronyms and initalisms}
+TeXCheckR parses the document for acronyms, so that authors do not have to add these to the dictionary.
+
+% \begin{example}
+
+% \end{example}
+\address{Author One\\
+  Affiliation\\
+  Address\\
+  Country\\
+  (ORCiD if desired)\\
+  \email{author1@work}}
+\end{article}
+\end{document}

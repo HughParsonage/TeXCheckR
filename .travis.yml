@@ -13,6 +13,7 @@ r_packages:
 - drat
 - devtools
 - roxygen2
+- hunspell
 
 after_success:
 - Rscript -e 'devtools::test()'

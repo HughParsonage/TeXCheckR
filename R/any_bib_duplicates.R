@@ -16,10 +16,29 @@ any_bib_duplicates <- function(bib.files, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  key <- field <- NULL
+  
+  .fread_bib <- function(file.bib) {
+    fread_bib(file.bib) %>% 
+      .[, bib_file := file.bib]
+  }
+  
+  KEY <- key <- field <- bib_file <- NULL
   bibDT <- 
-    lapply(bib.files, fread_bib) %>% 
-    rbindlist(use.names = TRUE, fill = TRUE) %>%
+    lapply(bib.files, .fread_bib) %>% 
+    rbindlist(use.names = TRUE, fill = TRUE) %>% 
+    .[, KEY := toupper(key)]
+  
+  if (anyDuplicated(bibDT, by = c("KEY", "field"))) {
+    first_duplicate_entry <- bibDT[anyDuplicated(bibDT, by = c("KEY", "field"))]
+    print(first_duplicate_entry)
+    .report_error(line_no = first_duplicate_entry$line_no,
+                  error_message = "Duplicate bib key used.",
+                  advice = "Delete the duplicate entry if duplicate; otherwise, choose a different key for above entry.")
+    stop("Duplicate bib key used.")
+  }
+  
+  bibDT <-
+    bibDT %>%
     .[field != "abstract"] %>%
     dcast.data.table(formula = key ~ field, value.var = "value")
   

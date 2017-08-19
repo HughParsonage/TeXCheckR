@@ -1,8 +1,5 @@
 #' Functions for parsing .bib files
 #' @name bib_parser
-#' @import data.table
-#' @importFrom dplyr if_else
-#' @importFrom dplyr coalesce
 #' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
@@ -41,8 +38,8 @@ fread_bib <- function(file.bib){
   bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
   # Make sure the sep is detected (in case of >author   ={John Daley}<)
-  bib_just_key_and_fields <- gsub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
-  bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
+  bib_just_key_and_fields <- sub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
+  bib_just_key_and_fields <- sub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
 
@@ -57,15 +54,15 @@ fread_bib <- function(file.bib){
   bibDT[, is_key := field == "key"]
 
   key_line <- NULL
-  bibDT[, key_line := if_else(is_key, value, NA_character_)]
+  bibDT[(is_key), key_line := value]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
   bibDT[, x := NULL]
   bibDT[, lapply(.SD, trimws)]
-  bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
+  bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
   bibDT[, field := tolower(trimws(field))]
-  bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
   dups <- NULL
   duplicate_fields <-

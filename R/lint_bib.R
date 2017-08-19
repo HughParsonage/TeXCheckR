@@ -2,7 +2,7 @@
 #' @param bib_file The bib file to tidy.
 #' @param outfile Optionally, the tidied bib file to write to.
 #' @param leading_spaces The number of spaces before each field within an entry.
-#' @details Aligns the equals signs in \code{bib_file} and puts a constant
+#' @details Aligns the equals signs in \code{bib_file} and ensures all fields have a trailing comma.
 #' @export
 
 lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
@@ -10,6 +10,11 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
   stopifnot(length(bib_file) == 1L, grepl("\\.bib$", bib_file, perl = TRUE))
 
   bib <- readLines(bib_file, encoding = "UTF-8", warn = FALSE)
+  # Correct fields
+  # coalesce journal --> journaltitle 
+  bib <- gsub("^\\s*journaltitle\\s*[=]", "  journal =", bib, perl = TRUE)
+  # Remove things like type = {report}, which are redundant
+  bib <- bib[!grepl("^\\s*type\\s*[=]", bib, perl = TRUE)]
 
   is_field <- grepl("=", bib, fixed = TRUE)
   field_width <- nchar(trimws(gsub("[=].*$", "", bib, perl = TRUE)))

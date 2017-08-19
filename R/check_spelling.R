@@ -143,12 +143,12 @@ check_spelling <- function(filename,
   }
 
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))",
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))",
                                lines_after_begin_document,
                                perl = TRUE))
 
   if (inputs_in_doc > 0){
-    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics)|(?:pdf))))[{](.*(?:\\.tex)?)[}]$",
+    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",
                    lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",
                                                     lines_after_begin_document,

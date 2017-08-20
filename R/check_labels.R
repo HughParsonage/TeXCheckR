@@ -6,11 +6,14 @@
 #' \code{box:},
 #' \code{chap:},
 #' \code{sec:},
+#' \code{eq:},
 #' \code{subsec:},
 #' \code{subsubsec:},
 #' \code{para:}
 #' \code{paragraph:}.
-#' Checks also that chapter labels are marked with \code{chap:}.
+#' Checks also that chapter labels are marked with \code{chap:}. 
+#' (N.B. although each label must have a prefix, it must not necessarily the \emph{right} prefix; 
+#' for example, a table caption may have prefix \code{tbl:}.)
 #' @param .report_error The function to provide context to the error.
 #' @return \code{NULL}, invisibly if labels check out. An error otherwise.
 #' @export
@@ -48,7 +51,7 @@ check_labels <- function(filename, .report_error){
 
   wrong_lines <-
     lines_with_labels %>%
-    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn))[:]",
+    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn)|(eq))[:]",
              label_contents,
              perl = TRUE)]
 

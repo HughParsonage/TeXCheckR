@@ -24,9 +24,12 @@ Checks each label has a prefix and the prefix is one of the following:
 \code{box:},
 \code{chap:},
 \code{sec:},
+\code{eq:},
 \code{subsec:},
 \code{subsubsec:},
 \code{para:}
 \code{paragraph:}.
-Checks also that chapter labels are marked with \code{chap:}.
+Checks also that chapter labels are marked with \code{chap:}. 
+(N.B. although each label must have a prefix, it must not necessarily the \emph{right} prefix; 
+for example, a table caption may have prefix \code{tbl:}.)
 }

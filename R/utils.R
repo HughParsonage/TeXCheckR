@@ -6,6 +6,9 @@ OR <- `||`
 
 not_length0 <- function(x) as.logical(length(x))
 
+lead <- function(x, n = 1L, default = NA) shift(x, type = "lead", n = n, fill = default)
+ lag <- function(x, n = 1L, default = NA) shift(x, type = "lag", n = n, fill = default)
+
 # takes a vector of froms and tos and takes their union
 seq.default.Vectorized <- function(x, y)
   Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y)

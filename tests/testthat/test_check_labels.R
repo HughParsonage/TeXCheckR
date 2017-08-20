@@ -15,5 +15,5 @@ test_that("Stops when chapref not used", {
 })
 
 test_that("Stops when Chapref is unlinked", {
-  expect_error(check_all_figs_tbls_refd("./check-labels/Chapref-not-linked.tex"), regexp = "empty cross-reference")
+  expect_error(figs_tbls_unrefd("./check-labels/Chapref-not-linked.tex"), regexp = "empty cross-reference")
 })

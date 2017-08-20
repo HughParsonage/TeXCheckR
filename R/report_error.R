@@ -1,18 +1,11 @@
 #' Report errors to console and twitter
 #' @name report_error
-#' @param preamble Message to appear before other messages.
 #' @param line_no The line number locating the source of the error.
 #' @param context THe content of the file to provide context to the error.
 #' @param error_message The error message to display beyond the console.
 #' @param advice Advice to the user: how should the detected error be resolved in general?
-#' @param report_name Name of project whose errors are being reported.
 #' @param build_status What should the build status be reported as?
-#' @param authors Text to alert the authors (such as a twitter handle).
-#' @param globalEnv The environment in which tweet statuses should be assigned. 
-#' The default, \code{NULL}, is an error. The environment must be set by the user
-#' to comply with (reasonable) CRAN requirements to not interfere with the user's 
-#' environment.
-#' @importFrom twitteR updateStatus
+#' @param log_file Optionally, path to a log file on which \code{error_message} will be written. 
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 
@@ -22,8 +15,6 @@ report2console <- function(line_no = NULL,
                            error_message = NULL,
                            advice = NULL,
                            build_status = NULL,
-                           authors = NULL,
-                           report_name = NULL,
                            extra_cat_ante = NULL,
                            extra_cat_post = NULL, 
                            log_file = NULL){

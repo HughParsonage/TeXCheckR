@@ -6,9 +6,8 @@
 \title{Report errors to console and twitter}
 \usage{
 report2console(line_no = NULL, context = NULL, error_message = NULL,
-  advice = NULL, build_status = NULL, authors = NULL,
-  report_name = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
-  log_file = NULL)
+  advice = NULL, build_status = NULL, extra_cat_ante = NULL,
+  extra_cat_post = NULL, log_file = NULL)
 }
 \arguments{
 \item{line_no}{The line number locating the source of the error.}
@@ -21,20 +20,11 @@ report2console(line_no = NULL, context = NULL, error_message = NULL,
 
 \item{build_status}{What should the build status be reported as?}
 
-\item{authors}{Text to alert the authors (such as a twitter handle).}
-
-\item{report_name}{Name of project whose errors are being reported.}
-
 \item{extra_cat_ante}{Character vector extra messages (placed before \code{context}).}
 
 \item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
 
-\item{preamble}{Message to appear before other messages.}
-
-\item{globalEnv}{The environment in which tweet statuses should be assigned. 
-The default, \code{NULL}, is an error. The environment must be set by the user
-to comply with (reasonable) CRAN requirements to not interfere with the user's 
-environment.}
+\item{log_file}{Optionally, path to a log file on which \code{error_message} will be written.}
 }
 \description{
 Report errors to console and twitter

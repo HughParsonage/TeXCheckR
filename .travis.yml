@@ -17,9 +17,8 @@ r_packages:
 after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'
-- test $TRAVIS_PULL_REQUEST == "false" && 
-    test $TRAVIS_BRANCH == "master" && 
-    bash deploy.sh
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+  deploy.sh
 env:
   global:
-    secure: VIqdU9J8GeIm1kg/CAAiQORwK3yweDprzEVgsUBKXy2B93McsREmvP320/e9ZS27oQx7wgAyqi1N8rVNy3Qe3cK3ZaNDI5zSkg6spkhy+20eRFaWGYoTHR/7V2MabYDKh1BWiyrvBfUnuMdKHwHAoXMmsm36WBkeNIUCQrgpGtolFJEmlO4/KsJe6xCIftwLE2R3jBKN301Rcli6FfPrv6q5DPpZxXBjAK4J5fuQwTMEe5VjdGZ97UNcpLAB9507aK+hn3gR59AYiWJUEkziv81Oq3SbWBKX4wKyd+Q0SR++92FBqRmQnKlHsIW70e7zzXV7HYlqI/TuejiNTbe+t+hjH8N6saiBe2zEW9vE2FuxNMlR09fs8ZhgCAYUGftlLiCnwHOl4t/SrkFInEw7vfXQZvP3c8B3EAumUwYA3LWHCnRGu8NE5bOFS+SlX5z5YUbpDN717TWJbOL6YJZPk+8d4r++V3fXM3wMBouA4WyD2tQmcnw6HwCOP5325jorM8vOgKnPz22zBt217ct6i/G9Mkc1ZHrV8QqRuLS4MNP5JW1osBjYgAa41wor/R3rMisVs8/LY23Pk7Z4JZgxuoJ/mJbE1ljMWxTCEbx4QUOL9MWWV6M3i+XnJLqy0j2jfcN3dsI9vdy9Y6FHxgOsbKbm4ScQjmdnc5xaXtPZEpI=
+  - secure: HuXY7LZ9bpqFmhVZ8TgWddMz0akvdBOj2vKkC0qbxBC7kiowTYJb94aJBjAmskC+Jjy7d/h5LiP7Qbeec74d6wzptIBPVXY1FO1luFlgdnSPB75n0bInMZ6b+mFdB+8Y5iwQqpEFHZoNRur8JOyt+uEdwwZXcYacFPTJwMtlM9WiaPBsdmglyEtdcCGJQ9PERFtVsXEMh06Xt1XDcvlWHuwJVLToXA/G9ml/tiwrj8dJDKTrmH8abYAWKhy42S1PEAeh4GKwYrEgriQPRKlPIt4XDvSB6hFv30D4Q+CkD1vIp+Es5DZIiygCu7KmDhuKv0QNDvu6O6akji3eDeCPj5hA3jYp/SkeD34aRNmq1N9gKqM+qCi0UJna2cGmjjUkEPqySzHt0rY3mFS7joo7dxUdbgTbVt3/Ep7W3ErbBEpZ+4G41xqPoKYnlIWzknmbBH8dFSbdthXGTFR7Es0V+8SObqXnK5gKI5wdueFeVLfV1ky6D/Lw5Xwx7cDP2I24iIYf263fS9B9CDnjB3dMQXfNARbqTOQZux9KbTqko7JGAuGFJObO0x0mctQUBeGl8H2po2fGhpjXdL7A9azvgTK5MmD/za+Cji8ScN4TXaN4mGgjNO/qBhxXyWwZs2iz8vMVvO+eVtt7hxsliipM3Q8+x0VlIrP/Ff1ZCAiH1Rs=

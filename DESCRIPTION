@@ -19,6 +19,7 @@ Imports:
   clisymbols, 
   crayon,
   readr,
+  rstudioapi,
   zoo
 LazyData: TRUE
 RoxygenNote: 6.0.1

@@ -5,12 +5,17 @@
 \alias{report2console}
 \title{Report errors to console and twitter}
 \usage{
-report2console(line_no = NULL, context = NULL, error_message = NULL,
-  advice = NULL, build_status = NULL, extra_cat_ante = NULL,
-  extra_cat_post = NULL, log_file = NULL)
+report2console(file = NULL, line_no = NULL, column = NULL,
+  context = NULL, error_message = NULL, advice = NULL,
+  build_status = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
+  rstudio = FALSE, log_file = NULL)
 }
 \arguments{
+\item{file}{The file in which the error occurred.}
+
 \item{line_no}{The line number locating the source of the error.}
+
+\item{column}{The position on the line to identify the error (usually following the error).}
 
 \item{context}{THe content of the file to provide context to the error.}
 
@@ -23,6 +28,8 @@ report2console(line_no = NULL, context = NULL, error_message = NULL,
 \item{extra_cat_ante}{Character vector extra messages (placed before \code{context}).}
 
 \item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
+
+\item{rstudio}{If available, should the report be allowed to modify the RStudio session?}
 
 \item{log_file}{Optionally, path to a log file on which \code{error_message} will be written.}
 }

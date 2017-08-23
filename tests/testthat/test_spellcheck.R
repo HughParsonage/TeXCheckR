@@ -59,3 +59,16 @@ test_that("Includepdf doesn't result in a failed include message", {
   expect_null(check_spelling("./spelling/includepdf-ok.tex"))
 })
 
+test_that("Should error", {
+  expect_error(check_spelling("spelling/misc-error.tex"), regexp = "Spellcheck")
+  expect_error(check_spelling("spelling/typo-suggest.tex"), regex = "Spellcheck")
+})
+
+test_that("RStudio API", {
+  skip_if_not(!interactive())
+  expect_error(check_spelling("spelling/typo-suggest.tex", rstudio = TRUE),
+               regexp = "Spellcheck")
+  expect_false(Sys.info()['sysname'] %in% "Windows" &&
+                  utils::readClipboard() != "Sydney")
+})
+

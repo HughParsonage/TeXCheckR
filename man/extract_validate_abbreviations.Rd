@@ -13,7 +13,7 @@ extract_validate_abbreviations(lines)
 Character vector of abbreviations of the form (ABC)
 }
 \description{
-Extract valid abbreviations and initialisms
+Extracts abbrevations which are preceded by the full text (\emph{e.g.} 'The Quebec Xylophone Enterprise Foundation (QXEF)').
 }
 \details{
 Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \code{(ABC)} where the first letters

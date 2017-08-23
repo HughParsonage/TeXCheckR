@@ -10,6 +10,7 @@
 #' @param bib_files Bibliography files (containing possible clues to misspellings).
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
+#' @param rstudio Use the RStudio API?
 #' @param .report_error A function to provide context to any errors.
 #' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
 #' @importFrom hunspell hunspell
@@ -60,9 +61,14 @@ check_spelling <- function(filename,
                            bib_files,
                            check_etcs = TRUE,
                            dict_lang = "en_GB",
+                           rstudio = FALSE,
                            .report_error){
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(file = filename, ..., rstudio = TRUE)
+    } else {
+      .report_error <- function(...) report2console(...)
+    }
   }
 
   file_path <- dirname(filename)
@@ -280,6 +286,10 @@ check_spelling <- function(filename,
                                       command_name = "begin.(?:(?:(?:very)?small)|(?:big))box[*]?[}]",
                                       n = 2L,
                                       replacement = "box:key")
+  lines <- replace_nth_LaTeX_argument(lines,
+                                      command_name = "Vrefrange",
+                                      n = 2L,
+                                      replacement = "second range key")
 
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
@@ -320,6 +330,8 @@ check_spelling <- function(filename,
                   "|",
                   "(?:Commonwealth)",
                   "|",
+                  "(?:Australian)",
+                  "|",
                   "(?:N(?:ew )?S(?:outh )?W(?:ales)?)",
                   "|",
                   "(?:Vic(?:torian?)?)",
@@ -332,8 +344,8 @@ check_spelling <- function(filename,
                   "|",
                   "(?:N(?:orthern? )?T(?:erritory)?)",
                   "|",
-                  "(?:A(?:ustralian )?|C(?:apital )?T(?:erritory)?)"),
-           ") government",
+                  "(?:A(?:ustralian )?C(?:apital )?T(?:erritory)?)"),
+           ") government(?!s)",
            "(?!\\s(?:schools?))")
 
   if (any(grepl(lc_govt_pattern, lines, perl = TRUE))){
@@ -461,12 +473,21 @@ check_spelling <- function(filename,
             }
 
           .report_error(line_no = line_w_misspell,
+                        column = chars_b4_badword + nchar_of_badword + 1L,
                         context = context,
                         error_message = paste0("Spellcheck failed: '", bad_word, "'"),
                         extra_cat_post = c("\n",
                                            rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
                                            rep("^", nchar_of_badword),
                                            "\n"))
+          # Use %in% to avoid named logical var.
+          if (rstudio && Sys.info()['sysname'] %in% "Windows") {
+            suggested <- hunspell::hunspell_suggest(words = bad_word)[[1]]
+            # Use charToRaw to avoid a trailing newline.
+            # The extra space will be discarded (for some reason).
+            utils::writeClipboard(charToRaw(paste0(suggested[1], " ")))
+            cat("Suggested: ", suggested)
+          }
           stop("Spellcheck failed on above line with '", bad_word, "'")
         }
       }

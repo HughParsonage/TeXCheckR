@@ -16,11 +16,12 @@ fread_bib <- function(file.bib){
     read_lines(file.bib) %>%
     # Avoid testing }\\s+$ rather than just == }
     trimws %>%
-    .[!grepl("@Comment", ., fixed = TRUE)]
+    .[substr(., 0, 8) != "@Comment"]
+  
   is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
   is_closing <- bib == "}"
 
-  sep_candidate <- NULL
+  sep <- NULL
   # Can't use = as separator (almost certainly occurs in a URL)
   # Try these:
   for (sep_candidate in c("\t", "^", "|")){
@@ -35,11 +36,11 @@ fread_bib <- function(file.bib){
 
   bib_just_key_and_fields <- bib
   bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
-  bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
+  bib_just_key_and_fields[is_at] <- sub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
   # Make sure the sep is detected (in case of >author   ={John Daley}<)
   bib_just_key_and_fields <- sub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
-  bib_just_key_and_fields <- sub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
+  bib_just_key_and_fields <- sub(" = ", sep, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
 

@@ -1,10 +1,11 @@
 #' Extract valid abbreviations and initialisms
+#' @description Extracts abbrevations which are preceded by the full text (\emph{e.g.} 'The Quebec Xylophone Enterprise Foundation (QXEF)').
 #' @param lines Lines to extract
 #' @return Character vector of abbreviations of the form (ABC)
 #' @details Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \code{(ABC)} where the first letters
 #' of the three words before
 #' (excluding some common words like \code{of}, \code{and}, etc.) are 'a', 'b', 'c'.
-
+#' @export
 
 extract_validate_abbreviations <- function(lines){
   # Note the inner (capturing) parentheses

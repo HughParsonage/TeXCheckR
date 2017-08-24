@@ -1,6 +1,4 @@
 
-`%notin%` <- Negate(`%in%`)
-
 AND <- `&&`
 OR <- `||`
 

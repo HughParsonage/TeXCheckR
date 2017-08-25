@@ -138,10 +138,10 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
                  grep("\\chapter", lines, fixed = TRUE)))
     
     labels_following_chapters <-
-      gsub("^.*\\\\label[{](.*[:][^\\}]*)[}].*$",
-           "\\1",
-           lines[chapter_line_nos],
-           perl = TRUE)
+      sub("^.*\\\\label[{](.*[:][^\\}]*)[}].*$",
+          "\\1",
+          lines[chapter_line_nos],
+          perl = TRUE)
     
     Chapref_targets <-
       grep("\\\\(?:Chapref(?!range))", lines, perl = TRUE, value = TRUE) %>%
@@ -160,10 +160,10 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       strsplit(split = "\\\\(?=(?:topref))", perl = TRUE) %>%
       lapply(function(commands){
         grep("^(?:topref)", commands, perl = TRUE, value = TRUE) %>%
-          gsub(pattern = "^(?:topref)[{]([^\\}]+)[}].*$",
-               replacement = "\\1",
-               x = .,
-               perl = TRUE)
+          sub(pattern = "^(?:topref)[{]([^\\}]+)[}].*$",
+              replacement = "\\1",
+              x = .,
+              perl = TRUE)
       }) %>%
       unlist
     
@@ -172,10 +172,10 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       strsplit(split = "\\\\(?=(?:Chaprefrange))", perl = TRUE) %>%
       lapply(function(commands){
         grep("^(?:Chaprefrange)", commands, perl = TRUE, value = TRUE) %>%
-          gsub(pattern = "^(?:Chaprefrange)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
-               replacement = "\\1",
-               x = .,
-               perl = TRUE)
+          sub(pattern = "^(?:Chaprefrange)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
+              replacement = "\\1",
+              x = .,
+              perl = TRUE)
       }) %>%
       unlist
     
@@ -185,10 +185,10 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       strsplit(split = "\\\\(?=(?:Chaprefrange))", perl = TRUE) %>%
       lapply(function(commands){
         grep("^(?:Chaprefrange)", commands, perl = TRUE, value = TRUE) %>%
-          gsub(pattern = "^(?:Chaprefrange)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
-               replacement = "\\2",
-               x = .,
-               perl = TRUE)
+          sub(pattern = "^(?:Chaprefrange)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
+              replacement = "\\2",
+              x = .,
+              perl = TRUE)
       }) %>%
       unlist
     

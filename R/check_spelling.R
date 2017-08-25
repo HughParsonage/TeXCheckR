@@ -175,7 +175,8 @@ check_spelling <- function(filename,
                                             paste0(input, ".tex")),
                        pre_release = pre_release,
                        known.correct = known.correct,
-                       known.wrong = known.wrong)
+                       known.wrong = known.wrong, 
+                       rstudio = rstudio)
       }
     }
   }
@@ -287,7 +288,7 @@ check_spelling <- function(filename,
                                       n = 2L,
                                       replacement = "box:key")
   lines <- replace_nth_LaTeX_argument(lines,
-                                      command_name = "Vrefrange",
+                                      command_name = "[CVcv]refrange",
                                       n = 2L,
                                       replacement = "second range key")
 

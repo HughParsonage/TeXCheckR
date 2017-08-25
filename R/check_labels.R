@@ -67,7 +67,7 @@ check_labels <- function(filename, .report_error){
   # Check all captions have a label
   caption_without_label <- 
     and(grepl("\\caption{", lines, fixed = TRUE), 
-        !grepl("\\label{", lines, fixed = TRUE))
+        !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines, perl = TRUE))
   
   if (any(caption_without_label)){
     .report_error(line_no = which(caption_without_label)[[1]], 

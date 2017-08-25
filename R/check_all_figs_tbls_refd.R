@@ -90,7 +90,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
         strsplit(split = "(?<![!])\\\\(?=([VCcv]refrange))", perl = TRUE) %>%
         unlist %>%
         grep("^[VCcv]refrange", . , value = TRUE, perl = TRUE) %>%
-        sub("^Vrefrange\\{(.*?)\\}\\{(.*?)\\}.*$", "\\1 \\2", x = ., perl = TRUE) %>%
+        sub("^[VCcv]refrange\\{(.*?)\\}\\{(.*?)\\}.*$", "\\1 \\2", x = ., perl = TRUE) %>%
         strsplit(split = " ", fixed = TRUE)
       
       # Now need to all the ranges in case the Vrefrange
@@ -99,9 +99,12 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       # LaTeX guarantes that the figure order is the same 
       # *for the same environment* but not for figure*
       refrange_extent <- function(el) {
-        lower <- which(all_label_contents == el[1])
-        upper <- which(all_label_contents == el[2])
-        all_label_contents[seq.int(lower, upper)]
+        # In case the VCrefrange doesn't include a captioned counter
+        if (all(el %in% all_label_contents)) {
+          lower <- which(all_label_contents == el[1])
+          upper <- which(all_label_contents == el[2])
+          all_label_contents[seq.int(lower, upper)]
+        }
       }
       
       refrange_extents <- 
@@ -111,7 +114,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       
       ref_contents <- c(refrange_extents, ref_contents)
       
-      if (any(label_contents %notin% ref_contents)) {
+      if (is.null(label_contents) || any(label_contents %notin% ref_contents)) {
         fig_tbl_labels <-
           paste0("ref{", grep("^((fig)|tbl)[:]",
                               label_contents,

@@ -4,6 +4,7 @@ warnings_are_errors: true
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
   needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize
+- Rscript -e 'install.packages("TeXCheckR", repos = "https://hughparsonage.github.io/drat", type = "source")'
 addons:
   apt:
     packages:

@@ -15,6 +15,7 @@
 #' @importFrom utils download.file
 #' @importFrom stats complete.cases
 #' @importFrom readr read_lines
-#' @eimportFrom hutils %notin%
+#' @importFrom hutils %notin%
+#' @importFrom hutils neither
 NULL
 

@@ -9,19 +9,30 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
   
   stopifnot(length(bib_file) == 1L, grepl("\\.bib$", bib_file, perl = TRUE))
 
-  bib <- readLines(bib_file, encoding = "UTF-8", warn = FALSE)
+  bib <- 
+    readLines(bib_file, encoding = "UTF-8", warn = FALSE) %>%
+    trimws
   # Correct fields
   # coalesce journal --> journaltitle 
-  bib <- gsub("^\\s*journaltitle\\s*[=]", "  journal =", bib, perl = TRUE)
+  bib <- gsub("^journaltitle\\s*[=]", "  journal =", bib, perl = TRUE)
   # Remove things like type = {report}, which are redundant
-  bib <- bib[!grepl("^\\s*type\\s*[=]", bib, perl = TRUE)]
-
+  bib <- bib[!grepl("^type\\s*[=]", bib, perl = TRUE)]
+  
+  # Fields like date   = 2006 
+  # i.e. no braces
+  bib <- gsub("[=]\\s*([^{},]+),?$", "= {\\1},", bib, perl = TRUE)
+  
+  # Now ensure that all fields occupy a single line:
+  bib <- combine_bib_fields(bib)
+  
   is_field <- grepl("=", bib, fixed = TRUE)
   field_width <- nchar(trimws(gsub("[=].*$", "", bib, perl = TRUE)))
-
+  
   widest_field <- max(field_width[is_field])
 
   out <- bib
+  
+  
 
   # Vectorized gsub. Required because spaces_required is 
   # different every line.
@@ -29,27 +40,28 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
     # Replace every field line with
     # two spaces + field name + spaces required for widest field + space
     if (is_field[line]) {
-      spaces_req <- widest_field - field_width[line]
-      if (getRversion() > "3.4.0") {
-        
-        
-        out[line] <-
-          gsub("^\\s*(\\w+)\\s*[=]\\s*\\{", 
-               paste0(paste0(rep(" ", leading_spaces), collapse = ""),
-                      "\\1",
-                      paste0(rep(" ", spaces_req), collapse = ""),
-                      " = {"),
-               bib[line],
-               perl = TRUE)
-      } else {
-        out[line] <-
-          gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
-               paste0(paste0(rep(" ", leading_spaces), collapse = ""),
-                      "\\L\\1",
-                      paste0(rep(" ", spaces_req), collapse = ""),
-                      " = {"),
-               bib[line],
-               perl = TRUE)
+      
+      if (grepl("^\\s*(\\w+)\\s*[=]\\s*\\{", bib[line], perl = TRUE)) {
+        spaces_req <- widest_field - field_width[line]
+        if (getRversion() > "3.4.0") {
+          out[line] <-
+            gsub("^\\s*(\\w+)\\s*[=]\\s*\\{", 
+                 paste0(paste0(rep(" ", leading_spaces), collapse = ""),
+                        "\\1",
+                        paste0(rep(" ", spaces_req), collapse = ""),
+                        " = {"),
+                 bib[line],
+                 perl = TRUE)
+        } else {
+          out[line] <-
+            gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
+                 paste0(paste0(rep(" ", leading_spaces), collapse = ""),
+                        "\\L\\1",
+                        paste0(rep(" ", spaces_req), collapse = ""),
+                        " = {"),
+                 bib[line],
+                 perl = TRUE)
+        }
       }
     }
   }

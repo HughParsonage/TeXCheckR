@@ -58,6 +58,33 @@ Both ``authorise'' and ``authorize'' are equally valid in Australian and British
 \subsection{Acronyms and initalisms}
 TeXCheckR parses the document for acronyms, so that authors do not have to add these to the dictionary.
 
+\section{Bibliography parsing}
+The package RefManageR provides a feature-rich interface with \texttt{.bib} files with input provide via the bibtex package.
+TeXCheckR takes a different approach: instead of dealing with the tasks of input, cleaning, parsing, and validating in one function, it farms these out to discrete exported functions.
+In particular, the main parsing function, \verb=fread_bib= is quite fussy about the input file; for example,
+it requires that every field type has a trailing a comma, even when this is not required by \verb=biber=.
+
+Being fussy about the input has the obvious disadvantage that not every valid \texttt{.bib} file, let alone every invalid \texttt{.bib} file, will be successfully read.
+To overcome this disadvantage, TeXCheckR ships with a function \verb=lint_bib= which, more or less, converts a bib file into one that \verb=fread_bib= will accept. 
+It performs two main tasks: first, it collapses each field-values spread over multiple lines into a single line; and, second, it ensures the \verb!=! sign occurs at an constant column in the text file (for cosmetic reasons).
+
+The big advantage is speed. 
+TeXCheckR is much faster than RefManageR at reading bib files.
+
+\begin{table}
+\begin{tabular}{lrrrrrrrl}
+  \toprule
+  & \multicolumn{7}{c}{milliseconds} & \\
+  \cmidrule{2-7}
+ expr & min & lq & mean & median & uq & max & neval & cld \\ 
+  \midrule
+\texttt{fread\_bib} & 183.93 & 216.30 & 252.40 & 225.55 & 298.60 & 339.88 & 10 & a  \\ 
+\texttt{ReadBib} & 8286.72 & 8499.61 & 8576.95 & 8528.89 & 8626.30 & 9189.89 & 10 &  b \\ 
+   \bottomrule
+\end{tabular}
+{\footnotesize Source: 10 iterations via \texttt{microbenchmark}.}
+\end{table}
+
 % \begin{example}
 
 % \end{example}

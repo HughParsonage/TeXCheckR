@@ -11,8 +11,8 @@
 #' @param rstudio If available, should the report be allowed to modify the RStudio session?
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
-
 #' @rdname report_error
+#' @export
 report2console <- function(file = NULL,
                            line_no = NULL,
                            column = NULL,

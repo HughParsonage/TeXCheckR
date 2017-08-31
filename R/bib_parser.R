@@ -2,11 +2,12 @@
 #' @name bib_parser
 #' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
+#' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib){
+fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   stopifnot(length(file.bib) == 1L)
   if (!grepl("\\.bib$", file.bib)){
     warning("File extension is not '.bib'.")
@@ -53,6 +54,19 @@ fread_bib <- function(file.bib){
 
   is_key <- NULL
   bibDT[, is_key := field == "key"]
+  bibDT[(is_key), key_value := tolower(sub("^.*\\{", "", value, perl = TRUE))]
+  
+  if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
+    duplicates <- duplicated_rows(bibDT, by = "key_value")
+    print(duplicates)
+    report2console(file = file.bib,
+                   line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
+                   error_message = "Duplicate bib key used.",
+                   advice = paste0("Compare the two entries above. If they are identical, delete one. ", 
+                                   "If they are distinct, choose a different bib key. ", 
+                                   "(Note: keys are case-insensitive.)"))
+    stop("Duplicate bib key used.")
+  }
 
   key_line <- NULL
   bibDT[(is_key), key_line := value]
@@ -66,30 +80,10 @@ fread_bib <- function(file.bib){
   bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
   dups <- NULL
-  duplicate_fields <-
-    bibDT[, .(dups = anyDuplicated(field)), by = key]
   
-  if (any(duplicate_fields[["dups"]])){
-    keys <-
-      duplicate_fields %>%
-      .[as.logical(dups)] %>%
-      .[["key"]]
-
-    n_keys <- length(keys)
-
-    if (n_keys <= 5L){
-      top_keys <- keys
-      stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
-    } else {
-      top_keys <- keys[1:5]
-      if (n_keys == 6L){
-        stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
-      } else {
-        stop("Duplicate fields found in ", paste0(keys, collapse = " "), " and ", n_keys - 5L, " others.")
-      }
-    }
-  }
-  bibDT
+  
+  
+  bibDT[, .(line_no, entry_type, key, field, value)]
 }
 
 #' @rdname bib_parser

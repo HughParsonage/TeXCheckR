@@ -17,5 +17,6 @@
 #' @importFrom readr read_lines
 #' @importFrom hutils %notin%
 #' @importFrom hutils neither
+#' @importFrom hutils duplicated_rows
 NULL
 

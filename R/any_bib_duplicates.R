@@ -28,13 +28,28 @@ any_bib_duplicates <- function(bib.files, .report_error){
     rbindlist(use.names = TRUE, fill = TRUE) %>% 
     .[, KEY := toupper(key)]
   
-  if (anyDuplicated(bibDT, by = c("KEY", "field"))) {
-    first_duplicate_entry <- bibDT[anyDuplicated(bibDT, by = c("KEY", "field"))]
-    print(first_duplicate_entry)
-    .report_error(line_no = first_duplicate_entry$line_no,
-                  error_message = "Duplicate bib key used.",
-                  advice = "Delete the duplicate entry if duplicate; otherwise, choose a different key for above entry.")
-    stop("Duplicate bib key used.")
+  duplicate_fields <-
+    bibDT[, .(dups = anyDuplicated(field)), by = key]
+  
+  if (any(duplicate_fields[["dups"]])){
+    keys <-
+      duplicate_fields %>%
+      .[as.logical(dups)] %>%
+      .[["key"]]
+    
+    n_keys <- length(keys)
+    
+    if (n_keys <= 5L){
+      top_keys <- keys
+      stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
+    } else {
+      top_keys <- keys[1:5]
+      if (n_keys == 6L){
+        stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
+      } else {
+        stop("Duplicate fields found in ", paste0(keys, collapse = " "), " and ", n_keys - 5L, " others.")
+      }
+    }
   }
   
   bibDT <-

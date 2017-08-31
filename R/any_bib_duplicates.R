@@ -28,6 +28,7 @@ any_bib_duplicates <- function(bib.files, .report_error){
     rbindlist(use.names = TRUE, fill = TRUE) %>% 
     .[, KEY := toupper(key)]
   
+  dups <- NULL
   duplicate_fields <-
     bibDT[, .(dups = anyDuplicated(field)), by = key]
   

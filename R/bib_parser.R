@@ -54,6 +54,8 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
 
   is_key <- NULL
   bibDT[, is_key := field == "key"]
+  
+  key_value <- NULL
   bibDT[(is_key), key_value := tolower(sub("^.*\\{", "", value, perl = TRUE))]
   
   if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
@@ -67,8 +69,10 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
                                    "(Note: keys are case-insensitive.)"))
     stop("Duplicate bib key used.")
   }
+  
+  bibDT[, key_value := NULL]
 
-  key_line <- NULL
+  key_line <- entry_type <- NULL
   bibDT[(is_key), key_line := value]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
@@ -78,10 +82,6 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
   bibDT[, field := tolower(trimws(field))]
   bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
-  
-  dups <- NULL
-  
-  
   
   bibDT[, .(line_no, entry_type, key, field, value)]
 }

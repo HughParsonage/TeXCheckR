@@ -10,3 +10,9 @@ test_that("Corner cases: empty lines", {
   expect_true(is.na(out[[1]][["starts"]]))
 })
 
+test_that("Optional arguments", {
+  out <- nth_arg_positions("See \\textcite[Ante][Post]{Knuth1} [if you want].",
+                           command_name = "textcite", 
+                           n = 2L, 
+                           optional = TRUE)
+})

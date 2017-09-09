@@ -23,6 +23,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
                                        command_name,
                                        n = 1L,
                                        replacement = "correct",
+                                       optional = FALSE,
                                        warn = TRUE,
                                        .dummy_replacement = "Qq"){
   # Idea:
@@ -105,19 +106,22 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
 #' @rdname argument_parsing
 #' @export nth_arg_positions
-nth_arg_positions <- function(tex_lines, command_name, n = 1L) {
+nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE) {
   Command_locations <-
     stringi::stri_locate_all_regex(str = tex_lines,
                                    # If command = \a, must not also detect \ab
                                    pattern = sprintf("\\\\%s(?![A-Za-z])", command_name))
 
   Tex_line_split <- strsplit(tex_lines, split = "")
+  
+  delim1 <- if (optional) "[" else "{"
+  delim2 <- if (optional) "]" else "}"
 
   lapply(seq_along(tex_lines), function(i) {
     command_locations <- Command_locations[[i]][, 2]
     tex_line_split <- Tex_line_split[[i]]
     if (length(tex_line_split) > 0) {
-      tex_group <- cumsum(tex_line_split == "{") - cumsum(tex_line_split == "}")
+      tex_group <- cumsum(tex_line_split == delim1) - cumsum(tex_line_split == delim2)
       tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
       tex_group_at_command_locations <- tex_group[command_locations]
       

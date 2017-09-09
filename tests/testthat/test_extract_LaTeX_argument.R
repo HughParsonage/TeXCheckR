@@ -23,6 +23,21 @@ test_that("Blank line", {
   out <- extract_LaTeX_argument("", "foo")
   expect_true(is.na(out[["extract"]]))
 })
+
+test_that("Optional argument", {
+  out <- extract_LaTeX_argument("See \\textcite[Ante][Post]{Knuth1} [if you want].",
+                                command_name = "textcite", 
+                                n = 2L, 
+                                optional = TRUE)
+  expect_equal(out[["extract"]], "Post")
+  
+  out <- extract_LaTeX_argument("See \\textcite[Ante][[ex] Post]{Knuth1} [if you want].",
+                                command_name = "textcite", 
+                                n = 2L, 
+                                optional = TRUE)
+  
+  expect_equal(out[["extract"]], "[ex] Post")
+})
   
 
 

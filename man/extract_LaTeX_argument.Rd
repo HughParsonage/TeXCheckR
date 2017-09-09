@@ -15,6 +15,17 @@ extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
 
 \item{optional}{Extract the optional argument, rather than the mandatory arguments.}
 }
+\value{
+A \code{data.table}, each row corresponding to each line in \code{tex_lines}
+and each instance of \code{command_name}. If multiple commands are on the same line,
+subsequent instances of commands appear on subsequent rows.
+\describe{
+\item{\code{starts}}{Start position of the argument.}
+\item{\code{stops}}{Stop position of the argument.}
+\item{\code{extract}}{The argument extracted.}
+\item{\code{line_no}}{The line number (with respect to \code{seq_along(tex_lines)}).}
+}
+}
 \description{
 Extract LaTeX command argument
 }

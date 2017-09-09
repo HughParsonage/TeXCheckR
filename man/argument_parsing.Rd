@@ -7,9 +7,10 @@
 \title{Replace nth arguments}
 \usage{
 replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
-  replacement = "correct", warn = TRUE, .dummy_replacement = "Qq")
+  replacement = "correct", optional = FALSE, warn = TRUE,
+  .dummy_replacement = "Qq")
 
-nth_arg_positions(tex_lines, command_name, n = 1L)
+nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file read in from readLines.}

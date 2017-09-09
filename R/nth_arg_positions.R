@@ -115,7 +115,7 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L){
     command_locations <- Command_locations[[i]][, 2]
     tex_line_split <- Tex_line_split[[i]]
     tex_group <- cumsum(tex_line_split == "{") - cumsum(tex_line_split == "}")
-    tex_group_lag <- dplyr::lag(tex_group, n = 1L, default = tex_group[[1]])
+    tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
     tex_group_at_command_locations <- tex_group[command_locations]
 
     starts <- stops <- integer(length(command_locations))
@@ -134,6 +134,6 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L){
                                   tex_group == tex_group_lag - 1))),
                     n = n)
     }
-    data.table::data.table(starts = starts, stops = stops)
+    data.table(starts = starts, stops = stops)
   })
 }

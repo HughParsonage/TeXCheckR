@@ -29,8 +29,8 @@ replace_LaTeX_argument <- function(tex_lines, command_name, replacement, arg = 1
                         braces_closes_at(line, x)
                       },
                       FUN.VALUE = integer(1))
-             data.table::data.table(start = starts,
-                                    stop = starts + stops)
+             data.table(start = starts,
+                        stop = starts + stops)
            })
   out_split <- strsplit(out, split = "", fixed = TRUE)
   out <-

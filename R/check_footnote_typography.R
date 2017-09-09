@@ -16,7 +16,7 @@
 check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error){
   
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    .report_error <- function(...) report2console(file = filename, column = 1L, ...)
   }
   
   lines <- read_lines(filename)
@@ -195,7 +195,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
         .report_error(context = paste0("\n\\footnote\n         ",
                                        paste0(split_line_after_footnote[1:footnote_closes_at],
                                               collapse = ""),
-                                       "\n"), 
+                                       "\n"),
+                      line_no = 1L,
                       error_message = "Footnote does not end with full stop.")
         stop("Footnote does not end with full stop.")
       }

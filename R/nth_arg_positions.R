@@ -12,6 +12,8 @@
 #' @rdname argument_parsing
 #' @details \code{nth_arg_positions} reports the starts and stops of the command for every line.
 #' This includes the braces (in order to accommodate instances where the argument is empty).
+#' 
+#' If the line is empty or does not contain the command the values of \code{starts} and \code{stops} are \code{NA_integer_}.
 #' @export replace_nth_LaTeX_argument
 #' 
 #' @examples nth_arg_positions("This is a \\textbf{strong} statement.", "textbf")
@@ -103,7 +105,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
 #' @rdname argument_parsing
 #' @export nth_arg_positions
-nth_arg_positions <- function(tex_lines, command_name, n = 1L){
+nth_arg_positions <- function(tex_lines, command_name, n = 1L) {
   Command_locations <-
     stringi::stri_locate_all_regex(str = tex_lines,
                                    # If command = \a, must not also detect \ab
@@ -111,29 +113,34 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L){
 
   Tex_line_split <- strsplit(tex_lines, split = "")
 
-  lapply(seq_along(tex_lines), function(i){
+  lapply(seq_along(tex_lines), function(i) {
     command_locations <- Command_locations[[i]][, 2]
     tex_line_split <- Tex_line_split[[i]]
-    tex_group <- cumsum(tex_line_split == "{") - cumsum(tex_line_split == "}")
-    tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
-    tex_group_at_command_locations <- tex_group[command_locations]
-
-    starts <- stops <- integer(length(command_locations))
-    for (j in seq_along(command_locations)){
-      tg <- command_locations[[j]]
-      starts[[j]] <-
-        # below tells us the position of the opening *brace*
-        nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
-                                  seq_along(tex_group) > tg),
-                              tex_group == tex_group_lag + 1)),
-                    n = n)
-
-      stops[[j]] <-
-        nth_min.int(which(and(tex_group == tex_group[tg],
-                              and(seq_along(tex_group) > tg,
-                                  tex_group == tex_group_lag - 1))),
-                    n = n)
+    if (length(tex_line_split) > 0) {
+      tex_group <- cumsum(tex_line_split == "{") - cumsum(tex_line_split == "}")
+      tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
+      tex_group_at_command_locations <- tex_group[command_locations]
+      
+      starts <- stops <- integer(length(command_locations))
+      for (j in seq_along(command_locations)){
+        tg <- command_locations[[j]]
+        starts[[j]] <-
+          # below tells us the position of the opening *brace*
+          nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
+                                    seq_along(tex_group) > tg),
+                                tex_group == tex_group_lag + 1)),
+                      n = n)
+        
+        stops[[j]] <-
+          nth_min.int(which(and(tex_group == tex_group[tg],
+                                and(seq_along(tex_group) > tg,
+                                    tex_group == tex_group_lag - 1))),
+                      n = n)
+      }
+      data.table(starts = starts, stops = stops)
+    } else {
+      data.table(starts = NA_integer_, stops = NA_integer_)
     }
-    data.table(starts = starts, stops = stops)
+    
   })
 }

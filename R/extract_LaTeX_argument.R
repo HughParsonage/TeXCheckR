@@ -15,8 +15,10 @@ extract_LaTeX_argument <- function(tex_lines, command_name, n = 1L, optional = F
     out <- dt_e <- nth_arg_pos[[e]] 
     NN <- nrow(out[complete.cases(out)])
     if (NN > 0) {
+      ostart <- .subset2(out, "starts")
+      ostop <- .subset2(out, "stops")
       for (i in seq_len(NN)) {
-        set(out, i = i, j = "extract", value = substr(tex_lines[[e]], out[["starts"]], out[["stops"]]))
+        set(out, i = i, j = "extract", value = substr(tex_lines[[e]], ostart[i], ostop[i]))
       }
       out[, extract := gsub("^\\{|\\}$", "", extract, perl = TRUE)]
     } else {

@@ -5,3 +5,8 @@ test_that("Closing brace for nth argument", {
                list(data.table::data.table(starts = c(16, 37), stops = c(20, 42))))
 })
 
+test_that("Corner cases: empty lines", {
+  out <- nth_arg_positions("", "foo")
+  expect_true(is.na(out[[1]][["starts"]]))
+})
+

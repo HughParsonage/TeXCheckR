@@ -32,6 +32,8 @@ Replace nth arguments
 \details{
 \code{nth_arg_positions} reports the starts and stops of the command for every line.
 This includes the braces (in order to accommodate instances where the argument is empty).
+
+If the line is empty or does not contain the command the values of \code{starts} and \code{stops} are \code{NA_integer_}.
 }
 \examples{
 nth_arg_positions("This is a \\\\textbf{strong} statement.", "textbf")

@@ -30,15 +30,16 @@ extract_LaTeX_argument <- function(tex_lines, command_name, n = 1L, optional = F
         set(out, i = i, j = "extract", value = substr(tex_lines[[e]], ostart[i], ostop[i]))
       }
       
+      extract <- NULL
       if (optional) {
-        out[, extract := gsub("^\\[|\\]$", "", extract, perl = TRUE)]
+        out[, "extract" := gsub("^\\[|\\]$", "", extract, perl = TRUE)]
       } else {
-        out[, extract := gsub("^\\{|\\}$", "", extract, perl = TRUE)]
+        out[, "extract" := gsub("^\\{|\\}$", "", extract, perl = TRUE)]
       }
     } else {
-      out[, extract := NA_character_]
+      out[, "extract" := NA_character_]
     }
-    out[, line_no := e]
+    out[, "line_no" := e]
   }) %>%
     rbindlist
 }

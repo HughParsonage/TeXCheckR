@@ -5,6 +5,8 @@
 #' or the pattern of the command, without the initial backslash.
 #' @param n The number of mandatory arguments.
 #' @param replacement What to replace the \code{n}th argument with.
+#' @param optional If \code{FALSE}, the default, the \code{n}th mandatory argument is extracted.
+#' If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.
 #' @param warn If the nth argument is not present, emit a warning? Set to \code{FALSE} for n-ary commands.
 #' @param .dummy_replacement An intermediate replacement value.
 #'  This value cannot be present in \code{tex_lines}.

@@ -22,6 +22,9 @@ or the pattern of the command, without the initial backslash.}
 
 \item{replacement}{What to replace the \code{n}th argument with.}
 
+\item{optional}{If \code{FALSE}, the default, the \code{n}th mandatory argument is extracted.
+If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.}
+
 \item{warn}{If the nth argument is not present, emit a warning? Set to \code{FALSE} for n-ary commands.}
 
 \item{.dummy_replacement}{An intermediate replacement value.

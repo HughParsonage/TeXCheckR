@@ -15,7 +15,7 @@ before_install:
 - Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
 - Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
 - Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
-- Rscript -e 'devtools::install_packages("hughparsonage/hutils")'
+- Rscript -e 'devtools::install_github("hughparsonage/hutils")'
 addons:
   apt:
     packages:

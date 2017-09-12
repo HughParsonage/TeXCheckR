@@ -8,6 +8,12 @@ before_install:
 - Rscript -e 'if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")'
 - Rscript -e 'if (!requireNamespace("magrittr", quietly = TRUE)) install.packages("magrittr")'
 - Rscript -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")'
+- Rscript -e 'if (!requireNamespace("hunspell", quietly = TRUE)) install.packages("hunspell")'
+- Rscript -e 'if (!requireNamespace("clisymbols", quietly = TRUE)) install.packages("clisymbols")'
+- Rscript -e 'if (!requireNamespace("crayon", quietly = TRUE)) install.packages("crayon")'
+- Rscript -e 'if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")'
+- Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
+- Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
 - Rscript -e 'install.packages("hutils", repos = "https://hughparsonage.github.io/drat", type = "source")'
 addons:
   apt:

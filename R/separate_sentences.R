@@ -1,6 +1,5 @@
 #' Put sentences on their own line
 #'
-#' @importFrom dplyr if_else
 #' @param filename A tex or knitr file in which to separate sentences.
 #' @return NULL. The function is called for its side-effect: rewriting \code{filename} with separated sentences.
 #' @export

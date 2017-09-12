@@ -13,9 +13,6 @@
 #' @param rstudio Use the RStudio API?
 #' @param .report_error A function to provide context to any errors.
 #' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
-#' @importFrom hunspell hunspell
-#' @importFrom hunspell dictionary
-#' @import hunspell
 #' 
 #' @details Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
 #' in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write

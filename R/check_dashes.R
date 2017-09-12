@@ -6,8 +6,8 @@
 #' Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in TeX math mode \code{$...$}.
 #' @export
 
-check_dashes <- function(filename, .report_error){
-  if (missing(.report_error)){
+check_dashes <- function(filename, .report_error) {
+  if (missing(.report_error)) {
     .report_error <- function(...) report2console(...)
   }
 
@@ -53,7 +53,10 @@ check_dashes <- function(filename, .report_error){
 
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
+      column <- stringi::stri_locate_first_fixed(lines[line_no], " - ")[1, 2]
+      
       .report_error(line_no = line_no,
+                    column = column,
                     context = lines[line_no],
                     error_message = "Dash likely masquerading as hyphen. Use -- for a dash.", 
                     advice = "\nIMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  \u2013\n",
@@ -74,7 +77,18 @@ check_dashes <- function(filename, .report_error){
       which(or(grepl("-\u2013", lines, fixed = TRUE),
                grepl("\u2013-", lines, fixed = TRUE))) %>%
       .[1]
+    
+    if (grepl("\u2013-", lines[line_no], fixed = TRUE)) {
+      column <- stringi::stri_locate_first_fixed(lines[line_no], "\u2013-")[1, 2]
+    } else {
+      column <- stringi::stri_locate_first_fixed(lines[line_no], "-\u2013")[1, 2]
+    }
+    if (is.null(column)) {
+      column <- 1L
+    }
+    
     .report_error(line_no = line_no,
+                  column = column,
                   context = lines[[line_no]],
                   error_message = "Hyphen adjacent to en-dash.")
     stop("Hyphen adjacent to en-dash. (Did you copy this line from Word?) ",

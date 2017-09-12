@@ -14,7 +14,8 @@ before_install:
 - Rscript -e 'if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")'
 - Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
 - Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
-- Rscript -e 'install.packages("hutils", repos = "https://hughparsonage.github.io/drat", type = "source")'
+- Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
+- Rscript -e 'devtools::install_packages("hughparsonage/hutils")'
 addons:
   apt:
     packages:

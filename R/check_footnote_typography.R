@@ -61,7 +61,6 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,
                 perl = TRUE))){
-    lines <- read_lines(filename)
     line_no <- grep("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", lines, perl = TRUE)[1]
     .report_error(line_no = line_no, 
                   context = lines[[line_no]], 
@@ -86,7 +85,22 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       break
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
     if (AND(length(split_line_after_footnote) > footnote_closes_at,
-            split_line_after_footnote[footnote_closes_at + 1] %in% c(".", ",", ";", "?", ":", "'", '"'))){
+            split_line_after_footnote[footnote_closes_at + 1] %fin% c(".", ",", ";", "?", ":", "'", '"'))) {
+      # Take a breath
+      
+      # Identify those lines
+      # line_no_by_lines_with_footnote <-
+      #   data.table(doc_line_no = grep("footnote", lines_by_footnote, fixed = TRUE, value = FALSE),
+      #              footnote_no = seq_along(lines_with_footnote),
+      #              lines_with_footnote = paste0("\\", lines_with_footcite))
+      # 
+      # extract_tbl <- extract_LaTeX_argument(lines_with_footnote, "footnote")
+      # 
+      # extract_tbl[line_no_by_lines_with_footnote, on = "line_no==footnote_no"] %>%
+      #   .[, extract := stringi::stri_sub(extract, pmax(-10, -1*nchar(extract)))] %>%
+      #   .[, .(extract, starts, stops, line_no, doc_line_no)]
+      
+      
       .report_error(context = paste0("\\footnote\n         ",
                                      paste0(split_line_after_footnote[1:(footnote_closes_at + 1)], 
                                             collapse = "")), 

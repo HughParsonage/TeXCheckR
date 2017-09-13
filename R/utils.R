@@ -78,8 +78,8 @@ nth_min.int <- function(x, n){
   sort.int(x)[n]
 }
 
-strip_comments <- function(lines){
-  gsub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
+strip_comments <- function(lines) {
+  sub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
 }
 
 move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$"){
@@ -90,8 +90,7 @@ move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(st
                   include.dirs = FALSE)
   x.dirs <- file.path(to.dir, 
                       list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
-  dir_create <- function(x) if (!dir.exists(x)) dir.create(x)
-  lapply(x.dirs, dir_create)
+  lapply(x.dirs, hutils::provide.dir)
   file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
   setwd(to.dir)
   cat("   Attempting compilation in temp directory:", to.dir, "\n")

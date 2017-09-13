@@ -10,7 +10,8 @@ replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
   replacement = "correct", optional = FALSE, warn = TRUE,
   .dummy_replacement = "Qq")
 
-nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE)
+nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
+  data.tables = TRUE)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file read in from readLines.}
@@ -18,7 +19,7 @@ nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE)
 \item{command_name}{The command name, 
 or the pattern of the command, without the initial backslash.}
 
-\item{n}{The number of mandatory arguments.}
+\item{n}{Which argument of the command.}
 
 \item{replacement}{What to replace the \code{n}th argument with.}
 
@@ -29,6 +30,9 @@ If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.}
 
 \item{.dummy_replacement}{An intermediate replacement value.
 This value cannot be present in \code{tex_lines}.}
+
+\item{data.tables}{Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
+for performance.}
 }
 \description{
 Replace nth arguments

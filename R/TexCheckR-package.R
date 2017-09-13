@@ -6,6 +6,7 @@
 #' 
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed bold
+#' @importFrom fastmatch %fin%
 #' @importFrom grDevices embedFonts
 #' @importFrom hunspell hunspell
 #' @importFrom hunspell dictionary
@@ -20,6 +21,7 @@
 #' @importFrom hutils duplicated_rows
 #' @importFrom readr read_lines
 #' @importFrom stats complete.cases
+#' @importFrom stringi stri_sub
 #' @importFrom utils download.file
 NULL
 

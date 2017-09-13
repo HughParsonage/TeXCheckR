@@ -15,7 +15,7 @@ Imports:
   data.table, 
   stringi,
   hunspell,
-  hutils,
+  hutils (>= 0.8.0),
   clisymbols, 
   crayon,
   readr,

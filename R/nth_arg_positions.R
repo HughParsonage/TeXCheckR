@@ -3,7 +3,7 @@
 #' @param tex_lines A character vector of a LaTeX file read in from readLines.
 #' @param command_name The command name, 
 #' or the pattern of the command, without the initial backslash.
-#' @param n The number of mandatory arguments.
+#' @param n Which argument of the command.
 #' @param replacement What to replace the \code{n}th argument with.
 #' @param optional If \code{FALSE}, the default, the \code{n}th mandatory argument is extracted.
 #' If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.
@@ -54,8 +54,7 @@ replace_nth_LaTeX_argument <- function(tex_lines,
   positions_of_nth_arg <-
     nth_arg_positions(tex_lines = tex_lines_with_command_name,
                       command_name = command_name,
-                      n = n) %>%
-    lapply(function(DT) DT[, "zero_width" := stops == starts + 1L])
+                      n = n)
 
   should_warn <- FALSE
   for (el in seq_along(tex_lines_with_command_name_split)){
@@ -107,8 +106,10 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
 
 #' @rdname argument_parsing
+#' @param data.tables Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
+#' for performance.
 #' @export nth_arg_positions
-nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE) {
+nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE, data.tables = TRUE) {
   Command_locations <-
     stringi::stri_locate_all_regex(str = tex_lines,
                                    # If command = \a, must not also detect \ab
@@ -119,34 +120,40 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE)
   delim1 <- if (optional) "[" else "{"
   delim2 <- if (optional) "]" else "}"
 
-  lapply(seq_along(tex_lines), function(i) {
-    command_locations <- Command_locations[[i]][, 2]
-    tex_line_split <- Tex_line_split[[i]]
-    if (length(tex_line_split) > 0) {
-      tex_group <- cumsum(tex_line_split == delim1) - cumsum(tex_line_split == delim2)
-      tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
-      tex_group_at_command_locations <- tex_group[command_locations]
-      
-      starts <- stops <- integer(length(command_locations))
-      for (j in seq_along(command_locations)){
-        tg <- command_locations[[j]]
-        starts[[j]] <-
-          # below tells us the position of the opening *brace*
-          nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
-                                    seq_along(tex_group) > tg),
-                                tex_group == tex_group_lag + 1)),
-                      n = n)
+  out <- 
+    lapply(seq_along(tex_lines), function(i) {
+      command_locations <- Command_locations[[i]][, 2]
+      tex_line_split <- Tex_line_split[[i]]
+      if (length(tex_line_split) > 0) {
+        tex_group <- cumsum(tex_line_split == delim1) - cumsum(tex_line_split == delim2)
+        tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
+        tex_group_at_command_locations <- tex_group[command_locations]
         
-        stops[[j]] <-
-          nth_min.int(which(and(tex_group == tex_group[tg],
-                                and(seq_along(tex_group) > tg,
-                                    tex_group == tex_group_lag - 1))),
-                      n = n)
+        starts <- stops <- integer(length(command_locations))
+        for (j in seq_along(command_locations)){
+          tg <- command_locations[[j]]
+          starts[[j]] <-
+            # below tells us the position of the opening *brace*
+            nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
+                                      seq_along(tex_group) > tg),
+                                  tex_group == tex_group_lag + 1)),
+                        n = n)
+          
+          stops[[j]] <-
+            nth_min.int(which(and(tex_group == tex_group[tg],
+                                  and(seq_along(tex_group) > tg,
+                                      tex_group == tex_group_lag - 1))),
+                        n = n)
+        }
+        list(starts = starts, stops = stops, zero_width = stops == starts + 1L)
+      } else {
+        list(starts = NA_integer_, stops = NA_integer_, zero_width = NA)
       }
-      data.table(starts = starts, stops = stops)
-    } else {
-      data.table(starts = NA_integer_, stops = NA_integer_)
-    }
-    
-  })
+    })
+  
+  if (data.tables) {
+    lapply(out, setDT)
+  } else {
+    out
+  }
 }

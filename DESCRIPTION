@@ -21,7 +21,8 @@ Imports:
   readr,
   rstudioapi,
   stats,
-  zoo
+  zoo,
+  fastmatch
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Suggests: testthat

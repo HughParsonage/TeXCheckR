@@ -1,11 +1,12 @@
 #' Check biber
 #'
 #' @param path Containing the blg file.
+#' @param rstudio Use the RStudio API?
 #' @export
 
 
 
-check_biber <- function(path = "."){
+check_biber <- function(path = ".", rstudio = FALSE) {
   blg.file <- dir(path = path, pattern = "blg$", full.names = TRUE)
   if (length(blg.file) > 1L){
     stop("More than one blg file.")
@@ -59,13 +60,39 @@ check_biber <- function(path = "."){
             break
           }
         }
-        if (n_bad_entries > 1){
-          if (n_bad_entries > 5){
-            stop("Biber emitted a warning. See the above WARN messages. (Only the first five are given; there were ", n_bad_entries, " in total.")
+        if (n_bad_entries > 1) {
+          if (n_bad_entries > 5) {
+            stop("Biber emitted a warning. See the above WARN messages. (Only the first five are given; there were ",
+                 n_bad_entries, " in total.")
           } else {
             stop("Biber emitted a warning. See the above WARN messages.")
           }
         } else {
+          if (grepl("Datamodel: Entry", all_bad_entries)) {
+            entry <- gsub("^.*Datamodel. Entry '(.*?)'.*$", "\\1", all_bad_entries, perl = TRUE)
+            bib_file <- gsub("^.*Datamodel. Entry '(.*?)' \\((.*?\\.bib)\\).*$",
+                             "\\2",
+                             all_bad_entries, 
+                             perl = TRUE)
+            max_line_no <- 
+              fread_bib(file.bib = bib_file) %>%
+              .[key == entry] %$%
+              max(line_no)
+            
+            report2console(file = bib_file,
+                           error_message = "Biber warning requiring action:",
+                           line_no = max_line_no,
+                           advice = paste0("Biber emitted a warning about a missing or invalid field.\nGo to the the entry\n",
+                                           "\t", entry, "\n",
+                                           "in\t", bib_file, "\n",
+                                           "to fix the entry."),
+                           rstudio = rstudio)
+          }
+          
+          
+          
+          
+          
           stop("Biber emitted a warning. See the above WARN message.")
         }
       }

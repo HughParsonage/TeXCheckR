@@ -74,10 +74,12 @@ check_biber <- function(path = ".", rstudio = FALSE) {
                              "\\2",
                              all_bad_entries, 
                              perl = TRUE)
+            line_no <- NULL
             max_line_no <- 
               fread_bib(file.bib = bib_file) %>%
-              .[key == entry] %$%
-              max(line_no)
+              .[key == entry] %>%
+              last %>%
+              .[["line_no"]]
             
             report2console(file = bib_file,
                            error_message = "Biber warning requiring action:",

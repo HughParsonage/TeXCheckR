@@ -17,4 +17,3 @@ test_that("No journal title", {
   expect_error(check_biber())
   setwd(get_wd)
 })
-

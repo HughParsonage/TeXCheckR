@@ -125,7 +125,11 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     stop("Possible duplicate entries in bibliography. First 5 shown above.")
   }
   
+  # CRAN NOTE avoidance
+  AUTHORS <- authors <- bad <- bib_file <- line_no <- key <- value <- NULL
+  
   # Check for authors differing only by upper/lowercase
+  
   authors <- 
     orig_bibDT %>%
     .[field == "author", .(bib_file, line_no, key, value)] %>%

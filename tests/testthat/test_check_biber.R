@@ -1,6 +1,7 @@
 context("check biber") 
 
 test_that("Couldn't find an entry for", {
+  skip_if_not(nzchar(Sys.which("biber")))
   get_wd <- getwd()
   setwd("check-biber/lost-entry/")
   invisible(system2(command = "pdflatex", c("-draftmode", "a.tex"), stdout = TRUE))
@@ -10,6 +11,7 @@ test_that("Couldn't find an entry for", {
 })
 
 test_that("No journal title", {
+  skip_if_not(nzchar(Sys.which("biber")))
   get_wd <- getwd()
   setwd("check-biber/no-journal-title/")
   invisible(system2(command = "pdflatex", c("-draftmode", "a.tex"), stdout = TRUE))

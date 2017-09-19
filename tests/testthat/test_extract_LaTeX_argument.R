@@ -38,6 +38,10 @@ test_that("Optional argument", {
   
   expect_equal(out[["extract"]], "[ex] Post")
 })
+
+test_that("Multi-line", {
+  out <- extract_LaTeX_argument(c("This \\footnote{", "ends", "here.}"), "footnote")
+})
   
 
 

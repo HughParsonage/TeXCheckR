@@ -16,7 +16,7 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   bib <-
     read_lines(file.bib) %>%
     # Avoid testing }\\s+$ rather than just == }
-    trimws %>%
+    stri_trim_both %>%
     .[substr(., 0, 8) != "@Comment"]
   
   is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
@@ -77,10 +77,10 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
   bibDT[, x := NULL]
-  bibDT[, lapply(.SD, trimws)]
+  bibDT[, lapply(.SD, stri_trim_both)]
   bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
-  bibDT[, field := tolower(trimws(field))]
+  bibDT[, field := tolower(stri_trim_both(field))]
   bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
   bibDT[, .(line_no, entry_type, key, field, value)]
@@ -97,7 +97,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     bib <-
       read_lines(file.bib) %>%
       # Avoid testing }\\s+$ rather than just == }
-      trimws %>%
+      stri_trim_both %>%
       .[!grepl("@Comment", ., fixed = TRUE)]
     is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
     is_closing <- bib == "}"

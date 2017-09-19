@@ -90,7 +90,7 @@ check_spelling <- function(filename,
     extra_known_wrong <-
       lines[grepl("^[%] stop_if_present[:]", lines, perl = TRUE)] %>%
       gsub("% stop_if_present: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 
@@ -121,7 +121,7 @@ check_spelling <- function(filename,
     words_to_add <-
       lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
       gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 
@@ -292,7 +292,7 @@ check_spelling <- function(filename,
     commands_to_ignore <-
       lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
       gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 

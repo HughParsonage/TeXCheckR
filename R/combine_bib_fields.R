@@ -1,9 +1,6 @@
 
 combine_bib_fields <- function(bib) {
-  bib <- 
-    strip_comments(bib) %>%
-    trimws
-  
+  bib <- stri_trim_both(strip_comments(bib))
   
   cumsum_brace <- function(x) {
     if (length(x)) {

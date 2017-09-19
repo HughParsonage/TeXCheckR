@@ -43,8 +43,8 @@ extract_validate_abbreviations <- function(lines){
     data.table(
       line = lines_w_abbrev_last,
       abbrev = gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\2", lines_w_abbrev_last, perl = TRUE),
-      prefix = trimws(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last, perl = TRUE)),
-      prefix_incl_stops = trimws(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last_incl_stops, perl = TRUE))
+      prefix = stri_trim_both(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last, perl = TRUE)),
+      prefix_incl_stops = stri_trim_both(gsub(paste0("^(.*)", abbrev_pattern, "s?$"), "\\1", lines_w_abbrev_last_incl_stops, perl = TRUE))
     ) %>%
       # Look at the n words previous where n is the nchar
       .[, nchars_abbrev := nchar(abbrev)] %>%
@@ -87,7 +87,7 @@ extract_validate_abbreviations <- function(lines){
                                                }) %>%
           unlist#
         , by = NN] %>%
-      .[toupper(abbrev) == expected_abbrev | toupper(abbrev) == expected_abbrev_with_stops] %>%
+      .[toupper(abbrev) %fin% c(expected_abbrev_with_stops, expected_abbrev)] %>%
       .[["abbrev"]]
   } else {
     invisible(NULL)

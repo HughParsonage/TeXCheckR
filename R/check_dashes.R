@@ -96,10 +96,12 @@ check_dashes <- function(filename, .report_error) {
   }
 
 
-  if (any(grepl("\\\\label[^\\}]*\\s[^\\}]*\\}", trimws(lines), perl = TRUE))){
-    line_no <- grep("\\\\label[^\\}]*\\s[^\\}]*\\}", trimws(lines), perl = TRUE)[[1]]
-    nchars_b4 <- stringi::stri_locate_all_regex(pattern = "\\\\label[^\\}]*\\s", str = trimws(lines[[line_no]]), perl = TRUE)
-    context <- paste0(trimws(lines[[line_no]]), "\n",
+  if (any(grepl("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE))){
+    line_no <- grep("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE)[[1]]
+    nchars_b4 <- stringi::stri_locate_all_regex(pattern = "\\\\label[^\\}]*\\s",
+                                                stri_trim_both = stri_trim_both(lines[[line_no]]),
+                                                perl = TRUE)
+    context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
                       paste0(rep(" ", nchars_b4[[1]][[2]] - 2 + 5 + nchar(line_no)), collapse = ""), "^^")
     .report_error(line_no = line_no,
                   context = context,

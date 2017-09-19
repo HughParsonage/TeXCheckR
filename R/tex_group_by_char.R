@@ -1,7 +1,7 @@
 #' TeX group by character position
 #' @description Opening a brace increases the 'group' in TeX. For example, in \code{a{bc}{d{e}}}
 #' \code{a} is in group 0, \code{bc} in group 1 as is \code{d} and \code{e} is in group 2.
-#' @param lines Character vector of a document LaTeX.
+#' @param tex_lines Character vector of a document LaTeX.
 #' @param optional If \code{FALSE} (the default), the groups are taken with respect to braces. 
 #' If \code{TRUE}, square brackets are used (perhaps not associated with a command).
 #' @return A list the same length as \code{lines}. Each element an integer vector indicating the 

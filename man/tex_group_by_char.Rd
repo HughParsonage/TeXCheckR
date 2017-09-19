@@ -7,17 +7,17 @@
 tex_group_by_char(tex_lines, optional = FALSE)
 }
 \arguments{
+\item{tex_lines}{Character vector of a document LaTeX.}
+
 \item{optional}{If \code{FALSE} (the default), the groups are taken with respect to braces. 
 If \code{TRUE}, square brackets are used (perhaps not associated with a command).}
-
-\item{lines}{Character vector of a document LaTeX.}
 }
 \value{
 A list the same length as \code{lines}. Each element an integer vector indicating the 
 TeX group at that position. 
 
 For positions \strong{at} braces the \strong{upcoming} group is returned. 
-So \code{a{b}} should return \code{0 1 1 0}.
+So \code{a{b}} should return \code{0 1 1 0} (in its first element).
 }
 \description{
 Opening a brace increases the 'group' in TeX. For example, in \code{a{bc}{d{e}}}

@@ -48,7 +48,7 @@ extract_validate_abbreviations <- function(lines){
     ) %>%
       # Look at the n words previous where n is the nchar
       .[, nchars_abbrev := nchar(abbrev)] %>%
-      .[, NN := seq.int(1, .N)] %>%
+      .[, NN := .I] %>%
       .[, expected_abbrev := lapply(strsplit(prefix, split = " "),
                                     function(words){
                                       get_initials_from_words <- 

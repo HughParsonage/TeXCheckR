@@ -11,7 +11,7 @@ replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
   .dummy_replacement = "Qq")
 
 nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
-  data.tables = TRUE)
+  star = TRUE, data.tables = TRUE)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file read in from readLines.}

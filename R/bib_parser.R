@@ -14,7 +14,7 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   }
 
   bib <-
-    read_lines(file.bib) %>%
+    read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
     # Avoid testing }\\s+$ rather than just == }
     stri_trim_both %>%
     .[substr(., 0, 8) != "@Comment"]
@@ -60,7 +60,7 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   
   if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
     duplicates <- duplicated_rows(bibDT, by = "key_value")
-    print(duplicates)
+    print(duplicates[, bib_file := file.bib])
     report2console(file = file.bib,
                    line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
                    error_message = "Duplicate bib key used.",

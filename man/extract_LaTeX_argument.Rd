@@ -4,7 +4,8 @@
 \alias{extract_LaTeX_argument}
 \title{Extract LaTeX command argument}
 \usage{
-extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
+extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE,
+  star = TRUE)
 }
 \arguments{
 \item{tex_lines}{LaTeX text.}
@@ -14,6 +15,8 @@ extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
 \item{n}{Extract the nth argument.}
 
 \item{optional}{Extract the optional argument, rather than the mandatory arguments.}
+
+\item{star}{Assume that the command's contents are all on one line.}
 }
 \value{
 A \code{data.table}, each row corresponding to each line in \code{tex_lines}

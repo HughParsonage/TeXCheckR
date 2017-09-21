@@ -37,10 +37,67 @@ test_that("Optional argument", {
                                 optional = TRUE)
   
   expect_equal(out[["extract"]], "[ex] Post")
+  
+  tex_lines_with_optional <- 
+    c("Sometimes \\footcite[][3]{Daley2016} we have optional args; other times not.\\footcite{Daley2016}.")
+  
+  output_excl_optional <- extract_LaTeX_argument(tex_lines_with_optional, "footcite", star = FALSE)
+  expect_equal(output_excl_optional[["extract"]], c("Daley2016", "Daley2016"))
+  output_incl_optional <- extract_LaTeX_argument(tex_lines_with_optional,
+                                                 command_name = "footcite",
+                                                 star = FALSE,
+                                                 optional = TRUE, 
+                                                 n = 2L)
+  expect_equal(output_incl_optional[["extract"]], c("3", NULL))
+})
+
+test_that("Multi-line starred", {
+  skip("Undecided test outcome")
+  out <- extract_LaTeX_argument(c("This \\footnote{", "ends", "here.}"), "footnote", star = FALSE)
+  expect_equal(out$starts, c(15, NA, NA))
+  expect_equal(out$stops, c(6, NA, NA))
+  expect_equal(out$stops_line_no, c(3, NA, NA))
+  
+  
+  out <- extract_LaTeX_argument(c("This \\footnote{ends quickly} where this \\footnote{", "ends", "here.}"), "footnote")
+  expect_equal(out$starts, c(15, NA, NA))
+  expect_equal(out$stops, c(6, NA, NA))
+  expect_equal(out$stops_line_no, c(3, NA, NA))
+  
 })
 
 test_that("Multi-line", {
-  out <- extract_LaTeX_argument(c("This \\footnote{", "ends", "here.}"), "footnote")
+  tex_lines <- 
+    c("This is some \\textbf{bold text} and \\footnote{this is a footnote with some \\textbf{text also in boldface}}",
+      "whereas \\footnote{this footnote ",
+      "extends over",
+      "\\emph{more}",
+      "than one line.}")
+  output <- extract_LaTeX_argument(tex_lines, "footnote", star = FALSE)
+  expect_equal(output[["extract"]],
+               c("this is a footnote with some \\textbf{text also in boldface}",
+                 "this footnote ",
+                 "extends over",
+                 "\\emph{more}", 
+                 "than one line."))
+
+  tex_lines <- 
+    c("This is some \\emph{emph text} and \\emph{this",
+      "text \\textbf{has} \\emph{double}",
+      "emphasis.}")
+  
+  output <- extract_LaTeX_argument(tex_lines, "emph", star = FALSE)
+  expect_equal(output[["extract"]],
+               c("emph text",
+                 "this",
+                 "text \\textbf{has} \\emph{double}",
+                 "emphasis.", 
+                 "double"))
+  expect_equal(output[["line_no"]], c(1, 1, 2, 3, 2))
+  expect_equal(output[["command_no"]], c(1, 2, 2, 2, 3))
+  
+  
+
 })
   
 

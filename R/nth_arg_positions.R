@@ -106,6 +106,8 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 
 
 #' @rdname argument_parsing
+#' @param star Assume the starred version of the command. That is, assume that the contents of 
+#' the argument lies on a single line.
 #' @param data.tables Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
 #' for performance.
 #' @export nth_arg_positions
@@ -166,6 +168,10 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
                  n_char = shift(nchar_tex_lines, fill = 0L)) %>%
       .[, .(line_no, char_no = cumsum(n_char))]
     
+    start <- end <- NULL
+    intra_line_char_no <- end_char_no <- start_char_no <-
+      next_start <- command_no <- NULL
+    
     command_locations_by_char_no <-
       rbindlist(lapply(Command_locations, as.data.table), idcol = "line_no") %>%
       .[, intra_line_char_no := end + 1L] %>%
@@ -183,6 +189,9 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
     Tex_line_split_unlist <- unlist(Tex_line_split)
     tex_groups <- cumsum(Tex_line_split_unlist == delim1) - cumsum(Tex_line_split_unlist == delim2)
     
+    line_no <- char <- char_no <- tex_group <-
+      initial_group_no <- NULL
+    
     group_by_line_no <- 
       data.table(line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
                  char = Tex_line_split_unlist) %>%
@@ -193,7 +202,7 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
                                              "next_start>char_no"),
                                    nomatch=0L] %>%
       unique %>%
-      .[, initial_group_no := first(tex_group), by = command_no]
+      .[, initial_group_no := first(tex_group), by = "command_no"]
     
     group_by_line_no %>%
       .[tex_group >= initial_group_no] %>%

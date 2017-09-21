@@ -31,6 +31,9 @@ If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.}
 \item{.dummy_replacement}{An intermediate replacement value.
 This value cannot be present in \code{tex_lines}.}
 
+\item{star}{Assume the starred version of the command. That is, assume that the contents of 
+the argument lies on a single line.}
+
 \item{data.tables}{Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
 for performance.}
 }

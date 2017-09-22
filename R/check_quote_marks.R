@@ -56,7 +56,7 @@ check_quote_marks <- function(filename, .report_error, rstudio = FALSE){
                       collapse = "")
     
     .report_error(line_no = line_no,
-                  column = position - 6,
+                  column = position - 7,
                   context = context,
                   error_message = "Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")
     stop("Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")

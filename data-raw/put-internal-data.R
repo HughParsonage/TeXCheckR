@@ -42,10 +42,13 @@ lc_govt_pattern <-
          ") government(?!s)",
          "(?!\\s(?:schools?))")
 
+punctuation <- c(".", ",", ":", ";", "'", '"', "?", "-", "!")
+
 devtools::use_data(twocolumn_atop,
                    # dictionaryAU,
                    newspaper_by_url,
                    ordinal_pattern,
                    lc_govt_pattern,
+                   punctuation,
                    internal = TRUE,
                    overwrite = TRUE)

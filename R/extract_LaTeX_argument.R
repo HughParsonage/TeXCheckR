@@ -83,6 +83,8 @@ extract_LaTeX_argument <- function(tex_lines,
         stringi::stri_locate_all_regex(str = tex_lines,
                                        pattern = command_pattern)
       
+      line_no <- n_char <- char_no <- NULL
+      
       char_no_by_line_no <- 
         data.table(line_no = seq_along(tex_lines),
                    n_char = shift(nchar_tex_lines, fill = 0L)) %>%
@@ -109,24 +111,26 @@ extract_LaTeX_argument <- function(tex_lines,
                     n = n)
       }
       
+      intra_line_char_no <- end_char_no <- start_char_no <- NULL
+      
       command_locations_by_char_no <-
         rbindlist(lapply(Command_locations, as.data.table), idcol = "line_no") %>%
-        .[, intra_line_char_no := end + 1L] %>%
+        .[, "intra_line_char_no" := end + 1L] %>%
         .[char_no_by_line_no, on = "line_no"] %>%
         # Which character in the entire document
         # does (this) command's argument start at 
         # (where does this command's name end)
-        .[, end_char_no := intra_line_char_no + char_no] %>%
-        .[, start_char_no := start + char_no] %>%
+        .[, "end_char_no" := intra_line_char_no + char_no] %>%
+        .[, "start_char_no" := start + char_no] %>%
         .[complete.cases(.)] %>%
         parsed_document[.,
                         j = list(char_no, line_no, end_char_no, start_char_no, tex_group),
                         on = "char_no==end_char_no"] %>%
-        .[, next_start := shift(start_char_no, type = "lead", fill = .Machine$integer.max)] %>%
-        .[, .(line_no, end_char_no,  next_start, tex_group)] %>%
-        .[, command_no := .I] %>%
-        .[, starts_at := starts(end_char_no), by = command_no] %>%
-        .[, stops_at := stops(end_char_no), by = command_no] %>%
+        .[, "next_start" := shift(start_char_no, type = "lead", fill = .Machine$integer.max)] %>%
+        .[, .(line_no, end_char_no, next_start, tex_group)] %>%
+        .[, "command_no" := .I] %>%
+        .[, "starts_at" := starts(end_char_no), by = command_no] %>%
+        .[, "stops_at" := stops(end_char_no), by = command_no] %>%
         # If the command has zero arguments (or if the argument is optional
         # but not used \\footcite[][3]{Daley} vs \\footcite{Daley})
         .[]

@@ -17,6 +17,7 @@
 #' @importFrom hutils if_else
 #' @importFrom hutils coalesce
 #' @importFrom hutils %notin%
+#' @importFrom hutils NOR
 #' @importFrom hutils neither
 #' @importFrom hutils duplicated_rows
 #' @importFrom readr read_lines

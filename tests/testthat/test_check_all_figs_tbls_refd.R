@@ -16,3 +16,11 @@ test_that("Error when not labeled", {
 test_that("No error when commented out", {
   expect_null(figs_tbls_unrefd("./check-all-figs-tbls-refd/ok-as-fig-in-comment.tex"))
 })
+
+test_that("May be left unreferenced", {
+  expect_null(figs_tbls_unrefd("./check-all-figs-tbls-refd/ok-may-be-left-unrefd.tex"))
+})
+
+test_that("Vrefrange", {
+  expect_null(figs_tbls_unrefd("./check-all-figs-tbls-refd/Vrefrange.tex"))
+})

@@ -26,33 +26,44 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
   may_be_left_unreferenced <- NULL
   if (any(grepl("^[%] may_be_left_unreferenced[:]", lines, perl = TRUE))){
     may_be_left_unreferenced <-
-      lines[grepl("^[%] may_be_left_unreferenced[:]", lines, perl = TRUE)] %>%
+      grep("^[%] may_be_left_unreferenced[:]", lines, perl = TRUE, value = TRUE) %>%
       gsub("% may_be_left_unreferenced: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
   }
   
   lines <- strip_comments(lines)
+
+  # Order is important (e.g. Vrefrange)
+  input_pattern <- "^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$"
   
-  inputs_of_filename <- inputs_of(filename)
-  # Only have to put all the lines into one object;
-  # order is unimportant
-  inputs <- inputs_of_filename
-  filename_path <- dirname(filename)
-  while (!is.null(inputs)){
-    file_path <- dirname(inputs[[1]])
-    input_lines <-
-      lapply(inputs, function(x) read_lines(file.path(filename_path, x))) %>%
-      unlist %>%
-      strip_comments
+  input_line_nos <- grep(input_pattern,
+                         lines, 
+                         perl = TRUE)
+  
+  file_path <- dirname(filename)
+  while (length(input_line_nos)) {
+    lines <- 
+     lapply(seq_along(lines), 
+            function(ii) {
+              if (ii %in% input_line_nos) {
+                input_line <- lines[ii]
+                input_file <-
+                  gsub(input_pattern,
+                       "\\1.tex",
+                       input_line,
+                       perl = TRUE)
+                read_lines(file.path(file_path, input_file))
+              } else {
+                lines[ii]
+              }
+            }) %>%
+       unlist(use.names = FALSE)
     
-    lines <- c(lines, input_lines)
-    inputs <-
-      file.path(filename_path, inputs) %>%
-      # can't use vapply as might be NULL or char
-      sapply(inputs_of, USE.NAMES = FALSE) %>%
-      unlist
+    input_line_nos <- grep(input_pattern,
+                           lines, 
+                           perl = TRUE)
   }
   
   lines_with_labels <- grep("\\\\caption.*\\\\label", lines, perl = TRUE)

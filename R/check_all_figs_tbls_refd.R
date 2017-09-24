@@ -28,7 +28,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
     may_be_left_unreferenced <-
       lines[grepl("^[%] may_be_left_unreferenced[:]", lines, perl = TRUE)] %>%
       gsub("% may_be_left_unreferenced: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
   }

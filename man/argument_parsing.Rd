@@ -11,7 +11,7 @@ replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
   .dummy_replacement = "Qq")
 
 nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
-  data.tables = TRUE)
+  star = TRUE, data.tables = TRUE)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file read in from readLines.}
@@ -30,6 +30,9 @@ If \code{TRUE}, the \code{n}th \emph{optional} argument is extracted.}
 
 \item{.dummy_replacement}{An intermediate replacement value.
 This value cannot be present in \code{tex_lines}.}
+
+\item{star}{Assume the starred version of the command. That is, assume that the contents of 
+the argument lies on a single line.}
 
 \item{data.tables}{Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
 for performance.}

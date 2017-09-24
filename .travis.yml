@@ -20,12 +20,15 @@ addons:
   apt:
     packages:
     - libhunspell-dev
-r_packages:
-- covr
-- drat
+r_binary_packages:
 - devtools
 - roxygen2
 - hunspell
+
+r_packages:
+- covr
+- drat
+
 after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'

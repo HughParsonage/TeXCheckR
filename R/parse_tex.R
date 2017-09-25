@@ -13,7 +13,6 @@
 parse_tex <- function(tex_lines, delim1 = "{", delim2 = "}") {
   Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE))
   nchar_tex_lines <- nchar(tex_lines)
-  unlist(lapply(nchar_tex_lines, seq_len))
   
   setDT(list(char_no = seq_along(Tex_line_split_unlist),
              line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),

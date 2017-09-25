@@ -1,18 +1,54 @@
-#' Spellchecker for Grattan reports
+#' Spellchecker
 #'
 #' @param filename Path to a LaTeX file to check.
-#' @param pre_release Should the document be assumed to be final? Setting to \code{FALSE} allows function contents to be excluded.
+#' @param pre_release Should the document be assumed to be final?
+#' Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits \code{add_to_dictionary} to be
+#' present outside the document preamble.
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
 #' @param bib_files Bibliography files (containing possible clues to misspellings).
+#' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
+#' @param dict_lang Passed to \code{hunspell::dictionary}.
+#' @param rstudio Use the RStudio API?
 #' @param .report_error A function to provide context to any errors.
-#' @return If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
-#' @details Uses the \code{en_AU} hunspell dictionary.
-#' @importFrom hunspell hunspell
-#' @importFrom hunspell dictionary
-#' @import hunspell
+#' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
+#' 
+#' @details Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
+#' in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write
+#' \code{\% add_to_dictionary: foobaz} on a single line. The advantage of this method is that you can collaborate
+#' on the document without having to keep track of which spelling errors are genuine. You can also add the 
+#' directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
+#' of \code{\\mycmd}.
+#' 
+#' Other advantages included skipping the contents of certain commands, the spelling of which need not be checked 
+#' as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. These
+#' have been fixed by \code{hunspell} since then.
+#' 
+#' The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
+#' dictionary.  
+#' 
+#' This function should be quite fast, but slower than \code{hunspell::hunspell} (which it invokes). 
+#' I aim for less than 500 ms on a real-world report of around 100 pages.
+#' The function is slower when consulting \code{bib_files}, though I recommend adding authors, titles, etc. 
+#' explicitly, or using \code{citeauthor} and friends. 
+#' 
+#' This function is forked from \url{https://github.com/hughparsonage/grattanReporter} to parse reports of the Grattan Institute, Melbourne for errors. See
+#' \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
+#' Some checks have been omitted in this package.
+#' 
+#' @examples 
+#' 
+#' \dontrun{
+#' url_bib <- 
+#' paste0("https://raw.githubusercontent.com/HughParsonage/",
+#'        "grattex/e6cab97145d38890e44e83d122e995e3b8936fc6/",
+#'        "Report.tex")
+#' check_spelling(url_bib)
+#' }
+#' 
 #' @export
+#' 
 
 check_spelling <- function(filename,
                            pre_release = TRUE,
@@ -20,18 +56,20 @@ check_spelling <- function(filename,
                            known.correct = NULL,
                            known.wrong = NULL,
                            bib_files,
+                           check_etcs = TRUE,
+                           dict_lang = "en_GB",
+                           rstudio = FALSE,
                            .report_error){
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(file = filename, ..., rstudio = TRUE)
+    } else {
+      .report_error <- function(...) report2console(...)
+    }
   }
 
   file_path <- dirname(filename)
-  lines <-
-    read_lines(filename)
-
-  if (any(grepl("\\documentclass", lines, fixed = TRUE))){
-    lines <- gsub("{grattan}", "{report}", lines, fixed = TRUE)
-  }
+  lines <- read_lines(filename)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -40,7 +78,7 @@ check_spelling <- function(filename,
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
 
-  if (any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
+  if (check_etcs && any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
     line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
     .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
                   line_no = line_no,
@@ -52,7 +90,7 @@ check_spelling <- function(filename,
     extra_known_wrong <-
       lines[grepl("^[%] stop_if_present[:]", lines, perl = TRUE)] %>%
       gsub("% stop_if_present: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 
@@ -83,7 +121,7 @@ check_spelling <- function(filename,
     words_to_add <-
       lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
       gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 
@@ -108,12 +146,12 @@ check_spelling <- function(filename,
   }
 
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(graphics))))",
+  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))",
                                lines_after_begin_document,
                                perl = TRUE))
 
   if (inputs_in_doc > 0){
-    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
+    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",
                    lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",
                                                     lines_after_begin_document,
@@ -134,7 +172,8 @@ check_spelling <- function(filename,
                                             paste0(input, ".tex")),
                        pre_release = pre_release,
                        known.correct = known.correct,
-                       known.wrong = known.wrong)
+                       known.wrong = known.wrong, 
+                       rstudio = rstudio)
       }
     }
   }
@@ -212,22 +251,9 @@ check_spelling <- function(filename,
   }
 
   # Ignore captionsetups
-  lines <- replace_LaTeX_argument(lines, "captionsetup", "")
+  lines <- replace_nth_LaTeX_argument(lines, "captionsetup", n = 1L, replacement = "")
 
   # Valid ordinal patterns are permitted
-  ordinal_pattern <-
-    paste0("((?<!1)1(\\\\textsuperscript\\{)?st)",
-           "|",
-           "((?<!1)2(\\\\textsuperscript\\{)?nd)",
-           "|",
-           "((?<!1)3(\\\\textsuperscript\\{)?rd)",
-           "|",
-           "(([04-9]|(1[1-3]))(\\\\textsuperscript\\{)?th)")
-  stopifnot(identical(grepl(ordinal_pattern,
-                            c("3rd", "11th", "21st", "13th", "13rd", "101st", "11st", "funding", "3\\textsuperscript{rd}"),
-                            perl = TRUE),
-                      c(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE)))
-
   lines <-
     gsub(ordinal_pattern,
          "",
@@ -237,14 +263,18 @@ check_spelling <- function(filename,
   lines <- remove_valid_contractions(lines)
 
   # Ignore phantoms
-  lines <- replace_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
-  lines <- replace_LaTeX_argument(lines, command_name = "gls", replacement = "ENTRY")
-  lines <- replace_LaTeX_argument(lines, command_name = "href", replacement = "correct")
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "gls", replacement = "ENTRY")
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "href", replacement = "correct")
   # Replace label argument in smallbox etc
   lines <- replace_nth_LaTeX_argument(lines,
                                       command_name = "begin.(?:(?:(?:very)?small)|(?:big))box[*]?[}]",
                                       n = 2L,
                                       replacement = "box:key")
+  lines <- replace_nth_LaTeX_argument(lines,
+                                      command_name = "[CVcv]refrange",
+                                      n = 2L,
+                                      replacement = "second range key")
 
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
@@ -262,7 +292,7 @@ check_spelling <- function(filename,
     commands_to_ignore <-
       lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
       gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
-      trimws %>%
+      stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
       unlist
 
@@ -278,28 +308,6 @@ check_spelling <- function(filename,
   # e.g. 'urgently phas[e] out' is correct
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
-
-  lc_govt_pattern <-
-    paste0("(?:",
-           paste0("(?:Federal)",
-                  "|",
-                  "(?:Commonwealth)",
-                  "|",
-                  "(?:N(?:ew )?S(?:outh )?W(?:ales)?)",
-                  "|",
-                  "(?:Vic(?:torian?)?)",
-                  "|",
-                  "(?:Q(?:ueens)?l(?:an)?d)",
-                  "|",
-                  "(?:S(?:outh )?A(?:ustralian?)?)",
-                  "|",
-                  "(?:W(?:estern )?A(?:ustralian?)?)",
-                  "|",
-                  "(?:N(?:orthern? )?T(?:erritory)?)",
-                  "|",
-                  "(?:A(?:ustralian )?|C(?:apital )?T(?:erritory)?)"),
-           ") government",
-           "(?!\\s(?:schools?))")
 
   if (any(grepl(lc_govt_pattern, lines, perl = TRUE))){
     line_no <- grep(lc_govt_pattern, lines, perl = TRUE)[[1]]
@@ -330,7 +338,6 @@ check_spelling <- function(filename,
 
     .report_error(line_no = first_wrong_line_no,
                   context = lines[first_wrong_line_no],
-                  preamble = NULL,
                   "\n",
                   "\t", wrongly_spelled_word)
     stop("Common spelling error detected.")
@@ -340,14 +347,18 @@ check_spelling <- function(filename,
   
   words_to_add <- c(valid_abbreviations, paste0(valid_abbreviations, "s"), words_to_add)
 
-  parsed <- hunspell(lines, format = "latex", dict = dictionary("en_GB"))
+  parsed <- hunspell(lines, format = "latex", dict = dictionary(dict_lang))
   all_bad_words <- unlist(parsed)
 
-  all_bad_words<- setdiff(all_bad_words,
-                          c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE,
+  # Faster than using hunspell(add_words = )
+  dictionary_additions <- c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE,
                             correctly_spelled_words,
                             words_to_add,
-                            known.correct))
+                            known.correct)
+  
+  all_bad_words <- 
+    all_bad_words[all_bad_words %notin% dictionary_additions] %>%
+    unique
 
   are_misspelt <- vapply(parsed, not_length0, logical(1))
 
@@ -371,9 +382,13 @@ check_spelling <- function(filename,
         unlist
 
       authors_in_bib_and_doc <-
-        intersect(grep("^[A-Z]", all_bad_words,
-                       value = TRUE, perl = TRUE),
+        intersect(grep("^[A-Z]",
+                       all_bad_words,
+                       value = TRUE,
+                       perl = TRUE),
                   authors_in_bib)
+      
+      dictionary_additions <- c(dictionary_additions, authors_in_bib_and_doc)
     } else {
       authors_in_bib <- authors_in_bib_and_doc <- NULL
     }
@@ -381,17 +396,7 @@ check_spelling <- function(filename,
 
     for (line_w_misspell in which(are_misspelt)){
       # If bad words %in% ... don't bother checking
-      bad_words <- setdiff(parsed[[line_w_misspell]],
-                           c(CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE, correctly_spelled_words, words_to_add, known.correct))
-
-      if (!pre_release){
-        if (!is.null(authors_in_bib_and_doc)){
-          bad_words_no_proper_nouns <- setdiff(bad_words, authors_in_bib)
-          bad_words <- bad_words_no_proper_nouns
-        }
-      }
-
-      if (not_length0(bad_words)){
+      if (any(parsed[[line_w_misspell]] %notin% dictionary_additions)) {
         bad_line <- lines[[line_w_misspell]]
         # For timing
         bad_line_corrected <- gsub(gwp,
@@ -408,8 +413,11 @@ check_spelling <- function(filename,
                             format = "latex",
                             dict = dictionary("en_GB"))
 
-        if (not_length0(recheck[[1]])){
-          bad_word <- bad_words[[1]]
+        if (not_length0(recheck[[1]])) {
+          # We've discovered a likely misspelling.
+          # No need for performance, code within this if-statement
+          # is just to prepare the error message.
+          bad_word <- recheck[[1]][[1]]
           nchar_of_badword <- nchar(bad_word)
 
           chars_b4_badword <-
@@ -427,12 +435,21 @@ check_spelling <- function(filename,
             }
 
           .report_error(line_no = line_w_misspell,
+                        column = chars_b4_badword + nchar_of_badword + 1L,
                         context = context,
                         error_message = paste0("Spellcheck failed: '", bad_word, "'"),
                         extra_cat_post = c("\n",
                                            rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
                                            rep("^", nchar_of_badword),
                                            "\n"))
+          # Use %in% to avoid named logical var.
+          if (rstudio && Sys.info()['sysname'] %in% "Windows") {
+            suggested <- hunspell::hunspell_suggest(words = bad_word)[[1]]
+            # Use charToRaw to avoid a trailing newline.
+            # The extra space will be discarded (for some reason).
+            utils::writeClipboard(charToRaw(paste0(suggested[1], " ")))
+            cat("\nSuggested:\t", suggested)
+          }
           stop("Spellcheck failed on above line with '", bad_word, "'")
         }
       }

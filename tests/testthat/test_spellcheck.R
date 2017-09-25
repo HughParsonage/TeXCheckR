@@ -19,6 +19,8 @@ test_that("Initalisms", {
   expect_null(check_spelling("./spelling/abbrev/abbrev-defd-ok-2.tex"))
   expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-defd-ok-stopwords.tex")),
                c("QXFEoC", "AIAS"))
+  expect_equal(extract_validate_abbreviations(readLines("./spelling/abbrev/abbrev-plural.tex")),
+               c("LVR"))
 })
 
 test_that("Initialism checking doesn't fail if at start of sentence", {
@@ -51,5 +53,26 @@ test_that("Lower-case governments should error", {
   expect_error(check_spelling("./spelling/Govt/NTgovt.tex"), regexp = "uppercase G")
   expect_error(check_spelling("./spelling/Govt/Queenslandgovt.tex"), regexp = "uppercase G")
   expect_error(check_spelling("./spelling/Govt/WAgovt.tex"), regexp = "uppercase G")
+})
+
+test_that("Some lower-case governments should not", {
+  expect_null(check_spelling("./spelling/Govt/ok-as-adj.tex"))
+})
+
+test_that("Includepdf doesn't result in a failed include message", {
+  expect_null(check_spelling("./spelling/includepdf-ok.tex"))
+})
+
+test_that("Should error", {
+  expect_error(check_spelling("spelling/misc-error.tex"), regexp = "Spellcheck")
+  expect_error(check_spelling("spelling/typo-suggest.tex"), regex = "Spellcheck")
+})
+
+test_that("RStudio API", {
+  skip_if_not(!interactive())
+  expect_error(check_spelling("spelling/typo-suggest.tex", rstudio = TRUE),
+               regexp = "Spellcheck")
+  expect_false(Sys.info()['sysname'] %in% "Windows" &&
+                  utils::readClipboard() != "Sydney")
 })
 

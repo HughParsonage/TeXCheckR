@@ -8,7 +8,7 @@ check_sentence_ending_periods <- function(filename, .report_error){
     read_lines(filename) %>%
     .[!isR_line_in_knitr(.)] %>%
     gsub("((?<!(\\\\))%).*$", "", ., perl = TRUE) %>%
-    trimws
+    stri_trim_both
   
   if (any(grepl("[A-Z]\\.\\s+[A-Z]", lines, perl = TRUE)) || 
       any(and(lag(grepl("[A-Z]\\.$", lines, perl = TRUE)),

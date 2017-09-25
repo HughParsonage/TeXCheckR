@@ -1,29 +1,28 @@
 #' Functions for parsing .bib files
 #' @name bib_parser
-#' @import data.table
-#' @importFrom dplyr if_else
-#' @importFrom dplyr coalesce
 #' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
+#' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib){
+fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   stopifnot(length(file.bib) == 1L)
   if (!grepl("\\.bib$", file.bib)){
     warning("File extension is not '.bib'.")
   }
 
   bib <-
-    read_lines(file.bib) %>%
+    read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
     # Avoid testing }\\s+$ rather than just == }
-    trimws %>%
-    .[!grepl("@Comment", ., fixed = TRUE)]
+    stri_trim_both %>%
+    .[substr(., 0, 8) != "@Comment"]
+  
   is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
   is_closing <- bib == "}"
 
-  sep_candidate <- NULL
+  sep <- NULL
   # Can't use = as separator (almost certainly occurs in a URL)
   # Try these:
   for (sep_candidate in c("\t", "^", "|")){
@@ -38,11 +37,11 @@ fread_bib <- function(file.bib){
 
   bib_just_key_and_fields <- bib
   bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
-  bib_just_key_and_fields[is_at] <- gsub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
+  bib_just_key_and_fields[is_at] <- sub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
   # Make sure the sep is detected (in case of >author   ={John Daley}<)
-  bib_just_key_and_fields <- gsub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
-  bib_just_key_and_fields <- gsub(" = ", sep_candidate, bib_just_key_and_fields, fixed = TRUE)
+  bib_just_key_and_fields <- sub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
+  bib_just_key_and_fields <- sub(" = ", sep, bib_just_key_and_fields, fixed = TRUE)
   used_line_nos <- which(!is.na(bib_just_key_and_fields))
   bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
 
@@ -55,43 +54,36 @@ fread_bib <- function(file.bib){
 
   is_key <- NULL
   bibDT[, is_key := field == "key"]
+  
+  key_value <- NULL
+  bibDT[(is_key), key_value := tolower(sub("^.*\\{", "", value, perl = TRUE))]
+  
+  if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
+    duplicates <- duplicated_rows(bibDT, by = "key_value")
+    print(duplicates[, "bib_file" := file.bib])
+    report2console(file = file.bib,
+                   line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
+                   error_message = "Duplicate bib key used.",
+                   advice = paste0("Compare the two entries above. If they are identical, delete one. ", 
+                                   "If they are distinct, choose a different bib key. ", 
+                                   "(Note: keys are case-insensitive.)"))
+    stop("Duplicate bib key used.")
+  }
+  
+  bibDT[, key_value := NULL]
 
-  key_line <- NULL
-  bibDT[, key_line := if_else(is_key, value, NA_character_)]
+  key_line <- entry_type <- NULL
+  bibDT[(is_key), key_line := value]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
   bibDT[, x := NULL]
-  bibDT[, lapply(.SD, trimws)]
-  bibDT[, key_line := gsub(",$", "", key_line, perl = TRUE)]
+  bibDT[, lapply(.SD, stri_trim_both)]
+  bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
-  bibDT[, field := tolower(trimws(field))]
-  bibDT[, value := gsub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  bibDT[, field := tolower(stri_trim_both(field))]
+  bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
   
-  dups <- NULL
-  duplicate_fields <-
-    bibDT[, .(dups = anyDuplicated(field)), by = key]
-  
-  if (any(duplicate_fields[["dups"]])){
-    keys <-
-      duplicate_fields %>%
-      .[as.logical(dups)] %>%
-      .[["key"]]
-
-    n_keys <- length(keys)
-
-    if (n_keys <= 5L){
-      top_keys <- keys
-      stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
-    } else {
-      top_keys <- keys[1:5]
-      if (n_keys == 6L){
-        stop("Duplicate fields found in ", paste0(keys, collapse = " "), ".")
-      } else {
-        stop("Duplicate fields found in ", paste0(keys, collapse = " "), " and ", n_keys - 5L, " others.")
-      }
-    }
-  }
-  bibDT
+  bibDT[, .(line_no, entry_type, key, field, value)]
 }
 
 #' @rdname bib_parser
@@ -105,7 +97,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     bib <-
       read_lines(file.bib) %>%
       # Avoid testing }\\s+$ rather than just == }
-      trimws %>%
+      stri_trim_both %>%
       .[!grepl("@Comment", ., fixed = TRUE)]
     is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
     is_closing <- bib == "}"

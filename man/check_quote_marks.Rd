@@ -4,13 +4,24 @@
 \alias{check_quote_marks}
 \title{Check quote marks in TeX}
 \usage{
-check_quote_marks(filename, .report_error)
+check_quote_marks(filename, .report_error, rstudio = FALSE)
 }
 \arguments{
 \item{filename}{LaTeX filename.}
 
 \item{.report_error}{A function determining how errors will be reported.}
+
+\item{rstudio}{Use the \code{rstudioapi} package to jump to the location of the first error.}
 }
 \description{
 Checks whether a closing quote has been used at the start of a word.
+}
+\examples{
+\dontrun{
+  tex_file <- tempfile(fileext = ".tex")
+  cat("This is the wrong 'quote' mark.", file = tex_file)
+  check_quote_marks(tex_file)
+  file.remove(tex_file)
+}
+
 }

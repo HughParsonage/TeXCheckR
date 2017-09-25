@@ -3,7 +3,6 @@
 #' @param filename A LaTeX or knitr file.
 #' @param outfile The file to write to, defaults to \code{filename}.
 #' @return NULL. This function is called for its side-effect: rewriting \code{filename} with \code{30 million} changed to \code{30~million}.
-#' @importFrom magrittr %>%
 #' @export
 
 weld_bmillion <- function(filename, outfile = filename){

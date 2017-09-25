@@ -2,11 +2,25 @@
 #' @description Checks whether a closing quote has been used at the start of a word.
 #' @param filename LaTeX filename.
 #' @param .report_error A function determining how errors will be reported.
+#' @param rstudio Use the \code{rstudioapi} package to jump to the location of the first error.
 #' @export
+#' 
+#' @examples 
+#' \dontrun{
+#'   tex_file <- tempfile(fileext = ".tex")
+#'   cat("This is the wrong 'quote' mark.", file = tex_file)
+#'   check_quote_marks(tex_file)
+#'   file.remove(tex_file)
+#' }
+#' 
 
-check_quote_marks <- function(filename, .report_error){
+check_quote_marks <- function(filename, .report_error, rstudio = FALSE){
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(..., file = filename, rstudio = TRUE)
+    } else {
+      .report_error <- function(...) report2console(...)
+    }
   }
   
   lines <- 
@@ -41,8 +55,9 @@ check_quote_marks <- function(filename, .report_error){
                       paste0(rep(" ", position - 1), collapse = ""), "^", 
                       collapse = "")
     
-    .report_error(line_no = line_no, 
-                  context = context, 
+    .report_error(line_no = line_no,
+                  column = position - 7,
+                  context = context,
                   error_message = "Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")
     stop("Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.")
   }

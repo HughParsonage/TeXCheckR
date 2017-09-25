@@ -51,7 +51,7 @@ positions_of_all_strings <- function(tex_line, command_name, end = TRUE){
       tex_line_split <- tex_line_split[-c(1:(start_at - 1))]
     }
   }
-  out + cumsum(dplyr::lag(out, default = 0)) + 1
+  out + cumsum(lag(out, default = 0)) + 1
 }
 
 

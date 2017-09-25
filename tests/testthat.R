@@ -1,4 +1,4 @@
 library(testthat)
-library(grattanReporter)
+library(TeXCheckR)
 
-test_check("grattanReporter")
+test_check("TeXCheckR")

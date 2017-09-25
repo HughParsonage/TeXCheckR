@@ -1,24 +1,28 @@
-Package: grattanReporter
+Package: TeXCheckR
 Type: Package
-Title: Parses Grattan Reports, possibly creating PDFs also
-Date: 2017-03-01
-Version: 0.17.3
+Title: Parses LaTeX Documents for Errors
+Date: 2017-09-12
+Version: 0.3.3
 Author: Hugh Parsonage
 Maintainer: Hugh Parsonage <hugh.parsonage@gmail.com>
-Description: Checks whether the LaTeX document compiled in accordance with Grattan style.
+URL: https://github.com/HughParsonage/TeXCheckR
+BugReports: https://github.com/HughParsonage/TeXCheckR/issues
+Description: Checks LaTeX documents and .bib files for typing errors, such as spelling errors, incorrect quotation marks. Also provides useful functions for parsing and linting bibliography files.
 License: GPL-2
 Depends: R (>= 2.10)
-Imports: magrittr, 
-  dplyr, 
+Imports:
+  magrittr, 
   data.table, 
   stringi,
-  hunspell, 
+  hunspell,
+  hutils (>= 0.8.0),
   clisymbols, 
   crayon,
-  gmailr,
-  twitteR,
   readr,
-  zoo
+  rstudioapi,
+  stats,
+  zoo,
+  fastmatch
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Suggests: testthat

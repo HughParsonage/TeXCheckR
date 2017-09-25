@@ -3,24 +3,19 @@
 \name{report_error}
 \alias{report_error}
 \alias{report2console}
-\alias{report2twitter}
-\alias{report2gmail}
 \title{Report errors to console and twitter}
 \usage{
-report2console(line_no = NULL, context = NULL, error_message = NULL,
-  advice = NULL, build_status = NULL, authors = NULL,
-  report_name = NULL, extra_cat_ante = NULL, extra_cat_post = NULL)
-
-report2twitter(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,
-  extra_cat_post = NULL, globalEnv = NULL)
-
-report2gmail(preamble = NULL, report_name, build_status, error_message,
-  line_no = NULL, context = NULL, authors, extra_cat_ante = NULL,
-  extra_cat_post = NULL)
+report2console(file = NULL, line_no = NULL, column = NULL,
+  context = NULL, error_message = NULL, advice = NULL,
+  build_status = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
+  rstudio = FALSE, log_file = NULL)
 }
 \arguments{
+\item{file}{The file in which the error occurred.}
+
 \item{line_no}{The line number locating the source of the error.}
+
+\item{column}{The position on the line to identify the error (usually following the error).}
 
 \item{context}{THe content of the file to provide context to the error.}
 
@@ -30,20 +25,13 @@ report2gmail(preamble = NULL, report_name, build_status, error_message,
 
 \item{build_status}{What should the build status be reported as?}
 
-\item{authors}{Text to alert the authors (such as a twitter handle).}
-
-\item{report_name}{Name of project whose errors are being reported.}
-
 \item{extra_cat_ante}{Character vector extra messages (placed before \code{context}).}
 
 \item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
 
-\item{preamble}{Message to appear before other messages.}
+\item{rstudio}{If available, should the report be allowed to modify the RStudio session?}
 
-\item{globalEnv}{The environment in which tweet statuses should be assigned. 
-The default, \code{NULL}, is an error. The environment must be set by the user
-to comply with (reasonable) CRAN requirements to not interfere with the user's 
-environment.}
+\item{log_file}{Optionally, path to a log file on which \code{error_message} will be written.}
 }
 \description{
 Report errors to console and twitter

@@ -13,3 +13,8 @@ rm_editorial_square_brackets(tex_lines)
 Change text such as \code{phas[e] out} to \code{phase out},
 without removing square brackets denoting optional arguments.
 }
+\examples{
+x <- "the BCA's call to `urgently phas[e] out all side deals'"
+rm_editorial_square_brackets(x)
+
+}

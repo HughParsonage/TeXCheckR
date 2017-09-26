@@ -54,8 +54,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   }
   # Don't try to parse the word 'footnote' outside a control sequence.
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
-  lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)
-  lines <- gsub("\\\\footnote(?![{])", "\\\\fnote\\1", lines, perl = TRUE)
+  # Important to keep the width of 'footnote' though: so the cursor can be correctly
+  # positioned.
+  lines <- gsub("([^\\\\])footnote", "\\1toofnote", lines)
+  lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
   
@@ -171,7 +173,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     
     if (any(chars_after_footcites %fin% punctuation)) {
       stop("Punctuation mark after \\footcites number ",
-           which(chars_after_footcites %fin% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
+           which(chars_after_footcites %in% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
     }
   }
   

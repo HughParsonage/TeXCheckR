@@ -49,7 +49,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)
-  lines <- lines[!grepl("GenericWarning", lines, fixed = TRUE)]
+  if (any(grepl("GenericWarning", lines, fixed = TRUE))) {
+    lines[grepl("GenericWarning", lines, fixed = TRUE)] <- ""
+  }
   # Don't try to parse the word 'footnote' outside a control sequence.
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
   lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)

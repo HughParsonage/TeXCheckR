@@ -260,7 +260,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 # n = relative to last character
 position_end_of_footnote <- function(n = 0, orig_lines, is.punct = FALSE) {
   out <- extract_LaTeX_argument(orig_lines, "footnote", star = FALSE)
-  nchar_footnote_text <- nchar(out[["extract"]])
+  nchar_footnote_text <- 
+    out %>%
+    .[, .(nchars = sum(nchar(extract))), by = "command_no"] %>%
+    .[["nchars"]]
   
   parsed <- parse_tex(orig_lines)
   
@@ -273,13 +276,19 @@ position_end_of_footnote <- function(n = 0, orig_lines, is.punct = FALSE) {
   
   footnote_positions <- 
     parsed %>%
-    .[complete.cases(.)] %>%
-    .[, I := .I] %>%
-    .[, text := paste0(.SD, collapse = ""), .SDcols = sprintf("s%d", seq_len(nchar_footnote)), by = I] %>%
-    .[text == "\\footnote{"] %>%
+    .[s1 == "\\"] %>%
+    .[s2 == "f"] %>%
+    .[s3 == "o"] %>%
+    .[s4 == "o"] %>%
+    .[s5 == "t"] %>%
+    .[s6 == "n"] %>%
+    .[s7 == "o"] %>%
+    .[s8 == "t"] %>%
+    .[s9 == "e"] %>%
+    .[s10 == "{"] %>%
     .[["char_no"]] + nchar_footnote
   
-  target_char_no <- (footnote_positions + nchar_footnote_text + n)
+  target_char_no <- footnote_positions + nchar_footnote_text + n
   
   if (is.punct) {
     error_position <- 

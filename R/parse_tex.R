@@ -7,17 +7,83 @@
 #' \item{\code{char_no}}{The character within \code{line_no}.}
 #' \item{\code{char}}{The character. A single character.}
 #' \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
+#' \item{\code{GRP_ID}}{An integer identifying the unique continguous block.}
 #' }
 #' @export
 
-parse_tex <- function(tex_lines, delim1 = "{", delim2 = "}") {
-  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE))
+parse_tex <- function(tex_lines) {
+  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE), use.names = FALSE, recursive = FALSE)
   nchar_tex_lines <- nchar(tex_lines)
+  n_char <- sum(nchar(tex_lines))
   
-  setDT(list(char_no = seq_along(Tex_line_split_unlist),
-             line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
-             column = unlist(lapply(nchar_tex_lines, seq_len)),
-             char = Tex_line_split_unlist,
-             tex_group = cumsum(Tex_line_split_unlist == delim1) - cumsum(Tex_line_split_unlist == delim2)))
+  opener <- Tex_line_split_unlist == "{"
+  closer <- Tex_line_split_unlist == "}"
+  opener_optional <- Tex_line_split_unlist == "["
+  closer_optional <- Tex_line_split_unlist == "]"
+  keep_look_for_ahead <- cumsum(Tex_line_split_unlist == "\\") - cumsum(opener | opener_optional)
+  tex_group <- cumsum(opener) - cumsum(closer) + closer
+  optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
+  possible_optional <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
+  
+  out <- list(char_no = seq_len(n_char),
+              line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
+              column = unlist(lapply(nchar_tex_lines, seq_len), use.names = FALSE),
+              char = Tex_line_split_unlist,
+              openers = opener,
+              closers = closer,
+              opener_optional = opener_optional,
+              closer_optional = closer_optional,
+              possible_optional = possible_optional,
+              tex_group = tex_group,
+              optional_tex_group = optional_tex_group)
+  setattr(out, "class", c("data.table", "data.frame"))
+  
+ 
+  # Nested tex group -- likely to be small
+  max_tex_group <- max(tex_group)
+  alloc.col(out, n = 10 * max_tex_group + 10L)
+  
+  seq_max_tex_group <- seq_len(max_tex_group)
+  
+  tg <- sprintf("tg%s", seq_max_tex_group)
+  GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
+  
+  for (j in seq_max_tex_group) {
+    tgj <- tg[j]
+
+    out[tex_group <= j, (tgj) := cumsum(openers & tex_group == j)]
+    
+    GROUP_IDj <- GROUP_IDz[j]
+    out[tex_group == j, (GROUP_IDj) := .GRP, by = c("tex_group", "optional_tex_group", tgj)]
+    
+    which_tex_group_geq_j <- which(tex_group >= j)
+    out[(which_tex_group_geq_j), (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
+  }
+  
+  # Uniquely identify optional groups
+  # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
+  # 0011100000022223333000000000445554000
+  
+  max_opt_group <- max(possible_optional)
+  seq_max_opt_group <- seq_len(max_opt_group)
+  og <- sprintf("og%s", seq_max_opt_group)
+  OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)
+  
+  for (k in seq_max_opt_group) {
+    ogk <- og[k]
+    
+    out[optional_tex_group <= k, (ogk) := cumsum(opener_optional & optional_tex_group == k)]
+    
+    OPT_GROUP_IDj <- OPT_GROUP_IDz[k]
+    out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c("optional_tex_group", ogk)]
+    
+    which_opt_group_geq_k <- which(optional_tex_group >= k)
+    out[(which_opt_group_geq_k), (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
+  }
+  
+  
+  out
 }
+
+
 

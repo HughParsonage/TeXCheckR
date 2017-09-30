@@ -156,7 +156,9 @@ extract_LaTeX_argument <- function(tex_lines,
       out <-
         group_by_line_no %>%
         .[,
-          .(extract = paste0(char, collapse = "")),
+          .(extract = paste0(char, collapse = ""),
+            opener_column = first(char_no),
+            closer_column = last(char_no)),
           keyby = .(command_no, line_no)] %>%
         .[, I := seq_len(.N), by = command_no] %>%
         .[, N := .N, by = command_no] %>%

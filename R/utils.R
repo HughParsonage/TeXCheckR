@@ -122,8 +122,11 @@ parse_destruct <- function(file) {
 }
 
 # for printing parsed lines
-print_transpose_data.table <- function(DT) {
+print_transpose_data.table <- function(DT, file = "") {
+  cat <- function(...) base::cat(..., file = file, append = TRUE)
+  
   max_nchar <- function(v) {
+    v[v == "\\"] <- "@"
     v_na <- is.na(v)
     out <- as.character(v)
     out[v_na] <- ""
@@ -145,6 +148,7 @@ print_transpose_data.table <- function(DT) {
     cat(v, sep = "")
     cat("\n")
   }
+  
 }
 
 

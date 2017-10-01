@@ -105,30 +105,16 @@ test_that("Multi-line", {
 })
 
 test_that("Optional argument interference", {
-  expect_equal(extract_LaTeX_argument("\\abc{def}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument("\\abc{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument("\\abc{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz]{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz]{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz][]{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc", star = FALSE)[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument("\\abcd[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], "DEF")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc", optional = TRUE, n = 2)[["extract"]], "\\abc{DEF}")
-  expect_equal(extract_LaTeX_argument("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc", optional = TRUE, n = 1)[["extract"]], "xyz")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc{def}", "abc")[["extract"]], "def")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc{def}{ghij}", "abc")[["extract"]], "def")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc[xyz]{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc[xyz]{def}{ghij}", "abc")[["extract"]], "def")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc[xyz][]{def}{ghij}", "abc")[["extract"]], "def")
+  expect_equal(extract_mandatory_LaTeX_argument("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], c("def", "DEF"))
+  expect_equal(extract_mandatory_LaTeX_argument("\\abcd[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], "DEF")
 })
 
-test_that("Optional argument interference", {
-  expect_equal(extract_LaTeX_argument2("\\abc{def}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument2("\\abc{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument2("\\abc{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz]{def}{ghij}", "abc", n = 2)[["extract"]], "ghij")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz]{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz][]{def}{ghij}", "abc")[["extract"]], "def")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], c("def", "DEF"))
-  expect_equal(extract_LaTeX_argument2("\\abcd[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], "DEF")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc", optional = TRUE, n = 2)[["extract"]], "\\abc{DEF}")
-  expect_equal(extract_LaTeX_argument2("\\abc[xyz][\\abc{DEF}]{def}{ghij}", "abc", optional = TRUE, n = 1)[["extract"]], "xyz")
-})
 
 
 

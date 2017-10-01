@@ -4,17 +4,17 @@
 \alias{extract_mandatory_LaTeX_argument}
 \title{Extract mandatory argument II}
 \usage{
-extract_mandatory_LaTeX_argument(tex_lines, parsed_doc = NULL, command_name,
-  n = 1L)
+extract_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
+  parsed_doc = NULL)
 }
 \arguments{
 \item{tex_lines}{A character vector of lines}
 
-\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}).}
-
 \item{command_name}{The command name (no backslash or opening brace).}
 
 \item{n}{Which integer to}
+
+\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}).}
 }
 \description{
 Extract mandatory argument II

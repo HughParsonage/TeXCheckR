@@ -1,5 +1,6 @@
 language: r
 cache: packages
+sudo: true
 warnings_are_errors: true
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator

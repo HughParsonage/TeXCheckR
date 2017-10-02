@@ -1,6 +1,5 @@
 #' Parse LaTeX lines
 #' @param tex_lines Character vector (as read from a \code{.tex} file).
-#' @param delim1,delim2 Opening and closing characters for each group.
 #' @return A \code{data.table} where each row identifies a unique character in \code{tex_lines}.
 #' \describe{
 #' \item{\code{line_no}}{Matches the index of \code{tex_lines}.}

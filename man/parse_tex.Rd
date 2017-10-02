@@ -8,8 +8,6 @@ parse_tex(tex_lines)
 }
 \arguments{
 \item{tex_lines}{Character vector (as read from a \code{.tex} file).}
-
-\item{delim1, delim2}{Opening and closing characters for each group.}
 }
 \value{
 A \code{data.table} where each row identifies a unique character in \code{tex_lines}.

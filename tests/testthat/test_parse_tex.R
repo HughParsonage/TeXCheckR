@@ -17,15 +17,14 @@ test_that("parse_tex single group", {
   expect_equal(nrow(x_parsed), nchar(x))
   expect_true(all(x_parsed[["line_no"]] == 1L))
   expect_equal(x_parsed[6][["tex_group"]], 1L)
-  expect_equal(x_parsed[6][["GROUP_ID"]], 2L)
-  expect_equal(x_parsed[14][["GROUP_ID"]], 3L)
+  expect_equal(x_parsed[6][["GROUP_ID1"]], 2L)
 })
 
 
 test_that("GRP_ID identifies group", {
   x <- "12{4{6}8}a{c}{f}hi"
   x_parsed <- parse_tex(x)
-  expect_equal(x_parsed[4][["GROUP_ID"]], x_parsed[8][["GROUP_ID"]])
+  expect_equal(x_parsed[4][["GROUP_ID1"]], x_parsed[8][["GROUP_ID1"]])
 })
 
 

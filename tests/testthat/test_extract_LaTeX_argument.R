@@ -3,15 +3,15 @@ context("Extract arguments")
 test_that("Extract textbf", {
   out <- extract_LaTeX_argument("The contents of \\textbf{ABC} is abc.", "textbf")
   expect_equal(out[["extract"]], "ABC")
-  expect_equal(out[["start_column"]], nchar("The contents of \\textbf{"))
-  expect_equal(out[["stop_column"]], nchar("The contents of \\textbf{ABC"))
+  expect_equal(out[["starts"]], nchar("The contents of \\textbf{"))
+  expect_equal(out[["stops"]], nchar("The contents of \\textbf{ABC}"))
 })
 
 test_that("Extract textcites", {
   out <- extract_LaTeX_argument("Some citation by \\textcites{Knuth194}{Knuth195}", "textcites", n = 2L)
   expect_equal(out[["extract"]], "Knuth195")
-  expect_equal(out[["start_column"]], nchar("Some citation by \\textcites{Knuth194}{"))
-  expect_equal(out[["stop_column"]], nchar("Some citation by \\textcites{Knuth194}{Knuth195"))
+  expect_equal(out[["starts"]], nchar("Some citation by \\textcites{Knuth194}{"))
+  expect_equal(out[["stops"]], nchar("Some citation by \\textcites{Knuth194}{Knuth195}"))
 })
 
 test_that("Extract nested", {
@@ -90,7 +90,8 @@ test_that("Multi-line", {
       "text \\textbf{has} \\emph{double}",
       "emphasis.}")
   
-  output <- extract_LaTeX_argument(tex_lines, "emph", star = FALSE)
+  output <- extract_mandatory_LaTeX_argument(tex_lines, "emph", by.line = TRUE)
+  setorder(output, command_no)
   expect_equal(output[["extract"]],
                c("emph text",
                  "this",
@@ -115,6 +116,27 @@ test_that("Optional argument interference", {
   expect_equal(extract_mandatory_LaTeX_argument("\\abcd[xyz][\\abc{DEF}]{def}{ghij}", "abc")[["extract"]], "DEF")
 })
 
+
+test_that("Multi-lines", {
+  dbl_col_fig <- readr::read_lines("extract/dbl-col-fig.tex")
+  out <- extract_mandatory_LaTeX_argument(dbl_col_fig, "doublecolumnfigure", n = 2L)
+  expect_true(grepl("includegraphics{atlas/boxplot-increase_in_travel_time-by-City-Weekday--MonFri-excl-holiday-1.pdf}", 
+                    out[["extract"]][1], 
+                    fixed = TRUE))
+  expect_equal(out[["extract"]][2], "DBL-FIG-4")
+  
+  dbl_col_fig_parsed <- parse_tex(dbl_col_fig)
+  out_by_line <- extract_mandatory_LaTeX_argument(parsed_doc = dbl_col_fig_parsed,
+                                                  n = 2L,
+                                                  command_name = "doublecolumnfigure",
+                                                  by.line = TRUE)
+  
+  expect_equal(out_by_line[2][["extract"]], 
+               "\\caption{The variability of CBD commuting trip times is very similar in Sydney and Melbourne}\\label{fig:aggregate-variability-CBD-commutes}")
+  
+  
+  
+})
 
 
 

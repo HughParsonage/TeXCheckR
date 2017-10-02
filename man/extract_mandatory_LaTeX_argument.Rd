@@ -5,7 +5,7 @@
 \title{Extract mandatory argument II}
 \usage{
 extract_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
-  parsed_doc = NULL)
+  by.line = FALSE, parsed_doc = NULL)
 }
 \arguments{
 \item{tex_lines}{A character vector of lines}
@@ -14,7 +14,15 @@ extract_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
 
 \item{n}{Which integer to}
 
-\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}).}
+\item{by.line}{If \code{FALSE}, the default, each row of the \code{data.table} returned 
+has the entire contents of the argument in \code{extract} column. If \code{TRUE}, 
+the contents is split as it is in the document; arguments over multiple lines in the 
+document are split over multiple rows in the \code{data.table} returned.}
+
+\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}). 
+If not supplied (the default) the contents of \code{tex_lines} are passed through
+\code{parse_tex}. Use this argument if the cost of running \code{parse_tex} is 
+expensive (such as repeatedly over the same document).}
 }
 \description{
 Extract mandatory argument II

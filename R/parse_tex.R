@@ -20,10 +20,8 @@ parse_tex <- function(tex_lines) {
   closer <- Tex_line_split_unlist == "}"
   opener_optional <- Tex_line_split_unlist == "["
   closer_optional <- Tex_line_split_unlist == "]"
-  keep_look_for_ahead <- cumsum(Tex_line_split_unlist == "\\") - cumsum(opener | opener_optional)
   tex_group <- cumsum(opener) - cumsum(closer) + closer
   optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
-  possible_optional <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
   
   out <- list(char_no = seq_len(n_char),
               line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
@@ -33,7 +31,6 @@ parse_tex <- function(tex_lines) {
               closers = closer,
               opener_optional = opener_optional,
               closer_optional = closer_optional,
-              possible_optional = possible_optional,
               tex_group = tex_group,
               optional_tex_group = optional_tex_group)
   setattr(out, "class", c("data.table", "data.frame"))
@@ -41,12 +38,16 @@ parse_tex <- function(tex_lines) {
  
   # Nested tex group -- likely to be small
   max_tex_group <- max(tex_group)
-  alloc.col(out, n = 10 * max_tex_group + 10L)
+  alloc.col(out, n = 10L * max_tex_group + 10L)
   
   seq_max_tex_group <- seq_len(max_tex_group)
   
   tg <- sprintf("tg%s", seq_max_tex_group)
   GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
+  
+  # Identify tex groups
+  # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
+  # 0000000000000000000111100000000000222
   
   for (j in seq_max_tex_group) {
     tgj <- tg[j]
@@ -64,7 +65,7 @@ parse_tex <- function(tex_lines) {
   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
   # 0011100000022223333000000000445554000
   
-  max_opt_group <- max(possible_optional)
+  max_opt_group <- max(optional_tex_group)
   seq_max_opt_group <- seq_len(max_opt_group)
   og <- sprintf("og%s", seq_max_opt_group)
   OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)

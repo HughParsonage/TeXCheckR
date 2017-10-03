@@ -54,7 +54,7 @@ parse_tex <- function(tex_lines) {
     out[tex_group <= j, (tgj) := cumsum(openers & tex_group == j)]
     
     GROUP_IDj <- GROUP_IDz[j]
-    out[tex_group == j, (GROUP_IDj) := .GRP, by = c("tex_group", "optional_tex_group", tgj)]
+    out[tex_group == j, (GROUP_IDj) := .GRP, by = c("optional_tex_group", tgj)]
     
     which_tex_group_geq_j <- which(tex_group >= j)
     out[(which_tex_group_geq_j), (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
@@ -75,7 +75,7 @@ parse_tex <- function(tex_lines) {
     out[optional_tex_group <= k, (ogk) := cumsum(opener_optional & optional_tex_group == k)]
     
     OPT_GROUP_IDj <- OPT_GROUP_IDz[k]
-    out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c("optional_tex_group", ogk)]
+    out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c(ogk)]
     
     which_opt_group_geq_k <- which(optional_tex_group >= k)
     out[(which_opt_group_geq_k), (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]

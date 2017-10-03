@@ -184,9 +184,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
           by = c("command_no", if (by.line) "line_no")]
       
       if (by.line) {
-        out[, list(N = .N,
-                   I = seq_len(.N)),
-            by = "command_no"]
+        out[, c("N", "I") := list(.N, seq_len(.N)), by = "command_no"]
         out[I == 1L, extract := stri_sub(extract, 2L)]
         out[I == N, extract := stri_sub(extract, to = -2L)]
       } else {

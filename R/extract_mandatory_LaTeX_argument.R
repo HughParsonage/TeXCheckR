@@ -28,8 +28,6 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
     parsed_doc <- parse_tex(tex_lines)
   }
   
-  
-  
   extracts_from_optional <- data.table()
   
   if (any(grepl("^OPT", names(parsed_doc)))) {
@@ -84,10 +82,6 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
   # braces
   chars <- .subset2(parsed_doc, "char")
   
-  for (k in sk) {
-    set(parsed_doc, j = as.character(k), value = shift(chars, n = k, type = "lag"))
-  }
-  set(parsed_doc, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
   
   # For each character in the command,
   # check whether the k'th position back
@@ -95,19 +89,24 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
   
   # Idea is to melt the data table so that variable K should have value command_split[k]
   # Fairly quick and avoids standard evaluation ;-)
+  for (k in sk) {
+    set(parsed_doc, j = as.character(k), value = shift(chars, n = k, type = "lag"))
+  }
+  set(parsed_doc, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
   
-  
-  
+  # The location of the command opening
+  # is where the char is { and the backslash
+  # character is '\\'
   candidates <- 
-    melt.data.table(parsed_doc[char == "{"],
-                    measure.vars = as.character(sk),
+    parsed_doc[char == "{"] %>% 
+    .[backslash == "\\"] %>%
+    melt.data.table(measure.vars = as.character(sk),
                     value.name = "shift_char",
                     variable.factor = FALSE,
                     na.rm = TRUE) %>%
     .[, list(command = paste0(rev(shift_char), collapse = "")), keyby = "char_no"] %>%
     .[command == command_name] %>%
-    .[, command_no := .I] %>%
-    .[]
+    .[, command_no := .I]
   
   if (nrow(candidates) == 0) {
     out <- extracts_from_optional
@@ -182,16 +181,12 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
               line_no_max = max(line_no),
               char_no_min = min(char_no_min),
               char_no_max = max(char_no_max)),
-          by = c("command_no", if (by.line) "line_no")] %>%
-        # column_by_char_no[., on = "char_no==char_no_min"] %>%
-        # setnames("column", "column_at_min") %>%
-        # column_by_char_no[., on = "char_no==char_no_max"] %>%
-        # setnames("column", "column_at_max") %>%
-        .[]
+          by = c("command_no", if (by.line) "line_no")]
       
       if (by.line) {
-        out[, N := .N, by = "command_no"]
-        out[, I := seq_len(.N), by = "command_no"]
+        out[, list(N = .N,
+                   I = seq_len(.N)),
+            by = "command_no"]
         out[I == 1L, extract := stri_sub(extract, 2L)]
         out[I == N, extract := stri_sub(extract, to = -2L)]
       } else {

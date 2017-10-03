@@ -17,7 +17,7 @@ test_that("parse_tex single group", {
   expect_equal(nrow(x_parsed), nchar(x))
   expect_true(all(x_parsed[["line_no"]] == 1L))
   expect_equal(x_parsed[6][["tex_group"]], 1L)
-  expect_equal(x_parsed[6][["GROUP_ID1"]], 2L)
+  expect_equal(x_parsed[6][["GROUP_ID1"]], 1L)
 })
 
 

@@ -1,5 +1,5 @@
 #' Extract mandatory argument II
-#' @param tex_lines A character vector of lines
+#' @param tex_lines A character vector of lines as read from a LaTeX document.
 #' @param command_name The command name (no backslash or opening brace).
 #' @param n Which integer to 
 #' @param by.line If \code{FALSE}, the default, each row of the \code{data.table} returned 
@@ -70,18 +70,22 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
     parsed_doc_outside_optional <- parsed_doc
   }
   
-  
-  
   # Find the location of each command
   nchar_command <- nchar(command_name)
   command_split <- strsplit(command_name, split = "", fixed = TRUE)[[1]]
   sk <- seq_len(nchar_command)
+  
+  # Since LaTeX gobbles whitespace following a command, we must 
+  # gobble it to detect the location of the command. The information
+  # we need is the char no, so it's okay to discard the rows, but not
+  # to parse the document without whitespace. 
+  parsed_doc_no_ws <- parsed_doc[grep("^\\S$", char, perl = TRUE)]
+  
   # Add columns looking back
   # Where we get a hit across all rows, that's the GROUP_ID to capture.
   # Must go forward because optional arguments may confuse if we look behind
   # braces
-  chars <- .subset2(parsed_doc, "char")
-  
+  chars <- .subset2(parsed_doc_no_ws, "char")
   
   # For each character in the command,
   # check whether the k'th position back
@@ -90,15 +94,15 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
   # Idea is to melt the data table so that variable K should have value command_split[k]
   # Fairly quick and avoids standard evaluation ;-)
   for (k in sk) {
-    set(parsed_doc, j = as.character(k), value = shift(chars, n = k, type = "lag"))
+    set(parsed_doc_no_ws, j = as.character(k), value = shift(chars, n = k, type = "lag"))
   }
-  set(parsed_doc, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
+  set(parsed_doc_no_ws, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
   
   # The location of the command opening
   # is where the char is { and the backslash
   # character is '\\'
   candidates <- 
-    parsed_doc[char == "{"] %>% 
+    parsed_doc_no_ws[char == "{"] %>% 
     .[backslash == "\\"] %>%
     melt.data.table(measure.vars = as.character(sk),
                     value.name = "shift_char",

@@ -8,7 +8,7 @@ extract_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
   by.line = FALSE, parsed_doc = NULL)
 }
 \arguments{
-\item{tex_lines}{A character vector of lines}
+\item{tex_lines}{A character vector of lines as read from a LaTeX document.}
 
 \item{command_name}{The command name (no backslash or opening brace).}
 

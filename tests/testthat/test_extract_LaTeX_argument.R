@@ -138,5 +138,28 @@ test_that("Multi-lines", {
   
 })
 
+test_that("Road congestion example", {
+  road_congestion <- readr::read_lines("extract/road-congestion.tex")
+  
+  charts_in_road_congestion <-
+    extract_mandatory_LaTeX_argument(road_congestion, "includegraphics")
+  
+  expect_equal(nrow(charts_in_road_congestion), 28)
+    
+})
+
+test_that("Whitespace gobbling", {
+  out <- extract_mandatory_LaTeX_argument("\\footnote {abc}", "footnote")
+  expect_equal(out[["extract"]], "abc")
+  
+  out <- extract_mandatory_LaTeX_argument("\\XY {cd \\XY {cd}}", "XY")
+  expect_true("cd \\XY {cd}" %in% out[["extract"]])
+})
+
+test_that("Optional argument", {
+  out <- extract_optional_LaTeX_argument("\\textcite[][\\textcite[a][b]c]{A}", "textcite", n = 2)
+  expect_equal(out$extract, c("b", "\\textcite[a][b]c"))
+})
+
 
 

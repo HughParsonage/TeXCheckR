@@ -126,6 +126,8 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
     .[command == command_name] %>%
     .[, command_no := .I]
   
+  command_no <- NULL
+  
   if (nrow(candidates) == 0) {
     out <- extracts_from_optional
   } else {
@@ -193,7 +195,8 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       out <- extracts_from_optional
     } else {
       
-      column_by_char_no <- parsed_doc[, .(char_no, column)]
+      column <- NULL
+      column_by_char_no <- parsed_doc[, .SD, .SDcols = c("char_no", "column")]
       
       
       char_no_min <- char_no_max <- NULL

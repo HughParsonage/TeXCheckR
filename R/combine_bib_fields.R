@@ -38,7 +38,7 @@ combine_bib_fields <- function(bib) {
                                  function(j) intraentry_groups[[j]][intraentry_groups_lengths[j]],
                                  integer(1)))
     for (J in seq_along(intraentry_groups)) {
-      if (J > 1 && nonzero[J]) {
+      if (J > 1) {
         intraentry_groups[[J]] <- intraentry_groups[[J]] + intraentry_groups[[J - 1]][intraentry_groups_lengths[J - 1]]
       }
     }

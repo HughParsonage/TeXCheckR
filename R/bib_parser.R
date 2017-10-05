@@ -59,11 +59,10 @@ fread_bib <- function(file.bib){
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
   bibDT[, x := NULL]
-  bibDT[, lapply(.SD, trimws)]
+  bibDT[, field := tolower(trimws(field, "right"))]
   bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
-  bibDT[, field := tolower(trimws(field))]
-  bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  bibDT[, value := sub(",$", "", gsub("^\\{|\\}$", "", value, perl = TRUE), perl = TRUE)]
   
   dups <- NULL
   duplicate_fields <-
@@ -89,7 +88,7 @@ fread_bib <- function(file.bib){
       }
     }
   }
-  bibDT
+  bibDT[, .(line_no, key, field, value)]
 }
 
 #' @rdname bib_parser

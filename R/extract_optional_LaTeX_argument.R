@@ -1,7 +1,10 @@
 #' Extract optional argument
-#' @param tex_lines A character vector reading from a \LaTeX{} document.
+#' @param tex_lines A character vector reading from a LaTeX document.
 #' @param command_name Name of command (without backslash)
 #' @param n Which optional argument to extract.
+#' @param by.line Should the output be one row per command (\code{FALSE}, the default), 
+#' with extracts concatenated via \code{paste0(..., collapse = "")}
+#' or one row per line per command?
 #' @export
 
 extract_optional_LaTeX_argument <- function(tex_lines,
@@ -10,6 +13,7 @@ extract_optional_LaTeX_argument <- function(tex_lines,
                                             by.line = FALSE) {
   tex_lines <- strip_comments(tex_lines)
   
+  char <- char_no <- NULL
   parsed_doc <- parse_tex(tex_lines)
   
   nchar_command <- nchar(command_name)

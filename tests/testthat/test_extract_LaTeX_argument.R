@@ -158,7 +158,9 @@ test_that("Whitespace gobbling", {
 
 test_that("Optional argument", {
   out <- extract_optional_LaTeX_argument("\\textcite[][\\textcite[a][b]c]{A}", "textcite", n = 2)
-  expect_equal(out$extract, c("b", "\\textcite[a][b]c"))
+  # Simply so that (X, Y) == (Y, X) for this purpose.
+  setorderv(out, "char_no_min")
+  expect_equal(out$extract, c("\\textcite[a][b]c", "b"))
 })
 
 

@@ -12,11 +12,14 @@
 #' expensive (such as repeatedly over the same document).
 #' @export
 
-extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
+extract_mandatory_LaTeX_argument <- function(tex_lines,
+                                             command_name,
                                              n = 1L,
                                              by.line = FALSE,
                                              parsed_doc = NULL) {
   
+  # parse_tex adds these columns
+  char <- char_no <- line_no <- NULL
   if (is.null(parsed_doc)) {
     tex_lines <- strip_comments(tex_lines)
     if (AND(substr(tex_lines[[1]], 0, 1) == "[",
@@ -30,13 +33,18 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
   
   extracts_from_optional <- data.table()
   
+  # melt.data.table
+  value <- NULL
+  
   if (any(grepl("^OPT", names(parsed_doc)))) {
     optional_chars <-
-      parsed_doc %>%
-      melt.data.table(measure.vars = grep("^OPT", names(.), value = TRUE)) %>%
-      .[!is.na(value)] 
+      melt.data.table(parsed_doc,
+                      measure.vars = grep("^OPT", names(parsed_doc), value = TRUE),
+                      na.rm = TRUE)
     
     optional_char_nos <- .subset2(optional_chars, "char_no")
+    
+    text <- init_char_no <- NULL
     
     extracts_within_optional <- 
       optional_chars %>%
@@ -93,11 +101,17 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
   
   # Idea is to melt the data table so that variable K should have value command_split[k]
   # Fairly quick and avoids standard evaluation ;-)
+  
+  # N.B. It is *not* faster to set on i (i.e. only the rows == "{")
   for (k in sk) {
     set(parsed_doc_no_ws, j = as.character(k), value = shift(chars, n = k, type = "lag"))
   }
+  backslash <- NULL
   set(parsed_doc_no_ws, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
   
+  # melt.data.table value.name
+  shift_char <- NULL
+  command <- NULL
   # The location of the command opening
   # is where the char is { and the backslash
   # character is '\\'
@@ -120,6 +134,9 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
                            names(parsed_doc),
                            value = TRUE,
                            perl = TRUE) 
+    
+    GROUP_LEVEL <- id_at_group_level <- NULL
+    
     molten_parsed_doc <-
       parsed_doc %>%
       .[, .SD, .SDcols = c("line_no", "char_no", "char",
@@ -145,6 +162,8 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
       }
       out
     }
+    
+    command_no_t <- target <- NULL
     
     # Must be outer join
     candidate_char_ranges <- 
@@ -175,6 +194,9 @@ extract_mandatory_LaTeX_argument <- function(tex_lines, command_name,
     } else {
       
       column_by_char_no <- parsed_doc[, .(char_no, column)]
+      
+      
+      char_no_min <- char_no_max <- NULL
       
       out <-
         candidate_char_ranges[parsed_doc,

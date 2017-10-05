@@ -110,17 +110,6 @@ r9 <- function(a1, a2, a3, a4, a5, a6, a7, a8, a9) sprintf("%s%s%s%s%s%s%s%s%s",
 
 trimws_if_char <- function(x) if (is.character(x)) stri_trim_both(x) else x
 
-parse_destruct <- function(file) {
-  lines <- readr::read_lines(file)
-  
-  line_nos_with_brace <- grep("\\{|\\}", lines, perl = TRUE)
-  lines_with_brace <- lines[line_nos_with_brace]
-  lines
-  
-  strsplit(lines, pattern = "")
-  
-}
-
 # for printing parsed lines
 print_transpose_data.table <- function(DT, file = "") {
   cat <- function(...) base::cat(..., file = file, append = TRUE)

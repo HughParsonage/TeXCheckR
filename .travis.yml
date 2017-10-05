@@ -25,6 +25,11 @@ r_binary_packages:
 - devtools
 - roxygen2
 - hunspell
+- fastmatch
+- data.table
+- knitr
+- readr
+- stringi
 
 r_packages:
 - covr

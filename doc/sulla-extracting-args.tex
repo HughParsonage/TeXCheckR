@@ -1,0 +1,241 @@
+\documentclass[b5paper]{scrartcl}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+
+
+\let\oldLaTeX\LaTeX
+\renewcommand{\LaTeX}{\textrm{\oldLaTeX}}
+
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Font:
+\usepackage{tgpagella,eulervm}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{lstautogobble}
+\usepackage{xcolor}
+\usepackage{longtable}
+\definecolor{Orange}{HTML}{F68B33}
+\definecolor{DarkOrange}{HTML}{D4582A}
+\usepackage{bold-extra}
+\lstset{
+language=[LaTeX]TeX,
+basicstyle=\ttfamily\small,
+commentstyle=\color{black!60}\ttfamily,
+texcsstyle=*\color{blue},
+moretexcs={setlength,chapter,subsection,subsubsection,appendix,addbibresource,FloatBarrier,contentspage,units,includegraphics,noteswithsource,notes,source,bottomrule,midrule,toprule,footcite,footcites,textcite,textcites,Chapref,topref,Vref,Cref,vpageref,acknowledgements,cmidrule},
+columns=flexible,
+breaklines=true,
+backgroundcolor=\color{black!5},
+literate={~} {\(\sim\)}{1},
+moredelim = [is][\slshape\color{violet}]{@@}{@@},
+classoffset=1,
+morekeywords={grattan}, keywordstyle = \color{Orange}\bfseries, 
+classoffset=0,
+belowskip=0.5\baselineskip,
+escapechar={\^*}{*}
+}
+
+\newcommand*{\defi}[1]{\textbf{#1}}
+
+\title{Extracting arguments from \LaTeX{}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\section{Overview}
+This document describes the necessary features of a function that extracts arguments of a \LaTeX{} command, 
+and its implementation in the R package \lstinline!TeXCheckR!.
+
+\section{}
+A simple \LaTeX{} command has the following structure in a document.
+
+\begin{lstlisting}
+\@@command@@{@@first argument@@}
+\end{lstlisting}
+
+Na\"ively, a command's argument is the text between the first opening brace and the first closing brace following \lstinline!command!. 
+A simple implementation would be
+
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{extractor} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{command_name}\hlstd{) \{}
+  \hlkwd{gsub}\hlstd{(}\hlkwd{paste0}\hlstd{(}\hlstr{"\textbackslash{}\textbackslash{}\textbackslash{}\textbackslash{}"}\hlstd{, command_name,} \hlstr{"\textbackslash{}\textbackslash{}\{(.*?)\textbackslash{}\textbackslash{}\}"}\hlstd{),} \hlstr{"\textbackslash{}\textbackslash{}1"}\hlstd{, x)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+This implementation can even be extended to the \(n\)th argument:
+
+However, no regular expressions can substitute for a parser. 
+In this case, the extractor will fail to capture the following:
+
+\begin{lstlisting}
+\emph{Some \emph{nested} emphasis.}
+\end{lstlisting}
+
+The presence of such expressions leads to the next problem: specification. 
+What should the idea function return given the above code?
+The answer ultimately depends on the purpose of the extractor, but hereupon the specification for the extractor is that the function should return:
+
+\begin{enumerate}
+	\item[] For each instance of \lstinline!\@@command@@!, 
+	\begin{enumerate}
+		\item the contents of that command, including any nested instances of the command
+		\item (other information)
+	\end{enumerate}
+\end{enumerate}
+
+Thus, the above extract should return both 
+\begin{quote}\lstinline!nested!\end{quote} and \begin{quote}\lstinline!Some \emph{nested} emphasis.}!.\end{quote}
+
+\section{Parsing for \TeX{} groups}
+A \TeX{} group is any enclosure of braces. 
+The \defi{level} of a \TeX{} group is 0 at text not enclosed by braces and \(n+1\) for any enclosure started in a group at level \(n\).
+Thus, the following document is underlined by its \TeX{} group level.
+
+\begin{lstlisting}
+A{B{CD}E} F{G}
+0.1.22.1.00.1.
+\end{lstlisting}
+(The \TeX{} group level is not well-defined at braces.)
+
+Clearly, identifying the \TeX{} group level is crucial to overcoming the flaw in the na\"ive method. 
+Luckily, given a collection of characters, identifying the \TeX{} group level is simple arithmetic:
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\{"}\hlstd{)} \hlopt{-} \hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\}"}\hlstd{)} \hlopt{+} \hlstd{(chars} \hlopt{==} \hlstr{"\}"}\hlstd{)}
+\hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\{"}\hlstd{)} \hlopt{-} \hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\}"}\hlstd{)} \hlopt{-} \hlstd{(chars} \hlopt{==} \hlstr{"\{"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+which identifies the groups respectively. 
+
+\begin{lstlisting}
+A{B{CD}E} F{G}
+01122221100111
+00112211000010
+\end{lstlisting}
+
+The first parsing is preferable, as it makes it possible to identify zero-length groups:
+
+\begin{lstlisting}[columns=fixed]
+               chars :A{B{CD}E} F{G} H{}
+cumsum(chars == "{") :011222222223333344
+cumsum(chars == "}") :000000112222233334
+      (chars == "}") :000000101000010001
+               parse :011222211001110011
+               chars :A{B{CD}E} F{G} H{}
+\end{lstlisting}
+
+Thus, the function \lstinline[language=R]!parse_tex!:
+
+
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{parse_tex} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{tex_lines}\hlstd{) \{}
+  \hlcom{# strsplit returns a list, each element}
+  \hlcom{# corresponding to a line}
+  \hlstd{chars} \hlkwb{<-} \hlkwd{unlist}\hlstd{(}\hlkwd{strsplit}\hlstd{(tex_lines,} \hlkwc{split} \hlstd{=} \hlstr{""}\hlstd{))}
+  \hlkwd{list}\hlstd{(}\hlkwc{char} \hlstd{= chars,}
+       \hlkwc{tex_group} \hlstd{=} \hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\{"}\hlstd{)} \hlopt{-} \hlkwd{cumsum}\hlstd{(chars} \hlopt{==} \hlstr{"\}"}\hlstd{)} \hlopt{+} \hlstd{(chars} \hlopt{==} \hlstr{"\}"}\hlstd{))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+This function is still inadequate for identifying text within a specific \TeX{} group.
+Further, the nested structure of \texttt{chars} is lost: the characters \lstinline!{CD}! are simultaneously part of level 1 and 2 (and possibly 0).
+
+To identify unique \TeX{} groups, rather than simply the \TeX{} group level, we have to add columns to the table structure.
+Although adding columns is expensive, it is justifiable in most cases as the maximum tex group level is generally in single digits.
+
+Ultimately, to uniquely identify groups, the group counter must be aware of itself outside the group.
+
+The algorithm is:
+
+for each \TeX{} group level \(j\),
+\begin{enumerate}
+\item scroll through each character whose \TeX{} group level is no larger than \(j\) taking the cumulative sum of all opening braces that occur at the \TeX{} group level \(j\)
+\item for each character at group level \(j\), uniquely identify the group using the cumulative sum.
+\item for each character whose group level is no \emph{smaller} than \(j\), fill any blank entries.
+\end{enumerate}
+
+\section{Optional group interference}
+So far we have assumed the \TeX{} group can be easily matched with the command selected.
+In constructions like
+\begin{lstlisting}
+Extract the \textbf{bold} part of this sentence.
+\end{lstlisting}
+matching the command to the brace is trivial, choose the string of characters after the last backslash preceding the brace.\footnote{Since \LaTeX{} gobbles whitespace, `word preceding' here means `word preceding any whitespace preceding'.}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

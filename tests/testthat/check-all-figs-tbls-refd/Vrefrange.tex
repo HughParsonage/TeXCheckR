@@ -1,0 +1,21 @@
+\documentclass{article}
+
+\begin{document}
+These figures \Vrefrange{fig:ok-1}{fig:ok-3}.
+\begin{figure}
+\caption{This is an unreferenced figure}\label{fig:ok-1}
+\end{figure}
+
+\ref{fig:is-referenced}
+\input{input1}
+
+\begin{figure}
+\caption{This is an unreferenced figure}\label{fig:ok-2}
+\end{figure}
+
+
+\begin{figure}
+\caption{This is an unreferenced figure}\label{fig:ok-3}
+\end{figure}
+
+\end{document}

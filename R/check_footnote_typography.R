@@ -16,10 +16,10 @@
 check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error){
   
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    .report_error <- function(...) report2console(file = filename, ...)
   }
   
-  lines <- read_lines(filename)
+  lines <- orig_lines <- read_lines(filename)
   if (!is.null(ignore.lines)){
     lines <- lines[-ignore.lines]
   }
@@ -36,7 +36,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     is_overview <- as.logical(cumsum(overview_start) - cumsum(overview_end))
     if (any(grepl("\\footnote", lines[is_overview], fixed = TRUE))){
       if (!any(overview_end)){
-        stop("Emergency stop: No \\end{overview} found in document. Check your LaTeX syntax and try again")
+        stop("Emergency stop: No \\end{overview} found in document. Check your LaTeX syntax and try again.")
       } else {
         line_no <- grep("\\footnote", lines[is_overview], fixed = TRUE)
         .report_error(line_no = line_no,
@@ -49,11 +49,15 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 
   # To avoid footnotesize
   lines <- gsub("footnotesize", "FOOTNOTESIZE", lines, fixed = TRUE)
-  lines <- lines[!grepl("GenericWarning", lines, fixed = TRUE)]
+  if (any(grepl("GenericWarning", lines, fixed = TRUE))) {
+    lines[grepl("GenericWarning", lines, fixed = TRUE)] <- ""
+  }
   # Don't try to parse the word 'footnote' outside a control sequence.
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
-  lines <- gsub("([^\\\\])footnote", "\\1fnote", lines)
-  lines <- gsub("\\\\footnote(?![{])", "\\\\fnote\\1", lines, perl = TRUE)
+  # Important to keep the width of 'footnote' though: so the cursor can be correctly
+  # positioned.
+  lines <- gsub("([^\\\\])footnote", "\\1toofnote", lines)
+  lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
   
@@ -61,7 +65,6 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,
                 perl = TRUE))){
-    lines <- read_lines(filename)
     line_no <- grep("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", lines, perl = TRUE)[1]
     .report_error(line_no = line_no, 
                   context = lines[[line_no]], 
@@ -86,11 +89,30 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       break
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
     if (AND(length(split_line_after_footnote) > footnote_closes_at,
-            split_line_after_footnote[footnote_closes_at + 1] %in% c(".", ",", ";", "?", ":", "'", '"'))){
-      .report_error(context = paste0("\\footnote\n         ",
-                                     paste0(split_line_after_footnote[1:(footnote_closes_at + 1)], 
-                                            collapse = "")), 
+            split_line_after_footnote[footnote_closes_at + 1] %chin% punctuation)) {
+      # Take a breath
+      
+      # Identify those lines
+      # line_no_by_lines_with_footnote <-
+      #   data.table(doc_line_no = grep("footnote", lines_by_footnote, fixed = TRUE, value = FALSE),
+      #              footnote_no = seq_along(lines_with_footnote),
+      #              lines_with_footnote = paste0("\\", lines_with_footcite))
+      # 
+      # extract_tbl <- extract_LaTeX_argument(lines_with_footnote, "footnote")
+      # 
+      # extract_tbl[line_no_by_lines_with_footnote, on = "line_no==footnote_no"] %>%
+      #   .[, extract := stringi::stri_sub(extract, pmax(-10, -1*nchar(extract)))] %>%
+      #   .[, .(extract, starts, stops, line_no, doc_line_no)]
+      
+      error_position <- position_end_of_footnote(2, orig_lines, is.punct = TRUE)
+      
+      .report_error(line_no = error_position[["line_no"]],
+                    column = error_position[["column"]] + 1L,
+                    # context = paste0("\\footnote\n         ",
+                    #                  paste0(split_line_after_footnote[seq_len(footnote_closes_at + 1)], 
+                    #                         collapse = "")), 
                     error_message = "Punctuation after footnotemark.")
+      
       stop("Punctuation after footnotemark.")
     }
   }
@@ -116,8 +138,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                 lines_with_footcite_noarg, 
                                 perl = TRUE)
     
-    if (any(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))){
-      first_footcite_w_punct <- which(chars_after_footcite %in% c(".", ",", ":", ";", "'", '"', "?", "-"))[[1]]
+    if (any(chars_after_footcite %fin% punctuation)){
+      first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1]]
       line_no <- line_nos_with_footcite[first_footcite_w_punct]
       .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
                     context = lines[line_no], 
@@ -126,7 +148,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     }
   }
   
-  if (any(line_nos_with_footcites)){
+  if (any(line_nos_with_footcites)) {
     # We can't just gsub {[A-Za-z]} because we don't know how many braces are needed.
     lines_with_footcites <- lines[line_nos_with_footcites] 
     
@@ -149,22 +171,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     # Now that footcites are just {} (repeated), find the first char thereafter.
     chars_after_footcites <- gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcites_noarg, perl = TRUE)
     
-    if (any(chars_after_footcites %in% c(".", ",", ":", ";", "'", '"', "?"))){
+    if (any(chars_after_footcites %fin% punctuation)) {
       stop("Punctuation mark after \\footcites number ",
            which(chars_after_footcites %in% c(".", ",", ":", ";", "'", '"', "?")[[1]]))
-    }
-  }
-  
-  for (line in lines_with_footnote){
-    footnote_closes_at <- position_of_closing_brace(line = line, prefix = "footnote")
-    if (is.infinite(footnote_closes_at))
-      break
-    split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
-    if (length(split_line_after_footnote) > footnote_closes_at && split_line_after_footnote[footnote_closes_at + 1] %in% c(".", ",")){
-      cat(paste0(split_line_after_footnote,
-                 collapse = ""),
-          "\n")
-      stop("Full stop after footnotemark.")
     }
   }
   
@@ -188,14 +197,19 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 
     if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", "?")){
       # OK if full stop is before parenthesis or quotes.
-      if (not(OR(AND(split_line_after_footnote[footnote_closes_at - 1] %in% c(")", "'"),
-                     split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'")),
-                 AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
-                     split_line_after_footnote[footnote_closes_at - 2] %in% c(".", "?", "'"))))){
+      if (NOR(AND(split_line_after_footnote[footnote_closes_at - 1] %chin% c(")", "'"),
+                  split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")),
+              AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
+                  split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")))) {
+        error_position <- position_end_of_footnote(1, orig_lines, is.punct = FALSE)
+        
+        
         .report_error(context = paste0("\n\\footnote\n         ",
                                        paste0(split_line_after_footnote[1:footnote_closes_at],
                                               collapse = ""),
-                                       "\n"), 
+                                       "\n"),
+                      line_no = error_position[["line_no"]],
+                      column = error_position[["column"]],
                       error_message = "Footnote does not end with full stop.")
         stop("Footnote does not end with full stop.")
       }
@@ -246,5 +260,54 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # cat("\u2014  No space before footnote marks", "\n")
   invisible(NULL)
 }
+
+# n = relative to last character
+position_end_of_footnote <- function(n = 0, orig_lines, is.punct = FALSE) {
+  out <- extract_LaTeX_argument(orig_lines, "footnote", star = FALSE)
+  nchar_footnote_text <- 
+    out %>%
+    .[, .(nchars = sum(nchar(extract))), by = "command_no"] %>%
+    .[["nchars"]]
+  
+  parsed <- parse_tex(orig_lines)
+  
+  nchar_footnote <- nchar("\\footnote{")
+  
+  for (nn in seq_len(nchar_footnote)) {
+    j <- paste0("s", nn)
+    set(parsed, j = j, value = shift(.subset2(parsed, "char"), type = "lead", n = nn))
+  }
+  
+  footnote_positions <- 
+    parsed %>%
+    .[s1 == "\\"] %>%
+    .[s2 == "f"] %>%
+    .[s3 == "o"] %>%
+    .[s4 == "o"] %>%
+    .[s5 == "t"] %>%
+    .[s6 == "n"] %>%
+    .[s7 == "o"] %>%
+    .[s8 == "t"] %>%
+    .[s9 == "e"] %>%
+    .[s10 == "{"] %>%
+    .[["char_no"]] + nchar_footnote
+  
+  target_char_no <- footnote_positions + nchar_footnote_text + n
+  
+  if (is.punct) {
+    error_position <- 
+      # + 2 -> brace + following character
+      parsed[char_no %in% target_char_no] %>%
+      .[char %chin% punctuation] %>%
+      .[1]
+  } else {
+    error_position <- 
+      # + 2 -> brace + following character
+      parsed[char_no %in% target_char_no] %>%
+      .[char %notin% punctuation] %>%
+      .[1]
+  } 
+}
+
 
 

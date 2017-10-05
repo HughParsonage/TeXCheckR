@@ -4,12 +4,14 @@
 \alias{any_bib_duplicates}
 \title{Are any bib entries duplicated?}
 \usage{
-any_bib_duplicates(bib.files, .report_error)
+any_bib_duplicates(bib.files, .report_error, rstudio = FALSE)
 }
 \arguments{
 \item{bib.files}{Files to check for duplicates}
 
 \item{.report_error}{How errors should be logged.}
+
+\item{rstudio}{Use the RStudio API?}
 }
 \value{
 Called for its side-effect. If duplicates are detected, the first six are printed as a \code{data.table};

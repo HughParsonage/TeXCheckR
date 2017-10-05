@@ -4,7 +4,8 @@
 \alias{validate_bibliography}
 \title{Validate bibliography according to Grattan style}
 \usage{
-validate_bibliography(path = ".", file = NULL, .report_error)
+validate_bibliography(path = ".", file = NULL, .report_error,
+  rstudio = FALSE)
 }
 \arguments{
 \item{path}{Containing the bib file.}
@@ -12,6 +13,8 @@ validate_bibliography(path = ".", file = NULL, .report_error)
 \item{file}{The bib file if specified.}
 
 \item{.report_error}{How errors should be reported.}
+
+\item{rstudio}{Use the RStudio API to jump to errors.}
 }
 \value{
 \code{NULL} if bibliography validated.

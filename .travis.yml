@@ -4,18 +4,31 @@ warnings_are_errors: true
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
   needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize
-- Rscript -e 'install.packages("fastmatch")'
-- Rscript -e 'install.packages("hutils", repos = "https://hughparsonage.github.io/drat", type = "source")'
+- Rscript -e 'if (!requireNamespace("fastmatch", quietly = TRUE)) install.packages("fastmatch")'
+- Rscript -e 'if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")'
+- Rscript -e 'if (!requireNamespace("magrittr", quietly = TRUE)) install.packages("magrittr")'
+- Rscript -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")'
+- Rscript -e 'if (!requireNamespace("hunspell", quietly = TRUE)) install.packages("hunspell")'
+- Rscript -e 'if (!requireNamespace("clisymbols", quietly = TRUE)) install.packages("clisymbols")'
+- Rscript -e 'if (!requireNamespace("crayon", quietly = TRUE)) install.packages("crayon")'
+- Rscript -e 'if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")'
+- Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
+- Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
+- Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
+- Rscript -e 'devtools::install_github("hughparsonage/hutils")'
 addons:
   apt:
     packages:
     - libhunspell-dev
-r_packages:
-- covr
-- drat
+r_binary_packages:
 - devtools
 - roxygen2
 - hunspell
+
+r_packages:
+- covr
+- drat
+
 after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'

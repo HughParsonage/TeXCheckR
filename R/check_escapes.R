@@ -11,7 +11,7 @@ check_escapes <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- read_lines(filename)
+  lines <- strip_comments(read_lines(filename))
   
   if (any(grepl("(?<!(\\\\))[$]", lines, perl = TRUE))){
     line_no <- grep("(?<!(\\\\))[$]", lines, perl = TRUE)[[1]]

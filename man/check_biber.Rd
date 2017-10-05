@@ -4,10 +4,12 @@
 \alias{check_biber}
 \title{Check biber}
 \usage{
-check_biber(path = ".")
+check_biber(path = ".", rstudio = FALSE)
 }
 \arguments{
 \item{path}{Containing the blg file.}
+
+\item{rstudio}{Use the RStudio API?}
 }
 \description{
 Check biber

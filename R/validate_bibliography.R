@@ -2,6 +2,7 @@
 #' @param path Containing the bib file.
 #' @param file The bib file if specified.
 #' @param .report_error How errors should be reported.
+#' @param rstudio Use the RStudio API to jump to errors.
 #' @return \code{NULL} if bibliography validated.
 #' @export
 #' 
@@ -28,9 +29,13 @@
 #' 
 
 
-validate_bibliography <- function(path = ".", file = NULL, .report_error){
+validate_bibliography <- function(path = ".", file = NULL, .report_error, rstudio = FALSE){
   if (missing(.report_error)){
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(..., file = file, rstudio = TRUE)
+    } else {
+      .report_error <- function(...) report2console(...)
+    }
   }
   
   if (is.null(file)){

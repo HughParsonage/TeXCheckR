@@ -55,6 +55,10 @@ test_that("Lower-case governments should error", {
   expect_error(check_spelling("./spelling/Govt/WAgovt.tex"), regexp = "uppercase G")
 })
 
+test_that("Some lower-case governments should not", {
+  expect_null(check_spelling("./spelling/Govt/ok-as-adj.tex"))
+})
+
 test_that("Includepdf doesn't result in a failed include message", {
   expect_null(check_spelling("./spelling/includepdf-ok.tex"))
 })

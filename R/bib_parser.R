@@ -2,20 +2,21 @@
 #' @name bib_parser
 #' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
+#' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib){
+fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   stopifnot(length(file.bib) == 1L)
   if (!grepl("\\.bib$", file.bib)){
     warning("File extension is not '.bib'.")
   }
 
   bib <-
-    read_lines(file.bib) %>%
+    read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
     # Avoid testing }\\s+$ rather than just == }
-    trimws %>%
+    stri_trim_both %>%
     .[substr(., 0, 8) != "@Comment"]
   
   is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
@@ -53,16 +54,36 @@ fread_bib <- function(file.bib){
 
   is_key <- NULL
   bibDT[, is_key := field == "key"]
+  
+  key_value <- NULL
+  bibDT[(is_key), key_value := tolower(sub("^.*\\{", "", value, perl = TRUE))]
+  
+  if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
+    duplicates <- duplicated_rows(bibDT, by = "key_value")
+    print(duplicates[, "bib_file" := file.bib])
+    report2console(file = file.bib,
+                   line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
+                   error_message = "Duplicate bib key used.",
+                   advice = paste0("Compare the two entries above. If they are identical, delete one. ", 
+                                   "If they are distinct, choose a different bib key. ", 
+                                   "(Note: keys are case-insensitive.)"))
+    stop("Duplicate bib key used.")
+  }
+  
+  bibDT[, key_value := NULL]
 
-  key_line <- NULL
+  key_line <- entry_type <- NULL
   bibDT[(is_key), key_line := value]
   bibDT[, key_line := zoo::na.locf(key_line, na.rm = FALSE)]
   bibDT <- bibDT[(!is_key)]
   bibDT[, x := NULL]
-  bibDT[, field := tolower(trimws(field, "right"))]
+
+  bibDT[, lapply(.SD, stri_trim_both)]
   bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
-  bibDT[, value := sub(",$", "", gsub("^\\{|\\}$", "", value, perl = TRUE), perl = TRUE)]
+  bibDT[, field := tolower(stri_trim_both(field))]
+  bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+
   
   dups <- NULL
   duplicate_fields <-
@@ -88,7 +109,8 @@ fread_bib <- function(file.bib){
       }
     }
   }
-  bibDT[, .(line_no, key, field, value)]
+  bibDT[, .(line_no, entry_type, key, field, value)]
+
 }
 
 #' @rdname bib_parser
@@ -102,7 +124,7 @@ bib2DT <- function(file.bib, to_sort = FALSE){
     bib <-
       read_lines(file.bib) %>%
       # Avoid testing }\\s+$ rather than just == }
-      trimws %>%
+      stri_trim_both %>%
       .[!grepl("@Comment", ., fixed = TRUE)]
     is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
     is_closing <- bib == "}"

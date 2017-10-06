@@ -145,7 +145,14 @@ test_that("Road congestion example", {
     extract_mandatory_LaTeX_argument(road_congestion, "includegraphics")
   
   expect_equal(nrow(charts_in_road_congestion), 28)
-    
+  
+  no_opt_documentclass <- extract_optional_LaTeX_argument(road_congestion, "documentclass")
+  expect_equal(nrow(no_opt_documentclass), 0)
+  
+  documentclass <- extract_mandatory_LaTeX_argument(road_congestion, "documentclass")
+  expect_equal(documentclass[["extract"]], "grattan")
+  
+  
 })
 
 test_that("Whitespace gobbling", {

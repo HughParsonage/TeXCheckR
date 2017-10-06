@@ -210,19 +210,42 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
               line_no_max = max(line_no),
               char_no_min = min(char_no_min),
               char_no_max = max(char_no_max)),
-          by = c("command_no", if (by.line) "line_no")]
+          keyby = c("command_no", if (by.line) "line_no")]
       
       if (by.line) {
-        out[, c("N", "I") := list(.N, seq_len(.N)), by = "command_no"]
+        out[, c("N", "I") := list(.N, seq_len(.N)), keyby = "command_no"]
         out[I == 1L, extract := stri_sub(extract, 2L)]
         out[I == N, extract := stri_sub(extract, to = -2L)]
       } else {
         out[, extract := stri_sub(extract, 2L, -2L)]
       }
       
+      if (nrow(out) > 0) {
+        column <- NULL
+        column_by_char_no <- parsed_doc[, .SD, .SDcols = c("char_no", "column")]
+        out[column_by_char_no, on = "char_no_min==char_no", nomatch=0L] %>%
+          .[column_by_char_no, on = "char_no_max==char_no", nomatch=0L,
+            j = list(command_no,
+                     if (by.line) line_no,
+                     extract,
+                     line_no_min,
+                     line_no_max,
+                     column_min = column,
+                     column_max = i.column,
+                     char_no_min,
+                     char_no_max)]
+      } else {
+        # If this point is reached, we have detected a command
+        # without an n'th mandatory argument, e.g.
+        #   \\abc[][\\abc[][e]]{f}
+        #             >>>    ^^<
+        data.table()
+      }
+      
       out <- rbind(out, extracts_from_optional, use.names = TRUE, fill = TRUE)
       
     }
   }
+  
   out
 }

@@ -34,7 +34,7 @@ report2console <- function(file = NULL,
   Red <- function(x) if (!is.character(x)) x else red(x)
   bold_red <- function(x) if (!is.character(x)) x else bold(red(x))
   cat("\n", 
-      bold(red(error_message)), "\n",
+      bold_red(error_message), "\n",
       bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
       bold_red(advice), "\n",
       sep = "")

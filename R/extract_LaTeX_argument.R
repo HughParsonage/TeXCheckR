@@ -20,6 +20,7 @@ extract_LaTeX_argument <- function(tex_lines,
                                    n = 1L, 
                                    optional = FALSE, 
                                    star = TRUE) {
+  
   delim1 <- if (optional) "[" else "{"
   delim2 <- if (optional) "]" else "}"
   if (star) {
@@ -111,7 +112,10 @@ extract_LaTeX_argument <- function(tex_lines,
                     n = n)
       }
       
-      intra_line_char_no <- end_char_no <- start_char_no <- NULL
+      intra_line_char_no <- end_char_no <- start_char_no <- 
+        next_start <- starts_at <- stops_at <- NULL
+      # From stringi::stri_locate_all
+      start <- end <- NULL
       
       command_locations_by_char_no <-
         rbindlist(lapply(Command_locations, as.data.table), idcol = "line_no") %>%
@@ -135,6 +139,16 @@ extract_LaTeX_argument <- function(tex_lines,
         # but not used \\footcite[][3]{Daley} vs \\footcite{Daley})
         .[]
      
+      
+      commands_line_no <- line_no <- 
+        starts <- starts_at <-
+        stops <- stops_at <-
+        line_no <- i.line_no <-
+        char_no <- i.char_no <-
+        command_no <-
+        tex_group <-
+        char <- NULL
+      
       group_by_line_no <-
         parsed_document %>%
         # Should it match on tex_group only?
@@ -152,6 +166,9 @@ extract_LaTeX_argument <- function(tex_lines,
                                      nomatch=0L,
                                      by=.EACHI,
                                      allow.cartesian=TRUE]
+      
+      extract <- opener_column <- closer_column <- NULL
+      N <- NULL
       
       out <-
         group_by_line_no %>%

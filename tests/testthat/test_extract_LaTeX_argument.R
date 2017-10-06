@@ -191,5 +191,19 @@ test_that("Argument requested but missing", {
   expect_equal(nrow(out0), 0)
 })
 
+test_that("Environments", {
+  road_congestion <- readr::read_lines("extract/road-congestion.tex")
+  smallbox <- extract_mandatory_LaTeX_argument(road_congestion, "begin{smallbox}")
+  expect_true(all(c("Estimates of the economic costs of congestion are misused and poorly understood", 
+                    "Australian motorists are sensitive to road prices",
+                    "Building support for congestion charging") %in% smallbox[["extract"]]))
+  smallbox_key <- extract_mandatory_LaTeX_argument(road_congestion, "begin{smallbox}", n = 2L)
+  expect_true(all(substr(smallbox_key[["extract"]], 0, 4) == "box:"))
+  
+  optionals <- extract_optional_LaTeX_argument(road_congestion, "begin{table}")
+  expect_true("!h" %in% optionals[["extract"]])
+})
+
+
 
 

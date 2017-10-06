@@ -161,6 +161,13 @@ test_that("Optional argument", {
   # Simply so that (X, Y) == (Y, X) for this purpose.
   setorderv(out, "char_no_min")
   expect_equal(out$extract, c("\\textcite[a][b]c", "b"))
+  
+  
+  out_not_by_line <- extract_optional_LaTeX_argument(c("\\documentclass[12pt,", "a4paper]{article}"), "documentclass")
+  expect_equal(out_not_by_line[["extract"]], "12pt,a4paper")
+  
+  out_by_line <- extract_optional_LaTeX_argument(c("\\documentclass[12pt,", "a4paper]{article}"), "documentclass", by.line = TRUE)
+  expect_equal(out_by_line[["extract"]], c("12pt,", "a4paper"))
 })
 
 test_that("Argument requested but missing", {
@@ -171,6 +178,10 @@ test_that("Argument requested but missing", {
   
   out0 <- extract_mandatory_LaTeX_argument(" \\abc[][\\abc[][e]]{f}", "abc")
   expect_equal(out0[["extract"]], "f")
+  
+  
+  out0 <- extract_optional_LaTeX_argument("\\XYZ{ABC}", "XYZ", n = 1L)
+  expect_equal(nrow(out0), 0)
 })
 
 

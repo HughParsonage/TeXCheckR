@@ -267,9 +267,12 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 #' a closing brace.).
 position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE) {
   n <- as.integer(n)
+  
+  char_no <- char <- NULL
   parsed_doc <- parse_tex(orig_lines)
   out <- extract_mandatory_LaTeX_argument(tex_lines = NULL, parsed_doc = parsed_doc, "footnote", n = 1L)
   target_char_nos <- .subset2(out, "char_no_max") + n
+  
   
   if (must.be.punct) {
     error_position <- 

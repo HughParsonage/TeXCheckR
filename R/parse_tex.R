@@ -21,6 +21,7 @@ parse_tex <- function(tex_lines) {
   closer_optional <- Tex_line_split_unlist == "]"
   tex_group <- cumsum(opener) - cumsum(closer) + closer
   optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
+  openers <- NULL
   
   out <- list(char_no = seq_len(n_char),
               line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),

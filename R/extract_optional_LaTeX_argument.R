@@ -104,7 +104,7 @@ extract_optional_LaTeX_argument <- function(tex_lines,
       out
     }
     
-    char_no_min <- char_no_max <- NULL
+    char_no_min <- char_no_max <- command_no_t <- target <- NULL
     
     # Must be outer join
     candidate_char_ranges <- 

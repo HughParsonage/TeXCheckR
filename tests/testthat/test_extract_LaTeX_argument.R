@@ -163,5 +163,15 @@ test_that("Optional argument", {
   expect_equal(out$extract, c("\\textcite[a][b]c", "b"))
 })
 
+test_that("Argument requested but missing", {
+  out2 <- extract_mandatory_LaTeX_argument("\\XYZ{AA}{BB}{CC} \\XYZ{DD}{EE} \\XYZ{FF}", "XYZ", n = 2L)
+  expect_equal(nrow(out2), 2)
+  out3 <- extract_mandatory_LaTeX_argument("\\XYZ{AA}{BB}{CC} \\XYZ{DD}{EE} \\XYZ{FF}", "XYZ", n = 3L)
+  expect_equal(nrow(out3), 1)
+  
+  out0 <- extract_mandatory_LaTeX_argument(" \\abc[][\\abc[][e]]{f}", "abc")
+  expect_equal(out0[["extract"]], "f")
+})
+
 
 

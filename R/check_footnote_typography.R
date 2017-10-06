@@ -272,8 +272,8 @@ position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE) 
   target_char_nos <- .subset2(out, "char_no_max") + n
   
   if (must.be.punct) {
-    parsed_doc <- 
-      parsed[char_no %in% target_char_nos] %>%
+    error_position <- 
+      parsed_doc[char_no %in% target_char_nos] %>%
       .[char %chin% punctuation] %>%
       .[1]
   } else {

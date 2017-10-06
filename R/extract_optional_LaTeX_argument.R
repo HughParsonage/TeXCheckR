@@ -13,7 +13,7 @@ extract_optional_LaTeX_argument <- function(tex_lines,
                                             by.line = FALSE) {
   tex_lines <- strip_comments(tex_lines)
   
-  char <- char_no <- NULL
+  char <- char_no <- line_no <- NULL
   parsed_doc <- parse_tex(tex_lines)
   
   nchar_command <- nchar(command_name)
@@ -47,8 +47,11 @@ extract_optional_LaTeX_argument <- function(tex_lines,
   for (k in sk) {
     set(parsed_doc_no_ws, j = as.character(k), value = shift(chars, n = k, type = "lag"))
   }
+  backslash <- NULL
   set(parsed_doc_no_ws, j = "backslash", value = shift(chars, n = k + 1L, type = "lag"))
   
+  
+  shift_char <- command <- command_no <- NULL
   # Unlike extract_mandatory, we only care about '['.
   candidates <- 
     parsed_doc_no_ws[char == "["] %>% 
@@ -73,6 +76,8 @@ extract_optional_LaTeX_argument <- function(tex_lines,
                            names(parsed_doc),
                            value = TRUE,
                            perl = TRUE) 
+    
+    GROUP_LEVEL <- id_at_group_level <- NULL
     molten_parsed_doc <-
       parsed_doc %>%
       .[, .SD, .SDcols = c("line_no", "char_no", "char",
@@ -98,6 +103,8 @@ extract_optional_LaTeX_argument <- function(tex_lines,
       }
       out
     }
+    
+    char_no_min <- char_no_max <- NULL
     
     # Must be outer join
     candidate_char_ranges <- 
@@ -127,8 +134,10 @@ extract_optional_LaTeX_argument <- function(tex_lines,
       out <- data.table()
     } else {
       
-      column_by_char_no <- parsed_doc[, .(char_no, column)]
+      column <- NULL
+      column_by_char_no <- parsed_doc[, .SD, .SDcols = c("char_no", "column")]
       
+      extract <- NULL
       out <-
         candidate_char_ranges[parsed_doc,
                               on = c("char_no_min<=char_no", "char_no_max>=char_no"),

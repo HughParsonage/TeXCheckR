@@ -73,9 +73,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       # # # # # # # # # # # 
     } 
     
-    parsed_doc <- parsed_doc_outside_optional <- parsed_doc[char_no %notin% optional_char_nos]
-  } else {
-    parsed_doc_outside_optional <- parsed_doc
+    parsed_doc <- parsed_doc[char_no %notin% optional_char_nos]
   }
   
   # Find the location of each command
@@ -199,7 +197,9 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       column_by_char_no <- parsed_doc[, .SD, .SDcols = c("char_no", "column")]
       
       
-      char_no_min <- char_no_max <- NULL
+      extract <- 
+        line_no_min <- line_no_max <-
+        char_no_min <- char_no_max <- NULL
       
       out <-
         candidate_char_ranges[parsed_doc,
@@ -221,7 +221,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       }
       
       if (nrow(out) > 0) {
-        column <- NULL
+        column <- i.column <- NULL
         column_by_char_no <- parsed_doc[, .SD, .SDcols = c("char_no", "column")]
         out[column_by_char_no, on = "char_no_min==char_no", nomatch=0L] %>%
           .[column_by_char_no, on = "char_no_max==char_no", nomatch=0L,

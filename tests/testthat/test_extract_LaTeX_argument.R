@@ -3,15 +3,15 @@ context("Extract arguments")
 test_that("Extract textbf", {
   out <- extract_LaTeX_argument("The contents of \\textbf{ABC} is abc.", "textbf")
   expect_equal(out[["extract"]], "ABC")
-  expect_equal(out[["starts"]], nchar("The contents of \\textbf{"))
-  expect_equal(out[["stops"]], nchar("The contents of \\textbf{ABC}"))
+  expect_equal(out[["char_no_min"]], nchar("The contents of \\textbf{"))
+  expect_equal(out[["char_no_max"]], nchar("The contents of \\textbf{ABC}"))
 })
 
 test_that("Extract textcites", {
   out <- extract_LaTeX_argument("Some citation by \\textcites{Knuth194}{Knuth195}", "textcites", n = 2L)
   expect_equal(out[["extract"]], "Knuth195")
-  expect_equal(out[["starts"]], nchar("Some citation by \\textcites{Knuth194}{"))
-  expect_equal(out[["stops"]], nchar("Some citation by \\textcites{Knuth194}{Knuth195}"))
+  expect_equal(out[["char_no_min"]], nchar("Some citation by \\textcites{Knuth194}{"))
+  expect_equal(out[["char_no_max"]], nchar("Some citation by \\textcites{Knuth194}{Knuth195}"))
 })
 
 test_that("Extract nested", {
@@ -25,7 +25,7 @@ test_that("Extract nested", {
 
 test_that("Blank line", {
   out <- extract_LaTeX_argument("", "foo")
-  expect_true(is.na(out[["extract"]]))
+  expect_true(nrow(out) == 0 || is.na(out[["extract"]]))
 })
 
 test_that("Optional argument", {
@@ -45,28 +45,26 @@ test_that("Optional argument", {
   tex_lines_with_optional <- 
     c("Sometimes \\footcite[][3]{Daley2016} we have optional args; other times not.\\footcite{Daley2016}.")
   
-  output_excl_optional <- extract_LaTeX_argument(tex_lines_with_optional, "footcite", star = FALSE)
+  output_excl_optional <- extract_LaTeX_argument(tex_lines_with_optional, "footcite")
   expect_equal(output_excl_optional[["extract"]], c("Daley2016", "Daley2016"))
   output_incl_optional <- extract_LaTeX_argument(tex_lines_with_optional,
                                                  command_name = "footcite",
-                                                 star = FALSE,
                                                  optional = TRUE, 
                                                  n = 2L)
   expect_equal(output_incl_optional[["extract"]], c("3", NULL))
 })
 
 test_that("Multi-line starred", {
-  skip("Undecided test outcome")
-  out <- extract_LaTeX_argument(c("This \\footnote{", "ends", "here.}"), "footnote", star = FALSE)
-  expect_equal(out$starts, c(15, NA, NA))
-  expect_equal(out$stops, c(6, NA, NA))
-  expect_equal(out$stops_line_no, c(3, NA, NA))
+  out <- extract_LaTeX_argument(c("This \\footnote{", "ends", "here.}"), "footnote")
+  expect_equal(out$char_no_min, c(15))
+  expect_equal(out$char_no_max, c(25))
+  expect_equal(out$line_no_max, c(3))
   
   
   out <- extract_LaTeX_argument(c("This \\footnote{ends quickly} where this \\footnote{", "ends", "here.}"), "footnote")
-  expect_equal(out$starts, c(15, NA, NA))
-  expect_equal(out$stops, c(6, NA, NA))
-  expect_equal(out$stops_line_no, c(3, NA, NA))
+  expect_equal(out$char_no_min[1], nchar("This \\footnote{"))
+  expect_equal(out$char_no_max[1], nchar("This \\footnote{ends quickly}"))
+  expect_equal(out$line_no_max[1], 1)
   
 })
 
@@ -77,7 +75,7 @@ test_that("Multi-line", {
       "extends over",
       "\\emph{more}",
       "than one line.}")
-  output <- extract_LaTeX_argument(tex_lines, "footnote", star = FALSE)
+  output <- extract_mandatory_LaTeX_argument(tex_lines, "footnote", by.line = TRUE)
   expect_equal(output[["extract"]],
                c("this is a footnote with some \\textbf{text also in boldface}",
                  "this footnote ",

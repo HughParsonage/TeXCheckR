@@ -22,12 +22,6 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
   char <- char_no <- line_no <- NULL
   if (is.null(parsed_doc)) {
     tex_lines <- strip_comments(tex_lines)
-    if (AND(substr(tex_lines[[1]], 0, 1) == "[",
-            stri_sub(last(tex_lines), from = -1L) == "]")) {
-      tex_lines[1] <- paste0(" ", stri_sub(tex_lines[1], from = 2L))
-      tex_lines[length(tex_lines)] <- paste0(stri_sub(tex_lines[length(tex_lines)], to = -2L), " ")
-    }
-    
     parsed_doc <- parse_tex(tex_lines)
   }
   

@@ -202,6 +202,15 @@ test_that("Environments", {
   expect_true("!h" %in% optionals[["extract"]])
 })
 
+test_that("Optional containing square brackets", {
+  out <- extract_mandatory_LaTeX_argument("\\abc[[def]]{ghi}", "abc")
+  expect_equal(out[["extract"]], "ghi")
+  out <- extract_optional_LaTeX_argument("\\abc[[def]][\\abc[][[xyz]]{ghi}]{jkl}", "abc")
+  expect_equal(out[["extract"]], c("[def]", ""))
+  
+  out <- extract_optional_LaTeX_argument("\\section[{these [are] optional arguments}]{This is optional}", "section")
+  expect_equal(out[["extract"]], "{these [are] optional arguments}")
+})
 
 
 

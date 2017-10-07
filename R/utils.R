@@ -140,6 +140,20 @@ print_transpose_data.table <- function(DT, file = "") {
   
 }
 
+return_first_nonNA <- function(x) {
+  if (anyNA(x)) {
+    not_nax <- !is.na(x)
+    if (any(not_nax)) {
+      out <- first(x[not_nax])
+    } else {
+      out <- x[1]
+    }
+  } else {
+    out <- x[1]
+  }
+  out
+}
+
 
 
 

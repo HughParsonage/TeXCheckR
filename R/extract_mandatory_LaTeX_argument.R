@@ -148,15 +148,6 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       setorderv(c("char_no", "GROUP_LEVEL", "id_at_group_level")) %>%
       unique(by = c("line_no", "char_no", "char"), fromLast = TRUE)
     
-    return_first_nonNA <- function(x) {
-      if (anyNA(x) && any(!is.na(x))) {
-        out <- first(x[!is.na(x)])
-      } else {
-        out <- first(x)
-      }
-      out
-    }
-    
     command_no_t <- target <- NULL
     
     # Must be outer join

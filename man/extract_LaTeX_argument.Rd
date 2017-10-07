@@ -14,8 +14,6 @@ extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
 \item{n}{Which argument to extract, if exists.}
 
 \item{optional}{Extract the optional argument, rather than the mandatory arguments.}
-
-\item{star}{Assume that the command's contents are all on one line.}
 }
 \description{
 This is a simple wrapper around \code{\link{extract_mandatory_LaTeX_argument}} and \code{\link{extract_optional_LaTeX_argument}}.

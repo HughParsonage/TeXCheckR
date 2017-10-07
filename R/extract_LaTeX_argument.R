@@ -3,7 +3,6 @@
 #' @param tex_lines LaTeX text.
 #' @param command_name Name of command without backslash \code{\\textbf} corresponds to \code{command_name = "textbf"}.
 #' @param n Which argument to extract, if exists.
-#' @param star Assume that the command's contents are all on one line.
 #' @param optional Extract the optional argument, rather than the mandatory arguments.
 #' 
 #' 

@@ -1,12 +1,12 @@
 
 
-inputs_of <- function(filename, append.tex = TRUE){
+inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
   file_path <- dirname(filename)
   lines <- read_lines(filename)
   
   lines_after_begin_document <-
-    if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
-      lines[-c(1:grep("\\begin{document}", lines, fixed = TRUE))]
+    if (exclude.preamble && any(grepl("\\begin{document}", lines, fixed = TRUE))){
+      lines[-seq_len(grep("\\begin{document}", lines, fixed = TRUE))]
     } else {
       lines
     }
@@ -16,7 +16,7 @@ inputs_of <- function(filename, append.tex = TRUE){
                                lines_after_begin_document,
                                perl = TRUE))
   
-  if (inputs_in_doc > 0){
+  if (inputs_in_doc > 0) {
     inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
                    "\\1",
                    lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",

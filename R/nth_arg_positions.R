@@ -163,6 +163,8 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
       out
     }
   } else {
+    n_char <- NULL
+    
     char_no_by_line_no <- 
       data.table(line_no = seq_along(tex_lines),
                  n_char = shift(nchar_tex_lines, fill = 0L)) %>%

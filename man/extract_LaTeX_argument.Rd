@@ -4,31 +4,17 @@
 \alias{extract_LaTeX_argument}
 \title{Extract LaTeX command argument}
 \usage{
-extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE,
-  star = TRUE)
+extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
 }
 \arguments{
 \item{tex_lines}{LaTeX text.}
 
 \item{command_name}{Name of command without backslash \code{\\textbf} corresponds to \code{command_name = "textbf"}.}
 
-\item{n}{Extract the nth argument.}
+\item{n}{Which argument to extract, if exists.}
 
 \item{optional}{Extract the optional argument, rather than the mandatory arguments.}
-
-\item{star}{Assume that the command's contents are all on one line.}
-}
-\value{
-A \code{data.table}, each row corresponding to each line in \code{tex_lines}
-and each instance of \code{command_name}. If multiple commands are on the same line,
-subsequent instances of commands appear on subsequent rows.
-\describe{
-\item{\code{starts}}{Start position of the argument.}
-\item{\code{stops}}{Stop position of the argument.}
-\item{\code{extract}}{The argument extracted.}
-\item{\code{line_no}}{The line number (with respect to \code{seq_along(tex_lines)}).}
-}
 }
 \description{
-Extract LaTeX command argument
+This is a simple wrapper around \code{\link{extract_mandatory_LaTeX_argument}} and \code{\link{extract_optional_LaTeX_argument}}.
 }

@@ -4,12 +4,10 @@
 \alias{parse_tex}
 \title{Parse LaTeX lines}
 \usage{
-parse_tex(tex_lines, delim1 = "{", delim2 = "}")
+parse_tex(tex_lines)
 }
 \arguments{
 \item{tex_lines}{Character vector (as read from a \code{.tex} file).}
-
-\item{delim1, delim2}{Opening and closing characters for each group.}
 }
 \value{
 A \code{data.table} where each row identifies a unique character in \code{tex_lines}.
@@ -18,6 +16,7 @@ A \code{data.table} where each row identifies a unique character in \code{tex_li
 \item{\code{char_no}}{The character within \code{line_no}.}
 \item{\code{char}}{The character. A single character.}
 \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
+\item{\code{GRP_ID}}{An integer identifying the unique continguous block.}
 }
 }
 \description{

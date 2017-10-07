@@ -1,5 +1,6 @@
 language: r
 cache: packages
+sudo: true
 warnings_are_errors: true
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
@@ -24,6 +25,11 @@ r_binary_packages:
 - devtools
 - roxygen2
 - hunspell
+- fastmatch
+- data.table
+- knitr
+- readr
+- stringi
 
 r_packages:
 - covr

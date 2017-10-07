@@ -56,7 +56,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # 'Sentence containing word footnote' and '\\footnotemark' shouldn't be detected.
   # Important to keep the width of 'footnote' though: so the cursor can be correctly
   # positioned.
-  lines <- gsub("([^\\\\])footnote", "\\1toofnote", lines)
+  lines <- gsub("([^\\\\])footnote", "\\1toofnote", lines, perl = TRUE)
   lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
@@ -82,29 +82,39 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 
   lines_with_footnote <- grep("footnote", lines_by_footnote, fixed = TRUE, value = TRUE)
 
+  i <- 0
   # Check full stops
   for (line in lines_with_footnote){
+    i <- i + 1
     footnote_closes_at <- position_of_closing_brace(line = line, prefix = "footnote")
     if (is.infinite(footnote_closes_at))
       break
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
     if (AND(length(split_line_after_footnote) > footnote_closes_at,
             split_line_after_footnote[footnote_closes_at + 1] %chin% punctuation)) {
+      
+      # If a footnote is written before a dash, we can end up here, even though
+      # it would be ok. The following will take much longer than the rest of this function.
+      if (split_line_after_footnote[footnote_closes_at + 1] == "-") {
+        parsed_doc <- parse_tex(orig_lines)
+        location_of_footnotes <- extract_mandatory_LaTeX_argument(tex_lines = NULL,
+                                                                  parsed_doc = parsed_doc,
+                                                                  command_name = "footnote",
+                                                                  n = 1L,
+                                                                  by.line = TRUE)
+        # If the dash occurs after a line break, a
+        # space will be inserted which is ok.
+        number_of_lines <- 
+          uniqueN(parsed_doc[char_no %in% ((location_of_footnotes[i])[["char_no_max"]] + 0:1)][["line_no"]])
+        
+        if (number_of_lines > 1) {
+          break
+        }
+      }
+      
       # Take a breath
       
-      # Identify those lines
-      # line_no_by_lines_with_footnote <-
-      #   data.table(doc_line_no = grep("footnote", lines_by_footnote, fixed = TRUE, value = FALSE),
-      #              footnote_no = seq_along(lines_with_footnote),
-      #              lines_with_footnote = paste0("\\", lines_with_footcite))
-      # 
-      # extract_tbl <- extract_LaTeX_argument(lines_with_footnote, "footnote")
-      # 
-      # extract_tbl[line_no_by_lines_with_footnote, on = "line_no==footnote_no"] %>%
-      #   .[, extract := stringi::stri_sub(extract, pmax(-10, -1*nchar(extract)))] %>%
-      #   .[, .(extract, starts, stops, line_no, doc_line_no)]
-      
-      error_position <- position_end_of_footnote(2, orig_lines, is.punct = TRUE)
+      error_position <- position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
       
       .report_error(line_no = error_position[["line_no"]],
                     column = error_position[["column"]] + 1L,
@@ -116,6 +126,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       stop("Punctuation after footnotemark.")
     }
   }
+  rm(i)
   
   line_nos_with_footcite <- 
     grepl("\\\\footcite(?!s)", lines, perl = TRUE)
@@ -201,7 +212,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")),
               AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")))) {
-        error_position <- position_end_of_footnote(1, orig_lines, is.punct = FALSE)
+        error_position <- position_end_of_footnote(1, orig_lines, must.be.punct = FALSE)
         
         
         .report_error(context = paste0("\n\\footnote\n         ",
@@ -262,51 +273,29 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 }
 
 # n = relative to last character
-position_end_of_footnote <- function(n = 0, orig_lines, is.punct = FALSE) {
-  out <- extract_LaTeX_argument(orig_lines, "footnote", star = FALSE)
-  nchar_footnote_text <- 
-    out %>%
-    .[, .(nchars = sum(nchar(extract))), by = "command_no"] %>%
-    .[["nchars"]]
+#' @return A \code{data.table} containing columns \code{line_no} and \code{column}
+#' for each character \code{n} characters after the footnote. (n = 0L will always be 
+#' a closing brace.).
+position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, i) {
+  n <- as.integer(n)
   
-  parsed <- parse_tex(orig_lines)
+  char_no <- char <- NULL
+  parsed_doc <- parse_tex(orig_lines)
+  out <- extract_mandatory_LaTeX_argument(tex_lines = NULL, parsed_doc = parsed_doc, "footnote", n = 1L)
+  target_char_nos <- .subset2(out, "char_no_max") + n
   
-  nchar_footnote <- nchar("\\footnote{")
   
-  for (nn in seq_len(nchar_footnote)) {
-    j <- paste0("s", nn)
-    set(parsed, j = j, value = shift(.subset2(parsed, "char"), type = "lead", n = nn))
-  }
-  
-  footnote_positions <- 
-    parsed %>%
-    .[s1 == "\\"] %>%
-    .[s2 == "f"] %>%
-    .[s3 == "o"] %>%
-    .[s4 == "o"] %>%
-    .[s5 == "t"] %>%
-    .[s6 == "n"] %>%
-    .[s7 == "o"] %>%
-    .[s8 == "t"] %>%
-    .[s9 == "e"] %>%
-    .[s10 == "{"] %>%
-    .[["char_no"]] + nchar_footnote
-  
-  target_char_no <- footnote_positions + nchar_footnote_text + n
-  
-  if (is.punct) {
+  if (must.be.punct) {
     error_position <- 
-      # + 2 -> brace + following character
-      parsed[char_no %in% target_char_no] %>%
+      parsed_doc[char_no %in% target_char_nos] %>%
       .[char %chin% punctuation] %>%
       .[1]
   } else {
     error_position <- 
-      # + 2 -> brace + following character
-      parsed[char_no %in% target_char_no] %>%
-      .[char %notin% punctuation] %>%
+      parsed_doc[char_no %in% target_char_nos] %>%
       .[1]
   } 
+  error_position
 }
 
 

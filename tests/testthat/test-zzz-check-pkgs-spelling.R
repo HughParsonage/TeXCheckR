@@ -1,7 +1,7 @@
 context("(Package spelling)")
 
 test_that("No misspelled words", {
-  
+  skip_on_cran()
   # In a checking context, one is typically in /TeXCheckR.Rcheck/tests/testthat/
   if (file.exists("test-zzz-check-pkgs-spelling.R")) {
     if (grepl(".Rcheck", getwd(), fixed = TRUE) && 
@@ -29,7 +29,7 @@ test_that("No misspelled words", {
           file = "C:/Users/hughp/Documents/sandbox/check-1.txt")
       # Do not fail the test due to failure to locate the 
       # package:
-      skip_on_cran()
+      cat("NO SPELLCHECK")
     })
   
   if (length(result) > 0) {

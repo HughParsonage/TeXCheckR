@@ -16,7 +16,7 @@ A \code{data.table} where each row identifies a unique character in \code{tex_li
 \item{\code{char_no}}{The character within \code{line_no}.}
 \item{\code{char}}{The character. A single character.}
 \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
-\item{\code{GRP_ID}}{An integer identifying the unique continguous block.}
+\item{\code{GRP_ID}}{An integer identifying the unique contiguous block.}
 }
 }
 \description{

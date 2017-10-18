@@ -96,16 +96,20 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       # If a footnote is written before a dash, we can end up here, even though
       # it would be ok. The following will take much longer than the rest of this function.
       if (split_line_after_footnote[footnote_closes_at + 1] == "-") {
+        char_no <- NULL
         parsed_doc <- parse_tex(orig_lines)
-        location_of_footnotes <- extract_mandatory_LaTeX_argument(tex_lines = NULL,
-                                                                  parsed_doc = parsed_doc,
-                                                                  command_name = "footnote",
-                                                                  n = 1L,
-                                                                  by.line = TRUE)
+        location_of_footnotes <-
+          extract_mandatory_LaTeX_argument(tex_lines = NULL,
+                                           parsed_doc = parsed_doc,
+                                           command_name = "footnote",
+                                           n = 1L,
+                                           by.line = TRUE)
         # If the dash occurs after a line break, a
         # space will be inserted which is ok.
         number_of_lines <- 
-          uniqueN(parsed_doc[char_no %in% ((location_of_footnotes[i])[["char_no_max"]] + 0:1)][["line_no"]])
+          parsed_doc[char_no %in% ((location_of_footnotes[i])[["char_no_max"]] + 0:1)] %>%
+          .[["line_no"]] %>%
+          uniqueN
         
         if (number_of_lines > 1) {
           break
@@ -114,7 +118,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       
       # Take a breath
       
-      error_position <- position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
+      error_position <-
+        position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
       
       .report_error(line_no = error_position[["line_no"]],
                     column = error_position[["column"]] + 1L,
@@ -139,10 +144,11 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     lines_with_footcite <- lines[line_nos_with_footcite] 
     
     lines_with_footcite_noarg <- lines_with_footcite
-    lines_with_footcite_noarg <- replace_nth_LaTeX_argument(lines_with_footcite_noarg, 
-                                                            command_name = "footcite",
-                                                            n = 1L,
-                                                            replacement = "")
+    lines_with_footcite_noarg <-
+      replace_nth_LaTeX_argument(lines_with_footcite_noarg, 
+                                 command_name = "footcite",
+                                 n = 1L,
+                                 replacement = "")
     
     chars_after_footcite <- gsub("^.*\\\\footcite\\{\\}\\s*(.)?.*$", 
                                 "\\1", 

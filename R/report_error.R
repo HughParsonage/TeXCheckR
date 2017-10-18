@@ -1,14 +1,14 @@
-#' Report errors to console and twitter
+#' Report errors to console
 #' @name report_error
 #' @param file The file in which the error occurred.
 #' @param line_no The line number locating the source of the error.
 #' @param column The position on the line to identify the error (usually following the error).
-#' @param context THe content of the file to provide context to the error.
+#' @param context The content of the file, to provide context to the error.
 #' @param error_message The error message to display beyond the console.
 #' @param advice Advice to the user: how should the detected error be resolved in general?
 #' @param build_status What should the build status be reported as?
 #' @param log_file Optionally, path to a log file on which \code{error_message} will be written. 
-#' @param rstudio If available, should the report be allowed to modify the RStudio session?
+#' @param rstudio If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 #' @rdname report_error

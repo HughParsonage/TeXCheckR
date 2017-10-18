@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_spelling.R
 \name{check_spelling}
 \alias{check_spelling}
-\title{Spellchecker}
+\title{Spell checking}
 \usage{
 check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
   known.correct = NULL, known.wrong = NULL, bib_files, check_etcs = TRUE,
@@ -21,7 +21,7 @@ present outside the document preamble.}
 
 \item{known.wrong}{Character vector of patterns known to be wrong.}
 
-\item{bib_files}{Bibliography files (containing possible clues to misspellings).}
+\item{bib_files}{Bibliography files (containing possible clues to misspellings). If supplied, and this function would otherwise throw an error, the \code{.bib} files are read and any author names that match the misspelled words are added to the dictionary.}
 
 \item{check_etcs}{If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)}
 
@@ -32,10 +32,10 @@ present outside the document preamble.}
 \item{.report_error}{A function to provide context to any errors.}
 }
 \value{
-Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
+Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
 }
 \description{
-Spellchecker
+Spell checking
 }
 \details{
 Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
@@ -45,21 +45,25 @@ on the document without having to keep track of which spelling errors are genuin
 directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
 of \code{\\mycmd}.
 
+Another possible advantage is that only the root document need be supplied; 
+any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).
+
 Other advantages included skipping the contents of certain commands, the spelling of which need not be checked 
 as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. These
-have been fixed by \code{hunspell} since then.
+have been fixed by \code{hunspell} since the first version of this package.
 
 The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
 dictionary.  
 
 This function should be quite fast, but slower than \code{hunspell::hunspell} (which it invokes). 
 I aim for less than 500 ms on a real-world report of around 100 pages.
-The function is slower when consulting \code{bib_files}, though I recommend adding authors, titles, etc. 
+The function is slower when it needs to consult \code{bib_files}, though I recommend adding authors, titles, etc. 
+to the dictionary
 explicitly, or using \code{citeauthor} and friends. 
 
 This function is forked from \url{https://github.com/hughparsonage/grattanReporter} to parse reports of the Grattan Institute, Melbourne for errors. See
 \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
-Some checks have been omitted in this package.
+Some checks that package performs have been omitted in this package.
 }
 \examples{
 

@@ -225,9 +225,26 @@ In constructions like
 \begin{lstlisting}
 Extract the \textbf{bold} part of this sentence.
 \end{lstlisting}
-matching the command to the brace is trivial, choose the string of characters after the last backslash preceding the brace.\footnote{Since \LaTeX{} gobbles whitespace, `word preceding' here means `word preceding any whitespace preceding'.}
+matching the command to the brace is trivial, choose the string of characters after the last backslash preceding the brace.\footnote{Since \LaTeX{} gobbles whitespace in this context, `word preceding' here means `word preceding any whitespace preceding'.}
+However, this is not the general case.
+Firstly, optional arguments may be present. 
+Although the above method of scrolling to the next \TeX{} group will work in most cases, it will not work if there are \TeX{} groups within the optional arguments.
+Furthermore, there may be commands (including the target command) within those optional arguments.
+
+As a result, each iteration of the algorithm must be done in each optional argument separately.
+Once this is done, the optional arguments can be excluded and the algorithm performed at the top level.
+As it is likely that optional arguments will contain few, if any, instances of the arguments,
+ we consider each optional level of the document and omit the extraction algorithm if the command is not present at any optional level greater.
 
 
+\begin{lstlisting}[columns=fixed]
+      chars :\A[B \A[X]{D}]{E} \A{\A{F}}
+OPT_GRP_LVL :001111122211110000000000000
+GROUP_LEVEL :000000000011101110001112221
+opt_group_id:001111122211110000000000000
+    group_id:000000000011101110001112221
+      chars :\A[B \A[X]{D}]{E} \A{\A{F}}
+\end{lstlisting}
 
 
 

@@ -1,6 +1,6 @@
 #' Replace nth arguments
 #' @name argument_parsing
-#' @param tex_lines A character vector of a LaTeX file read in from readLines.
+#' @param tex_lines A character vector of a LaTeX file (as read in from \code{readLines} or \code{readr::read_lines}).
 #' @param command_name The command name, 
 #' or the pattern of the command, without the initial backslash.
 #' @param n Which argument of the command.

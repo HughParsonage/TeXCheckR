@@ -3,7 +3,7 @@
 \name{report_error}
 \alias{report_error}
 \alias{report2console}
-\title{Report errors to console and twitter}
+\title{Report errors to console}
 \usage{
 report2console(file = NULL, line_no = NULL, column = NULL,
   context = NULL, error_message = NULL, advice = NULL,
@@ -17,7 +17,7 @@ report2console(file = NULL, line_no = NULL, column = NULL,
 
 \item{column}{The position on the line to identify the error (usually following the error).}
 
-\item{context}{THe content of the file to provide context to the error.}
+\item{context}{The content of the file, to provide context to the error.}
 
 \item{error_message}{The error message to display beyond the console.}
 
@@ -29,10 +29,10 @@ report2console(file = NULL, line_no = NULL, column = NULL,
 
 \item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
 
-\item{rstudio}{If available, should the report be allowed to modify the RStudio session?}
+\item{rstudio}{If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?}
 
 \item{log_file}{Optionally, path to a log file on which \code{error_message} will be written.}
 }
 \description{
-Report errors to console and twitter
+Report errors to console
 }

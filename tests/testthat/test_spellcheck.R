@@ -59,6 +59,20 @@ test_that("Some lower-case governments should not", {
   expect_null(check_spelling("./spelling/Govt/ok-as-adj.tex"))
 })
 
+test_that("'percent' error should only occur in a Grattan report", {
+  percent_spellcheck.tex <- tempfile(fileext = ".tex")
+  
+  writeLines(
+    text = c("\\documentclass{article}", 
+             "\\begin{document}",
+             "The word percent is not invalid.",
+             "\\end{document}"),
+    con = percent_spellcheck.tex
+  )
+  
+  expect_null(check_spelling(percent_spellcheck.tex))
+})
+
 test_that("Includepdf doesn't result in a failed include message", {
   expect_null(check_spelling("./spelling/includepdf-ok.tex"))
 })

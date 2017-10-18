@@ -14,7 +14,7 @@ nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
   star = TRUE, data.tables = TRUE)
 }
 \arguments{
-\item{tex_lines}{A character vector of a LaTeX file read in from readLines.}
+\item{tex_lines}{A character vector of a LaTeX file (as read in from \code{readLines} or \code{readr::read_lines}).}
 
 \item{command_name}{The command name, 
 or the pattern of the command, without the initial backslash.}

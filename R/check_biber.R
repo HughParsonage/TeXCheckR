@@ -1,6 +1,6 @@
 #' Check biber
 #'
-#' @param path Containing the blg file.
+#' @param path The path containing the \code{blg} file, following successful compilation.
 #' @param rstudio Use the RStudio API?
 #' @export
 

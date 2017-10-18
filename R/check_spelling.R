@@ -1,4 +1,4 @@
-#' Spellchecker
+#' Spell checking
 #'
 #' @param filename Path to a LaTeX file to check.
 #' @param pre_release Should the document be assumed to be final?
@@ -7,12 +7,12 @@
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
-#' @param bib_files Bibliography files (containing possible clues to misspellings).
+#' @param bib_files Bibliography files (containing possible clues to misspellings). If supplied, and this function would otherwise throw an error, the \code{.bib} files are read and any author names that match the misspelled words are added to the dictionary.
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
 #' @param rstudio Use the RStudio API?
 #' @param .report_error A function to provide context to any errors.
-#' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check suceeds, \code{NULL} invisibly.
+#' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
 #' 
 #' @details Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
 #' in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write
@@ -21,21 +21,25 @@
 #' directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
 #' of \code{\\mycmd}.
 #' 
+#' Another possible advantage is that only the root document need be supplied; 
+#' any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).
+#' 
 #' Other advantages included skipping the contents of certain commands, the spelling of which need not be checked 
 #' as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. These
-#' have been fixed by \code{hunspell} since then.
+#' have been fixed by \code{hunspell} since the first version of this package.
 #' 
 #' The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
 #' dictionary.  
 #' 
 #' This function should be quite fast, but slower than \code{hunspell::hunspell} (which it invokes). 
 #' I aim for less than 500 ms on a real-world report of around 100 pages.
-#' The function is slower when consulting \code{bib_files}, though I recommend adding authors, titles, etc. 
+#' The function is slower when it needs to consult \code{bib_files}, though I recommend adding authors, titles, etc. 
+#' to the dictionary
 #' explicitly, or using \code{citeauthor} and friends. 
 #' 
 #' This function is forked from \url{https://github.com/hughparsonage/grattanReporter} to parse reports of the Grattan Institute, Melbourne for errors. See
 #' \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
-#' Some checks have been omitted in this package.
+#' Some checks that package performs have been omitted in this package.
 #' 
 #' @examples 
 #' 
@@ -319,7 +323,9 @@ check_spelling <- function(filename,
     stop("Wrong case: 'government' should start with uppercase G in this context.")
   }
 
-  if (any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE))){
+  # Only applicable to Grattan reports
+  if (AND(any(grepl("\\\\documentclass.*\\{grattan\\}", tex_lines[1:10], perl = TRUE)),
+          any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE)))) {
     first_wrong_line_no <-
       grep(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE) %>%
       .[1]
@@ -330,7 +336,8 @@ check_spelling <- function(filename,
            lines[first_wrong_line_no],
            perl = TRUE)
 
-    if (wrongly_spelled_word == "percent"){
+   
+    if (wrongly_spelled_word == "percent") {
       context <- paste0(lines[first_wrong_line_no], "\n",
                         "Use 'per cent', not 'percent'.")
     } else {

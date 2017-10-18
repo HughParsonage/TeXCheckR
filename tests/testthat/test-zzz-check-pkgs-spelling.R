@@ -1,4 +1,4 @@
-context("(Package spelling")
+context("(Package spelling)")
 
 test_that("No misspelled words", {
   result <- devtools::spell_check(pkg = "../..",

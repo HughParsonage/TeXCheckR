@@ -324,7 +324,7 @@ check_spelling <- function(filename,
   }
 
   # Only applicable to Grattan reports
-  if (AND(any(grepl("\\\\documentclass.*\\{grattan\\}", tex_lines[1:10], perl = TRUE)),
+  if (AND(any(grepl("\\\\documentclass.*\\{grattan\\}", lines[1:10], perl = TRUE)),
           any(grepl(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE)))) {
     first_wrong_line_no <-
       grep(sprintf("\\b(%s)\\b", wrongly_spelled_words), lines, perl = TRUE) %>%

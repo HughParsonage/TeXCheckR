@@ -25,4 +25,4 @@ Imports:
   fastmatch
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Suggests: testthat
+Suggests: testthat, devtools

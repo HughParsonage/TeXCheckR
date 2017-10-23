@@ -1,3 +1,6 @@
+# TeXCheckR 0.4.1
+* Fixed an issue whereby `pdflatex` may not run in certain environments (in particular CRAN where it caused an egregious hanging of the package queue). Tests now skip in such cases. 
+
 # TeXCheckR 0.4.0
 * Major internal functions `parse_tex`, `extract_mandatory_LaTeX_argument`, and `extract_optional_LaTeX_argument`.
 

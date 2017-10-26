@@ -32,13 +32,19 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
       lapply(c("input", "include"), 
              extract_LaTeX_argument, 
              tex_lines = lines_with_possible_inputs) %>%
-      rbindlist %>%
-      setorderv("line_no_min") %>%
-      .[["extract"]]
+      rbindlist
     
-    if (append.tex) {
-      out <- sprintf("%s.tex", tools::file_path_sans_ext(out))
-    }
+    out <- 
+      if (nrow(out) > 0) {
+        out <- 
+          out %>%
+          setorderv("line_no_min") %>%
+          .[["extract"]]
+        
+        if (append.tex) {
+          out <- sprintf("%s.tex", tools::file_path_sans_ext(out))
+        }
+      }
     
     return(out)
   } else {

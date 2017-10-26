@@ -34,7 +34,6 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
              tex_lines = lines_with_possible_inputs) %>%
       rbindlist
     
-    out <- 
       if (nrow(out) > 0) {
         out <- 
           out %>%
@@ -44,6 +43,8 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
         if (append.tex) {
           out <- sprintf("%s.tex", tools::file_path_sans_ext(out))
         }
+      } else {
+        out <- NULL
       }
     
     return(out)

@@ -4,6 +4,11 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
   file_path <- dirname(filename)
   lines <- read_lines(filename)
   
+  if (any(grepl("\\end{document}", lines, fixed = TRUE))) {
+    lines <- 
+      lines[seq_along(lines) < grep("\\end{document}", lines, fixed = TRUE)]
+  }
+  
   lines_after_begin_document <-
     if (exclude.preamble && any(grepl("\\begin{document}", lines, fixed = TRUE))){
       lines[-seq_len(grep("\\begin{document}", lines, fixed = TRUE))]
@@ -17,23 +22,25 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE){
                                perl = TRUE))
   
   if (inputs_in_doc > 0) {
-    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$",
-                   "\\1",
-                   lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",
-                                                    lines_after_begin_document,
-                                                    perl = TRUE)],
-                   perl = TRUE)
+    lines_with_possible_inputs <-
+      grep("\\\\(?:(?:input)|(?:include))",
+           lines_after_begin_document,
+           perl = TRUE,
+           value = TRUE)
     
-    if (length(inputs) != inputs_in_doc){
-      stop("Unable to parse inputs. Check they are all of the form \\input{filename}.", "\n", 
-           "\\input inside a comment will NOT be ignored.")
+    out <-
+      lapply(c("input", "include"), 
+             extract_LaTeX_argument, 
+             tex_lines = lines_with_possible_inputs) %>%
+      rbindlist %>%
+      setorderv("line_no_min") %>%
+      .[["extract"]]
+    
+    if (append.tex) {
+      out <- sprintf("%s.tex", tools::file_path_sans_ext(out))
     }
     
-    if (append.tex){
-      inputs <- paste0(inputs, ".tex")
-    }
-    
-    return(inputs)
+    return(out)
   } else {
     return(NULL)
   }

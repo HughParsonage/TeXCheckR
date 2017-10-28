@@ -1,5 +1,6 @@
 # TeXCheckR 0.4.2
 * Fixed `inputs_of` to select `\include` and `\inputs` only
+* Export `inputs_of`
 
 # TeXCheckR 0.4.1
 * Fixed an issue whereby `pdflatex` may not run in certain environments (in particular CRAN where it caused an egregious hanging of the package queue). Tests now skip in such cases. 

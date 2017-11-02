@@ -1,3 +1,6 @@
+# TeXCheckR 0.4.3
+* Use `hunspell`'s ignore option when a dictionary addition is not respected
+
 # TeXCheckR 0.4.2
 * Fixed `inputs_of` to select `\include` and `\inputs` only
 * Export `inputs_of`

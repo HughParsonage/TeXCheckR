@@ -36,6 +36,8 @@ test_that("Add to dictionary, ignore spelling in", {
   expect_null(check_spelling("./spelling/ignore_spelling_in-ok-2.tex", pre_release = FALSE))
 
   expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
+  
+  expect_null(check_spelling("./spelling/add_to_dictionary-ok-req-hunspell.tex", pre_release = FALSE))
 })
 
 test_that("Stop if present", {

@@ -363,7 +363,6 @@ check_spelling <- function(filename,
                             correctly_spelled_words,
                             words_to_add,
                             known.correct)
-  
   all_bad_words <- 
     all_bad_words[all_bad_words %notin% dictionary_additions] %>%
     unique
@@ -407,6 +406,7 @@ check_spelling <- function(filename,
       if (any(parsed[[line_w_misspell]] %notin% dictionary_additions)) {
         bad_line <- lines[[line_w_misspell]]
         # For timing
+        
         bad_line_corrected <- gsub(gwp,
                                    "",
                                    bad_line,
@@ -419,7 +419,11 @@ check_spelling <- function(filename,
                                    ignore.case = FALSE)
         recheck <- hunspell(bad_line_corrected,
                             format = "latex",
-                            dict = dictionary("en_GB"))
+                            dict = dictionary(dict_lang),
+                            # Must be here in cases where multiple
+                            # wrong words are on the one line (gsub
+                            # may only pick up the first).
+                            ignore = dictionary_additions)
 
         if (not_length0(recheck[[1]])) {
           # We've discovered a likely misspelling.

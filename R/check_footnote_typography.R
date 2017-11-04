@@ -57,6 +57,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # Important to keep the width of 'footnote' though: so the cursor can be correctly
   # positioned.
   lines <- gsub("([^\\\\])footnote", "\\1toofnote", lines, perl = TRUE)
+  # if footnote occurs at the head of a line
+  lines <- gsub("^footnote", "toofnote", lines, perl = TRUE)
   lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
@@ -218,7 +220,23 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")),
               AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")))) {
-        error_position <- position_end_of_footnote(1, orig_lines, must.be.punct = FALSE)
+        error_position <-
+          extract_mandatory_LaTeX_argument(orig_lines,
+                                           command_name = "footnote", 
+                                           by.line = FALSE) %>%
+          .[!endsWith(extract, ".")] %>%
+          .[, last_char := stri_sub(extract, from = -2L)] %>%
+          .[, nd_last_char := stri_sub(extract, from = -3L, to = -2L)] %>%
+          .[hutils::nor(and(last_char %chin% c(")", "'"),
+                            nd_last_char %chin% c(".", "?", "'")),
+                        and(last_char == "}",
+                            nd_last_char %chin% c(".", "?", "'")))] %>%
+          .[1] %>%
+          parse_tex(orig_lines)[.,
+                                j = .(line_no, char_no, column, last_char),
+                                on = "char_no==char_no_max"]
+        
+        
         
         
         .report_error(context = paste0("\n\\footnote\n         ",
@@ -287,7 +305,10 @@ position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, 
   
   char_no <- char <- NULL
   parsed_doc <- parse_tex(orig_lines)
-  out <- extract_mandatory_LaTeX_argument(tex_lines = NULL, parsed_doc = parsed_doc, "footnote", n = 1L)
+  out <- extract_mandatory_LaTeX_argument(tex_lines = NULL,
+                                          parsed_doc = parsed_doc,
+                                          "footnote",
+                                          n = 1L)
   target_char_nos <- .subset2(out, "char_no_max") + n
   
   

@@ -1,8 +1,8 @@
 Package: TeXCheckR
 Type: Package
 Title: Parses LaTeX Documents for Errors
-Date: 2017-10-28
-Version: 0.4.2
+Date: 2017-11-03
+Version: 0.4.4
 Author: Hugh Parsonage
 Maintainer: Hugh Parsonage <hugh.parsonage@gmail.com>
 URL: https://github.com/HughParsonage/TeXCheckR

@@ -1,5 +1,7 @@
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected
+* Fix spurious unit test broken under new `hunspell`.
+* Fix issue with `check_footnote_typography` where the RStudio pops to the end of the first footnote, not the first wrong footntoe. Thanks to CC for reporting.
 
 # TeXCheckR 0.4.2
 * Fixed `inputs_of` to select `\include` and `\inputs` only

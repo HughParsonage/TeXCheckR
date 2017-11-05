@@ -220,6 +220,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")),
               AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
                   split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")))) {
+        # CRAN Note avoidance
+        extract <- last_char <- nd_last_char <- column <- NULL
+        
         error_position <-
           extract_mandatory_LaTeX_argument(orig_lines,
                                            command_name = "footnote", 

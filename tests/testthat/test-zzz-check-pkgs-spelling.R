@@ -25,8 +25,10 @@ test_that("No misspelled words", {
                                        "perl", "knitr", "Grattan", 
                                        "TeX", "ary", "biber", "unescaped"))
     }, error = function(e) {
-      cat(getwd(),
-          file = "C:/Users/hughp/Documents/sandbox/check-1.txt")
+      if (dir.exists("C:/Users/hughp/Documents/sandbox")) {
+        cat(getwd(),
+            file = "C:/Users/hughp/Documents/sandbox/check-1.txt")
+      }
       # Do not fail the test due to failure to locate the 
       # package:
       cat("NO SPELLCHECK")

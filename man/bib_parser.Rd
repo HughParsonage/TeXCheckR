@@ -7,7 +7,7 @@
 \alias{reorder_bib}
 \title{Functions for parsing .bib files}
 \usage{
-fread_bib(file.bib, check.dup.keys = TRUE)
+fread_bib(file.bib, check.dup.keys = TRUE, strip.braces = TRUE)
 
 bib2DT(file.bib, to_sort = FALSE)
 
@@ -17,6 +17,8 @@ reorder_bib(file.bib, outfile.bib = file.bib)
 \item{file.bib}{\code{.bib} file.}
 
 \item{check.dup.keys}{If \code{TRUE}, the default, return error if any bib keys are duplicates.}
+
+\item{strip.braces}{If \code{TRUE}, the default, braces in fields are removed.}
 
 \item{to_sort}{Include only author, title, year, and date.}
 

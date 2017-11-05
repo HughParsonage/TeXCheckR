@@ -3,13 +3,14 @@
 #' @param file.bib \code{.bib} file.
 #' @param to_sort Include only author, title, year, and date.
 #' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
+#' @param strip.braces If \code{TRUE}, the default, braces in fields are removed. 
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib, check.dup.keys = TRUE) {
+fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
   stopifnot(length(file.bib) == 1L)
-  if (!grepl("\\.bib$", file.bib)){
+  if (!endsWith(file.bib, ".bib")) {
     warning("File extension is not '.bib'.")
   }
 
@@ -82,7 +83,10 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE) {
   bibDT[, key_line := sub(",$", "", key_line, perl = TRUE)]
   bibDT[, c("entry_type", "key") := tstrsplit(key_line, "{", fixed = TRUE)]
   bibDT[, field := tolower(stri_trim_both(field))]
-  bibDT[, value := sub(",$", "", gsub("[{}]", "", value, perl = TRUE), perl = TRUE)]
+  if (strip.braces) {
+    bibDT[, value := gsub("[{}]", "", value, perl = TRUE)]
+  }
+  bibDT[, value := sub(",$", "", value, perl = TRUE)]
 
   
   dups <- NULL

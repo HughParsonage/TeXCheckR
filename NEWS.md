@@ -1,3 +1,7 @@
+# TeXCheckR 0.5.0
+* Allow `fread_bib` to optionally retain braces in `value`.
+
+
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected
 * Fix spurious unit test broken under new `hunspell`.

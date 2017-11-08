@@ -1,5 +1,6 @@
 # TeXCheckR 0.5.0
 * Allow `fread_bib` to optionally retain braces in `value`.
+* New function `split_report` to split a report into chapters.
 
 
 # TeXCheckR 0.4.3

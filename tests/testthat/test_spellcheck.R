@@ -29,7 +29,8 @@ test_that("Initialism checking doesn't fail if at start of sentence", {
 
 test_that("Add to dictionary, ignore spelling in", {
   expect_error(check_spelling("./spelling/add_to_dictionary-wrong.tex"), regexp = "[Ss]pellcheck failed")
-  expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", pre_release = FALSE), regexp = "[Ss]pellcheck failed")
+  expect_error(check_spelling("./spelling/ignore_spelling_in-wrong.tex", pre_release = FALSE),
+               regexp = "[Ss]pellcheck failed")
 
   expect_null(check_spelling("./spelling/add_to_dictionary-ok.tex"))
   expect_null(check_spelling("./spelling/ignore_spelling_in-ok.tex", pre_release = FALSE))
@@ -38,6 +39,10 @@ test_that("Add to dictionary, ignore spelling in", {
   expect_error(check_spelling("./spelling/ignore_spelling_in-ok.tex"), regexp = "pre_release = TRUE")
   
   expect_null(check_spelling("./spelling/add_to_dictionary-ok-req-hunspell.tex", pre_release = FALSE))
+})
+
+test_that("Ignore spelling in input", {
+  expect_null(check_spelling("./spelling/input/a.tex"), pre_release = TRUE)
 })
 
 test_that("Stop if present", {
@@ -59,6 +64,7 @@ test_that("Lower-case governments should error", {
 
 test_that("Some lower-case governments should not", {
   expect_null(check_spelling("./spelling/Govt/ok-as-adj.tex"))
+  expect_null(check_spelling("./spelling/Govt/ok-as-adj2.tex"))
 })
 
 test_that("'percent' error should only occur in a Grattan report", {

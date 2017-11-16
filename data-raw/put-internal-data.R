@@ -39,7 +39,7 @@ lc_govt_pattern <-
                 "(?:N(?:orthern? )?T(?:erritory)?)",
                 "|",
                 "(?:A(?:ustralian )?C(?:apital )?T(?:erritory)?)"),
-         ") government(?!s)",
+         ") government(?!s)(?!-)",
          "(?!\\s(?:schools?))")
 
 punctuation <- c(".", ",", ":", ";", "'", '"', "?", "-", "!")

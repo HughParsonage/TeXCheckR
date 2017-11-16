@@ -7,6 +7,7 @@
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
+#' @param ignore_spelling_in Command whose first mandatory argument will be ignored.
 #' @param bib_files Bibliography files (containing possible clues to misspellings). If supplied, and this function would otherwise throw an error, the \code{.bib} files are read and any author names that match the misspelled words are added to the dictionary.
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
@@ -59,6 +60,7 @@ check_spelling <- function(filename,
                            ignore.lines = NULL,
                            known.correct = NULL,
                            known.wrong = NULL,
+                           ignore_spelling_in = NULL,
                            bib_files,
                            check_etcs = TRUE,
                            dict_lang = "en_GB",
@@ -150,38 +152,33 @@ check_spelling <- function(filename,
   }
 
   # inputs and includes
-  inputs_in_doc <- length(grep("\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))",
-                               lines_after_begin_document,
-                               perl = TRUE))
-
-  if (inputs_in_doc > 0){
-    inputs <- gsub("^\\\\(?:(?:input)|(?:include(?!(?:graphics|pdf))))[{](.*(?:\\.tex)?)[}]$",
-                   "\\1",
-                   lines_after_begin_document[grepl("^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(\\.tex)?)[}]$",
-                                                    lines_after_begin_document,
-                                                    perl = TRUE)],
-                   perl = TRUE)
-
-    if (length(inputs) != inputs_in_doc){
-      stop("Unable to parse inputs. Check they are all of the form \\input{filename}.")
-    }
-
-
-    # Recursively check
-    if (length(inputs) > 0){
-      cat("Check subfiles:\n")
-      for (input in inputs){
-        cat(input, "\n")
-        check_spelling(filename = file.path(file_path,
-                                            paste0(input, ".tex")),
-                       pre_release = pre_release,
-                       known.correct = known.correct,
-                       known.wrong = known.wrong, 
-                       rstudio = rstudio)
-      }
-    }
+  inputs <- inputs_of(filename)
+  
+  if (!pre_release) {
+    commands_to_ignore <-
+      lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
+      gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
+      stri_trim_both %>%
+      strsplit(split = " ", fixed = TRUE) %>%
+      unlist
   }
 
+  if (length(inputs) > 0){
+    # Recursively check
+    cat("Check subfiles:\n")
+    for (input in inputs){
+      cat(input, "\n")
+      check_spelling(filename = file.path(file_path,
+                                          paste0(sub("\\.tex?", "", input, perl = TRUE),
+                                                 ".tex")),
+                     pre_release = pre_release,
+                     known.correct = known.correct,
+                     known.wrong = known.wrong, 
+                     ignore_spelling_in = c(commands_to_ignore, ignore_spelling_in),
+                     rstudio = rstudio)
+    }
+  }
+  
   # Do not check cite keys
   lines <-
     gsub(paste0("((foot)|(text)|(auto))",
@@ -270,6 +267,7 @@ check_spelling <- function(filename,
   lines <- replace_nth_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
   lines <- replace_nth_LaTeX_argument(lines, command_name = "gls", replacement = "ENTRY")
   lines <- replace_nth_LaTeX_argument(lines, command_name = "href", replacement = "correct")
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "vpageref", replacement = "correct")
   # Replace label argument in smallbox etc
   lines <- replace_nth_LaTeX_argument(lines,
                                       command_name = "begin.(?:(?:(?:very)?small)|(?:big))box[*]?[}]",
@@ -294,15 +292,10 @@ check_spelling <- function(filename,
   }
 
   if (!pre_release){
-    commands_to_ignore <-
-      lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
-      gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
-      stri_trim_both %>%
-      strsplit(split = " ", fixed = TRUE) %>%
-      unlist
-
-    for (command in commands_to_ignore){
-      lines <- replace_nth_LaTeX_argument(lines, command_name = command, replacement = "ignored")
+    for (command in c(ignore_spelling_in, commands_to_ignore)) {
+      lines <- replace_nth_LaTeX_argument(lines,
+                                          command_name = command,
+                                          replacement = "ignored")
     }
   }
 

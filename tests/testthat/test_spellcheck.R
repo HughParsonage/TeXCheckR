@@ -42,7 +42,9 @@ test_that("Add to dictionary, ignore spelling in", {
 })
 
 test_that("Ignore spelling in input", {
-  expect_null(check_spelling("./spelling/input/a.tex"), pre_release = TRUE)
+  expect_error(check_spelling("./spelling/input/a.tex", pre_release = TRUE), 
+               regexp = "Spellcheck failed on above line with .asofihsafioh")
+  expect_null(check_spelling("./spelling/input/a.tex", pre_release = FALSE))
 })
 
 test_that("Stop if present", {

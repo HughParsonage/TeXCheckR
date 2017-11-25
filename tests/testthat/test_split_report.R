@@ -2,6 +2,7 @@ context("Splitting reports")
 
 test_that("split report into includes", {
   split_report("split-report/split-simple.tex",
+               subdir = "abc",
                out.tex = "split-report/split-simple-test.tex")
   expect_true(file.exists("split-report/split-simple-test.tex"))
   expect_true(file.exists("split-report/split-simple-test.tex"))

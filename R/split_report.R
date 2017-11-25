@@ -18,9 +18,10 @@ split_report <- function(Report.tex,
   if (use.chapter.title) {
     chapter_contents <- 
       extract_mandatory_LaTeX_argument(Report[chapter_lines], "chapter") %>%
-      .[["extract"]]
+      .[["extract"]] %>%
+      trimws
     
-    if (subdir != ".") {
+    if (!is.null(subdir) && subdir != ".") {
       hutils::provide.dir(dirname(Report.tex), subdir)
     }
   }
@@ -29,21 +30,47 @@ split_report <- function(Report.tex,
     if (chapter > 1L) {
       # chapter == 1 corresponds to lines before the first
       # \\chapter
-      write_lines(Report[seq(chapter_lines[chapter - 1L],
-                              chapter_lines[chapter] - 1L)],
-                  file.path(dirname(Report.tex), subdir,
-                            paste0("chapter-", chapter - 1L,
-                                   if (use.chapter.title) {
-                                     chapter_contents[chapter - 1L]
-                                   },
-                                   ".tex")))
+      readr::write_lines(c(paste0("%!TEX root = ../",
+                                  out.tex),
+                           Report[seq(chapter_lines[chapter - 1L],
+                                    chapter_lines[chapter] - 1L)]),
+                         file.path(dirname(Report.tex),
+                                   subdir,
+                                   paste0(chapter - 1L,
+                                          if (use.chapter.title) {
+                                            paste0("-",
+                                                   gsub("[^0-9A-Za-z]+", "-", 
+                                                        chapter_contents[chapter - 1L], 
+                                                        perl = TRUE))
+                                          },
+                                          ".tex")))
       
     }
   }
   
+  end_document <- grep("\\end{document}", Report, fixed = TRUE)
+  # do:
+  chapter <- chapter + 1L
+  readr::write_lines(c(paste0("%!TEX root = ../",
+                              out.tex),
+                       Report[seq(chapter_lines[chapter - 1L],
+                                  end_document - 1L)]),
+                     file.path(dirname(Report.tex),
+                               subdir,
+                               paste0(chapter - 1L,
+                                      if (use.chapter.title) {
+                                        paste0("-",
+                                               gsub("[^0-9A-Za-z]+", "-", 
+                                                    chapter_contents[chapter - 1L], 
+                                                    perl = TRUE))
+                                      },
+                                      ".tex")))
+  
+  
+  
   out <- Report
   preamble <- TRUE
-  chapter <- 0
+  chapter <- 1
   for (i in seq_along(Report)) {
     if (i >= chapter_lines[1]) {
       if (i %notin% chapter_lines) {
@@ -52,7 +79,16 @@ split_report <- function(Report.tex,
         }
       } else {
         chapter <- chapter + 1
-        out[i] <- paste0("\\include{tex/chapter-", chapter, "}")
+        out[i] <- paste0("\\include{", 
+                         file.path(subdir,
+                                   paste0(chapter - 1L,
+                                          if (use.chapter.title) {
+                                            paste0("-",
+                                                   gsub("[^0-9A-Za-z]+", "-", 
+                                                        chapter_contents[chapter - 1L], 
+                                                        perl = TRUE))
+                                          })),
+                         "}")
       }
     }
     

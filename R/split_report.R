@@ -11,6 +11,7 @@ split_report <- function(Report.tex,
                          subdir = "tex",
                          use.chapter.title = TRUE,
                          out.tex = Report.tex) {
+  .NotYetImplemented()
   Report <- readr::read_lines(Report.tex)
   chapter_lines <-
     grep("\\chapter", strip_comments(Report), fixed = TRUE)

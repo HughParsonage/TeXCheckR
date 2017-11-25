@@ -1,6 +1,7 @@
 context("Splitting reports") 
 
 test_that("split report into includes", {
+  skip("Not yet implemented")
   split_report("split-report/split-simple.tex",
                subdir = "abc",
                out.tex = "split-report/split-simple-test.tex")

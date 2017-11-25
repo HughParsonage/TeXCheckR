@@ -32,7 +32,7 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE, .
 
   if (any(grepl("undefined references", log_file, fixed = TRUE))){
     which_line <- grep("undefined references", log_file, fixed = TRUE)
-    if (length(which_lines) > 0 || is.na(which_line)) {
+    if (length(which_line) > 0 || is.na(which_line)) {
       cat(log_file, sep = "\n")
     } else {
       cat(which_line, "\n", log_files[which_line])

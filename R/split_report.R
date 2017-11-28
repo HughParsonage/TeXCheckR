@@ -1,4 +1,4 @@
-#' Split report into includeable files
+#' Split report into include-able files
 #' @param Report.tex File to split.
 #' @param include Should \code{\\include} or \code{\\input} be used? If \code{TRUE}, the default, \code{\\include} is used.
 #' @param subdir What directory should each chapter file be written in? By default, a subdirectory of the folder containing \code{Report.tex}, called \code{tex}, is used.

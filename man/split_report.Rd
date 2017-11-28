@@ -2,7 +2,7 @@
 % Please edit documentation in R/split_report.R
 \name{split_report}
 \alias{split_report}
-\title{Split report into includeable files}
+\title{Split report into include-able files}
 \usage{
 split_report(Report.tex, include = TRUE, subdir = "tex",
   use.chapter.title = TRUE, out.tex = Report.tex)
@@ -19,5 +19,5 @@ split_report(Report.tex, include = TRUE, subdir = "tex",
 \item{out.tex}{The new root file. By default, same as \code{Report.tex}.}
 }
 \description{
-Split report into includeable files
+Split report into include-able files
 }

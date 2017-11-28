@@ -8,6 +8,13 @@ test_that("Couldn't find an entry for", {
   invisible(system2(command = "pdflatex", c("-draftmode", "a.tex"), stdout = TRUE))
   invisible(system2("biber", args = c("--onlylog",  "a"), stdout = TRUE))
   expect_error(check_biber(), "Biber emitted a warning")
+  Sys.sleep(0.5)
+  # Put this here so different runs of pdflatex don't affect
+  # the test
+  vapply(setdiff(dir(path = "."),
+                 c("a.tex", "b.bib")),
+         file.remove, 
+         FALSE)
   setwd(get_wd)
 })
 
@@ -18,6 +25,13 @@ test_that("No journal title", {
   setwd("check-biber/no-journal-title/")
   invisible(system2(command = "pdflatex", c("-draftmode", "a.tex"), stdout = TRUE))
   invisible(system2("biber", args = c("--onlylog -V",  "a"), stdout = TRUE))
-  expect_error(check_biber())
+  invisible(expect_error(check_biber(), regexp = "Biber emitted a warning"))
+  Sys.sleep(0.5)
+  # Put this here so different runs of pdflatex don't affect
+  # the test
+  vapply(setdiff(dir(path = "."),
+                 c("a.tex", "b.bib")),
+         file.remove, 
+         FALSE)
   setwd(get_wd)
 })

@@ -18,7 +18,6 @@ Imports:
   hutils (>= 0.8.0),
   clisymbols, 
   crayon,
-  readr,
   rstudioapi,
   stats,
   tools,
@@ -26,4 +25,7 @@ Imports:
   fastmatch
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Suggests: testthat, devtools
+Suggests:
+  devtools,
+  readr,
+  testthat

@@ -12,7 +12,7 @@ split_report <- function(Report.tex,
                          use.chapter.title = TRUE,
                          out.tex = Report.tex) {
   .NotYetImplemented()
-  Report <- readr::read_lines(Report.tex)
+  Report <- read_lines(Report.tex)
   chapter_lines <-
     grep("\\chapter", strip_comments(Report), fixed = TRUE)
   
@@ -31,20 +31,20 @@ split_report <- function(Report.tex,
     if (chapter > 1L) {
       # chapter == 1 corresponds to lines before the first
       # \\chapter
-      readr::write_lines(c(paste0("%!TEX root = ../",
-                                  out.tex),
-                           Report[seq(chapter_lines[chapter - 1L],
-                                    chapter_lines[chapter] - 1L)]),
-                         file.path(dirname(Report.tex),
-                                   subdir,
-                                   paste0(chapter - 1L,
-                                          if (use.chapter.title) {
-                                            paste0("-",
-                                                   gsub("[^0-9A-Za-z]+", "-", 
-                                                        chapter_contents[chapter - 1L], 
-                                                        perl = TRUE))
-                                          },
-                                          ".tex")))
+      write_lines(c(paste0("%!TEX root = ../",
+                           out.tex),
+                    Report[seq(chapter_lines[chapter - 1L],
+                               chapter_lines[chapter] - 1L)]),
+                  file.path(dirname(Report.tex),
+                            subdir,
+                            paste0(chapter - 1L,
+                                   if (use.chapter.title) {
+                                     paste0("-",
+                                            gsub("[^0-9A-Za-z]+", "-", 
+                                                 chapter_contents[chapter - 1L], 
+                                                 perl = TRUE))
+                                   },
+                                   ".tex")))
       
     }
   }
@@ -52,20 +52,20 @@ split_report <- function(Report.tex,
   end_document <- grep("\\end{document}", Report, fixed = TRUE)
   # do:
   chapter <- chapter + 1L
-  readr::write_lines(c(paste0("%!TEX root = ../",
-                              out.tex),
-                       Report[seq(chapter_lines[chapter - 1L],
-                                  end_document - 1L)]),
-                     file.path(dirname(Report.tex),
-                               subdir,
-                               paste0(chapter - 1L,
-                                      if (use.chapter.title) {
-                                        paste0("-",
-                                               gsub("[^0-9A-Za-z]+", "-", 
-                                                    chapter_contents[chapter - 1L], 
-                                                    perl = TRUE))
-                                      },
-                                      ".tex")))
+  write_lines(c(paste0("%!TEX root = ../",
+                       out.tex),
+                Report[seq(chapter_lines[chapter - 1L],
+                           end_document - 1L)]),
+              file.path(dirname(Report.tex),
+                        subdir,
+                        paste0(chapter - 1L,
+                               if (use.chapter.title) {
+                                 paste0("-",
+                                        gsub("[^0-9A-Za-z]+", "-", 
+                                             chapter_contents[chapter - 1L], 
+                                             perl = TRUE))
+                               },
+                               ".tex")))
   
   
   
@@ -98,7 +98,7 @@ split_report <- function(Report.tex,
     }
   }
   
-  readr::write_lines(out, out.tex)
+  write_lines(out, out.tex)
 }
 
 

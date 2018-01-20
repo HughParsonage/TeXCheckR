@@ -15,7 +15,7 @@ check_biber <- function(path = ".", rstudio = FALSE) {
       blg <- read_lines(blg.file)
       
       biber_version <-
-        gsub("^.*This is Biber ([0-9]+\\.[0-9]).*",
+        gsub("^.*This is Biber ([0-9]+\\.[0-9]+).*",
              "\\1",
              grep("This is Biber",
                   blg,
@@ -27,7 +27,7 @@ check_biber <- function(path = ".", rstudio = FALSE) {
         stop("Biber version could not be detected")
       }
       
-      if (biber_version < "2.6"){
+      if (package_version(biber_version) < package_version("2.6")) {
         stop("biber version is ", biber_version, " but >=2.6 is required.")
       }
     

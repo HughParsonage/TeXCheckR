@@ -11,19 +11,20 @@ Description: Checks LaTeX documents and .bib files for typing errors, such as sp
 License: GPL-2
 Depends: R (>= 2.10)
 Imports:
-  magrittr, 
-  data.table, 
-  stringi,
-  hunspell,
-  hutils (>= 0.8.0),
   clisymbols, 
   crayon,
+  data.table,
+  fastmatch, 
+  hunspell,
+  hutils (>= 0.8.0),
+  magrittr, 
   rstudioapi,
   stats,
+  stringi,
   tools,
-  zoo,
-  fastmatch
+  zoo
 LazyData: TRUE
+ByteCompile: true
 RoxygenNote: 6.0.1
 Suggests:
   devtools,

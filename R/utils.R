@@ -10,7 +10,7 @@ lead <- function(x, n = 1L, default = NA) shift(x, type = "lead", n = n, fill = 
 fill_blanks <- function(S) {
    # from zoo
    L <- !is.na(S)
-   c(S[L][1L], S[L])[cumsum(L) + 1L]
+   c(S[L][1L], S[L], use.names = FALSE)[cumsum(L) + 1L]
 }
  
 # takes a vector of froms and tos and takes their union

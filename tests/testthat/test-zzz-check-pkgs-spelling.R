@@ -20,11 +20,23 @@ test_that("No misspelled words", {
   result <- 
     tryCatch({
       devtools::spell_check(pkg = pkg,
-                            ignore = c("RStudio", "Rnw", "initialisms",
-                                       "regex", "Unbreaking",
-                                       "linting", "QXEF", "tex",
-                                       "perl", "knitr", "Grattan", 
-                                       "TeX", "ary", "biber", "unescaped"))
+                            ignore = c("ary",
+                                       "biber",
+                                       "Grattan",
+                                       "initialisms",
+                                       "knitr",
+                                       "linting", 
+                                       "perl",
+                                       "QXEF", 
+                                       "regex",
+                                       "Rnw",
+                                       "RStudio",
+                                       "tex",
+                                       "TeX",
+                                       "th", 
+                                       "Unbreaking",
+                                       "unescaped",
+                                       "unreferenced"))
     }, error = function(e) {
       if (dir.exists("C:/Users/hughp/Documents/sandbox")) {
         cat(getwd(),

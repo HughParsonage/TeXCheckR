@@ -7,7 +7,7 @@
 commands_used(tex_lines)
 }
 \arguments{
-\item{tex_lines}{A LaTeX document as read from \code{readr::read_lines}.}
+\item{tex_lines}{A LaTeX document as read from \code{readr::read_lines} or \code{readLines}.}
 }
 \value{
 A character vector of unique commands used in \code{tex_lines}.

@@ -1,5 +1,5 @@
 #' List all unique commands in a document
-#' @param tex_lines A LaTeX document as read from \code{readr::read_lines}.
+#' @param tex_lines A LaTeX document as read from \code{readr::read_lines} or \code{readLines}.
 #' @return A character vector of unique commands used in \code{tex_lines}.
 #' 
 #' @examples 

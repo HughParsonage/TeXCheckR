@@ -14,3 +14,4 @@ test_that("stringi replacements", {
   expect_identical(stri_locate_first_fixed_no_stringi(Lines, " - "), 
                    stri_locate_first_fixed(Lines, " - "))
 })
+

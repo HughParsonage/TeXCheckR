@@ -228,8 +228,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                            command_name = "footnote", 
                                            by.line = FALSE) %>%
           .[!endsWith(extract, ".")] %>%
-          .[, last_char := stri_sub(extract, from = -2L)] %>%
-          .[, nd_last_char := stri_sub(extract, from = -3L, to = -2L)] %>%
+          .[, last_char := stri_sub(extract, from = -1L)] %>%
+          .[, nd_last_char := stri_sub(extract, from = -2L, to = -2L)] %>%
           .[hutils::nor(and(last_char %chin% c(")", "'"),
                             nd_last_char %chin% c(".", "?", "'")),
                         and(last_char == "}",

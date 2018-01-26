@@ -22,6 +22,7 @@ test_that("No misspelled words", {
       devtools::spell_check(pkg = pkg,
                             ignore = c("ary",
                                        "biber",
+                                       "BibLaTeX",
                                        "Grattan",
                                        "initialisms",
                                        "knitr",

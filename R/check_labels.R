@@ -29,6 +29,20 @@ check_labels <- function(filename, .report_error){
   if (any(lines == "\\begin{document}")){
     lines <- lines[seq_along(lines) > which(lines == "\\begin{document}")]
   }
+  
+  space_after_label <-"(\\\\label[^\\}]*)\\s[^\\}]*\\}"
+  if (any(grepl(space_after_label, stri_trim_both(lines), perl = TRUE))) {
+    line_no <- grep(space_after_label, stri_trim_both(lines), perl = TRUE)[[1]]
+    nchars_b4 <- nchar(sub(paste0("^(.*)", space_after_label), "\\1\\2", lines[line_no], perl = TRUE))
+    context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
+                      paste0(rep(" ", nchars_b4 + 5 + nchar(line_no)),
+                             collapse = ""),
+                      "^^")
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Space somewhere after \\label . Spaces are not permitted in \\label.")
+    stop("Space somewhere after \\label. Spaces are not permitted in \\label.")
+  }
 
   lines_with_labels <- grep("\\label", lines, fixed = TRUE)
   label_contents <-

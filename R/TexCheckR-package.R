@@ -21,8 +21,6 @@
 #' @importFrom hutils neither
 #' @importFrom hutils duplicated_rows
 #' @importFrom stats complete.cases
-#' @importFrom stringi stri_sub
-#' @importFrom stringi stri_trim_both
 #' @importFrom utils download.file
 NULL
 

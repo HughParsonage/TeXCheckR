@@ -6,8 +6,8 @@ check_unclosed_parentheses <- function(tex_lines) {
   # equations
   tex_lines_nomath <- gsub("\\\\(|\\\\)", "\\$", tex_lines, perl = TRUE)
   
-  if (sum(stringi::stri_count(tex_lines, fixed = "(")) != 
-      sum(stringi::stri_count(tex_lines, fixed = ")"))) {
+  if (sum(stri_count_fixed(tex_lines, pattern = "(")) != 
+      sum(stri_count_fixed(tex_lines, pattern = ")"))) {
     tex_lines_split <- strsplit(tex_lines_nomath, "", fixed = TRUE)
     
     tex_line_chars <- unlist(tex_lines_split)

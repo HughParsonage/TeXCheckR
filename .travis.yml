@@ -9,31 +9,6 @@ warnings_are_errors: true
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
   needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize
-- Rscript -e 'if (!requireNamespace("fastmatch", quietly = TRUE)) install.packages("fastmatch")'
-- Rscript -e 'if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")'
-- Rscript -e 'if (!requireNamespace("magrittr", quietly = TRUE)) install.packages("magrittr")'
-- Rscript -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")'
-- Rscript -e 'if (!requireNamespace("hunspell", quietly = TRUE)) install.packages("hunspell")'
-- Rscript -e 'if (!requireNamespace("clisymbols", quietly = TRUE)) install.packages("clisymbols")'
-- Rscript -e 'if (!requireNamespace("crayon", quietly = TRUE)) install.packages("crayon")'
-- Rscript -e 'if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")'
-- Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
-- Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
-- Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
-- Rscript -e 'devtools::install_github("hughparsonage/hutils")'
-addons:
-  apt:
-    packages:
-    - libhunspell-dev
-r_binary_packages:
-- devtools
-- roxygen2
-- hunspell
-- fastmatch
-- data.table
-- knitr
-- readr
-- stringi
 
 r_packages:
 - covr
@@ -42,8 +17,11 @@ r_packages:
 after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+- Rscript -e 'remove.packages("stringi")'
+- Rscript -e 'install.packages("stringi")'
+- test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:
   global:
-    secure: pD2ZiEBmI75wsJ9IiN60ZswMmoWlmLakclPyc3gOHkV5tOSIyOcSm5bXcegji5wNppF29UhPmV1oVI0WhZWC+Qg2WLioygwgp9p1D5mUzYTlsPISV0IdjBuzqyJu4SkF+yO71QsKdd1Xuh/3+ZJZGNKos/F3NAtw0ClQKfv+MI8bo1zno/mC3Ri1UZsbSQeMAQ4LeKYSghKgTvP2AyqnlsxaUDHHLTvh3Svjbd0APmJQ/HnB5C/U76Y1uSdsE9F60JTUH8A9oyuBP/vU3jZgZldzoU+uMqGu1WqOFqV35fMsc7pAjNMqkF5HKNHO00fk9aq3JgwOJOz50vRqairLvxYSGx89OtQ1CMrjf9/7HDe92wRhZYHaaCSN7onQVR8BGiRqkqSs/fM40XJrNFzif5VuImBi08qrBouB+qzgu9ILUma/RNlBuYcaIdtHDCa4aUP9GWnS4tg6R/xz9JXM+b3q5L0GVap5Yu7OXrniT5ZOydA5bukqdZ7gDeEGGhcD+CO/ximZTDOJgsN4nNhfEgaFRLljxS9ZtDQV2UOAxp1nK/HXKncQbqSq5DF0QbYIyoh5nUzPDdp2+60KVD7mC8y0rGzSHo58yiN9PAH91SJ+vyVqQ+8kcQoqMFQOAvhVnqJCN4w+CPyiKD0/b9HclqyAX9Cu0z4DZ2KscLvHCKI=
+  - _R_CHECK_FORCE_SUGGESTS_=false
+  secure: pD2ZiEBmI75wsJ9IiN60ZswMmoWlmLakclPyc3gOHkV5tOSIyOcSm5bXcegji5wNppF29UhPmV1oVI0WhZWC+Qg2WLioygwgp9p1D5mUzYTlsPISV0IdjBuzqyJu4SkF+yO71QsKdd1Xuh/3+ZJZGNKos/F3NAtw0ClQKfv+MI8bo1zno/mC3Ri1UZsbSQeMAQ4LeKYSghKgTvP2AyqnlsxaUDHHLTvh3Svjbd0APmJQ/HnB5C/U76Y1uSdsE9F60JTUH8A9oyuBP/vU3jZgZldzoU+uMqGu1WqOFqV35fMsc7pAjNMqkF5HKNHO00fk9aq3JgwOJOz50vRqairLvxYSGx89OtQ1CMrjf9/7HDe92wRhZYHaaCSN7onQVR8BGiRqkqSs/fM40XJrNFzif5VuImBi08qrBouB+qzgu9ILUma/RNlBuYcaIdtHDCa4aUP9GWnS4tg6R/xz9JXM+b3q5L0GVap5Yu7OXrniT5ZOydA5bukqdZ7gDeEGGhcD+CO/ximZTDOJgsN4nNhfEgaFRLljxS9ZtDQV2UOAxp1nK/HXKncQbqSq5DF0QbYIyoh5nUzPDdp2+60KVD7mC8y0rGzSHo58yiN9PAH91SJ+vyVqQ+8kcQoqMFQOAvhVnqJCN4w+CPyiKD0/b9HclqyAX9Cu0z4DZ2KscLvHCKI=

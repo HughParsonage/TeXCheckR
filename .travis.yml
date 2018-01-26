@@ -25,15 +25,6 @@ addons:
   apt:
     packages:
     - libhunspell-dev
-r_binary_packages:
-- devtools
-- roxygen2
-- hunspell
-- fastmatch
-- data.table
-- knitr
-- readr
-- stringi
 
 r_packages:
 - covr
@@ -42,7 +33,9 @@ r_packages:
 after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+- Rscript -e 'remove.packages("stringi")'
+- Rscript -e 'install.package("stringi")'
+- test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:
   global:

@@ -79,9 +79,9 @@ check_dashes <- function(filename, .report_error) {
       .[1]
     
     if (grepl("\u2013-", lines[line_no], fixed = TRUE)) {
-      column <- stringi::stri_locate_first_fixed(lines[line_no], "\u2013-")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], "\u2013-")[1, 2]
     } else {
-      column <- stringi::stri_locate_first_fixed(lines[line_no], "-\u2013")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], "-\u2013")[1, 2]
     }
     if (is.null(column)) {
       column <- 1L

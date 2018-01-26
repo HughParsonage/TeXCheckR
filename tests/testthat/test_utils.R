@@ -8,10 +8,15 @@ test_that("Seq_union always length one", {
 })
 
 
-test_that("stringi replacements", {
+test_that("stringi replacements work if stringi absent", {
   skip_if_not_installed("stringi")
   Lines <- readLines("Example-report.Rnw")
   expect_identical(stri_locate_first_fixed_no_stringi(Lines, " - "), 
-                   stri_locate_first_fixed(Lines, " - "))
+                   stringi::stri_locate_first_fixed(Lines, " - "))
+  
+  expect_identical(stri_count_fixed_no_stringi(c("ABCAB", "DABAAAABEF", "A"), "AA"), 
+                   stringi::stri_count_fixed(c("ABCAB", "DABAAAABEF", "A"), "AA"))
 })
+
+
 

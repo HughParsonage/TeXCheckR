@@ -33,11 +33,45 @@ stri_locate_first_fixed_no_stringi <- function(str, pattern) {
   out
 }
 
+stri_count_fixed_no_stringi <- function(str, pattern) {
+  relevant_line_nos <- grep(pattern, str, fixed = TRUE)
+  relevant_lines <- str[relevant_line_nos]
+  count_on_relevant <- 
+    if (nchar(pattern) == 1L) {
+      split_lines <- strsplit(relevant_lines, split = "", fixed = TRUE)
+      vapply(split_lines, function(x) sum(x == pattern), integer(1L))
+    } else {
+      # If you wanted speed, you should have used stringi!
+      vapply(relevant_lines, function(line) {
+        count <- 0L
+        # How many times do we have to cut 'pattern' away?
+        while (grepl(pattern, line, fixed = TRUE)) {
+          count <- count + 1L
+          # Bear in mind 'aaaaa' where pattern = 'aa'
+          line <- sub(pattern, replacement = "", line, fixed = TRUE)
+        }
+        count
+      }, 
+      FUN.VALUE = integer(1L))
+    }
+  out <- integer(length(str))
+  out[relevant_line_nos] <- count_on_relevant
+  out
+}
+
 stri_locate_first_fixed <- function(str, pattern, ...) {
   if (requireNamespace("stringi", quietly = TRUE)) {
     stringi::stri_locate_first_fixed(str = str, pattern = pattern, ...)
   } else {
     stri_locate_first_fixed_no_stringi(str, pattern)
+  }
+}
+
+stri_count_fixed <- function(str, pattern, ...) {
+  if (requireNamespace("stringi", quietly = TRUE)) {
+    stringi::stri_count_fixed(str = str, pattern = pattern, ...)
+  } else {
+    stri_count_fixed_no_stringi(str = str, pattern = pattern)
   }
 }
 

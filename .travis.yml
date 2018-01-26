@@ -34,7 +34,7 @@ after_success:
 - Rscript -e 'devtools::test()'
 - Rscript -e 'covr::codecov()'
 - Rscript -e 'remove.packages("stringi")'
-- Rscript -e 'install.package("stringi")'
+- Rscript -e 'install.packages("stringi")'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:

@@ -53,7 +53,7 @@ check_dashes <- function(filename, .report_error) {
 
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
-      column <- stringi::stri_locate_first_fixed(lines[line_no], " - ")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], " - ")[1, 2]
       
       .report_error(line_no = line_no,
                     column = column,
@@ -96,11 +96,10 @@ check_dashes <- function(filename, .report_error) {
   }
 
 
-  if (any(grepl("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE))){
-    line_no <- grep("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE)[[1]]
-    nchars_b4 <- stringi::stri_locate_all_regex(pattern = "\\\\label[^\\}]*\\s",
-                                                stri_trim_both = stri_trim_both(lines[[line_no]]),
-                                                perl = TRUE)
+  space_after_label <-"\\\\label[^\\}]*\\s[^\\}]*\\}"
+  if (any(grepl(space_after_label, stri_trim_both(lines), perl = TRUE))){
+    line_no <- grep(space_after_label, stri_trim_both(lines), perl = TRUE)[[1]]
+    nchars_b4 <- nchar(sub(paste0("^(.*)", space_after_label), "\\1", lines[line_no], perl = TRUE))
     context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
                       paste0(rep(" ", nchars_b4[[1]][[2]] - 2 + 5 + nchar(line_no)), collapse = ""), "^^")
     .report_error(line_no = line_no,

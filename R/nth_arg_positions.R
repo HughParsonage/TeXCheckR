@@ -112,6 +112,10 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 #' for performance.
 #' @export nth_arg_positions
 nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE, star = TRUE, data.tables = TRUE) {
+  if (!requireNamespace("stringi", quietly = TRUE)) {
+    warning("Using non-stringi method. Run install.packages('stringi') for tested use.")
+    return(extract_LaTeX_argument(tex_lines = tex_lines, command_name = command_name, n = n, optional = optional))
+  } else {
   Command_locations <-
     stringi::stri_locate_all_regex(str = tex_lines,
                                    # If command = \a, must not also detect \ab
@@ -212,6 +216,7 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
             line_no = first(line_no)),
         by = .(command_no)] %>%
       unique(by = "command_no")
+  }
   }
 }
 

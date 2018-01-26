@@ -95,19 +95,6 @@ check_dashes <- function(filename, .report_error) {
          "Make sure anything you intend as an en-dash is entered as ' -- '")
   }
 
-
-  space_after_label <-"\\\\label[^\\}]*\\s[^\\}]*\\}"
-  if (any(grepl(space_after_label, stri_trim_both(lines), perl = TRUE))){
-    line_no <- grep(space_after_label, stri_trim_both(lines), perl = TRUE)[[1]]
-    nchars_b4 <- nchar(sub(paste0("^(.*)", space_after_label), "\\1", lines[line_no], perl = TRUE))
-    context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
-                      paste0(rep(" ", nchars_b4[[1]][[2]] - 2 + 5 + nchar(line_no)), collapse = ""), "^^")
-    .report_error(line_no = line_no,
-                  context = context,
-                  error_message = "Space somewhere after \\label . Spaces are not permitted in \\label.")
-    stop("Space somewhere after \\label. Spaces are not permitted in \\label.")
-  }
-
   are_emdash_lines <-
     lines %>%
     grep("---", ., fixed = TRUE, value = TRUE) %>%

@@ -1,6 +1,12 @@
 # TeXCheckR 0.5.0
 * Allow `fread_bib` to optionally retain braces in `value`.
-* New function `split_report` to split a report into chapters.
+* New functions:
+  * `split_report` to split a report into chapters.
+  * `minimal_bib` to produce a minimal bibliography from a spun document.
+* `stringi` and `readr` have been moved to Suggests to minimize compile times (as on Travis-CI)
+* Bug fixes:
+  * check labels now test for spaces rather than check dashes
+  * `lint_bib` does not add commas after `@string` fields.
 
 
 # TeXCheckR 0.4.3

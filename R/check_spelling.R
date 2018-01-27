@@ -84,10 +84,14 @@ check_spelling <- function(filename,
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
 
-  if (check_etcs && any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
-    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
-    .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
+  etcs_pattern <- "\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b"
+  if (check_etcs && any(grepl(etcs_pattern, strip_comments(lines), perl = TRUE))){
+    line_no <- grep(etcs_pattern, strip_comments(lines), perl = TRUE)[[1]]
+    column <- nchar(sub(paste0(etcs_pattern, ".*$"), "", lines[line_no], perl = TRUE))
+    
+    .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg for consistent formatting.",
                   line_no = line_no,
+                  column = column,
                   context = lines[[line_no]])
     stop("Use the commands \\ie \\eg and \\etc rather than hard-coding.")
   }

@@ -96,10 +96,7 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     .[, Author := rev_forename_surname_bibtex(author)] %>%
     .[, Title := tolower(title)] %>%
     # ABS duplicate if identical without Australia
-    .[, Title := if_else(Author == "ABS", 
-                         
-                         gsub(", australia,", ",", Title, fixed = TRUE), 
-                         Title)]
+    .[Author == "ABS", Title := gsub(", australia,", ",", Title, fixed = TRUE)]
   
   
   

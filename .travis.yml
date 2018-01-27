@@ -19,7 +19,7 @@ after_success:
 - Rscript -e 'covr::codecov()'
 - Rscript -e 'remove.packages("stringi")'
 - Rscript -e 'install.packages("stringi")'
-- test $TRAVIS_R_VERSION_STRING != "release" Rscript - e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = "-t")'
+- test $TRAVIS_R_VERSION_STRING != "release" && Rscript - e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = "-t")'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:

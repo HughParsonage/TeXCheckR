@@ -125,7 +125,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       
       ref_contents <- c(refrange_extents, ref_contents)
       
-      if (is.null(ref_contents) || any(label_contents %notin% ref_contents)) {
+      if (is.null(ref_contents) || any(label_contents %notchin% ref_contents)) {
         fig_tbl_labels <-
           paste0("ref{", grep("^((fig)|tbl)[:]",
                               label_contents,

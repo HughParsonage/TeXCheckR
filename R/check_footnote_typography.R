@@ -84,10 +84,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 
   lines_with_footnote <- grep("footnote", lines_by_footnote, fixed = TRUE, value = TRUE)
 
-  i <- 0
+  i <- 0L
   # Check full stops
   for (line in lines_with_footnote){
-    i <- i + 1
+    i <- i + 1L
     footnote_closes_at <- position_of_closing_brace(line = line, prefix = "footnote")
     if (is.infinite(footnote_closes_at))
       break
@@ -214,12 +214,12 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       stop("Argument length 0. You may want to consider ignoring this line.")
     }
 
-    if (split_line_after_footnote[footnote_closes_at - 1] %notin% c(".", "?")){
+    if (split_line_after_footnote[footnote_closes_at - 1L] %notchin% c(".", "?")){
       # OK if full stop is before parenthesis or quotes.
-      if (NOR(AND(split_line_after_footnote[footnote_closes_at - 1] %chin% c(")", "'"),
-                  split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")),
-              AND(split_line_after_footnote[footnote_closes_at - 1] == "}",
-                  split_line_after_footnote[footnote_closes_at - 2] %chin% c(".", "?", "'")))) {
+      if (NOR(AND(split_line_after_footnote[footnote_closes_at - 1L] %chin% c(")", "'"),
+                  split_line_after_footnote[footnote_closes_at - 2L] %chin% c(".", "?", "'")),
+              AND(split_line_after_footnote[footnote_closes_at - 1L] == "}",
+                  split_line_after_footnote[footnote_closes_at - 2L] %chin% c(".", "?", "'")))) {
         # CRAN Note avoidance
         extract <- last_char <- nd_last_char <- column <- NULL
         
@@ -234,7 +234,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                             nd_last_char %chin% c(".", "?", "'")),
                         and(last_char == "}",
                             nd_last_char %chin% c(".", "?", "'")))] %>%
-          .[1] %>%
+          .[1L] %>%
           parse_tex(orig_lines)[.,
                                 j = .(line_no, char_no, column, last_char),
                                 on = "char_no==char_no_max"]

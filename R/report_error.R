@@ -11,6 +11,7 @@
 #' @param rstudio If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
+#' @param silent (logical, default: \code{FALSE}) Suppress all output.
 #' @rdname report_error
 #' @export
 report2console <- function(file = NULL,
@@ -23,7 +24,8 @@ report2console <- function(file = NULL,
                            extra_cat_ante = NULL,
                            extra_cat_post = NULL,
                            rstudio = FALSE,
-                           log_file = NULL){
+                           log_file = NULL,
+                           silent = FALSE) {
   # Printing requirements:
   ## 1. Cross
   ## 2. Line no (if applicable)
@@ -33,11 +35,13 @@ report2console <- function(file = NULL,
   # crayon::red(NULL) -> Error in mypaste(...) need character strings
   Red <- function(x) if (!is.character(x)) x else red(x)
   bold_red <- function(x) if (!is.character(x)) x else bold(red(x))
-  cat("\n", 
-      bold_red(error_message), "\n",
-      bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
-      bold_red(advice), "\n",
-      sep = "")
+  if (!silent && !exists("TESTTHAT") && nzchar(Sys.getenv("TESTTHAT"))) {
+    cat("\n", 
+        bold_red(error_message), "\n",
+        bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
+        bold_red(advice), "\n",
+        sep = "")
+  }
   
   if (rstudio && !is.null(file) && rstudioapi::isAvailable()) {
     rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))

@@ -10,7 +10,7 @@ addons:
   apt:
     packages:
       - aspell
-      - aspell-en
+      - aspell-en_AU
 
 before_install:
 - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator

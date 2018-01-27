@@ -126,19 +126,25 @@ check_spelling <- function(filename,
   }
 
   if (AND(pre_release,
-          any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))){
-    .report_error(error_message = "When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
+          any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))) {
+    first_line_no <- which.max(startsWith("% add_to_dictionary:", lines_after_begin_document))
+    .report_error(error_message = paste0("When pre_release = TRUE, ",
+                                         "% add_to_dictionary: lines ", 
+                                         "must not be situated outside the document preamble."),
+                  line_no = first_line_no,
+                  column = 1L)
     stop("When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
   }
 
   words_to_add <- NULL
   if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
     words_to_add <-
-      lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
-      gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
+      lines[startsWith(lines, "% add_to_dictionary: ")] %>%
+      sub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
       stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
-      unlist
+      unlist %>%
+      gsub("\\s", " ", ., fixed = TRUE)
 
     known.correct <- c(known.correct, words_to_add)
   }

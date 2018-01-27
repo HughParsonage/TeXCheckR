@@ -75,7 +75,10 @@ check_spelling <- function(filename,
   }
 
   file_path <- dirname(filename)
-  lines <- read_lines(filename)
+  orig <- lines <- read_lines(filename)
+  
+  # Omits
+  lines <- veto_sic(lines)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""

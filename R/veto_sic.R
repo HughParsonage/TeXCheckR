@@ -26,7 +26,7 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
       split_regex = "(?<=\\.)\\s+(?=[A-Z])"
     } else {
       if (!is.integer(words_ante)) {
-        stop("`words_ante = ", deparse(substitute(words_ante)), "` was type ", type(words_ante), ", ",
+        stop("`words_ante = ", deparse(substitute(words_ante)), "` was type ", typeof(words_ante), ", ",
              "but must be an integer.")
       }
       
@@ -36,7 +36,7 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
       }
       
       if (words_ante <= 0L) {
-        stop("`words_ante = ", deparse(subtitute(words_ante)), "` was not a positive integer.")
+        stop("`words_ante = ", deparse(substitute(words_ante)), "` was not a positive integer.")
       }
       
       if (words_ante == 1L) {

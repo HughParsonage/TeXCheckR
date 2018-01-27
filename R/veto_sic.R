@@ -42,7 +42,7 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
       if (words_ante == 1L) {
         split_regex <- "\\s(?=([[:punct:]]*(\\w+)[[:punct:]]*)\\s\\[sic\\])"
       } else {
-        split_regex <- sprintf("\\s(?=([[:punct:]]*\\w+(\\b(\\s|\\b)?\\w+[[:punct:]]*){%d})\\s\\[sic\\])", words_ante - 1L)
+        split_regex <- sprintf("\\s(?=(?:([[:punct:]]*(\\w+)[[:punct:]]*){%d})\\s\\[sic\\])", words_ante - 1L)
         
       }
     }

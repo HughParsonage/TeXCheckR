@@ -39,6 +39,16 @@ test_that("Veto words before", {
                c("A large dog", "Rob remarked,                      ok?", "Yet some don't. Are you            ."))
 })
 
+
+test_that("Veto words before", {
+  res <- 
+    veto_sic(  c("A large dog", "Rob remarked, ``sdoifhsdfi'' [sic] ok?", "Yet some don't. Are you sdfih [sic]."),
+               quote = FALSE, sentence = FALSE, words_ante = 2L)
+  
+  expect_equal(res,
+               c("A large dog", "Rob                                ok?", "Yet some don't. Are                ."))
+})
+
 test_that("With check_spelling", {
   expect_null(check_spelling("./spelling/sic/sic-vetoes.tex"))
 })

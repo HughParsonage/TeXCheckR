@@ -127,7 +127,7 @@ check_spelling <- function(filename,
 
   if (AND(pre_release,
           any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))) {
-    first_line_no <- which.max(startsWith("% add_to_dictionary:", lines_after_begin_document))
+    first_line_no <- which.max(grepl("% add_to_dictionary:", lines_after_begin_document))
     .report_error(error_message = paste0("When pre_release = TRUE, ",
                                          "% add_to_dictionary: lines ", 
                                          "must not be situated outside the document preamble."),

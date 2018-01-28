@@ -303,6 +303,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
 #' @return A \code{data.table} containing columns \code{line_no} and \code{column}
 #' for each character \code{n} characters after the footnote. (n = 0L will always be 
 #' a closing brace.).
+#' @noRd
 position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, i) {
   n <- as.integer(n)
   

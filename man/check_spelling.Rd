@@ -41,22 +41,28 @@ Called primarily for its side-effect. If the spell check fails, the line at whic
 Spell checking
 }
 \details{
-Extends and enhances \code{hunspell}. The advantage of this function is that you can add directives 
+Extends and enhances \code{hunspell}:
+
+ \itemize{
+\item{You can add directives 
 in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write
 \code{\% add_to_dictionary: foobaz} on a single line. The advantage of this method is that you can collaborate
-on the document without having to keep track of which spelling errors are genuine. You can also add the 
+on the document without having to keep track of which spelling errors are genuine.}
+\item{The 
 directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
-of \code{\\mycmd}.
+of \code{\\mycmd}.}
 
-Another possible advantage is that only the root document need be supplied; 
-any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).
+\item{Only the root document need be supplied; 
+any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).}
 
-Other advantages included skipping the contents of certain commands, the spelling of which need not be checked 
-as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. These
-have been fixed by \code{hunspell} since the first version of this package.
+\item{A historical advantages was that the contents of certain commands were not checked, the spelling of which need not be checked 
+as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. Most of these
+are now parsed correctly by \code{\link[hunspell]{hunspell}}, though some still need to be supplied (including, naturally, user-supplied macros).}
+\item{Abbreviations and initialisms which are validly introduced will not throw errors. See \code{\link{extract_valid_abbrevations}}.}
+}
 
 The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
-dictionary.  
+dictionary. 
 
 This function should be quite fast, but slower than \code{hunspell::hunspell} (which it invokes). 
 I aim for less than 500 ms on a real-world report of around 100 pages.

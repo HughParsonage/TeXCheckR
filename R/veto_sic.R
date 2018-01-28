@@ -61,23 +61,20 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
                collapse = " ")
     } else {
       
-      # word
-      words_ante_i <- words_ante
-      
       if (stri_count_fixed(sic_line, "[sic]") > 1L) {
         sic_line_split <- strsplit(sic_line, split = "(?<=(?:\\[sic\\]))\\W", perl = TRUE)[[1L]]
         out[i] <- paste0(vapply(sic_line_split, 
                                 function(x) {
-                                  replace_words_before(anchor = "\\[sic\\]",
-                                                       text = x,
-                                                       n_words = words_ante)
+                                  replace_words_before_sic(anchor = "\\[sic\\]",
+                                                           text = x,
+                                                           n_words = words_ante)
                                 },
                                 FUN.VALUE = character(1L)), 
                          collapse = " ")
       } else {
-        out[i] <- replace_words_before(anchor = "\\[sic\\]", sic_line, n_words = words_ante)
+        out[i] <- replace_words_before_sic(anchor = "\\[sic\\]", sic_line, n_words = words_ante)
       }
-        
+      
       
     }
   }

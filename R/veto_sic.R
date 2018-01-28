@@ -85,7 +85,7 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
   out
 }
 
-replace_words_before <- function(anchor, text, n_words) {
+replace_words_before_sic <- function(anchor = "\\[sic\\]", text, n_words) {
   words_ante_i <- n_words
   out <- text
   

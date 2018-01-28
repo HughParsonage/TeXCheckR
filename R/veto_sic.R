@@ -38,35 +38,76 @@ veto_sic <- function(tex_lines, quote = TRUE, sentence = !quote, words_ante = 1L
       if (words_ante <= 0L) {
         stop("`words_ante = ", deparse(substitute(words_ante)), "` was not a positive integer.")
       }
-      
-      if (words_ante == 1L) {
-        split_regex <- "\\s(?=([[:punct:]]*(\\w+)[[:punct:]]*)\\s\\[sic\\])"
-      } else {
-        split_regex <- sprintf("\\s(?=(?:([[:punct:]]*(\\w+)[[:punct:]]*){%d})\\s\\[sic\\])", words_ante - 1L)
-        
-      }
     }
-    # Replace with white space
-    out[i] <-
-      paste0(vapply(strsplit(sic_line, split = split_regex, perl = TRUE)[[1L]],
-                    function(x) {
-                      nchar_before_sic <- attr(regexpr("^.*\\[sic\\]", x, perl = TRUE), "match.length")
-                      # technically == 0L means a match (for some reason [sic] is at beginning of sentence),
-                      # but no actual impact so just use that.
-                      if (nchar_before_sic > 0L) {
-                        sub("^.*\\[sic\\]", formatC(" ", width = nchar_before_sic), x, perl = TRUE)
-                      } else {
-                        x
-                      }
-                    },
-                    character(1L)),
-             # Issue: multiple spaces between sentences?
-             collapse = " ")
     
+    if (quote || sentence) {
+      # Replace with white space
+      out[i] <-
+        
+        # Add space to invoke split regex
+        paste0(vapply(strsplit(sic_line, split = split_regex, perl = TRUE)[[1L]],
+                      function(x) {
+                        nchar_before_sic <- attr(regexpr("^.*\\[sic\\]", x, perl = TRUE), "match.length")
+                        # technically == 0L means a match (for some reason [sic] is at beginning of sentence),
+                        # but no actual impact so just use that.
+                        if (nchar_before_sic > 0L) {
+                          sub("^.*\\[sic\\]", formatC(" ", width = nchar_before_sic), x, perl = TRUE)
+                        } else {
+                          x
+                        }
+                      },
+                      character(1L)),
+               # Issue: multiple spaces between sentences?
+               collapse = " ")
+    } else {
+      
+      # word
+      words_ante_i <- words_ante
+      
+      if (stri_count_fixed(sic_line, "[sic]") > 1L) {
+        sic_line_split <- strsplit(sic_line, split = "(?<=(?:\\[sic\\]))\\W", perl = TRUE)[[1L]]
+        out[i] <- paste0(vapply(sic_line_split, 
+                                function(x) {
+                                  replace_words_before(anchor = "\\[sic\\]",
+                                                       text = x,
+                                                       n_words = words_ante)
+                                },
+                                FUN.VALUE = character(1L)), 
+                         collapse = " ")
+      } else {
+        out[i] <- replace_words_before(anchor = "\\[sic\\]", sic_line, n_words = words_ante)
+      }
+        
+      
+    }
   }
   
   out
 }
+
+replace_words_before <- function(anchor, text, n_words) {
+  words_ante_i <- n_words
+  out <- text
+  
+  regex_text <- paste0("\\W*\\w+\\W+(?=", anchor, ")")
+  
+  while (words_ante_i > 0L &&
+         grepl(sprintf("\\W*\\w+\\W+%s", anchor), out, perl = TRUE)) {
+    nchar_before_sic <- attr(regexpr(regex_text, out, perl = TRUE),
+                             "match.length")
+    out <- sub(regex_text,
+               formatC(" ", width = nchar_before_sic),
+               out,
+               perl = TRUE)
+    words_ante_i <- words_ante_i - 1L
+  }
+  nchar_anchor <- attr(regexpr(anchor, out, perl = TRUE),
+                       "match.length")
+  out <- sub(anchor, formatC(" ", width = nchar_anchor), out, perl = TRUE)
+  
+  out
+}
+
 
 
 

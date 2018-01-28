@@ -50,6 +50,7 @@ parse_tex <- function(tex_lines) {
   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
   # 0000000000000000000111100000000000222
   
+  options(datatable.auto.index = FALSE)
   for (j in seq_max_tex_group) {
     tgj <- tg[j]
 

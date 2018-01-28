@@ -8,7 +8,7 @@
 report2console(file = NULL, line_no = NULL, column = NULL,
   context = NULL, error_message = NULL, advice = NULL,
   build_status = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
-  rstudio = FALSE, log_file = NULL)
+  rstudio = FALSE, log_file = NULL, silent = FALSE)
 }
 \arguments{
 \item{file}{The file in which the error occurred.}
@@ -32,6 +32,8 @@ report2console(file = NULL, line_no = NULL, column = NULL,
 \item{rstudio}{If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?}
 
 \item{log_file}{Optionally, path to a log file on which \code{error_message} will be written.}
+
+\item{silent}{(logical, default: \code{FALSE}) Suppress all output.}
 }
 \description{
 Report errors to console

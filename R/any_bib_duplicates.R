@@ -61,28 +61,28 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     .[field != "abstract"] %>%
     dcast.data.table(formula = key ~ field, value.var = "value")
   
-  if ("origyear" %in% names(bibDT)){
+  if ("origyear" %in% names(bibDT)) {
     origyear <- NULL
     bibDT <- bibDT[is.na(origyear)]
   }
   
   date <- NULL
-  if ("date" %notin% names(bibDT)){
+  if ("date" %notchin% names(bibDT)) {
     bibDT[, date := NA_character_]
   }
   
   author <- NULL
-  if ("author" %notin% names(bibDT)){
+  if ("author" %notchin% names(bibDT)) {
     bibDT[, author := NA_character_]
   }
   
   title <- NULL
-  if ("title" %notin% names(bibDT)){
+  if ("title" %notchin% names(bibDT)) {
     bibDT[, title := NA_character_]
   }
   
   volume <- NULL
-  if ("volume" %notin% names(bibDT)){
+  if ("volume" %notchin% names(bibDT)) {
     bibDT[, volume := NA_character_]
   }
   
@@ -96,10 +96,7 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     .[, Author := rev_forename_surname_bibtex(author)] %>%
     .[, Title := tolower(title)] %>%
     # ABS duplicate if identical without Australia
-    .[, Title := if_else(Author == "ABS", 
-                         
-                         gsub(", australia,", ",", Title, fixed = TRUE), 
-                         Title)]
+    .[Author == "ABS", Title := gsub(", australia,", ",", Title, fixed = TRUE)]
   
   
   

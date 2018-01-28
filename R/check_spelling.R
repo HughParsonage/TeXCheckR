@@ -75,7 +75,12 @@ check_spelling <- function(filename,
   }
 
   file_path <- dirname(filename)
-  lines <- read_lines(filename)
+  orig <- lines <- read_lines(filename)
+  
+  # Omits
+  lines <- veto_sic(lines)
+  # Smart quotes
+  lines <- gsub(parse(text = paste0("'", "\u2019", "'")), "'", lines, fixed = TRUE)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -84,10 +89,14 @@ check_spelling <- function(filename,
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
 
-  if (check_etcs && any(grepl("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE))){
-    line_no <- grep("\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b", strip_comments(lines), perl = TRUE)[[1]]
-    .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg provided for consistent formatting.",
+  etcs_pattern <- "\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b"
+  if (check_etcs && any(grepl(etcs_pattern, strip_comments(lines), perl = TRUE))){
+    line_no <- grep(etcs_pattern, strip_comments(lines), perl = TRUE)[[1]]
+    column <- nchar(sub(paste0(etcs_pattern, ".*$"), "", lines[line_no], perl = TRUE))
+    
+    .report_error(error_message = "Use the macros \\etc, \\ie, and \\eg for consistent formatting.",
                   line_no = line_no,
+                  column = column,
                   context = lines[[line_no]])
     stop("Use the commands \\ie \\eg and \\etc rather than hard-coding.")
   }
@@ -117,19 +126,25 @@ check_spelling <- function(filename,
   }
 
   if (AND(pre_release,
-          any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))){
-    .report_error(error_message = "When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
+          any(grepl("% add_to_dictionary:", lines_after_begin_document, fixed = TRUE)))) {
+    first_line_no <- which.max(grepl("% add_to_dictionary:", lines_after_begin_document))
+    .report_error(error_message = paste0("When pre_release = TRUE, ",
+                                         "% add_to_dictionary: lines ", 
+                                         "must not be situated outside the document preamble."),
+                  line_no = first_line_no,
+                  column = 1L)
     stop("When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.")
   }
 
   words_to_add <- NULL
   if (any(grepl("% add_to_dictionary:", lines, fixed = TRUE))){
     words_to_add <-
-      lines[grepl("% add_to_dictionary: ", lines, fixed = TRUE)] %>%
-      gsub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
+      lines[startsWith(lines, "% add_to_dictionary: ")] %>%
+      sub("% add_to_dictionary: ", "", ., fixed = TRUE) %>%
       stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
-      unlist
+      unlist %>%
+      gsub("\\s", " ", ., fixed = TRUE)
 
     known.correct <- c(known.correct, words_to_add)
   }
@@ -160,13 +175,13 @@ check_spelling <- function(filename,
       gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
       stri_trim_both %>%
       strsplit(split = " ", fixed = TRUE) %>%
-      unlist
+      unlist(use.names = FALSE)
   }
 
-  if (length(inputs) > 0){
+  if (length(inputs) > 0) {
     # Recursively check
     cat("Check subfiles:\n")
-    for (input in inputs){
+    for (input in inputs) {
       cat(input, "\n")
       check_spelling(filename = file.path(file_path,
                                           paste0(sub("\\.tex?", "", input, perl = TRUE),
@@ -244,7 +259,7 @@ check_spelling <- function(filename,
          perl = TRUE)
 
   # Just completely ignore tabularx tabular table lines
-  for (table_env in c("{tabularx}", "{tabular}", "{table}")){
+  for (table_env in c("{tabularx}", "{tabular}", "{table}")) {
     lines <-
       if_else(grepl(paste0("\\begin", table_env), lines, fixed = TRUE),
               "\\begin{table-env}",
@@ -307,8 +322,8 @@ check_spelling <- function(filename,
   # Need to avoid optional arguments to commands: use the spaces?
   lines <- rm_editorial_square_brackets(lines)
 
-  if (any(grepl(lc_govt_pattern, lines, perl = TRUE))){
-    line_no <- grep(lc_govt_pattern, lines, perl = TRUE)[[1]]
+  if (any(grepl(lc_govt_pattern, lines, perl = TRUE))) {
+    line_no <- grep(lc_govt_pattern, lines, perl = TRUE)[[1L]]
     context <- lines[line_no]
     .report_error(line_no = line_no,
                   context = context,
@@ -363,7 +378,7 @@ check_spelling <- function(filename,
   are_misspelt <- vapply(parsed, not_length0, logical(1))
 
   notes <- NULL
-  if (any(are_misspelt)){
+  if (any(are_misspelt)) {
     good_words <- c(correctly_spelled_words)
     # Detect big words first
     good_words <- good_words[order(-nchar(good_words))]
@@ -394,7 +409,7 @@ check_spelling <- function(filename,
     }
     assign("authors_in_bib_and_doc", value = authors_in_bib_and_doc, pos = parent.frame())
 
-    for (line_w_misspell in which(are_misspelt)){
+    for (line_w_misspell in which(are_misspelt)) {
       # If bad words %in% ... don't bother checking
       if (any(parsed[[line_w_misspell]] %notin% dictionary_additions)) {
         bad_line <- lines[[line_w_misspell]]
@@ -418,11 +433,11 @@ check_spelling <- function(filename,
                             # may only pick up the first).
                             ignore = dictionary_additions)
 
-        if (not_length0(recheck[[1]])) {
+        if (length(recheck[[1L]])) {
           # We've discovered a likely misspelling.
           # No need for performance, code within this if-statement
           # is just to prepare the error message.
-          bad_word <- recheck[[1]][[1]]
+          bad_word <- recheck[[1L]][[1L]]
           nchar_of_badword <- nchar(bad_word)
 
           chars_b4_badword <-
@@ -462,8 +477,8 @@ check_spelling <- function(filename,
   }
 
   # Forgotten full stop.
-  if (any(grepl("[a-z]\\.[A-Z]", lines, perl = TRUE))){
-    line_no <- grep("[a-z]\\.[A-Z]", lines, perl = TRUE)[[1]]
+  if (any(grepl("[a-z]\\.[A-Z]", lines, perl = TRUE))) {
+    line_no <- grep("[a-z]\\.[A-Z]", lines, perl = TRUE)[[1L]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,

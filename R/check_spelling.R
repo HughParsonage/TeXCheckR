@@ -12,7 +12,7 @@
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
 #' @param rstudio Use the RStudio API?
-#' @param .report_error A function to provide context to any errors.
+#' @param .report_error A function to provide context to any errors. If missing, defaults to \code{\link{report2console}}.
 #' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
 #' 
 #' @details Extends and enhances \code{hunspell}:
@@ -33,6 +33,7 @@
 #' as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. Most of these
 #' are now parsed correctly by \code{\link[hunspell]{hunspell}}, though some still need to be supplied (including, naturally, user-supplied macros).}
 #' \item{Abbreviations and initialisms which are validly introduced will not throw errors. See \code{\link{extract_valid_abbrevations}}.}
+#' \item{Words preceded by '[sic]' will not throw errors.}
 #' }
 #' 
 #' The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 
@@ -71,6 +72,7 @@ check_spelling <- function(filename,
                            check_etcs = TRUE,
                            dict_lang = "en_GB",
                            rstudio = FALSE,
+                           
                            .report_error){
   if (missing(.report_error)){
     if (rstudio) {

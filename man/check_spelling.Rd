@@ -32,7 +32,7 @@ present outside the document preamble.}
 
 \item{rstudio}{Use the RStudio API?}
 
-\item{.report_error}{A function to provide context to any errors.}
+\item{.report_error}{A function to provide context to any errors. If missing, defaults to \code{\link{report2console}}.}
 }
 \value{
 Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
@@ -59,6 +59,7 @@ any files that are fed via \code{\\input} or \code{\\include} are checked (recur
 as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. Most of these
 are now parsed correctly by \code{\link[hunspell]{hunspell}}, though some still need to be supplied (including, naturally, user-supplied macros).}
 \item{Abbreviations and initialisms which are validly introduced will not throw errors. See \code{\link{extract_valid_abbrevations}}.}
+\item{Words preceded by '[sic]' will not throw errors.}
 }
 
 The package comes with a suite of \code{\link{correctly_spelled_words}} that were not present in \code{hunspell}'s 

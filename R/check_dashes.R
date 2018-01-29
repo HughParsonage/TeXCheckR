@@ -2,13 +2,24 @@
 #'
 #' @param filename A tex or Rnw file.
 #' @param .report_error How errors should be reported.
+#' @param dash.consistency Character vector permitted dash types. 
 #' @return File stops and \code{cat()}s on any line where a hyphen is surrounded by a space.
 #' Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in TeX math mode \code{$...$}.
 #' @export
 
-check_dashes <- function(filename, .report_error) {
+check_dashes <- function(filename,
+                         .report_error,
+                         dash.consistency = c("en-dash", "em-dash"),
+                         rstudio = TRUE) {
   if (missing(.report_error)) {
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(...,
+                                                    rstudio = TRUE,
+                                                    file = filename)
+    } else {
+      .report_error <- function(...) report2console(...,
+                                                    rstudio = FALSE)
+    }
   }
 
   lines <- read_lines(filename)
@@ -95,6 +106,7 @@ check_dashes <- function(filename, .report_error) {
          "Make sure anything you intend as an en-dash is entered as ' -- '")
   }
 
+  
   are_emdash_lines <-
     lines %>%
     grep("---", ., fixed = TRUE, value = TRUE) %>%

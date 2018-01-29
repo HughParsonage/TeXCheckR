@@ -8,7 +8,7 @@
 * Bug fixes:
   * check labels now test for spaces rather than check dashes
   * `lint_bib` does not add commas after `@string` fields.
-
+  * `inputs_of` does not emit arcane warning if multiple `\end{document}`s exist.
 
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected

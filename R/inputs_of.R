@@ -11,8 +11,7 @@ inputs_of <- function(filename, exclude.preamble = TRUE, append.tex = TRUE) {
   lines <- read_lines(filename)
   
   if (any(grepl("\\end{document}", lines, fixed = TRUE))) {
-    lines <- 
-      lines[seq_along(lines) < grep("\\end{document}", lines, fixed = TRUE)]
+    lines <- lines[seq_along(lines) < which.max(grepl("\\end{document}", lines, fixed = TRUE))]
   }
   
   lines_after_begin_document <-

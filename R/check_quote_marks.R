@@ -26,6 +26,10 @@ check_quote_marks <- function(filename, .report_error, rstudio = FALSE){
   lines <- 
     read_lines(filename) %>%
     strip_comments
+  
+  if (any(grepl("\\end{document}", lines, fixed = TRUE))) {
+    lines <- lines[seq_along(lines) < which.max(grepl("\\end{document}", lines, fixed = TRUE))]
+  }
   # Avoid ``ok''
   
   bad_open_quote_regex <- 

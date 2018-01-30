@@ -17,6 +17,17 @@ test_that("Invalid typography stops", {
                regexp = "[pP]unctuation after footnote")
   expect_error(check_footnote_typography("./fnote-typogr/full-stop-after-fcite.tex"),
                regexp = "[pP]unctuation mark after footcite")
+  
+  expect_error(check_footnote_typography("./fnote-typogr/colon-then-equation.tex"),
+               regexp = "[pP]unctuation after footnotemark")
+  
+  options("TeXCheckR.capture.output" = TRUE)
+  expect_output(tryCatch(check_footnote_typography("./fnote-typogr/colon-then-equation.tex"),
+                         error = function(e) NULL),
+                "14:")
+  options("TeXCheckR.capture.output" = FALSE)
+  
+  
 })
 
 test_that("Space before footnotes.", {

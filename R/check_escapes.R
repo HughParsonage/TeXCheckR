@@ -13,6 +13,12 @@ check_escapes <- function(filename, .report_error){
   }
   lines <- strip_comments(read_lines(filename))
   
+  is_tikz <-
+    cumsum(grepl("\\begin{tikzpicture}", lines, fixed = TRUE)) - 
+    cumsum(grepl("\\end{tikzpicture}", lines, fixed = TRUE))
+  
+  lines[as.logical(is_tikz)] <- ""
+  
   if (any(grepl("(?<!(\\\\))[$]", lines, perl = TRUE))){
     line_no <- grep("(?<!(\\\\))[$]", lines, perl = TRUE)[[1]]
     context <- lines[[line_no]]

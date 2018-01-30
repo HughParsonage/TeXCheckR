@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\begin{document}
+This footnote is fine.\footnote{Ends with period.}
+As is this.%
+	\footnote{Ends with period.}
+	
+	\subsection{Variance decomposition}\label{subsec:variance-decomposition}
+
+For each model, we estimate the proportion of variation explained by the regressors, hospital performance, and state performance or coding differences, and the proportion of variation that remains unexplained.
+
+Estimates of the standard deviation of our models' hospital effects \((\sigma_{H})\) are obtained directly from the output of each model.
+By construction, the variance of the residual term of a logit model is \(\pi^2/3\).
+To estimate the proportion of variation in outcomes explained by the regressors, we use the pseudo-\(R^2\) proposed for binary dependent variable models by McKelvey and Zavoina\footnote{McKelvey and Zavoina, 1975}:
+
+\[R_{\text{MZ}}^{2} = \frac{\frac{1}{N}\sum_{i} (x_{i}\hat{\beta} - x\hat{\beta})^{2}}{\pi^2/3 + \sigma_{H}^{2} + \frac{1}{N}\sum_{i}^{}(x_{i}\hat{\beta} - x\hat{\beta})^2}\]
+
+This footnote should noterror.\footnote{SS.}
+\end{document}

@@ -129,6 +129,20 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
       error_position <-
         position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
       
+      if (anyNA(error_position[["line_no"]])) {
+        chars_no_max <- .subset2(location_of_footnotes, "char_no_max")
+        for (ichar_no_max in chars_no_max) {
+          error_position <-
+            parsed_doc[char_no > ichar_no_max][nzchar(char) & grepl("\\S", char, perl = TRUE)]
+          next_char <- .subset2(error_position, "char")
+          if (next_char[1L] %chin% punctuation) {
+            error_position <- error_position[1L]
+            break
+          }
+        }
+      }
+      
+      
       .report_error(line_no = error_position[["line_no"]],
                     column = error_position[["column"]] + 1L,
                     # context = paste0("\\footnote\n         ",
@@ -194,7 +208,8 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     }
     
     # Now that footcites are just {} (repeated), find the first char thereafter.
-    chars_after_footcites <- gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcites_noarg, perl = TRUE)
+    chars_after_footcites <-
+      gsub("^.*\\\\footcites?(?:\\{\\})+\\s*(.)?.*$", "\\1", lines_with_footcites_noarg, perl = TRUE)
     
     if (any(chars_after_footcites %fin% punctuation)) {
       stop("Punctuation mark after \\footcites number ",

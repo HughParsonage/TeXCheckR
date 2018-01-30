@@ -30,7 +30,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
   # melt.data.table
   value <- NULL
   
-  if (any(grepl("^OPT", names(parsed_doc)))) {
+  if (any(startsWith(names(parsed_doc), "OPT"))) {
     optional_chars <-
       melt.data.table(parsed_doc,
                       measure.vars = grep("^OPT", names(parsed_doc), value = TRUE),

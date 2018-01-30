@@ -24,16 +24,21 @@ check_dashes <- function(filename,
   }
 
   lines <- read_lines(filename)
+  lines <- strip_comments(lines)
 
   lines[isR_line_in_knitr(lines)] <- "%"
-  if (any(lines == "\\begin{align*}")){
+  if ("\\begin{align*}" %chin% lines) {
     math_environ <- 
       which(cumsum(lines == "\\begin{align*}") - cumsum(lines == "\\end{align*}") == 1L)
     
     lines[math_environ] <- "% align environment"
   }
-
-  lines <- strip_comments(lines)
+  
+  display_equations <-
+    cumsum(startsWith(trimws(lines), "\\[")) - 
+    cumsum(endsWith(trimws(lines), "\\]")) > 0L
+  
+  lines[display_equations] <- "% equation environment"
 
   possible_hyphen <- grepl(" - ", lines, fixed = TRUE)
 

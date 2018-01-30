@@ -4,12 +4,17 @@
 \alias{check_dashes}
 \title{Check dashes entered as hyphens}
 \usage{
-check_dashes(filename, .report_error)
+check_dashes(filename, .report_error, dash.consistency = c("en-dash",
+  "em-dash"), rstudio = TRUE)
 }
 \arguments{
 \item{filename}{A tex or Rnw file.}
 
 \item{.report_error}{How errors should be reported.}
+
+\item{dash.consistency}{Character vector permitted dash types.}
+
+\item{rstudio}{(logical, default: \code{TRUE}) Use the RStudio API?}
 }
 \value{
 File stops and \code{cat()}s on any line where a hyphen is surrounded by a space.

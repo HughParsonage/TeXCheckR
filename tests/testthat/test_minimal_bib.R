@@ -7,7 +7,7 @@ test_that("Error handling", {
   
   current_wd <- getwd()
   temp_dir <- file.path(tempdir(), sprintf("minimal-%d-bib", sample.int(1e5, size = 1)[1]))
-  provide.dir(temp_dir)
+  hutils::provide.dir(temp_dir)
   skip_if(length(dir(path = temp_dir, pattern = "\\.bbl$")))
   expect_error(minimal_bib(temp_dir), 
                regexp = "did not contain a .bbl file", 

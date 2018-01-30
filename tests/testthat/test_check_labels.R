@@ -3,6 +3,13 @@ context("check_labels")
 test_that("Stops on absent prefixes", {
   expect_error(check_labels("check-labels/label-without-prefix.tex"), 
                regexp = "must contain a prefix")
+  
+  options("TeXCheckR.capture.output" = TRUE)
+  expect_output(tryCatch(check_labels("check-labels/label-without-prefix.tex"),
+                         error = function(e) NULL),
+                regexp = "4:",
+                fixed = TRUE)
+  options("TeXCheckR.capture.output" = FALSE)
 })
 
 test_that("Stops when chapter prefixes wrong", {

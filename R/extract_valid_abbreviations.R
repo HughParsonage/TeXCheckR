@@ -5,6 +5,7 @@
 #' @details Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \code{(ABC)} where the first letters 
 #' of the preceding words 
 #' (excluding some common words like \code{of}, \code{and}, etc.) are 'a', 'b', 'c'.
+#' @aliases extract_valid_abbrevations
 #' @export
 
 extract_validate_abbreviations <- function(lines){

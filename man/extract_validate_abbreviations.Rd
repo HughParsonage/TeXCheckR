@@ -2,6 +2,7 @@
 % Please edit documentation in R/extract_valid_abbreviations.R
 \name{extract_validate_abbreviations}
 \alias{extract_validate_abbreviations}
+\alias{extract_valid_abbrevations}
 \title{Extract valid abbreviations and initialisms}
 \usage{
 extract_validate_abbreviations(lines)

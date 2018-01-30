@@ -2,6 +2,7 @@
 #' @param filename A LaTeX file.
 #' @param ignore.lines Lines to ignore (for example, those using the word 'footnote').
 #' @param .report_error A function to provide context to any errors.
+#' @param rstudio (logical, default: \code{FALSE}) Should the RStudio API be used?
 #' @return Called for its side-effect.
 #' @details See \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for full set of error conditions.
 #' @examples 
@@ -13,10 +14,15 @@
 #' 
 #' @export
 
-check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error){
+check_footnote_typography <- function(filename, ignore.lines = NULL, .report_error,
+                                      rstudio = FALSE) {
   
-  if (missing(.report_error)){
-    .report_error <- function(...) report2console(file = filename, ...)
+  if (missing(.report_error)) {
+    if (rstudio) {
+      .report_error <- function(...) report2console(file = filename, ..., rstudio = rstudio)
+    } else {
+      .report_error <- function(...) report2console(file = filename, ...)
+    }
   }
   
   lines <- orig_lines <- read_lines(filename)

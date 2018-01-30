@@ -21,6 +21,7 @@ test_that("No misspelled words", {
     tryCatch({
       devtools::spell_check(pkg = pkg,
                             ignore = c("ary",
+                                       "backtick",
                                        "biber",
                                        "BibLaTeX",
                                        "Grattan",

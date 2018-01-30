@@ -1,5 +1,13 @@
-.onLoad <- function(libname = find.package("grattanReporter"), pkgname = "grattanReporter"){
+.onLoad <- function(libname = find.package("TeXCheckR"), pkgname = "TeXCheckR"){
 
+  op <- options()
+  opTeXCheckR <- list(
+    "TeXCheckR.capture.output" = FALSE
+  )
+  toset <- !(names(options) %in% names(op))
+  if (any(toset)) options(opTeXCheckR[toset])
+  
+  
   # CRAN Note avoidance
   if (getRversion() >= "2.15.1")
     utils::globalVariables(c(".",

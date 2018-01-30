@@ -4,7 +4,8 @@
 \alias{check_footnote_typography}
 \title{Check footnote typography}
 \usage{
-check_footnote_typography(filename, ignore.lines = NULL, .report_error)
+check_footnote_typography(filename, ignore.lines = NULL, .report_error,
+  rstudio = FALSE)
 }
 \arguments{
 \item{filename}{A LaTeX file.}
@@ -12,6 +13,8 @@ check_footnote_typography(filename, ignore.lines = NULL, .report_error)
 \item{ignore.lines}{Lines to ignore (for example, those using the word 'footnote').}
 
 \item{.report_error}{A function to provide context to any errors.}
+
+\item{rstudio}{(logical, default: \code{FALSE}) Should the RStudio API be used?}
 }
 \value{
 Called for its side-effect.

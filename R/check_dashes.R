@@ -3,6 +3,7 @@
 #' @param filename A tex or Rnw file.
 #' @param .report_error How errors should be reported.
 #' @param dash.consistency Character vector permitted dash types. 
+#' @param rstudio (logical, default: \code{TRUE}) Use the RStudio API?
 #' @return File stops and \code{cat()}s on any line where a hyphen is surrounded by a space.
 #' Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in TeX math mode \code{$...$}.
 #' @export

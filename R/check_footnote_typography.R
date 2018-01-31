@@ -69,6 +69,9 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
   
+  # End of equation preceded by punctuation treat as punctuation
+  lines <- gsub(".\\]", ".", lines, fixed = TRUE)
+  
   # More than one footnote on a line won't be good.
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,
@@ -101,17 +104,19 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     if (AND(length(split_line_after_footnote) > footnote_closes_at,
             split_line_after_footnote[footnote_closes_at + 1] %chin% punctuation)) {
       
+      parsed_doc <- parse_tex(orig_lines)
+      location_of_footnotes <-
+        extract_mandatory_LaTeX_argument(tex_lines = NULL,
+                                         parsed_doc = parsed_doc,
+                                         command_name = "footnote",
+                                         n = 1L,
+                                         by.line = TRUE)
+      
       # If a footnote is written before a dash, we can end up here, even though
       # it would be ok. The following will take much longer than the rest of this function.
       if (split_line_after_footnote[footnote_closes_at + 1] == "-") {
         char_no <- NULL
-        parsed_doc <- parse_tex(orig_lines)
-        location_of_footnotes <-
-          extract_mandatory_LaTeX_argument(tex_lines = NULL,
-                                           parsed_doc = parsed_doc,
-                                           command_name = "footnote",
-                                           n = 1L,
-                                           by.line = TRUE)
+        
         # If the dash occurs after a line break, a
         # space will be inserted which is ok.
         number_of_lines <- 

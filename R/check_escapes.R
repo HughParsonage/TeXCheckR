@@ -19,6 +19,13 @@ check_escapes <- function(filename, .report_error){
   
   lines[as.logical(is_tikz)] <- ""
   
+  lines[grepl("\\url", lines, fixed = TRUE)] <-
+    gsub("\\\\url\\{[^\\}]++\\}", 
+         "\\\\url{<url>}",
+         lines[grepl("\\url", lines, fixed = TRUE)],
+         perl = TRUE)
+                               
+  
   if (any(grepl("(?<!(\\\\))[$]", lines, perl = TRUE))){
     line_no <- grep("(?<!(\\\\))[$]", lines, perl = TRUE)[[1]]
     context <- lines[[line_no]]

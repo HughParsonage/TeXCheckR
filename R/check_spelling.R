@@ -93,6 +93,18 @@ check_spelling <- function(filename,
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
   }
+  
+  is_tikz <-
+    cumsum(grepl("\\begin{tikzpicture}", lines, fixed = TRUE)) - 
+    cumsum(grepl("\\end{tikzpicture}", lines, fixed = TRUE))
+  
+  lines[as.logical(is_tikz)] <- ""
+  
+  is_tikz <-
+    cumsum(grepl("\\begin{align*}", lines, fixed = TRUE)) - 
+    cumsum(grepl("\\end{align*}", lines, fixed = TRUE))
+  
+  lines[as.logical(is_tikz)] <- ""
 
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")

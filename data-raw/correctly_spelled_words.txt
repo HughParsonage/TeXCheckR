@@ -625,6 +625,7 @@ QLD
 Quakers
 queue
 quintile
+quintiles
 quo
 racecourse
 ragged2e

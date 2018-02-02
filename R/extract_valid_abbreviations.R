@@ -17,7 +17,7 @@ extract_validate_abbreviations <- function(lines){
     lines_w_abbrev_last <-
       lines_w_abbrev %>%
       gsub("[{,.]", " ", x = ., perl = TRUE) %>%
-      gsub("\\s+(?:(?:of)|(?:and)|(?:the)|(?:to)|(?:in))\\s+", " ", x = ., perl = TRUE) %>%
+      gsub("\\s+(?:(?:of)|(?:on)|(?:and)|(?:the)|(?:to)|(?:in))\\s+", " ", x = ., perl = TRUE) %>%
       gsub("\\s+", " ", x = ., perl = TRUE) %>%
       # drop the plural
       gsub("s)", ")", x = ., fixed = TRUE) %>%
@@ -59,7 +59,7 @@ extract_validate_abbreviations <- function(lines){
                                       if (all(get_initials_from_words > 0)){
                                         out <- 
                                           words[get_initials_from_words] %>%
-                                          substr(0, 1) %>%
+                                          substr(0L, 1L) %>%
                                           paste0(collapse = "") %>%
                                           toupper
                                       } else {
@@ -78,7 +78,7 @@ extract_validate_abbreviations <- function(lines){
                                                  if (all(get_initials_from_words > 0)){
                                                    out <- 
                                                      words[get_initials_from_words] %>%
-                                                     substr(0, 1) %>%
+                                                     substr(0L, 1L) %>%
                                                      paste0(collapse = "") %>%
                                                      toupper
                                                  } else {

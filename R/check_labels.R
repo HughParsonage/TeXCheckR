@@ -84,7 +84,7 @@ check_labels <- function(filename, .report_error){
     and(grepl("\\caption{", lines, fixed = TRUE), 
         !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines, perl = TRUE))
   
-  if (any(caption_without_label)){
+  if (any(caption_without_label)) {
     .report_error(file = filename,
                   line_no = which(caption_without_label)[[1]], 
                   context = lines[caption_without_label][[1]], 
@@ -99,8 +99,8 @@ check_labels <- function(filename, .report_error){
     lines[lines_with_labels[grepl("^chap[:]", label_contents)]]
 
   chapter_line_nos <-
-    sort(union(grep("\\addchap", lines, fixed = TRUE),
-               grep("\\chapter", lines, fixed = TRUE)))
+    sort(union(grep("\\addchap{", lines, fixed = TRUE),
+               grep("\\chapter{", lines, fixed = TRUE)))
 
   label_prefixes_following_chapters <-
     gsub("^.*\\\\label[{](.*)[:][^\\}]*[}].*$",

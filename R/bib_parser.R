@@ -18,9 +18,9 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
     read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
     # Avoid testing }\\s+$ rather than just == }
     stri_trim_both %>%
-    .[substr(., 0, 8) != "@Comment"]
+    .[!startsWith(., "@Comment")]
   
-  is_at <- substr(bib, 0L, 1L) == "@" #grepl("^@", bib, perl = TRUE)
+  is_at <- startsWith(bib, "@")
   is_closing <- bib == "}"
 
   sep <- NULL

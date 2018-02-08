@@ -11,6 +11,8 @@
   * `inputs_of` does not emit arcane warning if multiple `\end{document}`s exist.
   * `check_escapes` do not check content within `tikzpicture` environment
   * `check_dashes` does not check display equation lines.
+  * `check_spelling` honours non-default settings of `dict_lang` in files through `\input` or `\include`
+  * `check_consecutive_words` no longer requires `grattan.cls` to run. Thanks to @jonocarroll for reporting.
 
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected

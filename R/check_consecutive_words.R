@@ -9,9 +9,15 @@
 
 
 check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = NULL){
-  pdf.files <- list.files(path = path, pattern = "\\.pdf$")
+  
+  if (!nzchar(Sys.which("pdftotext"))) {
+    stop("'pdftotext' not found on system path, but is required for check_consecutive_words().")
+  }
 
-  stopifnot(length(pdf.files) == 1L)
+  pdf.files <- list.files(path = path, pattern = "\\.pdf$")
+  if (length(pdf.files) != 1L) {
+    stop("`path` did not contain a single PDF file.")
+  }
 
   orig_wd <- getwd()
   on.exit(setwd(orig_wd))
@@ -35,16 +41,19 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   move_to(file.path(tempdir(), "consecutive-words", time), pattern = NULL)
   
   # Avoid spurious marks on 'Grattan Institute' or the name of the report
-  grattan.cls <- readLines("grattan.cls")
-  grattan.cls %>%
-    gsub("\\normalfont Grattan Institute \\@YEAR", "\\normalfont", ., fixed = TRUE) %>%
-    gsub("\\thepage", "\\phantom{\\thepage}", ., fixed = TRUE) %>%
-    gsub("\\mytitle", "\\phantom{\\mytitle}", ., fixed = TRUE) %>%
-    writeLines("grattan.cls")
+  if (file.exists("grattan.cls")) {
+    grattan.cls <- readLines("grattan.cls")
+    grattan.cls %>%
+      gsub("\\normalfont Grattan Institute \\@YEAR", "\\normalfont", ., fixed = TRUE) %>%
+      gsub("\\thepage", "\\phantom{\\thepage}", ., fixed = TRUE) %>%
+      gsub("\\mytitle", "\\phantom{\\mytitle}", ., fixed = TRUE) %>%
+      writeLines("grattan.cls")
+  }
 
   if (file.exists("CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")){
     stop('"CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex" exists in the path. This was unexpected.')
   }
+
 
   # Copy the original file to a temporary, but work on the original
   # This obviates the need to run biber, makeglossaries etc: we just
@@ -52,7 +61,9 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   file.copy(latex_file, paste0("CHECK-CONSECUTIVE-WORDS-", latex_file), overwrite = FALSE)
 
   readLines(latex_file) %>%
-    gsub("\\begin{document}", "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}", x = ., fixed = TRUE) %>%
+    gsub("\\begin{document}", "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
+         x = ., 
+         fixed = TRUE) %>%
     # Safe to omit the bibliography for now
     gsub("\\printbibliography", "", x = ., fixed = TRUE) %>%
     writeLines(latex_file)
@@ -78,12 +89,12 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   # Only consider words between overview and bibliography
   if ("Overview" %in% typeset_lines){
     overview.line <- which(typeset_lines == "Overview")
-    typeset_lines <- typeset_lines[-seq.int(1, overview.line)]
+    typeset_lines <- typeset_lines[-seq.int(1L, overview.line)]
   }
 
   if ("Bibliography" %in% typeset_lines){
     bibliography.line <- which(typeset_lines == "Bibliography")
-    typeset_lines <- typeset_lines[1:(bibliography.line - 1)]
+    typeset_lines <- typeset_lines[seq_len(bibliography.line - 1L)]
   }
 
   file.remove(gsub("\\.tex$", ".txt", latex_file))
@@ -104,7 +115,7 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
 
   repeated_words <- first_words[is_repeated]
 
-  if (length(repeated_words) > 0){
+  if (length(repeated_words) > 0) {
     cat("'<Repeated word>'\n\t<Context>\n")
     for (repetition in seq_along(repeated_words)){
       cat("'", repeated_words[repetition], "'\n\t", sep = "")

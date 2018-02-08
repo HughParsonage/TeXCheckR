@@ -210,6 +210,7 @@ check_spelling <- function(filename,
                      known.correct = known.correct,
                      known.wrong = known.wrong, 
                      ignore_spelling_in = c(commands_to_ignore, ignore_spelling_in),
+                     dict_lang = dict_lang,
                      rstudio = rstudio)
     }
   }

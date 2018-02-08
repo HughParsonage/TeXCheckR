@@ -1,6 +1,9 @@
 context("check_consecutive_words.R")
 
 test_that("Error on known document", {
+  skip_on_cran()
+  skip_on_travis()
+  skip_if_not(nzchar(Sys.which("pdftotext")))
   expect_error(check_consecutive_words("consecutive-words",
                                        latex_file = "narrow-article.tex"))
   expect_output(tryCatch(check_consecutive_words("consecutive-words",

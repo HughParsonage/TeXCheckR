@@ -100,3 +100,8 @@ test_that("RStudio API", {
                   utils::readClipboard() != "Sydney")
 })
 
+test_that("Inputs should respect dict_lang at top level", {
+  expect_null(check_spelling("spelling/dict-lang-input/root.tex", 
+                             dict_lang = "en_US"))
+})
+

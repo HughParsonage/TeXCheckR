@@ -3,7 +3,7 @@
 #' @param latex_file The LaTeX file (without path) whose output will be checked.
 #' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 #' you can use the \code{md5sum} of the output of this function.
-#' @return An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
+#' @return An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines.
 #' Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 #' @export
 
@@ -61,7 +61,8 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   file.copy(latex_file, paste0("CHECK-CONSECUTIVE-WORDS-", latex_file), overwrite = FALSE)
 
   readLines(latex_file) %>%
-    gsub("\\begin{document}", "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
+    gsub("\\begin{document}",
+         "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
          x = ., 
          fixed = TRUE) %>%
     # Safe to omit the bibliography for now
@@ -105,11 +106,11 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   first_words <- gsub("^(\\w+)\\b.*$", "\\1", valid_typeset_lines, perl = TRUE)
 
   is_repeated <-
-    first_words == data.table::shift(first_words,
-                                     type = "lag",
-                                     n = 1L,
-                                     fill = "Unlikely to be repeated") &
-    nchar(first_words) > 0 &
+    first_words == shift(first_words,
+                         type = "lag",
+                         n = 1L,
+                         fill = "Unlikely to be repeated") &
+    nzchar(first_words) &
     # Not only numbers
     !grepl("^[0-9]+$", first_words, perl = TRUE)
 

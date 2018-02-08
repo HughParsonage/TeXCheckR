@@ -115,7 +115,7 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
 
   repeated_words <- first_words[is_repeated]
 
-  if (length(repeated_words) > 0){
+  if (length(repeated_words) > 0) {
     cat("'<Repeated word>'\n\t<Context>\n")
     for (repetition in seq_along(repeated_words)){
       cat("'", repeated_words[repetition], "'\n\t", sep = "")

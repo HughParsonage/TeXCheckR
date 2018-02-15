@@ -171,11 +171,10 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     lines_with_footcite <- lines[line_nos_with_footcite] 
     
     lines_with_footcite_noarg <- lines_with_footcite
-    lines_with_footcite_noarg <-
-      replace_nth_LaTeX_argument(lines_with_footcite_noarg, 
-                                 command_name = "footcite",
-                                 n = 1L,
-                                 replacement = "")
+    lines_with_footcite_noarg <- gsub("\\\\footcite\\{[^\\}]*\\}", 
+                                      "\\\\footcite{}", 
+                                      lines_with_footcite_noarg, 
+                                      perl = TRUE)
     
     chars_after_footcite <- gsub("^.*\\\\footcite\\{\\}\\s*(.)?.*$", 
                                 "\\1", 
@@ -183,7 +182,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                 perl = TRUE)
     
     if (any(chars_after_footcite %fin% punctuation)){
-      first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1]]
+      first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1L]]
       line_no <- line_nos_with_footcite[first_footcite_w_punct]
       .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
                     context = lines[line_no], 

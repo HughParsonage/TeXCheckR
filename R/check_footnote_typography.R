@@ -167,7 +167,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     grepl("\\footcites", lines, fixed = TRUE)
   
   # Have to separate otherwise the replacement occurs on the wrong command name
-  if (any(line_nos_with_footcite)){
+  if (any(line_nos_with_footcite)) {
     lines_with_footcite <- lines[line_nos_with_footcite] 
     
     lines_with_footcite_noarg <- lines_with_footcite
@@ -196,21 +196,16 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     # We can't just gsub {[A-Za-z]} because we don't know how many braces are needed.
     lines_with_footcites <- lines[line_nos_with_footcites] 
     
-    sup_braces_after_footcites <- 
-      gsub("[^\\}]+", "", gsub("^.*footcite", "", lines_with_footcites)) %>%
-      nchar %>%
-      max
+    footcite_regex <- 
+      paste0("\\\\footcites\\{", 
+             "[^\\}]*",
+             "(", "\\}\\{", "[^\\}]*)+", "\\}")
     
-    lines_with_footcites_noarg <- lines_with_footcites
     
-    for (n in seq_len(sup_braces_after_footcites)){
-      lines_with_footcites_noarg <-
-        replace_nth_LaTeX_argument(lines_with_footcites_noarg,
-                                   "footcites",
-                                   n = n,
-                                   replacement = "",
-                                   warn = FALSE)
-    }
+    
+    lines_with_footcites_noarg <- 
+      lines_with_footcites %>%
+      gsub(footcite_regex, "\\\\footcites{}", x = ., perl = TRUE)
     
     # Now that footcites are just {} (repeated), find the first char thereafter.
     chars_after_footcites <-

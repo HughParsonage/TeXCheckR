@@ -379,13 +379,12 @@ next_char_rel_footnotecite <- function(parsed_doc, direction = -1L) {
     out[i] <- .subset2(parsed_doc[char_no == .subset2(last_char_nos, "last_char_no")[i] + 1L * direction],
                        "char")
     j <- 1L * direction
-    while (grepl("\\s", out[i])) {
+    while (out[i] %chin% c(" ", "\t", "{")) {
       out[i] <- .subset2(parsed_doc[char_no == i + j], "char")
       j + 1L
     }
   }
   out
-  
 }
 
 

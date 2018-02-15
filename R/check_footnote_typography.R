@@ -135,6 +135,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
         position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
       
       if (anyNA(error_position[["line_no"]])) {
+        char <- NULL
         chars_no_max <- .subset2(location_of_footnotes, "char_no_max")
         for (ichar_no_max in chars_no_max) {
           error_position <-
@@ -225,7 +226,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     footnote_closes_at <- position_of_closing_brace(line = line, prefix = "footnote")
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
 
-    if (length(split_line_after_footnote[footnote_closes_at - 1] != ".") == 0){
+    if (length(split_line_after_footnote[footnote_closes_at - 1L] != ".") == 0L){
       .report_error(error_message = "Couldn't determine where footnotes closed.",
                     context = paste0(split_line_after_footnote,
                                      "\n",
@@ -263,7 +264,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
         
         
         .report_error(context = paste0("\n\\footnote\n         ",
-                                       paste0(split_line_after_footnote[1:footnote_closes_at],
+                                       paste0(split_line_after_footnote[seq_len(footnote_closes_at)],
                                               collapse = ""),
                                        "\n"),
                       line_no = error_position[["line_no"]],
@@ -297,7 +298,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(or(a1 & !(b1 & b2), 
              b1 & !b2))){
     line_no <- which(or(a1 & !(b1 & b2), 
-                        b1 & !b2))[[1]]
+                        b1 & !b2))[[1L]]
     context <- 
       lines[line_no] 
     .report_error(line_no = line_no,
@@ -307,7 +308,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   }
   
   if (any(grepl("\\footnote{ ", lines, fixed = TRUE))){
-    line_no <- grep("\\footnote{ ", lines, fixed = TRUE)[[1]]
+    line_no <- grep("\\footnote{ ", lines, fixed = TRUE)[[1L]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,
@@ -348,6 +349,46 @@ position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, 
   } 
   error_position
 }
+
+next_char_rel_footnotecite <- function(parsed_doc, direction = -1L) {
+  footnote_start_candidates <-
+    parsed_doc[char == "{" & 
+                 shift(char, n = 1L) == "e" &
+                 shift(char, n = 2L) == "t" &
+                 # Technically this will match
+                 # \footnite but who cares?
+                 shift(char, n = 3L) %chin% c("o", "i") &
+                 shift(char, n = 4L) %chin% c("n", "c") &
+                 shift(char, n = 5L) == "t" &
+                 shift(char, n = 6L) == "o" &
+                 shift(char, n = 7L) == "o" &
+                 shift(char, n = 8L) == "f" &
+                 shift(char, n = 9L) == "\\", 
+               list(char_no, GROUP_ID1)]
+  
+  last_char_nos <-
+    parsed_doc[footnote_start_candidates,
+               on = "GROUP_ID1",
+               nomatch=0L][,
+                           .(last_char_no = max(char_no)),
+                           keyby = "GROUP_ID1"]
+  
+  out <- character(nrow(last_char_nos))
+  
+  for (i in seq_along(out)) {
+    out[i] <- .subset2(parsed_doc[char_no == .subset2(last_char_nos, "last_char_no")[i] + 1L * direction],
+                       "char")
+    j <- 1L * direction
+    while (grepl("\\s", out[i])) {
+      out[i] <- .subset2(parsed_doc[char_no == i + j], "char")
+      j + 1L
+    }
+  }
+  out
+  
+}
+
+
 
 
 

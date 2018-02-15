@@ -69,8 +69,6 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
     gsub("\\printbibliography", "", x = ., fixed = TRUE) %>%
     writeLines(latex_file)
 
-  warning(latex_file, "has been modified. Recompile ")
-
   # Put the text from http://tex.stackexchange.com/questions/341842/convert-twocolumn-layout-to-onecolumn-with-identical-linebreaks
   writeLines(twocolumn_atop, con = "CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")
 

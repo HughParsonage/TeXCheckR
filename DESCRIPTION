@@ -13,7 +13,7 @@ Depends: R (>= 3.3.0)
 Imports:
   clisymbols, 
   crayon,
-  data.table,
+  data.table (>= 1.9.0),
   fastmatch, 
   hunspell,
   hutils (>= 0.8.0),
@@ -29,4 +29,4 @@ Suggests:
   devtools,
   readr,
   stringi,
-  testthat
+  testthat (>= 2.0.0)

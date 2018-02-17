@@ -1,22 +1,14 @@
-#' Extract mandatory argument II
-#' @param tex_lines A character vector of lines as read from a LaTeX document.
-#' @param command_name The command name (no backslash or opening brace).
-#' @param n Which integer to 
-#' @param by.line If \code{FALSE}, the default, each row of the \code{data.table} returned 
-#' has the entire contents of the argument in \code{extract} column. If \code{TRUE}, 
-#' the contents is split as it is in the document; arguments over multiple lines in the 
-#' document are split over multiple rows in the \code{data.table} returned.
-#' @param parsed_doc A parsed document (from \code{\link{parse_tex}}).
-#' \code{parse_tex}. Use this argument if the cost of running \code{parse_tex} is 
-#' expensive (such as repeatedly over the same document).
-#' @export
+#' Locate contents of LaTeX commands
+#' @description Provides the locations of LaTeX commands with mandatory arguments.
+#' @param tex_lines A character vector of a LaTeX document, 
+#' -- for example as obtained from \code{readLines("mydoc.tex")}.
+#' @param command_name The command (without backslash) whose arguments' locations are desired.
+#' @param 
 
-extract_mandatory_LaTeX_argument <- function(tex_lines,
-                                             command_name,
-                                             n = 1L,
-                                             by.line = FALSE,
-                                             parsed_doc = NULL) {
-
+locate_mandatory_LaTeX_argument <- function(tex_lines, 
+                                            command_name, 
+                                            n = 1L, 
+                                            parsed_doc = NULL) {
   
   # parse_tex adds these columns
   char <- char_no <- line_no <- NULL
@@ -24,6 +16,8 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
     tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
     parsed_doc <- parse_tex(tex_lines)
   }
+  # Only need to copy if optional arguments exist
+  orig_parsed_doc <- parsed_doc
   
   extracts_from_optional <- data.table()
   
@@ -57,15 +51,16 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       #
       extracts_from_optional <-
         rbindlist(list(extracts_from_optional,
-                       extract_mandatory_LaTeX_argument(.subset2(extracts_within_optional, "text"),
-                                                        command_name = command_name,
-                                                        n = n) %>%
-                         .[complete.cases(.)]),
+                       locate_mandatory_LaTeX_argument(.subset2(extracts_within_optional, "text"),
+                                                       command_name = command_name,
+                                                       n = n)),
                   use.names = TRUE,
                   fill = TRUE)
       #
       # # # # # # # # # # # 
-    } 
+    } else {
+      extracts_within_optional <- parsed_doc[char_no %in% optional_char_nos]
+    }
     
     parsed_doc <- parsed_doc[char_no %notin% optional_char_nos]
   }
@@ -170,7 +165,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       .[, target := and((id_at_group_level + 1L - n) == first(id_at_group_level[!is.na(command)]), 
                         GROUP_LEVEL == first(GROUP_LEVEL[!is.na(command)])), 
         by = "command_no_t"] %>%
-      .[(target), .(command_no = command_no_t, char_no_min, char_no_max)]
+      .[(target), .(command_no = command_no_t, char_no_min, char_no_max, target)]
     
     if (nrow(candidate_char_ranges) == 0L) {
       # Under this condition, the nth argument of a command
@@ -189,21 +184,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       out <-
         candidate_char_ranges[parsed_doc,
                               on = c("char_no_min<=char_no", "char_no_max>=char_no"),
-                              nomatch=0L] %>%
-        .[, .(extract = paste0(char, collapse = ""),
-              line_no_min = min(line_no),
-              line_no_max = max(line_no),
-              char_no_min = min(char_no_min),
-              char_no_max = max(char_no_max)),
-          keyby = c("command_no", if (by.line) "line_no")]
-      
-      if (by.line) {
-        out[, c("N", "I") := list(.N, seq_len(.N)), keyby = "command_no"]
-        out[I == 1L, extract := stri_sub(extract, 2L)]
-        out[I == N, extract := stri_sub(extract, to = -2L)]
-      } else {
-        out[, extract := stri_sub(extract, 2L, -2L)]
-      }
+                              nomatch=0L]
       
       if (nrow(out)) {
         column <- i.column <- NULL
@@ -211,7 +192,7 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
         out[column_by_char_no, on = "char_no_min==char_no", nomatch=0L] %>%
           .[column_by_char_no, on = "char_no_max==char_no", nomatch=0L,
             j = list(command_no,
-                     if (by.line) line_no,
+                     line_no,
                      extract,
                      line_no_min,
                      line_no_max,
@@ -231,6 +212,23 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
       
     }
   }
-  
-  out
+  out <- 
+    candidate_char_ranges[orig_parsed_doc,
+                          on = c("char_no_min<=char_no", "char_no_max>=char_no")]
+  new_name <- command_name
+  if (new_name %chin% names(out)) {
+    i_new_name <- 1L
+    new_name <- paste0(command_name, "_", i_new_name)
+    while (new_name %chin% names(out)) {
+      i_new_name <- i_new_name + 1L
+      new_name <- paste0(command_name, "_", i_new_name)
+    }
+    warning("`names(out)` contained ", command_name, " already, ",
+            "so using ", new_name, " instead.")
+  }
+  setnames(out, "target", new_name)
+  out[]
 }
+
+
+

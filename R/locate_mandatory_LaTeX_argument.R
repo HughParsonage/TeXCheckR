@@ -3,7 +3,8 @@
 #' @param tex_lines A character vector of a LaTeX document, 
 #' -- for example as obtained from \code{readLines("mydoc.tex")}.
 #' @param command_name The command (without backslash) whose arguments' locations are desired.
-#' @param 
+#' @param n Length-one integer: which argument to locate.
+#' @param parsed_doc The result of \code{parse_tex(tex_lines)}.
 
 locate_mandatory_LaTeX_argument <- function(tex_lines, 
                                             command_name, 
@@ -210,11 +211,13 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
       
       out <- rbind(out, extracts_from_optional, use.names = TRUE, fill = TRUE)
       
+      out <- 
+        candidate_char_ranges[orig_parsed_doc,
+                              on = c("char_no_min<=char_no", "char_no_max>=char_no")]
+      
     }
-  }
-  out <- 
-    candidate_char_ranges[orig_parsed_doc,
-                          on = c("char_no_min<=char_no", "char_no_max>=char_no")]
+   
+ 
   new_name <- command_name
   if (new_name %chin% names(out)) {
     i_new_name <- 1L
@@ -227,6 +230,7 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
             "so using ", new_name, " instead.")
   }
   setnames(out, "target", new_name)
+  }
   out[]
 }
 

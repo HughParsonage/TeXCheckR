@@ -287,8 +287,7 @@ check_spelling <- function(filename,
               lines)
   }
 
-  # Ignore captionsetups
-  lines <- replace_nth_LaTeX_argument(lines, "captionsetup", n = 1L, replacement = "")
+  
 
   # Valid ordinal patterns are permitted
   lines <-
@@ -301,7 +300,7 @@ check_spelling <- function(filename,
 
   # Ignore phantoms
   lines <- replace_nth_LaTeX_argument(lines, command_name = "phantom", replacement = "PHANTOM")
-  lines <- replace_nth_LaTeX_argument(lines, command_name = "gls", replacement = "ENTRY")
+  lines <- replace_nth_LaTeX_argument(lines, command_name = "gls", replacement = "   ")
   lines <- replace_nth_LaTeX_argument(lines, command_name = "href", replacement = "correct")
   lines <- replace_nth_LaTeX_argument(lines, command_name = "vpageref", replacement = "correct")
   # Replace label argument in smallbox etc
@@ -314,6 +313,12 @@ check_spelling <- function(filename,
                                       command_name = "[CVcv]refrange",
                                       n = 2L,
                                       replacement = "second range key")
+  # Ignore captionsetups
+  if (any(grepl("\\captionsetup", lines, fixed = TRUE))) {
+    lines <- fill_nth_LaTeX_argument(parse_tex(lines), 
+                                     "captionsetup", 
+                                     return.text = TRUE)
+  }
 
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)

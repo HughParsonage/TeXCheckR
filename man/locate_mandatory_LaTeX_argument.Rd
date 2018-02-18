@@ -12,6 +12,10 @@ locate_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
 -- for example as obtained from \code{readLines("mydoc.tex")}.}
 
 \item{command_name}{The command (without backslash) whose arguments' locations are desired.}
+
+\item{n}{Length-one integer: which argument to locate.}
+
+\item{parsed_doc}{The result of \code{parse_tex(tex_lines)}.}
 }
 \description{
 Provides the locations of LaTeX commands with mandatory arguments.

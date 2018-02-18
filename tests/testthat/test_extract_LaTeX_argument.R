@@ -221,7 +221,7 @@ test_that("% et sqq should not be included in extract", {
                                            "parskip=half-",
                                            "]{scrrpert}"),
                                          command_name = "documentclass")
-  expect_equal(out[["extract"]], "11pt,parksip=half-")
+  expect_equal(out[["extract"]], "11pt,parskip=half-")
   
   
   out <- extract_mandatory_LaTeX_argument(c("\\ab[% \\ab{x}",

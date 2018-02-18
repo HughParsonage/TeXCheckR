@@ -8,6 +8,11 @@ strip_comments(lines, retain.percent.symbol = TRUE)
 }
 \arguments{
 \item{lines}{Character vector of a LaTeX document.}
+
+\item{retain.percent.symbol}{(logical, default: \code{TRUE}) Should the \verb{\%} symbol itself be stripped?}
+}
+\value{
+\code{lines} but with all text to the right of every unescaped \verb{\%} removed
 }
 \description{
 Strip comments from LaTeX lines
@@ -17,5 +22,4 @@ Strip comments from LaTeX lines
 some_lines <- c("Text. \% A comment", "20\\\% of comments are \% useful")
 strip_comments(some_lines)
 strip_comments(some_lines, retain.percent.symbol = FALSE)
-
 }

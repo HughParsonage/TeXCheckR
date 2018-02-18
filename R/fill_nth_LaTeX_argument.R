@@ -3,6 +3,7 @@
 
 fill_nth_LaTeX_argument <- function(parsed_doc, command_names, n = 1L, optional = FALSE,
                                     return.text = TRUE) {
+  char <- NULL
   for (command_name in command_names) {
     parsed_doc <- 
       locate_mandatory_LaTeX_argument(parsed_doc = parsed_doc,

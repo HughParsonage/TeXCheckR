@@ -3,7 +3,8 @@
 #' @param tex_lines A character vector of a LaTeX document, 
 #' -- for example as obtained from \code{readLines("mydoc.tex")}.
 #' @param command_name The command (without backslash) whose arguments' locations are desired.
-#' @param n Length-one integer: which argument to locate.
+#' @param n Integer vector: which argument(s) to locate. If \code{n = NA}, the n-th argument
+#' positions \emph{for all n}.
 #' @param parsed_doc The result of \code{parse_tex(tex_lines)}.
 
 locate_mandatory_LaTeX_argument <- function(tex_lines, 
@@ -146,6 +147,38 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
     
     command_no_t <- target <- NULL
     
+    bullseye <- function(.id_at_group_level, .n, .command, .GROUP_LEVEL) {
+      if (length(.n) == 1L) {
+        if (is.na(.n)) {
+          rep_len(TRUE, length(.id_at_group_level))
+        } else {
+          if (anyNA(.command)) {
+            command_not_na <- !is.na(.command)
+            first_id <- .id_at_group_level[command_not_na][[1L]]
+            first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
+          } else {
+            first_id <- .id_at_group_level[[1L]]
+            first_GR <- .GROUP_LEVEL[[1L]]
+          }
+          and(.id_at_group_level + 1L - n == first_id, 
+              .GROUP_LEVEL == first_GR)
+        }
+      } else {
+        if (anyNA(.command)) {
+          command_not_na <- !is.na(.command)
+          first_id <- .id_at_group_level[command_not_na][[1L]]
+          first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
+        } else {
+          first_id <- .id_at_group_level[[1L]]
+          first_GR <- .GROUP_LEVEL[[1L]]
+        }
+        # Arguments in this group may differ and
+        
+        and({.id_at_group_level + 1L - first_id} %in% n, 
+            .GROUP_LEVEL == first_GR)
+      }
+    }
+    
     # Must be outer join
     candidate_char_ranges <- 
       candidates[molten_parsed_doc, on = "char_no"] %>%
@@ -163,8 +196,10 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
       # the correct id_at_group_level for n = 1. For later arguments, 
       # we just need to increment the id at group level (because it must be 
       # the relevant argument).
-      .[, target := and((id_at_group_level + 1L - n) == first(id_at_group_level[!is.na(command)]), 
-                        GROUP_LEVEL == first(GROUP_LEVEL[!is.na(command)])), 
+      # .[, target := and((id_at_group_level + 1L - n) == first(id_at_group_level[!is.na(command)]), 
+      #                   GROUP_LEVEL == first(GROUP_LEVEL[!is.na(command)])), 
+      #   by = "command_no_t"] %>%
+      .[, target := bullseye(id_at_group_level, n, command, GROUP_LEVEL),
         by = "command_no_t"] %>%
       .[(target), .(command_no = command_no_t, char_no_min, char_no_max, target)]
     

@@ -13,7 +13,8 @@ locate_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
 
 \item{command_name}{The command (without backslash) whose arguments' locations are desired.}
 
-\item{n}{Length-one integer: which argument to locate.}
+\item{n}{Integer vector: which argument(s) to locate. If \code{n = NA}, the n-th argument
+positions \emph{for all n}.}
 
 \item{parsed_doc}{The result of \code{parse_tex(tex_lines)}.}
 }

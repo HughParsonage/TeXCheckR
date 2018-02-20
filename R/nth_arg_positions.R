@@ -79,9 +79,9 @@ replace_nth_LaTeX_argument <- function(tex_lines,
         # {} --> { }
         #         ^
         tex_lines_with_command_name_split[[el]] <-
-          c(tex_lines_with_command_name_split[[el]][seq.int(1, starts[row])], 
+          c(tex_lines_with_command_name_split[[el]][seq.int(1L, starts[row])], 
             .dummy_replacement,
-            tex_lines_with_command_name_split[[el]][-seq.int(1, starts[row])])
+            tex_lines_with_command_name_split[[el]][-seq.int(1L, starts[row])])
       }
     }
     

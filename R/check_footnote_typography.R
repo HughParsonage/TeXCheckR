@@ -135,6 +135,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
         position_end_of_footnote(2, orig_lines, must.be.punct = TRUE)
       
       if (anyNA(error_position[["line_no"]])) {
+        char <- NULL
         chars_no_max <- .subset2(location_of_footnotes, "char_no_max")
         for (ichar_no_max in chars_no_max) {
           error_position <-
@@ -167,15 +168,14 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     grepl("\\footcites", lines, fixed = TRUE)
   
   # Have to separate otherwise the replacement occurs on the wrong command name
-  if (any(line_nos_with_footcite)){
+  if (any(line_nos_with_footcite)) {
     lines_with_footcite <- lines[line_nos_with_footcite] 
     
     lines_with_footcite_noarg <- lines_with_footcite
-    lines_with_footcite_noarg <-
-      replace_nth_LaTeX_argument(lines_with_footcite_noarg, 
-                                 command_name = "footcite",
-                                 n = 1L,
-                                 replacement = "")
+    lines_with_footcite_noarg <- gsub("\\\\footcite\\{[^\\}]*\\}", 
+                                      "\\\\footcite{}", 
+                                      lines_with_footcite_noarg, 
+                                      perl = TRUE)
     
     chars_after_footcite <- gsub("^.*\\\\footcite\\{\\}\\s*(.)?.*$", 
                                 "\\1", 
@@ -183,7 +183,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                 perl = TRUE)
     
     if (any(chars_after_footcite %fin% punctuation)){
-      first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1]]
+      first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1L]]
       line_no <- line_nos_with_footcite[first_footcite_w_punct]
       .report_error(line_no = line_nos_with_footcite[first_footcite_w_punct],
                     context = lines[line_no], 
@@ -196,21 +196,16 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     # We can't just gsub {[A-Za-z]} because we don't know how many braces are needed.
     lines_with_footcites <- lines[line_nos_with_footcites] 
     
-    sup_braces_after_footcites <- 
-      gsub("[^\\}]+", "", gsub("^.*footcite", "", lines_with_footcites)) %>%
-      nchar %>%
-      max
+    footcite_regex <- 
+      paste0("\\\\footcites\\{", 
+             "[^\\}]*",
+             "(", "\\}\\{", "[^\\}]*)+", "\\}")
     
-    lines_with_footcites_noarg <- lines_with_footcites
     
-    for (n in seq_len(sup_braces_after_footcites)){
-      lines_with_footcites_noarg <-
-        replace_nth_LaTeX_argument(lines_with_footcites_noarg,
-                                   "footcites",
-                                   n = n,
-                                   replacement = "",
-                                   warn = FALSE)
-    }
+    
+    lines_with_footcites_noarg <- 
+      lines_with_footcites %>%
+      gsub(footcite_regex, "\\\\footcites{}", x = ., perl = TRUE)
     
     # Now that footcites are just {} (repeated), find the first char thereafter.
     chars_after_footcites <-
@@ -231,7 +226,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
     footnote_closes_at <- position_of_closing_brace(line = line, prefix = "footnote")
     split_line_after_footnote <- strsplit(gsub("^.*footnote", "", line, perl = TRUE), split = "")[[1]]
 
-    if (length(split_line_after_footnote[footnote_closes_at - 1] != ".") == 0){
+    if (length(split_line_after_footnote[footnote_closes_at - 1L] != ".") == 0L){
       .report_error(error_message = "Couldn't determine where footnotes closed.",
                     context = paste0(split_line_after_footnote,
                                      "\n",
@@ -269,7 +264,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
         
         
         .report_error(context = paste0("\n\\footnote\n         ",
-                                       paste0(split_line_after_footnote[1:footnote_closes_at],
+                                       paste0(split_line_after_footnote[seq_len(footnote_closes_at)],
                                               collapse = ""),
                                        "\n"),
                       line_no = error_position[["line_no"]],
@@ -303,7 +298,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   if (any(or(a1 & !(b1 & b2), 
              b1 & !b2))){
     line_no <- which(or(a1 & !(b1 & b2), 
-                        b1 & !b2))[[1]]
+                        b1 & !b2))[[1L]]
     context <- 
       lines[line_no] 
     .report_error(line_no = line_no,
@@ -313,7 +308,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   }
   
   if (any(grepl("\\footnote{ ", lines, fixed = TRUE))){
-    line_no <- grep("\\footnote{ ", lines, fixed = TRUE)[[1]]
+    line_no <- grep("\\footnote{ ", lines, fixed = TRUE)[[1L]]
     context <- lines[[line_no]]
     .report_error(line_no = line_no,
                   context = context,
@@ -354,6 +349,46 @@ position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, 
   } 
   error_position
 }
+
+next_char_rel_footnotecite <- function(parsed_doc, direction = -1L) {
+  char <- char_no <- GROUP_ID1 <- NULL
+  footnote_start_candidates <-
+    parsed_doc[char == "{" & 
+                 shift(char, n = 1L) == "e" &
+                 shift(char, n = 2L) == "t" &
+                 # Technically this will match
+                 # \footnite but who cares?
+                 shift(char, n = 3L) %chin% c("o", "i") &
+                 shift(char, n = 4L) %chin% c("n", "c") &
+                 shift(char, n = 5L) == "t" &
+                 shift(char, n = 6L) == "o" &
+                 shift(char, n = 7L) == "o" &
+                 shift(char, n = 8L) == "f" &
+                 shift(char, n = 9L) == "\\", 
+               list(char_no, GROUP_ID1)]
+  
+  last_char_nos <-
+    parsed_doc[footnote_start_candidates,
+               on = "GROUP_ID1",
+               nomatch=0L][,
+                           .(last_char_no = max(char_no)),
+                           keyby = "GROUP_ID1"]
+  
+  out <- character(nrow(last_char_nos))
+  
+  for (i in seq_along(out)) {
+    out[i] <- .subset2(parsed_doc[char_no == .subset2(last_char_nos, "last_char_no")[i] + 1L * direction],
+                       "char")
+    j <- 1L * direction
+    while (out[i] %chin% c(" ", "\t", "{")) {
+      out[i] <- .subset2(parsed_doc[char_no == i + j], "char")
+      j + 1L
+    }
+  }
+  out
+}
+
+
 
 
 

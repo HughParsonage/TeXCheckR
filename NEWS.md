@@ -5,12 +5,15 @@
   * `minimal_bib` to produce a minimal bibliography from a spun document.
 * `stringi` and `readr` have been moved to Suggests to minimize compile times (as on Travis-CI)
 * `check_spelling` now skip words 'preceding' an editorial `[sic]`.
+* Experimental utility functions `fill_nth_LaTeX_argument` and `locate_nth_LaTeX_argument`. 
 * Bug fixes:
   * check labels now test for spaces rather than check dashes
   * `lint_bib` does not add commas after `@string` fields.
   * `inputs_of` does not emit arcane warning if multiple `\end{document}`s exist.
   * `check_escapes` do not check content within `tikzpicture` environment
   * `check_dashes` does not check display equation lines.
+  * `check_spelling` honours non-default settings of `dict_lang` in files through `\input` or `\include`
+  * `check_consecutive_words` no longer requires `grattan.cls` to run. Thanks to @jonocarroll for reporting.
 
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected

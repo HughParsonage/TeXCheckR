@@ -19,8 +19,7 @@ has the entire contents of the argument in \code{extract} column. If \code{TRUE}
 the contents is split as it is in the document; arguments over multiple lines in the 
 document are split over multiple rows in the \code{data.table} returned.}
 
-\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}). 
-If not supplied (the default) the contents of \code{tex_lines} are passed through
+\item{parsed_doc}{A parsed document (from \code{\link{parse_tex}}).
 \code{parse_tex}. Use this argument if the cost of running \code{parse_tex} is 
 expensive (such as repeatedly over the same document).}
 }

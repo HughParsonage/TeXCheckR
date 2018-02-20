@@ -46,7 +46,7 @@ report2console <- function(file = NULL,
         sep = "")
   }
   
-  if (rstudio && !is.null(file) && rstudioapi::isAvailable()) {
+  if (rstudio && !is.null(file) && interactive() && rstudioapi::isAvailable()) {
     rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))
   }
   

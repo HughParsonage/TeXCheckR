@@ -21,6 +21,7 @@ check_unclosed_parentheses <- function(filename,
     
     final_parentheses <- cumsum(tex_line_chars == "(") - cumsum(tex_line_chars == ")")
     
+    line_no <- NULL
     parsed <- 
       data.table(char = tex_line_chars,
                  char_no = seq_along(tex_line_chars),
@@ -41,8 +42,8 @@ check_unclosed_parentheses <- function(filename,
         print(parsed[line_no == wrong_line_no])
       }
       column <- nrow(parsed[line_no == wrong_line_no][char_no <= wrong_char_no])
-      context <- paste0(head(parsed[line_no == wrong_line_no][["char"]], 
-                             column + 80L), 
+      context <- paste0(utils::head(parsed[line_no == wrong_line_no][["char"]], 
+                                    column + 80L), 
                         collapse = "")
       
       report2console(file = filename,

@@ -351,6 +351,7 @@ position_end_of_footnote <- function(n = 0L, orig_lines, must.be.punct = FALSE, 
 }
 
 next_char_rel_footnotecite <- function(parsed_doc, direction = -1L) {
+  char <- char_no <- GROUP_ID1 <- NULL
   footnote_start_candidates <-
     parsed_doc[char == "{" & 
                  shift(char, n = 1L) == "e" &

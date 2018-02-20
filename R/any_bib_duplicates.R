@@ -91,7 +91,7 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     .[, Year := if_else(is.na(year),
                         if_else(is.na(date),
                                 NA_character_,
-                                substr(date, 0, 4)), 
+                                substr(date, 0L, 4L)), 
                         as.character(year))] %>%
     .[, Author := rev_forename_surname_bibtex(author)] %>%
     .[, Title := tolower(title)] %>%
@@ -108,9 +108,12 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
       .[dups_tail | dups_head, .(key, Author, Title, date, year)] %>%
       .[order(Author, Title)]
     
-    stopifnot(nrow(DT_with_all_duplicates) %% 2 == 0, nrow(DT_with_all_duplicates) > 1)
+    stopifnot(nrow(DT_with_all_duplicates) %% 2L == 0L,
+              nrow(DT_with_all_duplicates) > 1L)
     
-    .report_error(line_no = NULL, context = "Possible duplicates in bibliographies.", error_message = "Possible duplicates in bibliography.")
+    .report_error(line_no = NULL,
+                  context = "Possible duplicates in bibliographies.",
+                  error_message = "Possible duplicates in bibliography.")
     
     for (dup in 1:(nrow(DT_with_all_duplicates) / 2)){
       if (dup == 6){
@@ -148,12 +151,12 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
     
     # If first author is dup in the same file, use that file,
     # else use the second file (where the dup is more likely?)
-    if (n_first_author_files == 1) {
+    if (n_first_author_files == 1L) {
       the_file <- first_author_with_dup[["bib_file"]]
       line_no <- first_author_with_dup[["line_no"]]
     } else {
-      the_file <- first_author_with_dup[["bib_file"]][2]
-      line_no <- first_author_with_dup[["line_no"]][2]
+      the_file <- first_author_with_dup[["bib_file"]][2L]
+      line_no <- first_author_with_dup[["line_no"]][2L]
     }
     
     print(authors_with_dups[(bad), .(bib_file, line_no, key, value, authors)])

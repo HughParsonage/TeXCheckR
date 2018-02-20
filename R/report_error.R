@@ -48,10 +48,9 @@ report2console <- function(file = NULL,
         bold_red(advice), "\n",
         sep = "")
   }
-  
-  if (rstudio && !is.null(file) && rstudioapi::isAvailable()) {
-    rstudioapi::navigateToFile(file, line = line_no,
-                               column = if (is.null(column)) 1L else as.integer(column))
+
+  if (rstudio && !is.null(file) && interactive() && rstudioapi::isAvailable()) {
+    rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))
   }
   
   # To return the directory if applicable

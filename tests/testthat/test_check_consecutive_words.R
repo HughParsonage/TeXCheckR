@@ -1,6 +1,7 @@
 context("check_consecutive_words.R")
 
 test_that("Error on known document", {
+  skip("Too noisy")
   skip_on_cran()
   skip_on_travis()
   skip_if_not(nzchar(Sys.which("pdftotext")))

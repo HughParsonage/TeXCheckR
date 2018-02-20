@@ -43,13 +43,15 @@ report2console <- function(file = NULL,
       !exists("TESTTHAT") && !nzchar(Sys.getenv("TESTTHAT"))) {
     cat("\n", 
         bold_red(error_message), "\n",
-        bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
+        bold_red(symbol$cross), " ", Red(line_no), ": ",
+        unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
         bold_red(advice), "\n",
         sep = "")
   }
   
   if (rstudio && !is.null(file) && rstudioapi::isAvailable()) {
-    rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))
+    rstudioapi::navigateToFile(file, line = line_no,
+                               column = if (is.null(column)) 1L else as.integer(column))
   }
   
   # To return the directory if applicable

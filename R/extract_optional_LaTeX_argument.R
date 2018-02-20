@@ -11,7 +11,7 @@ extract_optional_LaTeX_argument <- function(tex_lines,
                                             command_name,
                                             n = 1L, 
                                             by.line = FALSE) {
-  tex_lines <- strip_comments(tex_lines)
+  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
   
   char <- char_no <- line_no <- NULL
   parsed_doc <- parse_tex(tex_lines)

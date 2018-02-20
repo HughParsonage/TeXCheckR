@@ -5,6 +5,7 @@
   * `minimal_bib` to produce a minimal bibliography from a spun document.
 * `stringi` and `readr` have been moved to Suggests to minimize compile times (as on Travis-CI)
 * `check_spelling` now skip words 'preceding' an editorial `[sic]`.
+* Experimental utility functions `fill_nth_LaTeX_argument` and `locate_nth_LaTeX_argument`. 
 * Bug fixes:
   * check labels now test for spaces rather than check dashes
   * `lint_bib` does not add commas after `@string` fields.

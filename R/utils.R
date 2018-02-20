@@ -88,10 +88,6 @@ nth_min.int <- function(x, n){
   sort.int(x)[n]
 }
 
-strip_comments <- function(lines) {
-  sub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
-}
-
 move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$"){
   x <- list.files(path = from.dir,
                   pattern = pattern,

@@ -212,5 +212,28 @@ test_that("Optional containing square brackets", {
   expect_equal(out[["extract"]], "{these [are] optional arguments}")
 })
 
+test_that("% et sqq should not be included in extract", {
+  out <- extract_mandatory_LaTeX_argument(c("\\abc{de%FGH}", "fgh}"), command_name = "abc")
+  expect_equal(out[["extract"]], "defgh")
+  
+  out <- extract_optional_LaTeX_argument(c("\\documentclass[", 
+                                           "11pt,%", 
+                                           "parskip=half-",
+                                           "]{scrrpert}"),
+                                         command_name = "documentclass")
+  expect_equal(out[["extract"]], "11pt,parskip=half-")
+  
+  
+  out <- extract_mandatory_LaTeX_argument(c("\\ab[% \\ab{x}",
+                                            "@\\ab{1}]{2}"),
+                                          "ab")
+  expect_equal(out[["extract"]], c("2", "1"))
+  
+  out <- extract_optional_LaTeX_argument(c("\\ab[% \\ab{x}",
+                                           "@\\ab{1}]{2}"),
+                                         "ab")
+  expect_equal(out[["extract"]], "@\\ab{1}")
+})
+
 
 

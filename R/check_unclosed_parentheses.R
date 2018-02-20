@@ -27,24 +27,13 @@ check_unclosed_parentheses <- function(filename,
                  char_no = seq_along(tex_line_chars),
                  line_no = rep(seq_along(tex_lines), times = tex_lines_nchar),
                  parenthesis_group = final_parentheses)
-    
-    
-    
-    
-    tex_lines <- gsub("\\b([0-9]+)\\)", "\\1.", tex_lines, perl = TRUE)
-    
-    
-    tex_lines <- gsub("\\b([A-Za-z])\\)", "\\1.", tex_lines, perl = TRUE)
-    
-    if (last(final_parentheses) > 0L) {
+    final_paren_group <- final_parentheses[length(final_parentheses)]
+    if (final_paren_group > 0L) {
       # Opens
       char_no <- max(which(and(final_parentheses == last(final_parentheses),
                                shift(final_parentheses, fill = 0L) == 0L)))
       stop(parsed[char_no][["line_no"]], " contains parenthesis that does not close.")
-    } else {
-      
-      
-      
+    } else if (final_paren_group < 0L) {
       # Closes
       wrong_i <- which.min(final_parentheses)
       wrong_line_no <- parsed[wrong_i][["line_no"]]
@@ -75,8 +64,8 @@ check_unclosed_parentheses <- function(filename,
 }
 
 exclude_lists <- function(tex_chars, depth = 0L, prefix_type = c("1", "a", "A")) {
-  cat(tex_chars, sep = "")
-  cat("\n")
+  # cat(tex_chars, sep = "")
+  # cat("\n")
   final_parentheses <- cumsum(tex_chars == "(") - cumsum(tex_chars == ")")
   
   if (min(final_parentheses) < 0L) {

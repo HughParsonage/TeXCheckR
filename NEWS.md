@@ -3,9 +3,12 @@
 * New functions:
   * `split_report` to split a report into chapters.
   * `minimal_bib` to produce a minimal bibliography from a spun document.
+  * (Unexported) `check_unclosed_parentheses` to check (some) instances of unclosed or unopened parentheses.
 * `stringi` and `readr` have been moved to Suggests to minimize compile times (as on Travis-CI)
 * `check_spelling` now skip words 'preceding' an editorial `[sic]`.
+* `halt` in `report_error` now provides an option to not halt if a check fails.
 * Experimental utility functions `fill_nth_LaTeX_argument` and `locate_nth_LaTeX_argument`. 
+
 * Bug fixes:
   * check labels now test for spaces rather than check dashes
   * `lint_bib` does not add commas after `@string` fields.

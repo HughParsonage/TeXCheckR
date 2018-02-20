@@ -93,7 +93,8 @@ test_that("Should error", {
 })
 
 test_that("RStudio API", {
-  skip_if_not(!interactive())
+  skip_on_cran()
+  skip_if_not(interactive())
   expect_error(check_spelling("spelling/typo-suggest.tex", rstudio = TRUE),
                regexp = "Spellcheck")
   expect_false(Sys.info()['sysname'] %in% "Windows" &&

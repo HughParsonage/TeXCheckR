@@ -12,6 +12,7 @@
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 #' @param silent (logical, default: \code{FALSE}) Suppress all output.
+#' @param halt Should failures halt via \code{stop} or just display a message in the console?
 #' @rdname report_error
 #' @export
 report2console <- function(file = NULL,
@@ -25,7 +26,8 @@ report2console <- function(file = NULL,
                            extra_cat_post = NULL,
                            rstudio = FALSE,
                            log_file = NULL,
-                           silent = FALSE) {
+                           silent = FALSE,
+                           halt = getOption("TeXCheckR.halt_on_error", FALSE)) {
   # Printing requirements:
   ## 1. Cross
   ## 2. Line no (if applicable)
@@ -78,6 +80,11 @@ report2console <- function(file = NULL,
                append = append)
     }, add = TRUE)
   }
+  
+  if (halt) {
+    stop(error_message)
+  }
+  
 }
 
 

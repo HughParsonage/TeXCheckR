@@ -8,6 +8,7 @@ check_unclosed_parentheses <- function(filename,
   if (is.null(tex_lines)) {
     tex_lines <- read_lines(filename)
   }
+  tex_lines <- strip_comments(tex_lines)
   tex_lines_nchar <- nchar(tex_lines)
   
   # equations like \(x^2 + y^2 = h^2\)

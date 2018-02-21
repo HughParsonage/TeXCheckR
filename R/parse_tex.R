@@ -11,7 +11,9 @@
 #' @export
 
 parse_tex <- function(tex_lines) {
-  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE), use.names = FALSE, recursive = FALSE)
+  trailing_newlines <- max(which(tex_lines != ""))
+  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE),
+                                  use.names = FALSE, recursive = FALSE)
   nchar_tex_lines <- nchar(tex_lines)
   n_char <- sum(nchar(tex_lines))
   
@@ -50,19 +52,18 @@ parse_tex <- function(tex_lines) {
   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
   # 0000000000000000000111100000000000222
   
-  prev.datatable.auto.index <- getOption("datatable.auto.index")
-  on.exit(options(datatable.auto.index = prev.datatable.auto.index), add = TRUE)
-  options(datatable.auto.index = FALSE)
+  setindexv(out, "tex_group")
   for (j in seq_max_tex_group) {
     tgj <- tg[j]
 
     out[tex_group <= j, (tgj) := cumsum(openers & tex_group == j)]
     
+    which_tex_group_geq_j <- which(tex_group >= j)
+    
     GROUP_IDj <- GROUP_IDz[j]
     out[tex_group == j, (GROUP_IDj) := .GRP, by = c("optional_tex_group", tgj)]
     
-    which_tex_group_geq_j <- which(tex_group >= j)
-    out[(which_tex_group_geq_j), (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
+    out[tex_group >= j, (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
   }
   
   # Uniquely identify optional groups
@@ -74,6 +75,7 @@ parse_tex <- function(tex_lines) {
   og <- sprintf("og%s", seq_max_opt_group)
   OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)
   
+  setindexv(out, "optional_tex_group")
   for (k in seq_max_opt_group) {
     ogk <- og[k]
     
@@ -83,10 +85,11 @@ parse_tex <- function(tex_lines) {
     out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c(ogk)]
     
     which_opt_group_geq_k <- which(optional_tex_group >= k)
-    out[(which_opt_group_geq_k), (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
+    
+    out[optional_tex_group >= k,
+        (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
   }
   
-  options(datatable.auto.index = prev.datatable.auto.index)
   out
 }
 
@@ -102,7 +105,7 @@ parse_tex <- function(tex_lines) {
 #            recursive = FALSE)
 #   nchar_tex_lines <- nchar(tex_lines)
 #   n_char <- sum(nchar(tex_lines))
-#   
+# 
 #   opener <- Tex_line_split_unlist == "{"
 #   closer <- Tex_line_split_unlist == "}"
 #   opener_optional <- Tex_line_split_unlist == "["
@@ -110,7 +113,7 @@ parse_tex <- function(tex_lines) {
 #   tex_group <- cumsum(opener) - cumsum(closer) + closer
 #   optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
 #   openers <- NULL
-#   
+# 
 #   out <- list(char_no = seq_len(n_char),
 #               line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
 #               column = unlist(lapply(nchar_tex_lines, seq_len), use.names = FALSE),
@@ -121,56 +124,68 @@ parse_tex <- function(tex_lines) {
 #               closer_optional = closer_optional,
 #               tex_group = tex_group,
 #               optional_tex_group = optional_tex_group)
-#   
+# 
 #   # Nested tex group -- likely to be small
 #   # 0L to ensure blank documents don't cause obscure errors
 #   max_tex_group <- max(tex_group, 0L)
-#   
+# 
 #   seq_max_tex_group <- seq_len(max_tex_group)
-#   
+# 
 #   tg <- sprintf("tg%s", seq_max_tex_group)
 #   GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
 #   vacant_entry <- rep_len(NA_integer_, n_char)
 # 
 #   for (j in seq_max_tex_group) {
 #     tgj <- tg[j]
-#     
+# 
 #     out[[tgj]] <- vacant_entry
 #     tg_leq_j <- .subset2(out, "tex_group") <= j
 #     out[[tgj]][tg_leq_j] <- cumsum(openers[tg_leq_j] & tex_group[tg_leq_j] == j)
-#     
+# 
 #     GROUP_IDj <- GROUP_IDz[j]
 #     out[[GROUP_IDj]] <- vacant_entry
-#     out[[GROUP_IDj]] <- cumsum()
+#     out[[GROUP_IDj]] <- fmatch()
 #     out[tex_group == j, (GROUP_IDj) := .GRP, by = c("optional_tex_group", tgj)]
-#     
+# 
 #     which_tex_group_geq_j <- which(tex_group >= j)
 #     out[(which_tex_group_geq_j), (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
 #   }
-#   
+# 
 #   # Uniquely identify optional groups
 #   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
 #   # 0011100000022223333000000000445554000
-#   
+# 
 #   max_opt_group <- max(optional_tex_group, 0L)
 #   seq_max_opt_group <- seq_len(max_opt_group)
 #   og <- sprintf("og%s", seq_max_opt_group)
 #   OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)
-#   
+# 
 #   for (k in seq_max_opt_group) {
 #     ogk <- og[k]
-#     
+# 
 #     out[optional_tex_group <= k, (ogk) := cumsum(opener_optional & optional_tex_group == k)]
-#     
+# 
 #     OPT_GROUP_IDj <- OPT_GROUP_IDz[k]
 #     out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c(ogk)]
-#     
+# 
 #     which_opt_group_geq_k <- which(optional_tex_group >= k)
 #     out[(which_opt_group_geq_k), (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
 #   }
-#   
+# 
 #   out
 # }
+
+unparse <- function(parsed) {
+  if ("line_no" %notchin% names(parsed)) {
+    print(parsed)
+  }
+  
+  out_text <- parsed[, .(text = paste0(char, collapse = "")), keyby = "line_no"]
+  # Fill in blank lines
+  out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n
+  out[.subset2(out_text, "line_no")] <- .subset2(out_text, "text")
+  out
+}
 
 
 

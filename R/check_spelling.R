@@ -189,14 +189,14 @@ check_spelling <- function(filename,
   # inputs and includes
   inputs <- inputs_of(filename)
   
-  if (!pre_release) {
-    commands_to_ignore <-
+  commands_to_ignore <-
+    if (!pre_release) {
       lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
-      gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
-      stri_trim_both %>%
-      strsplit(split = " ", fixed = TRUE) %>%
-      unlist(use.names = FALSE)
-  }
+        gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
+        stri_trim_both %>%
+        strsplit(split = " ", fixed = TRUE) %>%
+        unlist(use.names = FALSE)
+    }
 
   if (length(inputs) > 0) {
     # Recursively check
@@ -313,16 +313,10 @@ check_spelling <- function(filename,
                                       command_name = "[CVcv]refrange",
                                       n = 2L,
                                       replacement = "second range key")
-  # Ignore captionsetups
-  if (any(grepl("\\captionsetup", lines, fixed = TRUE))) {
-    lines <- fill_nth_LaTeX_argument(parse_tex(lines), 
-                                     "captionsetup", 
-                                     return.text = TRUE)
-  }
-
+  
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
-
+  
   if (pre_release && not_length0(ignore_spelling_in_line_no)){
     line_no <- ignore_spelling_in_line_no[1]
     context <- lines[line_no]
@@ -331,14 +325,19 @@ check_spelling <- function(filename,
                   error_message = "pre_release = TRUE but 'ignore spelling in' line is present.")
     stop("pre_release = TRUE but 'ignore spelling in' line was present.")
   }
-
-  if (!pre_release){
-    for (command in c(ignore_spelling_in, commands_to_ignore)) {
-      lines <- replace_nth_LaTeX_argument(lines,
-                                          command_name = command,
-                                          replacement = "ignored")
+  
+  parsed_doc <- parse_tex(lines)
+  for (command in c(ignore_spelling_in, commands_to_ignore,
+                    "captionsetup")) {
+    if (any(grepl(sprintf("\\%s{", command), lines, fixed = TRUE))) {
+      parsed_doc <- fill_nth_LaTeX_argument(parsed_doc, 
+                                            command, 
+                                            return.text = FALSE)
     }
   }
+  lines <- unparse(parsed_doc)
+
+  
 
   # Now we can strip comments as all the directives have been used
   lines <- strip_comments(lines)

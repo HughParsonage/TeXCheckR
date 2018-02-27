@@ -1,7 +1,7 @@
 #' Check cross-references
 #' @description Check cross-references that are repetitive or (in the case of \verb{cleveref} and \verb{varioref}) incorrect case.
 #' @param filename A LaTeX file
-#' @param case One of \code{NA, "upper", "lower"}. If \code{NA}, the default,
+#' @param permitted.case One of \code{NA, "upper", "lower"}. If \code{NA}, the default,
 #' both \verb{\Cref} and \verb{\cref} are permitted, but not in the same document.
 #' If \code{upper}, only \verb{\Cref} 
 #' is permitted; if \code{lower}, only \verb{\cref}.

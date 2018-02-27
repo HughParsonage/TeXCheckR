@@ -7,3 +7,4 @@
 ^deploy.sh$
 ^doc$
 ^cran-comments\.md$
+^revdep$

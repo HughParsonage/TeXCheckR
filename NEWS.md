@@ -17,6 +17,9 @@
   * `check_dashes` does not check display equation lines.
   * `check_spelling` honours non-default settings of `dict_lang` in files through `\input` or `\include`
   * `check_consecutive_words` no longer requires `grattan.cls` to run. Thanks to @jonocarroll for reporting.
+  
+* Internal:
+  * `check_xrefs` defaults now permits lowercase forms. By default, consistency is enforced (whether upper or lower).
 
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected

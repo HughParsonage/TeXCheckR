@@ -31,7 +31,7 @@ after_success:
 - Rscript -e 'devtools::test()'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "true" || test $TRAVIS_BRANCH == "master" && Rscript -e 'covr::codecov()'
 - test $TRAVIS_R_VERSION_STRING != "release" && Rscript -e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = c("-t", "--master=en_GB"))'
-- test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+- test $TRAVIS_R_VERSION_STRING == "releasze" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:
   global:

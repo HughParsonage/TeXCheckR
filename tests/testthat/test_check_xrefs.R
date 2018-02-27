@@ -8,7 +8,7 @@ test_that("Check case-sensitivity", {
   expect_null(check_xrefs("./check-xrefs/case-sensitive-C.tex", permitted.case = "lower"))
   expect_null(check_xrefs("./check-xrefs/case-sensitive-C.tex"))
   expect_error(check_xrefs("./check-xrefs/case-sensitive-both.tex"))
-  expect_null(check_xrefs("./check-xrefs/case-sensitive-C.tex"))
+  expect_error(check_xrefs("./check-xrefs/case-sensitive-both.tex", permitted.case = NULL))
 })
 
 test_that("Literal xrefs are detected", {

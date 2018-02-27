@@ -89,6 +89,7 @@ check_spelling <- function(filename,
   lines <- veto_sic(lines)
   # Smart quotes
   lines <- gsub(parse(text = paste0("'", "\u2019", "'")), "'", lines, fixed = TRUE)
+  lines <- gsub(parse(text = paste0("'", "\u2018", "'")), "'", lines, fixed = TRUE)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -136,6 +137,8 @@ check_spelling <- function(filename,
   lines <- gsub("\\{.*\\.bib\\}",
                 "\\{bibliography.bib\\}",
                 lines)
+  # e.g. printbibliography[prenote=customnote]
+  lines[grepl("\\\\printbibliography", lines, perl = TRUE)] <- ""
 
   if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
     document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)

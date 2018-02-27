@@ -11,6 +11,23 @@
 #' @export
 
 parse_tex <- function(tex_lines) {
+  if (!length(tex_lines)) {
+    return(data.table())
+  }
+  
+  if (!any(nzchar(tex_lines))) {
+    return(data.table(char_no = seq_along(tex_lines),
+                      line_no = seq_along(tex_lines),
+                      column = 1L,
+                      char = "",
+                      openers = FALSE,
+                      closers = FALSE,
+                      opener_optional = FALSE,
+                      closer_optional = FALSE,
+                      tex_group = 0L,
+                      optional_tex_group = 0L))
+  }
+  
   trailing_newlines <- max(which(tex_lines != ""))
   Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE),
                                   use.names = FALSE, recursive = FALSE)
@@ -176,7 +193,8 @@ parse_tex <- function(tex_lines) {
 # }
 
 unparse <- function(parsed) {
-  out_text <- parsed[, .(text = paste0(char, collapse = "")), keyby = "line_no"]
+  char <- NULL
+  out_text <- parsed[, .(text = paste0(get("char", inherits = FALSE), collapse = "")), keyby = "line_no"]
   # Fill in blank lines
   out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n
   out[.subset2(out_text, "line_no")] <- .subset2(out_text, "text")

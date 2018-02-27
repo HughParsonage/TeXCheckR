@@ -27,6 +27,9 @@ r_packages:
 - covr
 - drat
 
+after_failure:
+- Rscript -e 'devtools::test(filter = "biber")'
+
 after_success:
 - Rscript -e 'devtools::test()'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "true" || test $TRAVIS_BRANCH == "master" && Rscript -e 'covr::codecov()'

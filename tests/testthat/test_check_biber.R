@@ -5,13 +5,9 @@ test_that("Couldn't find an entry for", {
   skip_on_cran()
   get_wd <- getwd()
   setwd("check-biber/lost-entry/")
-  if (requireNamespace("tinytex", quietly = TRUE) &&
-      nzchar(Sys.which("tlmgr"))) {
-    tinytex::pdflatex("a.tex", bib_engine = "biber")
-  } else {
-    invisible(system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE))
-    invisible(system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE))
-  }
+  
+  invisible(system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE))
+  invisible(system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE))
   expect_error(check_biber(), "Biber emitted a warning")
   Sys.sleep(0.5)
   # Put this here so different runs of pdflatex don't affect
@@ -28,13 +24,8 @@ test_that("No journal title", {
   skip_on_cran()
   get_wd <- getwd()
   setwd("check-biber/no-journal-title/")
-  if (requireNamespace("tinytex", quietly = TRUE) &&
-      nzchar(Sys.which("tlmgr"))) {
-    tinytex::pdflatex("a.tex", bib_engine = "biber")
-  } else {
-    invisible(system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE))
-    invisible(system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE))
-  }
+  invisible(system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE))
+  invisible(system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE))
   invisible(expect_error(check_biber(), regexp = "Biber emitted a warning"))
   Sys.sleep(0.5)
   # Put this here so different runs of pdflatex don't affect

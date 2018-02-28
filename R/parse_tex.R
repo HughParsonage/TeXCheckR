@@ -193,7 +193,6 @@ parse_tex <- function(tex_lines) {
 # }
 
 unparse <- function(parsed) {
-  char <- NULL
   out_text <- parsed[, .(text = paste0(get("char", inherits = FALSE), collapse = "")), keyby = "line_no"]
   # Fill in blank lines
   out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n

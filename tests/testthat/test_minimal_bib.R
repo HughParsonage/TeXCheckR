@@ -2,6 +2,7 @@ context("Minimal bib")
 
 test_that("Error handling", {
   skip_on_cran()
+  skip_on_travis()
   skip_if_not(nzchar(Sys.which("pdflatex")))
   skip_if_not(nzchar(Sys.which("biber")))
   

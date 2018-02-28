@@ -17,6 +17,7 @@ r_packages:
 - drat
 
 after_failure:
+- Rscript -e 'print(Sys.which("biber"))'
 - Rscript -e 'devtools::test(filter = "biber")'
 
 after_success:

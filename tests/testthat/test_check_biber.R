@@ -20,6 +20,19 @@ test_that("Couldn't find an entry for", {
   setwd(get_wd)
 })
 
+test_that("Travis: couldn't find an entry for:", {
+  skip_on_cran()
+  if (!identical(Sys.getenv("TRAVIS"), "true")) {
+    library(tinytex)
+    setwd("check-biber/lost-entry/")
+    on.exit(setwd("../.."))
+    pdflatex("a.tex", bib_engine = "biber")
+    expect_true(TRUE)
+    setwd("../..")
+  }
+})
+
+
 test_that("No journal title", {
   skip_if_not(nzchar(Sys.which("biber")))
   skip_on_cran()

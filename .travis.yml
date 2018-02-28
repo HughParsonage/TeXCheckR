@@ -10,7 +10,7 @@ warnings_are_errors: true
 
 before_install:
 - Rscript -e 'if (!requireNamespace("tinytex", quietly = T)) install.packages("tinytex")'
-- Rscript -e 'tinytex::install_tinytex()'
+- Rscript -e 'library(tinytex);install_tinytex();pdflatex("./tests/testthat/check-biber/no-journal-title/a.tex")'
 
 r_packages:
 - covr

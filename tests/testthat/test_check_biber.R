@@ -22,7 +22,7 @@ test_that("Couldn't find an entry for", {
 
 test_that("Travis: couldn't find an entry for:", {
   skip_on_cran()
-  if (!identical(Sys.getenv("TRAVIS"), "true")) {
+  if (identical(Sys.getenv("TRAVIS"), "true")) {
     library(tinytex)
     setwd("check-biber/lost-entry/")
     on.exit(setwd("../.."))

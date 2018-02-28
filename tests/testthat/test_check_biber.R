@@ -3,12 +3,12 @@ context("check biber")
 test_that("Couldn't find an entry for", {
   skip_if_not(nzchar(Sys.which("biber")))
   skip_on_cran()
-  skip_on_travis()
+  # skip_on_travis()
   get_wd <- getwd()
   setwd("check-biber/lost-entry/")
   
-  invisible(system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE))
-  invisible(system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE))
+  system2(command = "pdflatex", c("-draftmode", "-halt-on-error", "a.tex"), stdout = TRUE)
+  system2(Sys.which("biber"), args = c("--onlylog",  "a"), stdout = TRUE)
   expect_error(check_biber(), "Biber emitted a warning")
   Sys.sleep(0.5)
   # Put this here so different runs of pdflatex don't affect
@@ -18,18 +18,6 @@ test_that("Couldn't find an entry for", {
          file.remove, 
          FALSE)
   setwd(get_wd)
-})
-
-test_that("Travis: couldn't find an entry for:", {
-  skip_on_cran()
-  if (identical(Sys.getenv("TRAVIS"), "true")) {
-    library(tinytex)
-    setwd("check-biber/lost-entry/")
-    on.exit(setwd("../.."))
-    pdflatex("a.tex", bib_engine = "biber")
-    expect_error(check_biber())
-    setwd("../..")
-  }
 })
 
 

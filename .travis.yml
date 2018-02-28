@@ -20,7 +20,9 @@ after_failure:
 - Rscript -e 'devtools::test(filter = "biber")'
 
 after_success:
+- Rscript -e 'if (!requireNamespace("roxygen2")) install.packages("roxygen2")'
 - Rscript -e 'devtools::test()'
+- Rscript -e 'print(Sys.which("biber"))'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "true" || test $TRAVIS_BRANCH == "master" && Rscript -e 'covr::codecov()'
 - test $TRAVIS_R_VERSION_STRING != "release" && Rscript -e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = c("-t", "--master=en_GB"))'
 - test $TRAVIS_R_VERSION_STRING == "releasze" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash

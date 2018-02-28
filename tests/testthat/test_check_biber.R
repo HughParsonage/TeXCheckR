@@ -27,7 +27,7 @@ test_that("Travis: couldn't find an entry for:", {
     setwd("check-biber/lost-entry/")
     on.exit(setwd("../.."))
     pdflatex("a.tex", bib_engine = "biber")
-    expect_true(TRUE)
+    expect_error(check_biber())
     setwd("../..")
   }
 })

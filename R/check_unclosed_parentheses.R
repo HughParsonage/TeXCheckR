@@ -31,8 +31,9 @@ check_unclosed_parentheses <- function(filename,
     final_paren_group <- final_parentheses[length(final_parentheses)]
     if (final_paren_group > 0L) {
       # Opens
+      
       char_no <- max(which(and(final_parentheses == last(final_parentheses),
-                               shift(final_parentheses, fill = 0L) == 0L)))
+                               final_parentheses > shift(final_parentheses, fill = 0L))))
       stop(parsed[char_no][["line_no"]], " contains parenthesis that does not close.")
     } else if (final_paren_group < 0L) {
       # Closes

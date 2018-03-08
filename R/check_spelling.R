@@ -109,7 +109,11 @@ check_spelling <- function(filename,
 
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
-
+  
+  # TODO: make this more general
+  # Avoid getting etcs in lines
+  lines <- gsub("-etc-", "-ETC-", lines, fixed = TRUE)
+  
   etcs_pattern <- "\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b"
   if (check_etcs && any(grepl(etcs_pattern, strip_comments(lines), perl = TRUE))){
     line_no <- grep(etcs_pattern, strip_comments(lines), perl = TRUE)[[1]]

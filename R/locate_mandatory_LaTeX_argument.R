@@ -197,7 +197,7 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
       .[, .(char_no_min = min(char_no),
             char_no_max = max(char_no),
             command = return_first_nonNA(command),
-            command_no = return_first_nonNA(command_no)), 
+            command_no = return_first_nonNA(command_no)),
         by = c("GROUP_LEVEL", "id_at_group_level")] %>%
       .[, command_no_t := fill_blanks(command_no)] %>%
       # When command isn't NA, that's the correct GROUP LEVEL and 

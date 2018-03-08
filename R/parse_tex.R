@@ -27,7 +27,7 @@ parse_tex <- function(tex_lines) {
                       tex_group = 0L,
                       optional_tex_group = 0L))
   }
-  
+  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
   trailing_newlines <- max(which(tex_lines != ""))
   Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE),
                                   use.names = FALSE, recursive = FALSE)

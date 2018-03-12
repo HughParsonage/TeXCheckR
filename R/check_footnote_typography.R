@@ -68,8 +68,6 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
-  
-<<<<<<< HEAD
 
   # End of equation preceded by punctuation treat as punctuation
   lines <- gsub(".\\]", ".", lines, fixed = TRUE)
@@ -77,11 +75,7 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   # Don't necessarily error on \end{itemize} and friends
   lines <- gsub("\\\\end\\{((?:itemize)|(?:enumerate)|(?:description))\\}", "", lines, perl = TRUE)
   
-=======
-  # End of equation preceded by punctuation treat as punctuation
-  lines <- gsub(".\\]", ".", lines, fixed = TRUE)
-  
->>>>>>> refs/remotes/origin/master
+
   # More than one footnote on a line won't be good.
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,

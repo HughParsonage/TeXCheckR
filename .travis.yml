@@ -1,38 +1,32 @@
 language: r
 cache: packages
+r: 
+- release
+- devel
+sudo: true
+latex: false
+pandoc: false
 warnings_are_errors: true
+
 before_install:
-- tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
-  needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize
-- Rscript -e 'if (!requireNamespace("fastmatch", quietly = TRUE)) install.packages("fastmatch")'
-- Rscript -e 'if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")'
-- Rscript -e 'if (!requireNamespace("magrittr", quietly = TRUE)) install.packages("magrittr")'
-- Rscript -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")'
-- Rscript -e 'if (!requireNamespace("hunspell", quietly = TRUE)) install.packages("hunspell")'
-- Rscript -e 'if (!requireNamespace("clisymbols", quietly = TRUE)) install.packages("clisymbols")'
-- Rscript -e 'if (!requireNamespace("crayon", quietly = TRUE)) install.packages("crayon")'
-- Rscript -e 'if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")'
-- Rscript -e 'if (!requireNamespace("zoo", quietly = TRUE)) install.packages("zoo")'
-- Rscript -e 'if (!requireNamespace("stringi", quietly = TRUE)) install.packages("stringi")'
-- Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
-- Rscript -e 'devtools::install_github("hughparsonage/hutils")'
-addons:
-  apt:
-    packages:
-    - libhunspell-dev
-r_binary_packages:
-- devtools
-- roxygen2
-- hunspell
+- Rscript -e 'if (!requireNamespace("tinytex", quietly = T)) install.packages("tinytex")'
+- Rscript -e 'library(tinytex);install_tinytex(force = T);pdflatex("./tests/testthat/check-biber/no-journal-title/a.tex", engine_args = "-interaction=batchmode", bib_engine = "biber")'
 
 r_packages:
 - covr
 - drat
 
+after_failure:
+- Rscript -e 'print(Sys.which("biber"))'
+- Rscript -e 'devtools::test(filter = "biber")'
+
 after_success:
+- Rscript -e 'if (!requireNamespace("roxygen2", quietly = T)) install.packages("roxygen2", quiet = TRUE)'
 - Rscript -e 'devtools::test()'
-- Rscript -e 'covr::codecov()'
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
+- Rscript -e 'print(Sys.which("biber"))'
+- test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "true" || test $TRAVIS_BRANCH == "master" && Rscript -e 'covr::codecov()'
+- test $TRAVIS_R_VERSION_STRING != "release" && Rscript -e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = c("-t", "--master=en_GB"))'
+- test $TRAVIS_R_VERSION_STRING == "releasze" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 env:
   global:

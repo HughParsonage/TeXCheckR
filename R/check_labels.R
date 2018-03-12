@@ -22,15 +22,30 @@ check_labels <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- read_lines(filename)
+  orig <- lines <- read_lines(filename)
 
   lines <- strip_comments(lines)
 
-  if (any(lines == "\\begin{document}")){
-    lines <- lines[seq_along(lines) > which(lines == "\\begin{document}")]
+  begin_at <- which(lines == "\\begin{document}")
+  
+  space_after_label <-"(\\\\label[^\\}]*)\\s[^\\}]*\\}"
+  if (any(grepl(space_after_label, stri_trim_both(lines), perl = TRUE))) {
+    line_no <- grep(space_after_label, stri_trim_both(lines), perl = TRUE)[[1]]
+    nchars_b4 <- nchar(sub(paste0("^(.*)", space_after_label), "\\1\\2", lines[line_no], perl = TRUE))
+    context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
+                      paste0(rep(" ", nchars_b4 + 5 + nchar(line_no)),
+                             collapse = ""),
+                      "^^")
+    .report_error(line_no = line_no,
+                  context = context,
+                  error_message = "Space somewhere after \\label . Spaces are not permitted in \\label.")
+    stop("Space somewhere after \\label. Spaces are not permitted in \\label.")
   }
 
-  lines_with_labels <- grep("\\label", lines, fixed = TRUE)
+  lines_with_labels <- grep("\\label{", lines, fixed = TRUE)
+  if (length(begin_at)) {
+    lines_with_labels <- lines_with_labels[lines_with_labels > begin_at]
+  }
   label_contents <-
     lines[lines_with_labels] %>%
     strsplit(split = "\\", fixed = TRUE) %>%
@@ -49,15 +64,15 @@ check_labels <- function(filename, .report_error){
     stop("Appendix labels must not use \\label{appendix: or \\label{app: . Change to \\label{chap: , \\label{sec: etc, as required.")
   }
 
-  wrong_lines <-
-    lines_with_labels %>%
-    .[!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn)|(eq))[:]",
-             label_contents,
-             perl = TRUE)]
-
-  if (length(wrong_lines) > 0){
-    first_wrong_line <- wrong_lines[[1]]
-    .report_error(line_no = first_wrong_line, 
+  if (!all(grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn)|(eq))[:]",
+                 label_contents,
+                 perl = TRUE))) {
+    which_bad <- which(!grepl("^((fig)|(tbl)|(box)|(chap)|((sub){0,2}sec)|(para(graph)?)|(rec)|(fn)|(eq))[:]",
+                              label_contents,
+                              perl = TRUE))[[1L]]
+    first_wrong_line <- lines_with_labels[[which_bad]]
+    .report_error(file = filename,
+                  line_no = first_wrong_line, 
                   context = lines[[first_wrong_line]], 
                   error_message = "\\label used without prefix.",
                   advice = "Use fig: tbl: box: chap: subsec: paragraph: rec: fn: in every label.")
@@ -69,8 +84,9 @@ check_labels <- function(filename, .report_error){
     and(grepl("\\caption{", lines, fixed = TRUE), 
         !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines, perl = TRUE))
   
-  if (any(caption_without_label)){
-    .report_error(line_no = which(caption_without_label)[[1]], 
+  if (any(caption_without_label)) {
+    .report_error(file = filename,
+                  line_no = which(caption_without_label)[[1]], 
                   context = lines[caption_without_label][[1]], 
                   error_message = "\\caption present without label.",
                   advice = "(All captions must have a \\label and the label must occur on the same line.)")
@@ -83,8 +99,8 @@ check_labels <- function(filename, .report_error){
     lines[lines_with_labels[grepl("^chap[:]", label_contents)]]
 
   chapter_line_nos <-
-    sort(union(grep("\\addchap", lines, fixed = TRUE),
-               grep("\\chapter", lines, fixed = TRUE)))
+    sort(union(grep("\\addchap{", lines, fixed = TRUE),
+               grep("\\chapter{", lines, fixed = TRUE)))
 
   label_prefixes_following_chapters <-
     gsub("^.*\\\\label[{](.*)[:][^\\}]*[}].*$",

@@ -1,24 +1,205 @@
 #' Parse LaTeX lines
 #' @param tex_lines Character vector (as read from a \code{.tex} file).
-#' @param delim1,delim2 Opening and closing characters for each group.
 #' @return A \code{data.table} where each row identifies a unique character in \code{tex_lines}.
 #' \describe{
 #' \item{\code{line_no}}{Matches the index of \code{tex_lines}.}
 #' \item{\code{char_no}}{The character within \code{line_no}.}
 #' \item{\code{char}}{The character. A single character.}
 #' \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
+#' \item{\code{GRP_ID}}{An integer identifying the unique contiguous block.}
 #' }
 #' @export
 
-parse_tex <- function(tex_lines, delim1 = "{", delim2 = "}") {
-  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE))
-  nchar_tex_lines <- nchar(tex_lines)
-  unlist(lapply(nchar_tex_lines, seq_len))
+parse_tex <- function(tex_lines) {
+  if (!length(tex_lines)) {
+    return(data.table())
+  }
   
-  setDT(list(char_no = seq_along(Tex_line_split_unlist),
-             line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
-             column = unlist(lapply(nchar_tex_lines, seq_len)),
-             char = Tex_line_split_unlist,
-             tex_group = cumsum(Tex_line_split_unlist == delim1) - cumsum(Tex_line_split_unlist == delim2)))
+  if (!any(nzchar(tex_lines))) {
+    return(data.table(char_no = seq_along(tex_lines),
+                      line_no = seq_along(tex_lines),
+                      column = 1L,
+                      char = "",
+                      openers = FALSE,
+                      closers = FALSE,
+                      opener_optional = FALSE,
+                      closer_optional = FALSE,
+                      tex_group = 0L,
+                      optional_tex_group = 0L))
+  }
+  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
+  trailing_newlines <- max(which(tex_lines != ""))
+  Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE),
+                                  use.names = FALSE, recursive = FALSE)
+  nchar_tex_lines <- nchar(tex_lines)
+  n_char <- sum(nchar(tex_lines))
+  
+  opener <- Tex_line_split_unlist == "{"
+  closer <- Tex_line_split_unlist == "}"
+  opener_optional <- Tex_line_split_unlist == "["
+  closer_optional <- Tex_line_split_unlist == "]"
+  tex_group <- cumsum(opener) - cumsum(closer) + closer
+  optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
+  openers <- NULL
+  
+  out <- list(char_no = seq_len(n_char),
+              line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
+              column = unlist(lapply(nchar_tex_lines, seq_len), use.names = FALSE),
+              char = Tex_line_split_unlist,
+              openers = opener,
+              closers = closer,
+              opener_optional = opener_optional,
+              closer_optional = closer_optional,
+              tex_group = tex_group,
+              optional_tex_group = optional_tex_group)
+  setattr(out, "class", c("data.table", "data.frame"))
+  
+ 
+  # Nested tex group -- likely to be small
+  # 0L to ensure blank documents don't cause obscure errors
+  max_tex_group <- max(tex_group, 0L)
+  alloc.col(out, n = 10L * max_tex_group + 10L)
+  
+  seq_max_tex_group <- seq_len(max_tex_group)
+  
+  tg <- sprintf("tg%s", seq_max_tex_group)
+  GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
+  
+  # Identify tex groups
+  # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
+  # 0000000000000000000111100000000000222
+  
+  setindexv(out, "tex_group")
+  for (j in seq_max_tex_group) {
+    tgj <- tg[j]
+
+    out[tex_group <= j, (tgj) := cumsum(openers & tex_group == j)]
+    
+    which_tex_group_geq_j <- which(tex_group >= j)
+    
+    GROUP_IDj <- GROUP_IDz[j]
+    out[tex_group == j, (GROUP_IDj) := .GRP, by = c("optional_tex_group", tgj)]
+    
+    out[tex_group >= j, (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
+  }
+  
+  # Uniquely identify optional groups
+  # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
+  # 0011100000022223333000000000445554000
+  
+  max_opt_group <- max(optional_tex_group, 0L)
+  seq_max_opt_group <- seq_len(max_opt_group)
+  og <- sprintf("og%s", seq_max_opt_group)
+  OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)
+  
+  setindexv(out, "optional_tex_group")
+  for (k in seq_max_opt_group) {
+    ogk <- og[k]
+    
+    out[optional_tex_group <= k, (ogk) := cumsum(opener_optional & optional_tex_group == k)]
+    
+    OPT_GROUP_IDj <- OPT_GROUP_IDz[k]
+    out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c(ogk)]
+    
+    which_opt_group_geq_k <- which(optional_tex_group >= k)
+    
+    out[optional_tex_group >= k,
+        (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
+  }
+  
+  out
 }
+
+
+# # nocov
+# parse_tex2 <- function(tex_lines) {
+#   .NotYetImplemented()
+#   Tex_line_split_unlist <-
+#     unlist(strsplit(tex_lines,
+#                     split = "",
+#                     fixed = TRUE),
+#            use.names = FALSE,
+#            recursive = FALSE)
+#   nchar_tex_lines <- nchar(tex_lines)
+#   n_char <- sum(nchar(tex_lines))
+# 
+#   opener <- Tex_line_split_unlist == "{"
+#   closer <- Tex_line_split_unlist == "}"
+#   opener_optional <- Tex_line_split_unlist == "["
+#   closer_optional <- Tex_line_split_unlist == "]"
+#   tex_group <- cumsum(opener) - cumsum(closer) + closer
+#   optional_tex_group <- cumsum(opener_optional) - cumsum(closer_optional) + closer_optional
+#   openers <- NULL
+# 
+#   out <- list(char_no = seq_len(n_char),
+#               line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
+#               column = unlist(lapply(nchar_tex_lines, seq_len), use.names = FALSE),
+#               char = Tex_line_split_unlist,
+#               openers = opener,
+#               closers = closer,
+#               opener_optional = opener_optional,
+#               closer_optional = closer_optional,
+#               tex_group = tex_group,
+#               optional_tex_group = optional_tex_group)
+# 
+#   # Nested tex group -- likely to be small
+#   # 0L to ensure blank documents don't cause obscure errors
+#   max_tex_group <- max(tex_group, 0L)
+# 
+#   seq_max_tex_group <- seq_len(max_tex_group)
+# 
+#   tg <- sprintf("tg%s", seq_max_tex_group)
+#   GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
+#   vacant_entry <- rep_len(NA_integer_, n_char)
+# 
+#   for (j in seq_max_tex_group) {
+#     tgj <- tg[j]
+# 
+#     out[[tgj]] <- vacant_entry
+#     tg_leq_j <- .subset2(out, "tex_group") <= j
+#     out[[tgj]][tg_leq_j] <- cumsum(openers[tg_leq_j] & tex_group[tg_leq_j] == j)
+# 
+#     GROUP_IDj <- GROUP_IDz[j]
+#     out[[GROUP_IDj]] <- vacant_entry
+#     out[[GROUP_IDj]] <- fmatch()
+#     out[tex_group == j, (GROUP_IDj) := .GRP, by = c("optional_tex_group", tgj)]
+# 
+#     which_tex_group_geq_j <- which(tex_group >= j)
+#     out[(which_tex_group_geq_j), (GROUP_IDj) := fill_blanks(.subset2(out, GROUP_IDj)[which_tex_group_geq_j])]
+#   }
+# 
+#   # Uniquely identify optional groups
+#   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
+#   # 0011100000022223333000000000445554000
+# 
+#   max_opt_group <- max(optional_tex_group, 0L)
+#   seq_max_opt_group <- seq_len(max_opt_group)
+#   og <- sprintf("og%s", seq_max_opt_group)
+#   OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)
+# 
+#   for (k in seq_max_opt_group) {
+#     ogk <- og[k]
+# 
+#     out[optional_tex_group <= k, (ogk) := cumsum(opener_optional & optional_tex_group == k)]
+# 
+#     OPT_GROUP_IDj <- OPT_GROUP_IDz[k]
+#     out[optional_tex_group == k, (OPT_GROUP_IDj) := .GRP, by = c(ogk)]
+# 
+#     which_opt_group_geq_k <- which(optional_tex_group >= k)
+#     out[(which_opt_group_geq_k), (OPT_GROUP_IDj) := fill_blanks(.subset2(out, OPT_GROUP_IDj)[which_opt_group_geq_k])]
+#   }
+# 
+#   out
+# }
+
+unparse <- function(parsed) {
+  out_text <- parsed[, .(text = paste0(get("char", inherits = FALSE), collapse = "")), keyby = "line_no"]
+  # Fill in blank lines
+  out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n
+  out[.subset2(out_text, "line_no")] <- .subset2(out_text, "text")
+  out
+}
+
+
+
 

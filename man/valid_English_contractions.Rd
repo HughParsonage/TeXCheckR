@@ -6,7 +6,7 @@
 \title{Valid English contractions}
 \format{An object of class \code{character} of length 110.}
 \source{
-https://gist.githubusercontent.com/J3RN/ed7b420a6ea1d5bd6d06/raw/acda66b325a2b4d7282fb602a7551912cdc81e74/contractions.txt
+\url{https://gist.githubusercontent.com/J3RN/ed7b420a6ea1d5bd6d06/raw/acda66b325a2b4d7282fb602a7551912cdc81e74/contractions.txt}
 }
 \usage{
 valid_English_contractions

@@ -5,7 +5,7 @@ check_timing <- function(comment = "", date = Sys.time()){
             requireNamespace("data.table", quietly = TRUE))
   library(data.table)
   checkCircuiBreaker <- function(){
-    checkGrattanReport("./tests/testthat/SchoolFunding/")
+    invisible(checkGrattanReport("./tests/testthat/SchoolFunding/"))
   }
   timed <- microbenchmark::microbenchmark(checkCircuiBreaker(), times = 30L)
   timed %>%

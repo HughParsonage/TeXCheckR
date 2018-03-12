@@ -4,10 +4,12 @@
 \alias{separate_sentences}
 \title{Put sentences on their own line}
 \usage{
-separate_sentences(filename)
+separate_sentences(filename, hanging_footnotes = FALSE)
 }
 \arguments{
 \item{filename}{A tex or knitr file in which to separate sentences.}
+
+\item{hanging_footnotes}{(logical, default: \code{FALSE}) Should footnotes be indented?}
 }
 \value{
 NULL. The function is called for its side-effect: rewriting \code{filename} with separated sentences.

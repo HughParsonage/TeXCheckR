@@ -4,9 +4,19 @@ OR <- `||`
 
 not_length0 <- function(x) as.logical(length(x))
 
+`%notchin%` <- function(lhs, rhs) {
+  !{lhs %chin% rhs}
+}
+
 lead <- function(x, n = 1L, default = NA) shift(x, type = "lead", n = n, fill = default)
  lag <- function(x, n = 1L, default = NA) shift(x, type = "lag", n = n, fill = default)
 
+fill_blanks <- function(S) {
+   # from zoo
+   L <- !is.na(S)
+   c(S[L][1L], S[L], use.names = FALSE)[cumsum(L) + 1L]
+}
+ 
 # takes a vector of froms and tos and takes their union
 seq.default.Vectorized <- function(x, y)
   Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y)
@@ -78,10 +88,6 @@ nth_min.int <- function(x, n){
   sort.int(x)[n]
 }
 
-strip_comments <- function(lines) {
-  sub("(?<!(\\\\))[%].*$", "%", lines, perl = TRUE)
-}
-
 move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$"){
   x <- list.files(path = from.dir,
                   pattern = pattern,
@@ -104,16 +110,58 @@ r9 <- function(a1, a2, a3, a4, a5, a6, a7, a8, a9) sprintf("%s%s%s%s%s%s%s%s%s",
 
 trimws_if_char <- function(x) if (is.character(x)) stri_trim_both(x) else x
 
-parse_destruct <- function(file) {
-  lines <- readr::read_lines(file)
+# for printing parsed lines
+print_transpose_data.table <- function(DT, file = "") {
+  cat <- function(...) base::cat(..., file = file, append = TRUE)
   
-  line_nos_with_brace <- grep("\\{|\\}", lines, perl = TRUE)
-  lines_with_brace <- lines[line_nos_with_brace]
-  lines
+  max_nchar <- function(v) {
+    v[v == "\\"] <- "@"
+    v_na <- is.na(v)
+    out <- as.character(v)
+    out[v_na] <- ""
+    max(nchar(encodeString(out), type = "width"))
+  }
   
-  strsplit(lines, pattern = "")
+  char_width <- max(vapply(DT, max_nchar, integer(1)))
+  max_width_names <- max(nchar(names(DT)))
+  
+  for (var in names(DT)) {
+    cat(formatC(var, width = max_width_names), ":")
+    v <- DT[[var]]
+    v_na <- is.na(v)
+    v <- as.character(v)
+    v[v == "\\"] <- "@"
+    v[v_na] <- "."
+    v <- formatC(v, width = char_width)
+    # stop(var)
+    cat(v, sep = "")
+    cat("\n")
+  }
   
 }
+
+return_first_nonNA <- function(x) {
+  if (anyNA(x)) {
+    not_nax <- !is.na(x)
+    if (any(not_nax)) {
+      out <- first(x[not_nax])
+    } else {
+      out <- x[1]
+    }
+  } else {
+    out <- x[1]
+  }
+  out
+}
+
+# testthat
+is_testing <- function() {
+  requireNamespace("testthat", quietly = TRUE) &&
+    utils::packageVersion("testthat") >= package_version("2.0.0") &&
+    testthat::is_testing()
+}
+
+
 
 
 

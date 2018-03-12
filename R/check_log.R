@@ -32,7 +32,11 @@ check_log <- function(path = ".", final = FALSE, check_for_rerun_only = FALSE, .
 
   if (any(grepl("undefined references", log_file, fixed = TRUE))){
     which_line <- grep("undefined references", log_file, fixed = TRUE)
-    cat(which_line, "\n", log_files[which_line])
+    if (length(which_line) > 0 || is.na(which_line)) {
+      cat(log_file, sep = "\n")
+    } else {
+      cat(which_line, "\n", log_files[which_line])
+    }
     .report_error(error_message = "Undefined cross-references.", 
                   advice = "Check each use of Vref and Cref and that it contains a valid \\label.")
     stop("Undefined references.")

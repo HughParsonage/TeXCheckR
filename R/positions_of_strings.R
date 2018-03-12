@@ -39,7 +39,7 @@ positions_of_all_strings <- function(tex_line, command_name, end = TRUE){
   tex_line_split <- strsplit(tex_line, split = "", fixed = TRUE)[[1]]
   command_split <- strsplit(command_name, split = "", fixed = TRUE)[[1]]
 
-  n_occurences <- stringi::stri_count_fixed(tex_line, command_name)
+  n_occurences <- stri_count_fixed(tex_line, command_name)
   if (n_occurences == 1L){
     out <- position_of_string(tex_line_split, command_split, end = end)
   } else {

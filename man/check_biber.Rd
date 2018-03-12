@@ -7,7 +7,7 @@
 check_biber(path = ".", rstudio = FALSE)
 }
 \arguments{
-\item{path}{Containing the blg file.}
+\item{path}{The path containing the \code{blg} file, following successful compilation.}
 
 \item{rstudio}{Use the RStudio API?}
 }

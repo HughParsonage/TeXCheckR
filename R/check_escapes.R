@@ -11,7 +11,20 @@ check_escapes <- function(filename, .report_error){
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
-  lines <- read_lines(filename)
+  lines <- strip_comments(read_lines(filename))
+  
+  is_tikz <-
+    cumsum(grepl("\\begin{tikzpicture}", lines, fixed = TRUE)) - 
+    cumsum(grepl("\\end{tikzpicture}", lines, fixed = TRUE))
+  
+  lines[as.logical(is_tikz)] <- ""
+  
+  lines[grepl("\\url", lines, fixed = TRUE)] <-
+    gsub("\\\\url\\{[^\\}]++\\}", 
+         "\\\\url{<url>}",
+         lines[grepl("\\url", lines, fixed = TRUE)],
+         perl = TRUE)
+                               
   
   if (any(grepl("(?<!(\\\\))[$]", lines, perl = TRUE))){
     line_no <- grep("(?<!(\\\\))[$]", lines, perl = TRUE)[[1]]

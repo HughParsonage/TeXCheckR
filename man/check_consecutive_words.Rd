@@ -7,16 +7,16 @@
 check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL)
 }
 \arguments{
-\item{path}{Path containing the latex file.}
+\item{path}{Path containing the LaTeX file.}
 
 \item{latex_file}{The LaTeX file (without path) whose output will be checked.}
 
 \item{md5sum.ok}{The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
-you can use the md5sum of the output of this function.}
+you can use the \code{md5sum} of the output of this function.}
 }
 \value{
 An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
-Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}.
+Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 }
 \description{
 Check consecutive typeset words

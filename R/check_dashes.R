@@ -2,26 +2,43 @@
 #'
 #' @param filename A tex or Rnw file.
 #' @param .report_error How errors should be reported.
+#' @param dash.consistency Character vector permitted dash types. 
+#' @param rstudio (logical, default: \code{TRUE}) Use the RStudio API?
 #' @return File stops and \code{cat()}s on any line where a hyphen is surrounded by a space.
 #' Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in TeX math mode \code{$...$}.
 #' @export
 
-check_dashes <- function(filename, .report_error) {
+check_dashes <- function(filename,
+                         .report_error,
+                         dash.consistency = c("en-dash", "em-dash"),
+                         rstudio = TRUE) {
   if (missing(.report_error)) {
-    .report_error <- function(...) report2console(...)
+    if (rstudio) {
+      .report_error <- function(...) report2console(...,
+                                                    rstudio = TRUE,
+                                                    file = filename)
+    } else {
+      .report_error <- function(...) report2console(...,
+                                                    rstudio = FALSE)
+    }
   }
 
   lines <- read_lines(filename)
+  lines <- strip_comments(lines)
 
   lines[isR_line_in_knitr(lines)] <- "%"
-  if (any(lines == "\\begin{align*}")){
+  if ("\\begin{align*}" %chin% lines) {
     math_environ <- 
       which(cumsum(lines == "\\begin{align*}") - cumsum(lines == "\\end{align*}") == 1L)
     
     lines[math_environ] <- "% align environment"
   }
-
-  lines <- strip_comments(lines)
+  
+  display_equations <-
+    cumsum(startsWith(trimws(lines), "\\[")) - 
+    cumsum(endsWith(trimws(lines), "\\]")) > 0L
+  
+  lines[display_equations] <- "% equation environment"
 
   possible_hyphen <- grepl(" - ", lines, fixed = TRUE)
 
@@ -53,7 +70,7 @@ check_dashes <- function(filename, .report_error) {
 
     if (any(grepl(" - ", excluding_mathmode, fixed = TRUE))){
       line_no <- grep(" - ", excluding_mathmode, fixed = TRUE)[[1]]
-      column <- stringi::stri_locate_first_fixed(lines[line_no], " - ")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], " - ")[1, 2]
       
       .report_error(line_no = line_no,
                     column = column,
@@ -79,9 +96,9 @@ check_dashes <- function(filename, .report_error) {
       .[1]
     
     if (grepl("\u2013-", lines[line_no], fixed = TRUE)) {
-      column <- stringi::stri_locate_first_fixed(lines[line_no], "\u2013-")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], "\u2013-")[1, 2]
     } else {
-      column <- stringi::stri_locate_first_fixed(lines[line_no], "-\u2013")[1, 2]
+      column <- stri_locate_first_fixed(lines[line_no], "-\u2013")[1, 2]
     }
     if (is.null(column)) {
       column <- 1L
@@ -95,20 +112,7 @@ check_dashes <- function(filename, .report_error) {
          "Make sure anything you intend as an en-dash is entered as ' -- '")
   }
 
-
-  if (any(grepl("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE))){
-    line_no <- grep("\\\\label[^\\}]*\\s[^\\}]*\\}", stri_trim_both(lines), perl = TRUE)[[1]]
-    nchars_b4 <- stringi::stri_locate_all_regex(pattern = "\\\\label[^\\}]*\\s",
-                                                stri_trim_both = stri_trim_both(lines[[line_no]]),
-                                                perl = TRUE)
-    context <- paste0(stri_trim_both(lines[[line_no]]), "\n",
-                      paste0(rep(" ", nchars_b4[[1]][[2]] - 2 + 5 + nchar(line_no)), collapse = ""), "^^")
-    .report_error(line_no = line_no,
-                  context = context,
-                  error_message = "Space somewhere after \\label . Spaces are not permitted in \\label.")
-    stop("Space somewhere after \\label. Spaces are not permitted in \\label.")
-  }
-
+  
   are_emdash_lines <-
     lines %>%
     grep("---", ., fixed = TRUE, value = TRUE) %>%

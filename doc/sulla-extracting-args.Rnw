@@ -1,0 +1,200 @@
+\documentclass[b5paper]{scrartcl}
+
+<<knitrOpts, echo=FALSE, include=FALSE>>=
+library(knitr)
+opts_chunk$set(eval=FALSE,
+	           size="small")
+@
+
+\let\oldLaTeX\LaTeX
+\renewcommand{\LaTeX}{\textrm{\oldLaTeX}}
+
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Font:
+\usepackage{tgpagella,eulervm}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{lstautogobble}
+\usepackage{xcolor}
+\usepackage{longtable}
+\definecolor{Orange}{HTML}{F68B33}
+\definecolor{DarkOrange}{HTML}{D4582A}
+\usepackage{bold-extra}
+\lstset{
+language=[LaTeX]TeX,
+basicstyle=\ttfamily\small,
+commentstyle=\color{black!60}\ttfamily,
+texcsstyle=*\color{blue},
+moretexcs={setlength,chapter,subsection,subsubsection,appendix,addbibresource,FloatBarrier,contentspage,units,includegraphics,noteswithsource,notes,source,bottomrule,midrule,toprule,footcite,footcites,textcite,textcites,Chapref,topref,Vref,Cref,vpageref,acknowledgements,cmidrule},
+columns=flexible,
+breaklines=true,
+backgroundcolor=\color{black!5},
+literate={~} {\(\sim\)}{1},
+moredelim = [is][\slshape\color{violet}]{@@}{@@},
+classoffset=1,
+morekeywords={grattan}, keywordstyle = \color{Orange}\bfseries, 
+classoffset=0,
+belowskip=0.5\baselineskip,
+escapechar={\^*}{*}
+}
+
+\newcommand*{\defi}[1]{\textbf{#1}}
+
+\title{Extracting arguments from \LaTeX{}}
+
+\begin{document}
+
+\section{Overview}
+This document describes the necessary features of a function that extracts arguments of a \LaTeX{} command, 
+and its implementation in the R package \lstinline!TeXCheckR!.
+
+\section{}
+A simple \LaTeX{} command has the following structure in a document.
+
+\begin{lstlisting}
+\@@command@@{@@first argument@@}
+\end{lstlisting}
+
+Na\"ively, a command's argument is the text between the first opening brace and the first closing brace following \lstinline!command!. 
+A simple implementation would be
+
+<<naive-extractor, echo=TRUE, eval=FALSE>>=
+extractor <- function(x, command_name) {
+  gsub(paste0("\\\\", command_name, "\\{(.*?)\\}"), "\\1", x)
+}
+@
+
+This implementation can even be extended to the \(n\)th argument:
+
+However, no regular expressions can substitute for a parser. 
+In this case, the extractor will fail to capture the following:
+
+\begin{lstlisting}
+\emph{Some \emph{nested} emphasis.}
+\end{lstlisting}
+
+The presence of such expressions leads to the next problem: specification. 
+What should the idea function return given the above code?
+The answer ultimately depends on the purpose of the extractor, but hereupon the specification for the extractor is that the function should return:
+
+\begin{enumerate}
+	\item[] For each instance of \lstinline!\@@command@@!, 
+	\begin{enumerate}
+		\item the contents of that command, including any nested instances of the command
+		\item (other information)
+	\end{enumerate}
+\end{enumerate}
+
+Thus, the above extract should return both 
+\begin{quote}\lstinline!nested!\end{quote} and \begin{quote}\lstinline!Some \emph{nested} emphasis.}!.\end{quote}
+
+\section{Parsing for \TeX{} groups}
+A \TeX{} group is any enclosure of braces. 
+The \defi{level} of a \TeX{} group is 0 at text not enclosed by braces and \(n+1\) for any enclosure started in a group at level \(n\).
+Thus, the following document is underlined by its \TeX{} group level.
+
+\begin{lstlisting}
+A{B{CD}E} F{G}
+0.1.22.1.00.1.
+\end{lstlisting}
+(The \TeX{} group level is not well-defined at braces.)
+
+Clearly, identifying the \TeX{} group level is crucial to overcoming the flaw in the na\"ive method. 
+Luckily, given a collection of characters, identifying the \TeX{} group level is simple arithmetic:
+<<cumsum-identifies-tex-group>>=
+cumsum(chars == "{") - cumsum(chars == "}") + (chars == "}")
+cumsum(chars == "{") - cumsum(chars == "}") - (chars == "{")
+@
+which identifies the groups respectively. 
+
+\begin{lstlisting}
+A{B{CD}E} F{G}
+01122221100111
+00112211000010
+\end{lstlisting}
+
+The first parsing is preferable, as it makes it possible to identify zero-length groups:
+
+\begin{lstlisting}[columns=fixed]
+               chars :A{B{CD}E} F{G} H{}
+cumsum(chars == "{") :011222222223333344
+cumsum(chars == "}") :000000112222233334
+      (chars == "}") :000000101000010001
+               parse :011222211001110011
+               chars :A{B{CD}E} F{G} H{}
+\end{lstlisting}
+
+Thus, the function \lstinline[language=R]!parse_tex!:
+
+
+<<parse_tex>>=
+parse_tex <- function(tex_lines) {
+  # strsplit returns a list, each element
+  # corresponding to a line
+  chars <- unlist(strsplit(tex_lines, split = ""))
+  list(char = chars,
+       tex_group = cumsum(chars == "{") - cumsum(chars == "}") + (chars == "}"))
+}
+@
+
+This function is still inadequate for identifying text within a specific \TeX{} group.
+Further, the nested structure of \texttt{chars} is lost: the characters \lstinline!{CD}! are simultaneously part of level 1 and 2 (and possibly 0).
+
+To identify unique \TeX{} groups, rather than simply the \TeX{} group level, we have to add columns to the table structure.
+Although adding columns is expensive, it is justifiable in most cases as the maximum tex group level is generally in single digits.
+
+Ultimately, to uniquely identify groups, the group counter must be aware of itself outside the group.
+
+The algorithm is:
+
+for each \TeX{} group level \(j\),
+\begin{enumerate}
+\item scroll through each character whose \TeX{} group level is no larger than \(j\) taking the cumulative sum of all opening braces that occur at the \TeX{} group level \(j\)
+\item for each character at group level \(j\), uniquely identify the group using the cumulative sum.
+\item for each character whose group level is no \emph{smaller} than \(j\), fill any blank entries.
+\end{enumerate}
+
+\section{Optional group interference}
+So far we have assumed the \TeX{} group can be easily matched with the command selected.
+In constructions like
+\begin{lstlisting}
+Extract the \textbf{bold} part of this sentence.
+\end{lstlisting}
+matching the command to the brace is trivial, choose the string of characters after the last backslash preceding the brace.\footnote{Since \LaTeX{} gobbles whitespace in this context, `word preceding' here means `word preceding any whitespace preceding'.}
+However, this is not the general case.
+Firstly, optional arguments may be present. 
+Although the above method of scrolling to the next \TeX{} group will work in most cases, it will not work if there are \TeX{} groups within the optional arguments.
+Furthermore, there may be commands (including the target command) within those optional arguments.
+
+As a result, each iteration of the algorithm must be done in each optional argument separately.
+Once this is done, the optional arguments can be excluded and the algorithm performed at the top level.
+As it is likely that optional arguments will contain few, if any, instances of the arguments,
+ we consider each optional level of the document and omit the extraction algorithm if the command is not present at any optional level greater.
+
+
+\begin{lstlisting}[columns=fixed]
+       chars :\A[B \A[X]{D}]{E} \A{\A{F}}
+ OPT_GRP_LVL :001111122211110000000000000
+ GROUP_LEVEL :000000000011101110001112221
+opt_group_id :001111122211110000000000000
+    group_id :000000000011101110001112221
+      chars  :\A[B \A[X]{D}]{E} \A{\A{F}}
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+\end{document}

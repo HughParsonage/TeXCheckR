@@ -1,10 +1,11 @@
 #' Extract valid abbreviations and initialisms
-#' @description Extracts abbrevations which are preceded by the full text (\emph{e.g.} 'The Quebec Xylophone Enterprise Foundation (QXEF)').
+#' @description Extracts abbreviations which are preceded by the full text (\emph{e.g.} 'The Quebec Xylophone Enterprise Foundation (QXEF)').
 #' @param lines Lines to extract
 #' @return Character vector of abbreviations of the form (ABC)
-#' @details Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \code{(ABC)} where the first letters
-#' of the three words before
+#' @details Only 'valid' abbreviations are extracted, viz. those abbreviations of the form \code{(ABC)} where the first letters 
+#' of the preceding words 
 #' (excluding some common words like \code{of}, \code{and}, etc.) are 'a', 'b', 'c'.
+#' @aliases extract_valid_abbrevations
 #' @export
 
 extract_validate_abbreviations <- function(lines){
@@ -16,7 +17,7 @@ extract_validate_abbreviations <- function(lines){
     lines_w_abbrev_last <-
       lines_w_abbrev %>%
       gsub("[{,.]", " ", x = ., perl = TRUE) %>%
-      gsub("\\s+(?:(?:of)|(?:and)|(?:the)|(?:to)|(?:in))\\s+", " ", x = ., perl = TRUE) %>%
+      gsub("\\s+(?:(?:of)|(?:on)|(?:and)|(?:the)|(?:to)|(?:in))\\s+", " ", x = ., perl = TRUE) %>%
       gsub("\\s+", " ", x = ., perl = TRUE) %>%
       # drop the plural
       gsub("s)", ")", x = ., fixed = TRUE) %>%
@@ -58,7 +59,7 @@ extract_validate_abbreviations <- function(lines){
                                       if (all(get_initials_from_words > 0)){
                                         out <- 
                                           words[get_initials_from_words] %>%
-                                          substr(0, 1) %>%
+                                          substr(0L, 1L) %>%
                                           paste0(collapse = "") %>%
                                           toupper
                                       } else {
@@ -77,7 +78,7 @@ extract_validate_abbreviations <- function(lines){
                                                  if (all(get_initials_from_words > 0)){
                                                    out <- 
                                                      words[get_initials_from_words] %>%
-                                                     substr(0, 1) %>%
+                                                     substr(0L, 1L) %>%
                                                      paste0(collapse = "") %>%
                                                      toupper
                                                  } else {

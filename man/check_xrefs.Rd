@@ -4,13 +4,19 @@
 \alias{check_xrefs}
 \title{Check cross-references}
 \usage{
-check_xrefs(filename, .report_error)
+check_xrefs(filename, permitted.case = c(NA, "upper", "lower"), .report_error)
 }
 \arguments{
 \item{filename}{A LaTeX file}
 
+\item{permitted.case}{One of \code{NA, "upper", "lower"}. If \code{NA}, the default,
+both \verb{\Cref} and \verb{\cref} are permitted, but not in the same document.
+If \code{upper}, only \verb{\Cref} 
+is permitted; if \code{lower}, only \verb{\cref}.
+If \code{NULL}, the case is not checked at all.}
+
 \item{.report_error}{The function to provide context to the error.}
 }
 \description{
-Check cross-references that are repetitive or incorrect case.
+Check cross-references that are repetitive or (in the case of \verb{cleveref} and \verb{varioref}) incorrect case.
 }

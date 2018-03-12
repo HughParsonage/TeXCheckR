@@ -4,6 +4,7 @@ test_that("Valid typography passes", {
   expect_null(check_footnote_typography("valid-footnote-typography.tex"))
   expect_null(check_footnote_typography("./fnote-typogr/ok-ends-with-dbl-quote.tex"))
   expect_null(check_footnote_typography("./extract/road-congestion.tex"))
+  expect_null(check_footnote_typography("./fnote-typogr/ok-end-itemize.tex"))
 })
 
 test_that("Invalid typography stops", {
@@ -11,6 +12,8 @@ test_that("Invalid typography stops", {
   expect_error(check_footnote_typography("./fnote-typogr/doesnt-end-with-period.tex"),
                regexp = "does not end with full stop")
   expect_error(check_footnote_typography("./fnote-typogr/doesnt-end-with-period-multiline.tex"),
+               regexp = "does not end with full stop")
+  expect_error(check_footnote_typography("./fnote-typogr/notok-end-itemize.tex"),
                regexp = "does not end with full stop")
   
   expect_error(check_footnote_typography("./fnote-typogr/full-stop-after.tex"),

@@ -17,6 +17,7 @@
   * `check_dashes` does not check display equation lines.
   * `check_spelling` honours non-default settings of `dict_lang` in files through `\input` or `\include`
   * `check_consecutive_words` no longer requires `grattan.cls` to run. Thanks to @jonocarroll for reporting.
+  * `check_footnote_typography` no longer falsely claims a footnote lacks a terminal full stop when it ends in a list like `enumerate` or `itemize` (and the terminal item ends with a full stop).
   
 * Internal:
   * `check_xrefs` defaults now permits lowercase forms. By default, consistency is enforced (whether upper or lower).

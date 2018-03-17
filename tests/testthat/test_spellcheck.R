@@ -1,5 +1,10 @@
 context("Spellchecker")
 
+test_that("Error if not interactive", {
+  skip_if(interactive())
+  expect_error(check_spelling(rstudio = TRUE), regexp = "interactive")
+})
+
 test_that("School funding report checks out", {
   expect_null(check_spelling("./SchoolFunding/SchoolFunding.tex",
                              known.correct = c("SRS", "SE.XPD.TOTL.GD.XS", "WDI", "SSNP", "underfunded",

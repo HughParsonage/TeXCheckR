@@ -96,6 +96,7 @@ check_spelling <- function(filename,
   lines <- veto_sic(lines)
   # Smart quotes
   lines <- gsub(parse(text = paste0("'", "\u2019", "'")), "'", lines, fixed = TRUE)
+  lines <- gsub(parse(text = paste0("'", "\u2018", "'")), "'", lines, fixed = TRUE)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""
@@ -115,7 +116,11 @@ check_spelling <- function(filename,
 
   # Never check URLS
   lines <- replace_nth_LaTeX_argument(lines, command_name = "url", replacement = "url")
-
+  
+  # TODO: make this more general
+  # Avoid getting etcs in lines
+  lines <- gsub("-etc-", "-ETC-", lines, fixed = TRUE)
+  
   etcs_pattern <- "\\b(?:(?<!(\\\\))(?:(?:etc)|(?:i\\.?e)|(?:e\\.?g)))\\b"
   if (check_etcs && any(grepl(etcs_pattern, strip_comments(lines), perl = TRUE))){
     line_no <- grep(etcs_pattern, strip_comments(lines), perl = TRUE)[[1]]
@@ -143,6 +148,8 @@ check_spelling <- function(filename,
   lines <- gsub("\\{.*\\.bib\\}",
                 "\\{bibliography.bib\\}",
                 lines)
+  # e.g. printbibliography[prenote=customnote]
+  lines[grepl("\\\\printbibliography", lines, perl = TRUE)] <- ""
 
   if (any(grepl("\\begin{document}", lines, fixed = TRUE))){
     document_starts_at <- grep("\\begin{document}", lines, fixed = TRUE)
@@ -196,14 +203,14 @@ check_spelling <- function(filename,
   # inputs and includes
   inputs <- inputs_of(filename)
   
-  if (!pre_release) {
-    commands_to_ignore <-
+  commands_to_ignore <-
+    if (!pre_release) {
       lines[grepl("% ignore.spelling.in: ", lines, perl = TRUE)] %>%
-      gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
-      stri_trim_both %>%
-      strsplit(split = " ", fixed = TRUE) %>%
-      unlist(use.names = FALSE)
-  }
+        gsub("% ignore.spelling.in: ", "", ., perl = TRUE) %>%
+        stri_trim_both %>%
+        strsplit(split = " ", fixed = TRUE) %>%
+        unlist(use.names = FALSE)
+    }
 
   if (length(inputs) > 0) {
     # Recursively check
@@ -320,16 +327,10 @@ check_spelling <- function(filename,
                                       command_name = "[CVcv]refrange",
                                       n = 2L,
                                       replacement = "second range key")
-  # Ignore captionsetups
-  if (any(grepl("\\captionsetup", lines, fixed = TRUE))) {
-    lines <- fill_nth_LaTeX_argument(parse_tex(lines), 
-                                     "captionsetup", 
-                                     return.text = TRUE)
-  }
-
+  
   ignore_spelling_in_line_no <-
     grep("^[%] ignore.spelling.in: ", lines, perl = TRUE)
-
+  
   if (pre_release && not_length0(ignore_spelling_in_line_no)){
     line_no <- ignore_spelling_in_line_no[1]
     context <- lines[line_no]
@@ -338,14 +339,19 @@ check_spelling <- function(filename,
                   error_message = "pre_release = TRUE but 'ignore spelling in' line is present.")
     stop("pre_release = TRUE but 'ignore spelling in' line was present.")
   }
-
-  if (!pre_release){
-    for (command in c(ignore_spelling_in, commands_to_ignore)) {
-      lines <- replace_nth_LaTeX_argument(lines,
-                                          command_name = command,
-                                          replacement = "ignored")
+  
+  parsed_doc <- parse_tex(lines)
+  for (command in c(ignore_spelling_in, commands_to_ignore,
+                    "captionsetup")) {
+    if (any(grepl(sprintf("\\%s{", command), lines, fixed = TRUE))) {
+      parsed_doc <- fill_nth_LaTeX_argument(parsed_doc, 
+                                            command, 
+                                            return.text = FALSE)
     }
   }
+  lines <- unparse(parsed_doc)
+
+  
 
   # Now we can strip comments as all the directives have been used
   lines <- strip_comments(lines)

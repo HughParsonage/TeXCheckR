@@ -7,3 +7,6 @@
 ^deploy.sh$
 ^doc$
 ^cran-comments\.md$
+^revdep$
+^biber-linux_x86_64.tar.gz$
+^biber$

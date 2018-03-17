@@ -7,7 +7,10 @@ test_that("Error if not interactive", {
 
 test_that("School funding report checks out", {
   expect_null(check_spelling("./SchoolFunding/SchoolFunding.tex",
-                             known.correct = c("SRS", "SE.XPD.TOTL.GD.XS", "WDI", "SSNP", "underfunded", "overfund[a-z]*", "NMS", "WPI", "DET", "phas", "NP", "SATs", "ENG", "th", "stds", "RCTs", "CAGR"), ignore.lines = 1551))
+                             known.correct = c("SRS", "SE.XPD.TOTL.GD.XS", "WDI", "SSNP", "underfunded",
+                                               "overfund[a-z]*", "NMS", "WPI", "DET", "phas", "NP",
+                                               "SATs", "ENG", "th", "stds", "RCTs", "CAGR"),
+                             ignore.lines = 1551))
 })
 
 test_that("Check spelling of multiple input document", {
@@ -98,7 +101,8 @@ test_that("Should error", {
 })
 
 test_that("RStudio API", {
-  skip_if_not(!interactive())
+  skip_on_cran()
+  skip_if_not(interactive())
   expect_error(check_spelling("spelling/typo-suggest.tex", rstudio = TRUE),
                regexp = "Spellcheck")
   expect_false(Sys.info()['sysname'] %in% "Windows" &&

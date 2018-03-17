@@ -29,4 +29,5 @@ Suggests:
   devtools,
   readr,
   stringi,
-  testthat (>= 2.0.0)
+  testthat (>= 2.0.0),
+  tinytex

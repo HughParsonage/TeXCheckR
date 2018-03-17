@@ -17,6 +17,14 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
   if (is.null(parsed_doc)) {
     tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
     parsed_doc <- parse_tex(tex_lines)
+  } else {
+    if (AND(AND("char_no_max" %chin% names(parsed_doc),
+                "char_no_min" %chin% names(parsed_doc)),
+            identical(.subset2(parsed_doc, "char_no_max"),
+                      .subset2(parsed_doc, "char_no_min")))) {
+      parsed_doc[, char_no_max := NULL]
+      setnames(parsed_doc, "char_no_min", "char_no")
+    }
   }
   # Only need to copy if optional arguments exist
   orig_parsed_doc <- parsed_doc
@@ -189,7 +197,7 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
       .[, .(char_no_min = min(char_no),
             char_no_max = max(char_no),
             command = return_first_nonNA(command),
-            command_no = return_first_nonNA(command_no)), 
+            command_no = return_first_nonNA(command_no)),
         by = c("GROUP_LEVEL", "id_at_group_level")] %>%
       .[, command_no_t := fill_blanks(command_no)] %>%
       # When command isn't NA, that's the correct GROUP LEVEL and 

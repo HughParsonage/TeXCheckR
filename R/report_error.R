@@ -12,6 +12,7 @@
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 #' @param silent (logical, default: \code{FALSE}) Suppress all output.
+#' @param halt Should failures halt via \code{stop} or just display a message in the console?
 #' @rdname report_error
 #' @export
 report2console <- function(file = NULL,
@@ -25,7 +26,8 @@ report2console <- function(file = NULL,
                            extra_cat_post = NULL,
                            rstudio = FALSE,
                            log_file = NULL,
-                           silent = FALSE) {
+                           silent = FALSE,
+                           halt = getOption("TeXCheckR.halt_on_error", FALSE)) {
   # Printing requirements:
   ## 1. Cross
   ## 2. Line no (if applicable)
@@ -35,19 +37,20 @@ report2console <- function(file = NULL,
   # crayon::red(NULL) -> Error in mypaste(...) need character strings
   Red <- function(x) if (!is.character(x)) x else red(x)
   bold_red <- function(x) if (!is.character(x)) x else bold(red(x))
-  if (getOption("TeXCheckR.capture.output", FALSE) ||
-      !silent && 
-      # Be silent if testthat in progress
-      !exists("TESTTHAT") && !nzchar(Sys.getenv("TESTTHAT"))) {
+  if (!silent && OR(getOption("TeXCheckR.capture.output", FALSE), !is_testing())) {
     cat("\n", 
         bold_red(error_message), "\n",
-        bold_red(symbol$cross), " ", Red(line_no), ": ", unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
+        bold_red(symbol$cross), " ", Red(line_no), ": ",
+        unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
         bold_red(advice), "\n",
         sep = "")
-  }
-  
-  if (rstudio && !is.null(file) && interactive() && rstudioapi::isAvailable()) {
-    rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))
+    
+    if (rstudio &&
+        !is.null(file) &&
+        interactive() &&
+        rstudioapi::isAvailable() && !is_testing()) {
+      rstudioapi::navigateToFile(file, line = line_no, column = if (is.null(column)) 1L else as.integer(column))
+    }
   }
   
   # To return the directory if applicable
@@ -78,6 +81,11 @@ report2console <- function(file = NULL,
                append = append)
     }, add = TRUE)
   }
+  
+  if (halt) {
+    stop(error_message)
+  }
+  
 }
 
 

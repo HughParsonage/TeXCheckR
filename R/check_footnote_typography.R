@@ -68,10 +68,14 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
   lines <- gsub("\\\\footnote(?![{])", "\\\\toofnote\\1", lines, perl = TRUE)
   # Treat double quotes as singles (for checking whether footnote ends in full stop.)
   lines <- gsub("''", "'", lines, perl = TRUE)
-  
+
   # End of equation preceded by punctuation treat as punctuation
   lines <- gsub(".\\]", ".", lines, fixed = TRUE)
   
+  # Don't necessarily error on \end{itemize} and friends
+  lines <- gsub("\\\\end\\{((?:itemize)|(?:enumerate)|(?:description))\\}", "", lines, perl = TRUE)
+  
+
   # More than one footnote on a line won't be good.
   if (any(grepl("\\\\foot(?:(?:note)|(?:cite)).*\\\\foot(?:(?:note)|(?:cite))", 
                 lines,
@@ -234,13 +238,21 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                     advice = "Examine this line for multiple paragraphs or unclosed footnotes.")
       stop("Argument length 0. You may want to consider ignoring this line.")
     }
+    
+    # If footnote ends with trailing ws, backtrack.
+    back_from_closer <- 1L
+    while (split_line_after_footnote[footnote_closes_at - back_from_closer] == " ") {
+      back_from_closer <- back_from_closer + 1L
+    }
 
-    if (split_line_after_footnote[footnote_closes_at - 1L] %notchin% c(".", "?")){
+    if (split_line_after_footnote[footnote_closes_at - back_from_closer] %notchin% c(".", "?")) {
       # OK if full stop is before parenthesis or quotes.
       if (NOR(AND(split_line_after_footnote[footnote_closes_at - 1L] %chin% c(")", "'"),
                   split_line_after_footnote[footnote_closes_at - 2L] %chin% c(".", "?", "'")),
               AND(split_line_after_footnote[footnote_closes_at - 1L] == "}",
                   split_line_after_footnote[footnote_closes_at - 2L] %chin% c(".", "?", "'")))) {
+        
+        
         # CRAN Note avoidance
         extract <- last_char <- nd_last_char <- column <- NULL
         

@@ -154,6 +154,14 @@ return_first_nonNA <- function(x) {
   out
 }
 
+# testthat
+is_testing <- function() {
+  requireNamespace("testthat", quietly = TRUE) &&
+    utils::packageVersion("testthat") >= package_version("2.0.0") &&
+    testthat::is_testing()
+}
+
+
 
 
 

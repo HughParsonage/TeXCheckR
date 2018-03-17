@@ -3,9 +3,12 @@
 * New functions:
   * `split_report` to split a report into chapters.
   * `minimal_bib` to produce a minimal bibliography from a spun document.
+  * (Unexported) `check_unclosed_parentheses` to check (some) instances of unclosed or unopened parentheses.
 * `stringi` and `readr` have been moved to Suggests to minimize compile times (as on Travis-CI)
 * `check_spelling` now skip words 'preceding' an editorial `[sic]`.
+* `halt` in `report_error` now provides an option to not halt if a check fails.
 * Experimental utility functions `fill_nth_LaTeX_argument` and `locate_nth_LaTeX_argument`. 
+
 * Bug fixes:
   * check labels now test for spaces rather than check dashes
   * `lint_bib` does not add commas after `@string` fields.
@@ -14,6 +17,10 @@
   * `check_dashes` does not check display equation lines.
   * `check_spelling` honours non-default settings of `dict_lang` in files through `\input` or `\include`
   * `check_consecutive_words` no longer requires `grattan.cls` to run. Thanks to @jonocarroll for reporting.
+  * `check_footnote_typography` no longer falsely claims a footnote lacks a terminal full stop when it ends in a list like `enumerate` or `itemize` (and the terminal item ends with a full stop).
+  
+* Internal:
+  * `check_xrefs` defaults now permits lowercase forms. By default, consistency is enforced (whether upper or lower).
 
 # TeXCheckR 0.4.3
 * Use `hunspell`'s ignore option when a dictionary addition is not respected

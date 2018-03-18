@@ -4,14 +4,17 @@ test_that("Housing affordability", {
   skip_on_cran()
   skip_if_not(nzchar(Sys.which("biber")))
   library(data.table)
-  ha <- file.path(tempdir(), "h")
+  h <- sample(letters, size = 1)
+  ha <- file.path(tempdir(), h)
   hutils::provide.dir(ha)
   get_wd <- getwd()
   setwd(ha)
-  download.file(url = "https://github.com/grattan/zzz-2018-Housing-affordability/zipball/master",
-                mode = "wb",
-                destfile = "ha.zip", 
-                quiet = TRUE)
+  dl_status <- 
+    download.file(url = "https://github.com/grattan/zzz-2018-Housing-affordability/zipball/master",
+                  mode = "wb",
+                  cacheOK = FALSE,
+                  destfile = "ha.zip", 
+                  quiet = TRUE)
   unzip("ha.zip", exdir = ".")
   setwd(grep("grattan-zzz-2018-Housing-affordability", 
              list.dirs(), 
@@ -32,7 +35,7 @@ test_that("Housing affordability", {
   tempf_consecutive <- tempfile(pattern = "consecutive",
                                 fileext = ".txt")
   
-  shell("biber Report")
+  system("biber Report")
   consecutive_outfile <- tempfile()
   expect_error(check_consecutive_words(latex_file = "Report.tex",
                                        outfile = consecutive_outfile))

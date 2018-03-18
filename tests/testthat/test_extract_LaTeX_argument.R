@@ -236,4 +236,3 @@ test_that("% et sqq should not be included in extract", {
 })
 
 
-

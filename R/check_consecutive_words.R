@@ -3,12 +3,16 @@
 #' @param latex_file The LaTeX file (without path) whose output will be checked.
 #' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 #' you can use the \code{md5sum} of the output of this function.
+#' @param outfile A file to which the output can be saved. If \code{NULL}, the default, the output is printed to the console (and not saved).
 #' @return An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
 #' Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 #' @export
 
 
-check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = NULL){
+check_consecutive_words <- function(path = ".",
+                                    latex_file = NULL,
+                                    md5sum.ok = NULL,
+                                    outfile = NULL) {
   
   if (!nzchar(Sys.which("pdftotext"))) {
     stop("'pdftotext' not found on system path, but is required for check_consecutive_words().")
@@ -60,13 +64,14 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   # use the extant auxiliary files.
   file.copy(latex_file, paste0("CHECK-CONSECUTIVE-WORDS-", latex_file), overwrite = FALSE)
 
-  readLines(latex_file) %>%
-    gsub("\\begin{document}", "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
+  read_lines(latex_file) %>%
+    gsub("\\begin{document}",
+         "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
          x = ., 
          fixed = TRUE) %>%
     # Safe to omit the bibliography for now
     gsub("\\printbibliography", "", x = ., fixed = TRUE) %>%
-    writeLines(latex_file)
+    write_lines(latex_file)
 
   # Put the text from 
   # http://tex.stackexchange.com/questions/341842/convert-twocolumn-layout-to-onecolumn-with-identical-linebreaks
@@ -83,15 +88,17 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
 
   system(paste("pdftotext -layout", gsub("\\.tex$", ".pdf", latex_file)))
 
-  typeset_lines <- readLines(gsub("\\.tex$", ".txt", latex_file), warn = FALSE)
+  typeset_lines <- read_lines(gsub("\\.tex$", ".txt", latex_file), warn = FALSE)
 
   # Only consider words between overview and bibliography
-  if ("Overview" %in% typeset_lines){
+  if (OR("Overview" %chin% typeset_lines,
+         "\fOverview" %chin% typeset_lines)) {
     overview.line <- which(typeset_lines == "Overview")
     typeset_lines <- typeset_lines[-seq.int(1L, overview.line)]
   }
 
-  if ("Bibliography" %in% typeset_lines){
+  if (OR("Bibliography" %chin% typeset_lines,
+         "\fBibliography" %chin% typeset_lines)) {
     bibliography.line <- which(typeset_lines == "Bibliography")
     typeset_lines <- typeset_lines[seq_len(bibliography.line - 1L)]
   }
@@ -104,17 +111,21 @@ check_consecutive_words <- function(path = ".", latex_file = NULL, md5sum.ok = N
   first_words <- gsub("^(\\w+)\\b.*$", "\\1", valid_typeset_lines, perl = TRUE)
 
   is_repeated <-
-    first_words == data.table::shift(first_words,
-                                     type = "lag",
-                                     n = 1L,
-                                     fill = "Unlikely to be repeated") &
-    nchar(first_words) > 0 &
+    first_words == shift(first_words,
+                         type = "lag",
+                         n = 1L,
+                         fill = "Unlikely to be repeated") &
+    nzchar(first_words) &
     # Not only numbers
     !grepl("^[0-9]+$", first_words, perl = TRUE)
 
   repeated_words <- first_words[is_repeated]
 
   if (length(repeated_words) > 0) {
+    if (!is.null(outfile)) {
+      cat <- function(...) base::cat(..., file = outfile)
+    }
+    
     cat("'<Repeated word>'\n\t<Context>\n")
     for (repetition in seq_along(repeated_words)){
       cat("'", repeated_words[repetition], "'\n\t", sep = "")

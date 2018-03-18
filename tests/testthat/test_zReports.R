@@ -34,8 +34,9 @@ test_that("Housing affordability", {
   expect_null(check_cite_pagerefs(Report.tex))
   tempf_consecutive <- tempfile(pattern = "consecutive",
                                 fileext = ".txt")
-  
+  system("pdflatex -interaction=batchmode Report.tex")
   system("biber Report")
+  system("pdflatex -interaction=batchmode Report.tex")
   consecutive_outfile <- tempfile()
   expect_error(check_consecutive_words(latex_file = "Report.tex",
                                        outfile = consecutive_outfile))

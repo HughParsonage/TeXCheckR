@@ -76,6 +76,13 @@ check_spelling <- function(filename,
                            .report_error){
   if (missing(.report_error)){
     if (rstudio) {
+      if (!interactive()) {
+        stop("Argument 'rstudio' is only valid in interactive sessions.")
+      }
+      if (!rstudioapi::verifyAvailable()) {
+        stop("`rstudio = TRUE` yet RStudio is not running. ",
+             "Either make sure you are using RStudio or select `rstudio = FALSE`.")
+      }
       .report_error <- function(...) report2console(file = filename, ..., rstudio = TRUE)
     } else {
       .report_error <- function(...) report2console(...)

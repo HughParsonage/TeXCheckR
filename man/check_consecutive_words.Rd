@@ -15,7 +15,7 @@ check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL)
 you can use the \code{md5sum} of the output of this function.}
 }
 \value{
-An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
+An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines.
 Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 }
 \description{

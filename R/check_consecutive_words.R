@@ -4,7 +4,7 @@
 #' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 #' you can use the \code{md5sum} of the output of this function.
 #' @param outfile A file to which the output can be saved. If \code{NULL}, the default, the output is printed to the console (and not saved).
-#' @return An error if words are repeated on consecutive lines, together with cat() output of the offending lines.
+#' @return An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines.
 #' Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 #' @export
 
@@ -64,6 +64,7 @@ check_consecutive_words <- function(path = ".",
   # use the extant auxiliary files.
   file.copy(latex_file, paste0("CHECK-CONSECUTIVE-WORDS-", latex_file), overwrite = FALSE)
 
+
   read_lines(latex_file) %>%
     gsub("\\begin{document}",
          "\\input{CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP}\n\\begin{document}",
@@ -75,6 +76,7 @@ check_consecutive_words <- function(path = ".",
 
   # Put the text from 
   # http://tex.stackexchange.com/questions/341842/convert-twocolumn-layout-to-onecolumn-with-identical-linebreaks
+
   writeLines(twocolumn_atop, con = "CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")
 
   # Run pdflatex (biber should have already been run).

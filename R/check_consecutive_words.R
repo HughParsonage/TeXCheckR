@@ -40,11 +40,7 @@ check_consecutive_words <- function(path = ".",
   }
 
   if (!is.null(outfile)) {
-    if (!file.exists(outfile)) {
-      if (dir.exists(dirname(outfile))) {
-        file.create(outfile)
-      }
-    }
+    file.create(outfile)
     .outfile <- normalizePath(outfile, winslash = "/")
   }
   orig_wd <- getwd()
@@ -106,8 +102,12 @@ check_consecutive_words <- function(path = ".",
   writeLines(twocolumn_atop, con = "CHECK-CONSECUTIVE-WORDS-TWOCOLUMN-ATOP.tex")
 
   # Run pdflatex (biber should have already been run).
-  system(paste("pdflatex -draftmode", latex_file), show.output.on.console = FALSE)
-  system(paste("pdflatex -draftmode", latex_file), show.output.on.console = FALSE)
+  system(paste("pdflatex -draftmode", latex_file),
+         show.output.on.console = FALSE,
+         ignore.stderr = TRUE)
+  system(paste("pdflatex -draftmode", latex_file),
+         show.output.on.console = FALSE, 
+         ignore.stderr = TRUE)
   system(paste("pdflatex -interaction=batchmode", latex_file))
 
   # Replace the latex files
@@ -151,7 +151,7 @@ check_consecutive_words <- function(path = ".",
 
   if (length(repeated_words) > 0) {
     if (!is.null(outfile)) {
-      cat <- function(...) base::cat(..., file = .outfile, append = outfile.append)
+      cat <- function(...) base::cat(..., file = .outfile, append = TRUE)
     }
     
     cat("'<Repeated word>'\n\t<Context>\n")

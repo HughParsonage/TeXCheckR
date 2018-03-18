@@ -34,10 +34,10 @@ test_that("Housing affordability", {
   expect_null(check_cite_pagerefs(Report.tex))
   tempf_consecutive <- tempfile(pattern = "consecutive",
                                 fileext = ".txt")
-  system("pdflatex -interaction=batchmode Report.tex")
-  system("biber Report")
-  system("pdflatex -interaction=batchmode Report.tex")
-  consecutive_outfile <- tempfile()
+  system("pdflatex -interaction=batchmode -quiet Report.tex")
+  system("biber --onlylog Report")
+  system("pdflatex -interaction=batchmode -quiet Report.tex")
+  consecutive_outfile <- tempfile(pattern = "con_out")
   expect_error(check_consecutive_words(latex_file = "Report.tex",
                                        outfile = consecutive_outfile))
   
@@ -46,8 +46,9 @@ test_that("Housing affordability", {
   # commercial land remaining subject to a progressive land tax schedule
   # in order to to prevent windfall gains to large existing commercial
   # landholders.
-  expect_true("commercial land, with residential land paying a low flat rate and" %chin% trimws(readLines(consecutive_outfile)))
-  expect_true("commercial land remaining subject to a progressive land tax schedule" %chin% trimws(readLines(consecutive_outfile)))
+  expect_true(file.exists(consecutive_outfile))
+  expect_true("commercial land, with residential land paying a low flat rate and" %chin% trimws(readLines(consecutive_outfile, warn = FALSE)))
+  expect_true("commercial land remaining subject to a progressive land tax schedule" %chin% trimws(readLines(consecutive_outfile, warn = FALSE)))
   
   
   setwd(get_wd)

@@ -92,19 +92,19 @@ check_consecutive_words <- function(path = ".",
 
   system(paste("pdftotext -layout", gsub("\\.tex$", ".pdf", latex_file)))
 
-  typeset_lines <- read_lines(gsub("\\.tex$", ".txt", latex_file), warn = FALSE)
+  typeset_lines <- read_lines(gsub("\\.tex$", ".txt", latex_file))
 
   # Only consider words between overview and bibliography
   if (OR("Overview" %chin% typeset_lines,
          "\fOverview" %chin% typeset_lines)) {
-    overview.line <- which(typeset_lines == "Overview")
+    overview.line <- which(typeset_lines %chin% c("Overview", "\fOverview"))
     typeset_lines <- typeset_lines[-seq.int(1L, overview.line)]
   }
 
   if (OR("Bibliography" %chin% typeset_lines,
          "\fBibliography" %chin% typeset_lines)) {
-    bibliography.line <- which(typeset_lines == "Bibliography")
-    typeset_lines <- typeset_lines[seq_len(bibliography.line - 1L)]
+    bibliography.line <- which(typeset_lines %chin% c("Bibliography", "\fBibliography"))
+    typeset_lines <- typeset_lines[seq_len(max(bibliography.line) - 1L)]
   }
 
   file.remove(gsub("\\.tex$", ".txt", latex_file))

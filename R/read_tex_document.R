@@ -32,7 +32,7 @@ read_tex_document <- function(file_root) {
                subfile <- 
                  file.path(dirname(filename), 
                            sprintf("%s.tex", tools::file_path_sans_ext(subfile)))
-               read_tex_root(subfile)
+               read_tex_document(subfile)
              })
     project_lines_0 <- as.list(project_lines_0)
     for (i in seq_along(inputs_in_doc)) {

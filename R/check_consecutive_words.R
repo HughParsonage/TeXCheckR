@@ -47,10 +47,12 @@ check_consecutive_words <- function(path = ".",
   # Avoid spurious marks on 'Grattan Institute' or the name of the report
   if (file.exists("grattan.cls")) {
     grattan.cls <- readLines("grattan.cls")
+    # Can't simply omit the headers -- they will affect the makeup of the rest of the 
+    # text.  Best bet is to phantom them.
     grattan.cls %>%
       gsub("\\normalfont Grattan Institute \\@YEAR", "\\normalfont", ., fixed = TRUE) %>%
-      gsub("\\thepage", "\\phantom{\\thepage}", ., fixed = TRUE) %>%
-      gsub("\\mytitle", "\\phantom{\\mytitle}", ., fixed = TRUE) %>%
+      gsub("\\textcolor{theGrey}{\\thepage}", "\\phantom{\\thepage}", ., fixed = TRUE) %>%
+      gsub("\\textcolor{theGrey}{\\mytitle}", "\\phantom{\\mytitle}", ., fixed = TRUE) %>%
       writeLines("grattan.cls")
   }
 

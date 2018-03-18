@@ -4,15 +4,31 @@
 #' @param md5sum.ok The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 #' you can use the \code{md5sum} of the output of this function.
 #' @param outfile A file to which the output can be saved. If \code{NULL}, the default, the output is printed to the console (and not saved).
-#' @return An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines.
-#' Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
+#' @param outfile.append (logical, default: \code{FALSE}). Append or overwrite \code{outfile} if specified? If \code{FALSE}, the default, and file exists, \code{outfile} will be overwritten.
+#' @return \code{NULL} if the \code{LaTeX} document does not create a PDF with lines repeated. 
+#' An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines. The output is presented in 'stanzas': 
+#' \preformatted{'<Repeated word>'
+#'         <Context>
+#' }
+#' 
+#' for example a document that results in the following lines, notably the repetition of \emph{household}, the output would be:
+#' \preformatted{'household'
+#'         affordable. This `mortgage burden' is often defined as the proportion of
+#'         household income spent on repaying a mortgage. Depending on the
+#'         household income measure used, the mortgage burden on a newly
+#'         purchased first home, assuming a person borrows 80 per cent of the
+#'         value of the home, is currently lower than much of the period between
+#' } 
+#' 
+#' Lastly the error message contains the \code{\link[tools]{md5sum}} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. 
 #' @export
 
 
 check_consecutive_words <- function(path = ".",
                                     latex_file = NULL,
                                     md5sum.ok = NULL,
-                                    outfile = NULL) {
+                                    outfile = NULL,
+                                    outfile.append = FALSE) {
   
   if (!nzchar(Sys.which("pdftotext"))) {
     stop("'pdftotext' not found on system path, but is required for check_consecutive_words().")
@@ -23,6 +39,14 @@ check_consecutive_words <- function(path = ".",
     stop("`path` did not contain a single PDF file.")
   }
 
+  if (!is.null(outfile)) {
+    if (!file.exists(outfile)) {
+      if (dir.exists(dirname(outfile))) {
+        file.create(outfile)
+      }
+    }
+    .outfile <- normalizePath(outfile, winslash = "/")
+  }
   orig_wd <- getwd()
   on.exit(setwd(orig_wd))
   setwd(path)
@@ -127,7 +151,7 @@ check_consecutive_words <- function(path = ".",
 
   if (length(repeated_words) > 0) {
     if (!is.null(outfile)) {
-      cat <- function(...) base::cat(..., file = outfile)
+      cat <- function(...) base::cat(..., file = .outfile, append = outfile.append)
     }
     
     cat("'<Repeated word>'\n\t<Context>\n")

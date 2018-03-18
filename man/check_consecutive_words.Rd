@@ -4,7 +4,8 @@
 \alias{check_consecutive_words}
 \title{Check consecutive typeset words}
 \usage{
-check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL)
+check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL,
+  outfile = NULL, outfile.append = FALSE)
 }
 \arguments{
 \item{path}{Path containing the LaTeX file.}
@@ -13,10 +14,26 @@ check_consecutive_words(path = ".", latex_file = NULL, md5sum.ok = NULL)
 
 \item{md5sum.ok}{The output of \code{md5sum} of an acceptable LaTeX file. Since some repeated words will be spurious,
 you can use the \code{md5sum} of the output of this function.}
+
+\item{outfile}{A file to which the output can be saved. If \code{NULL}, the default, the output is printed to the console (and not saved).}
+
+\item{outfile.append}{(logical, default: \code{FALSE}). Append or overwrite \code{outfile} if specified? If \code{FALSE}, the default, and file exists, \code{outfile} will be overwritten.}
 }
 \value{
-An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines.
-Lastly the \code{tools::md5sum} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
+An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines. The output is presented in 'stanzas': 
+\preformatted{'<Repeated word>'
+        <Context>
+}
+
+for example \preformatted{'household'
+        affordable. This `mortgage burden' is often defined as the proportion of
+        household income spent on repaying a mortgage. Depending on the
+        household income measure used, the mortgage burden on a newly
+        purchased first home, assuming a person borrows 80 per cent of the
+        value of the home, is currently lower than much of the period between
+} 
+
+Lastly the error message contains the \code{\link[tools]{md5sum}} of the file is returned in the error message, so it can be supplied to \code{md5sum.ok}. \code{NULL} otherwise.
 }
 \description{
 Check consecutive typeset words

@@ -56,7 +56,7 @@ check_labels <- function(filename, .report_error){
     vapply(function(commands){
       grep("^label", commands, perl = TRUE, value = TRUE) %>%
         gsub(pattern = "^label[{]([^\\}]+)[}].*$", replacement = "\\1", x = ., perl = TRUE)
-    }, FUN.VALUE = character(1))
+    }, FUN.VALUE = "")
   
   if (any(grepl("^app(endix)?[:]", label_contents, perl = TRUE))){
     line_no <- grep("\\\\label\\{app(endix)?[:]", lines, perl = TRUE)[[1]]
@@ -85,8 +85,10 @@ check_labels <- function(filename, .report_error){
   
   # Check all captions have a label
   caption_without_label <- 
-    and(grepl("\\caption{", lines[lines > begin_at], fixed = TRUE), 
-        !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines[lines > begin_at], perl = TRUE))
+    and(grepl("\\caption{", lines, fixed = TRUE), 
+        !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines, perl = TRUE))
+  
+  caption_without_label[seq_len(begin_at)] <- FALSE
   
   if (any(caption_without_label)) {
     .report_error(file = filename,

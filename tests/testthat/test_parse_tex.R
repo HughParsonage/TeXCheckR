@@ -32,5 +32,14 @@ test_that("Verify % is not parsed", {
                    parse_tex(c("A {", "f %}", "Z}%[]")))
 })
 
+test_that("Parse tiny documents", {
+  library(data.table)
+  expect_identical(parse_tex(character(0L)), data.table())
+  expect_identical(parse_tex(c("", "A{B}"))[["GROUP_ID1"]], 
+                   c(NA_integer_, 1L, 1L, 1L))
+  expect_equal(range(parse_tex(c("", ""))[["line_no"]]), 1:2)
+                   
+})
+
 
 

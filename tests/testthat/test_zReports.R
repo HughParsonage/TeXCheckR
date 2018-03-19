@@ -32,6 +32,13 @@ test_that("Housing affordability", {
   expect_identical(footnotes[69L][["char_no_max"]], 103841L)
   
   expect_null(check_cite_pagerefs(Report.tex))
+  expect_null(check_dashes(Report.tex))
+  expect_null(check_escapes(Report.tex))
+  expect_null(check_footnote_typography(Report.tex))
+  expect_null(check_labels(Report.tex))
+  expect_null(check_literal_citations(Report.tex))
+  
+  
   tempf_consecutive <- tempfile(pattern = "consecutive",
                                 fileext = ".txt")
   system("pdflatex -interaction=batchmode -quiet Report.tex")
@@ -46,9 +53,11 @@ test_that("Housing affordability", {
   # commercial land remaining subject to a progressive land tax schedule
   # in order to to prevent windfall gains to large existing commercial
   # landholders.
-  skip_if_not(file.exists(consecutive_outfile))
-  expect_true("commercial land, with residential land paying a low flat rate and" %chin% trimws(readLines(consecutive_outfile, warn = FALSE)))
-  expect_true("commercial land remaining subject to a progressive land tax schedule" %chin% trimws(readLines(consecutive_outfile, warn = FALSE)))
+  if (file.exists(consecutive_outfile)) {
+    con_outf <- trimws(readLines(consecutive_outfile, warn = FALSE))
+    expect_true("commercial land, with residential land paying a low flat rate and" %chin% con_outf)
+    expect_true("commercial land remaining subject to a progressive land tax schedule" %chin% con_outf)
+  }
   
   
   setwd(get_wd)

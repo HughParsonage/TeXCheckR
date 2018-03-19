@@ -6,16 +6,22 @@
 #' \item{\code{char_no}}{The character within \code{line_no}.}
 #' \item{\code{char}}{The character. A single character.}
 #' \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
+#' \item{\code{}}
 #' \item{\code{GRP_ID}}{An integer identifying the unique contiguous block.}
+#' \item{\code{}}
 #' }
+#' If \code{tex_lines} is zero-length, a null \code{data.table}.
+#' 
 #' @export
 
 parse_tex <- function(tex_lines) {
   if (!length(tex_lines)) {
     return(data.table())
   }
+  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
+  nchar_tex_lines <- nchar(tex_lines)
   
-  if (!any(nzchar(tex_lines))) {
+  if (!any(nchar_tex_lines)) {
     return(data.table(char_no = seq_along(tex_lines),
                       line_no = seq_along(tex_lines),
                       column = 1L,
@@ -27,12 +33,11 @@ parse_tex <- function(tex_lines) {
                       tex_group = 0L,
                       optional_tex_group = 0L))
   }
-  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
+  
   trailing_newlines <- max(which(tex_lines != ""))
   Tex_line_split_unlist <- unlist(strsplit(tex_lines, split = "", fixed = TRUE),
                                   use.names = FALSE, recursive = FALSE)
-  nchar_tex_lines <- nchar(tex_lines)
-  n_char <- sum(nchar(tex_lines))
+  n_char <- sum(nchar_tex_lines)
   
   opener <- Tex_line_split_unlist == "{"
   closer <- Tex_line_split_unlist == "}"
@@ -193,7 +198,9 @@ parse_tex <- function(tex_lines) {
 # }
 
 unparse <- function(parsed) {
-  out_text <- parsed[, .(text = paste0(get("char", inherits = FALSE), collapse = "")), keyby = "line_no"]
+  #' Note that if all(nzchar(text)), an extra line is added
+  char <- NULL
+  out_text <- parsed[, .(text = paste0(char, collapse = "")), keyby = "line_no"]
   # Fill in blank lines
   out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n
   out[.subset2(out_text, "line_no")] <- .subset2(out_text, "text")

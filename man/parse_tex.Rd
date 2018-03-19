@@ -16,12 +16,25 @@ A \code{data.table} where each row identifies a unique character in \code{tex_li
 \item{\code{char_no}}{The character within \code{line_no}.}
 \item{\code{char}}{The character. A single character.}
 \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
-\item{\code{}}
-\item{\code{GRP_ID}}{An integer identifying the unique contiguous block.}
-\item{\code{}}
+\item{\code{optional_tex_group}}{(If any present), the optional TeX group.}
+\item{\code{tgi}}{The number of braces opened at the \code{i}-th current TeX group level.}
+\item{\code{GROUP_IDi}}{An integer identifying the unique contiguous block at the TeX group at or above the current group level.}
+\item{\code{GROUP_IDi}}{The analog for optional groups.}
 }
 If \code{tex_lines} is zero-length, a null \code{data.table}.
 }
 \description{
 Parse LaTeX lines
+}
+\examples{
+parse_tex(c("A{}", "B[a]{b{c}{d}}z"))
+# The version transposed:
+#
+#>          char : A{}B[a]{b{c}{d}}z
+#>           tg1 : 011111122......22
+#>           tg2 : 00000000011122222
+#>           og1 : 00001111111111111
+#>     GROUP_ID1 : .11....222222222.
+#>     GROUP_ID2 : .........111222..
+#> OPT_GROUP_ID1 : ....111..........
 }

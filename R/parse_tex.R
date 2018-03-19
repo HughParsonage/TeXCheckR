@@ -6,12 +6,24 @@
 #' \item{\code{char_no}}{The character within \code{line_no}.}
 #' \item{\code{char}}{The character. A single character.}
 #' \item{\code{tex_group}}{The TeX group by default. Any delimiters can be used.}
-#' \item{\code{}}
-#' \item{\code{GRP_ID}}{An integer identifying the unique contiguous block.}
-#' \item{\code{}}
+#' \item{\code{optional_tex_group}}{(If any present), the optional TeX group.}
+#' \item{\code{tgi}}{The number of braces opened at the \code{i}-th current TeX group level.}
+#' \item{\code{GROUP_IDi}}{An integer identifying the unique contiguous block at the TeX group at or above the current group level.}
+#' \item{\code{GROUP_IDi}}{The analog for optional groups.}
 #' }
 #' If \code{tex_lines} is zero-length, a null \code{data.table}.
 #' 
+#' @examples
+#' parse_tex(c("A{}", "B[a]{b{c}{d}}z"))
+#' # The version transposed:
+#' #
+#' #>          char : A{}B[a]{b{c}{d}}z
+#' #>           tg1 : 011111122......22
+#' #>           tg2 : 00000000011122222
+#' #>           og1 : 00001111111111111
+#' #>     GROUP_ID1 : .11....222222222.
+#' #>     GROUP_ID2 : .........111222..
+#' #> OPT_GROUP_ID1 : ....111..........
 #' @export
 
 parse_tex <- function(tex_lines) {
@@ -197,15 +209,7 @@ parse_tex <- function(tex_lines) {
 #   out
 # }
 
-unparse <- function(parsed) {
-  #' Note that if all(nzchar(text)), an extra line is added
-  char <- NULL
-  out_text <- parsed[, .(text = paste0(char, collapse = "")), keyby = "line_no"]
-  # Fill in blank lines
-  out <- character(.subset2(out_text, "line_no")[nrow(out_text)] + 1L) # +1 for trailing n
-  out[.subset2(out_text, "line_no")] <- .subset2(out_text, "text")
-  out
-}
+
 
 
 

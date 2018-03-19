@@ -24,10 +24,14 @@ check_labels <- function(filename, .report_error){
   }
   orig <- lines <- read_lines(filename)
 
-  lines <- strip_comments(lines)
-
-  begin_at <- which(lines == "\\begin{document}")
+  lines <- trimws(strip_comments(lines))
   
+
+  # which.max faster in case there are (somehow) 2 \begin{documents}'s
+  begin_at <- which.max(lines == "\\begin{document}")
+  if (!length(begin_at)) {
+    begin_at <- 0L
+  }
   space_after_label <-"(\\\\label[^\\}]*)\\s[^\\}]*\\}"
   if (any(grepl(space_after_label, stri_trim_both(lines), perl = TRUE))) {
     line_no <- grep(space_after_label, stri_trim_both(lines), perl = TRUE)[[1]]
@@ -43,9 +47,9 @@ check_labels <- function(filename, .report_error){
   }
 
   lines_with_labels <- grep("\\label{", lines, fixed = TRUE)
-  if (length(begin_at)) {
-    lines_with_labels <- lines_with_labels[lines_with_labels > begin_at]
-  }
+  
+  lines_with_labels <- lines_with_labels[lines_with_labels > begin_at]
+  
   label_contents <-
     lines[lines_with_labels] %>%
     strsplit(split = "\\", fixed = TRUE) %>%
@@ -81,8 +85,8 @@ check_labels <- function(filename, .report_error){
   
   # Check all captions have a label
   caption_without_label <- 
-    and(grepl("\\caption{", lines, fixed = TRUE), 
-        !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines, perl = TRUE))
+    and(grepl("\\caption{", lines[lines > begin_at], fixed = TRUE), 
+        !grepl("\\\\label\\{(?:fig)|(?:tbl)[:]", lines[lines > begin_at], perl = TRUE))
   
   if (any(caption_without_label)) {
     .report_error(file = filename,

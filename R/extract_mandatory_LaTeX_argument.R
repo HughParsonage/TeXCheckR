@@ -65,9 +65,10 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
                   fill = TRUE)
       #
       # # # # # # # # # # # 
-    } 
+    }
     
-    parsed_doc <- parsed_doc[char_no %notin% optional_char_nos]
+    
+    parsed_doc <- parsed_doc[(!char_no %in% optional_char_nos)]
   }
   
   # Find the location of each command

@@ -30,5 +30,10 @@ test_that("stringi replacements work if stringi absent", {
 })
 
 
+test_that("Any brace", {
+  expect_true(any_brace(c("sdf", "sfd{")))
+  expect_false(any_brace("sdf"))
+})
+
 
 

@@ -21,6 +21,26 @@ extract_mandatory_LaTeX_argument <- function(tex_lines,
   # parse_tex adds these columns
   char <- char_no <- line_no <- NULL
   if (is.null(parsed_doc)) {
+    if (!any_brace(tex_lines)) {
+      if (by.line) {
+        out <- data.table(command_no = integer(),
+                          line_no = integer(),
+                          extract = character(),
+                          line_no_min = integer(),
+                          line_no_max = integer(),
+                          char_no_min = integer(),
+                          char_no_max = integer())
+        
+      } else {
+        out <- data.table(command_no = integer(),
+                          extract = character(),
+                          line_no_min = integer(),
+                          line_no_max = integer(),
+                          char_no_min = integer(),
+                          char_no_max = integer())
+      }
+      return(out)
+    }
     tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
     parsed_doc <- parse_tex(tex_lines)
   }

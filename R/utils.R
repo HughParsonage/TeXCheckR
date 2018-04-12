@@ -161,6 +161,18 @@ is_testing <- function() {
     testthat::is_testing()
 }
 
+any_brace <- function(lines) {
+  L <- length(lines)
+  if (L == 1L) {
+    return(grepl("{", lines, fixed = TRUE))
+  }
+  i <- 1L
+  while (!grepl("{", lines[i], fixed = TRUE) && i <= L) {
+    i <- i + 1L
+  }
+  i <= L
+}
+
 
 
 

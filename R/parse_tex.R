@@ -68,7 +68,8 @@ parse_tex <- function(tex_lines) {
               opener_optional = opener_optional,
               closer_optional = closer_optional,
               tex_group = tex_group,
-              optional_tex_group = optional_tex_group)
+              optional_tex_group = optional_tex_group,
+              backslash = Tex_line_split_unlist == "\\")
   setattr(out, "class", c("data.table", "data.frame"))
   
  
@@ -79,6 +80,8 @@ parse_tex <- function(tex_lines) {
   
   seq_max_tex_group <- seq_len(max_tex_group)
   
+  setindexv(out, "tex_group")
+
   tg <- sprintf("tg%s", seq_max_tex_group)
   GROUP_IDz <- sprintf("GROUP_ID%s", seq_max_tex_group)
   
@@ -86,7 +89,7 @@ parse_tex <- function(tex_lines) {
   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
   # 0000000000000000000111100000000000222
   
-  setindexv(out, "tex_group")
+  
   for (j in seq_max_tex_group) {
     tgj <- tg[j]
 

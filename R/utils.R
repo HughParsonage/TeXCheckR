@@ -167,7 +167,7 @@ any_brace <- function(lines) {
     return(grepl("{", lines, fixed = TRUE))
   }
   i <- 1L
-  while (!grepl("{", main[i], fixed = TRUE) && i <= L) {
+  while (!grepl("{", lines[i], fixed = TRUE) && i <= L) {
     i <- i + 1L
   }
   i <= L

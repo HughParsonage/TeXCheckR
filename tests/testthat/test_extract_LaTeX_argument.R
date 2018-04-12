@@ -116,6 +116,7 @@ test_that("Optional argument interference", {
 
 
 test_that("Multi-lines", {
+  skip_if_not_installed("readr")
   dbl_col_fig <- readr::read_lines("extract/dbl-col-fig.tex")
   out <- extract_mandatory_LaTeX_argument(dbl_col_fig, "doublecolumnfigure", n = 2L)
   expect_true(grepl("includegraphics{atlas/boxplot-increase_in_travel_time-by-City-Weekday--MonFri-excl-holiday-1.pdf}", 
@@ -137,6 +138,7 @@ test_that("Multi-lines", {
 })
 
 test_that("Road congestion example", {
+  skip_if_not_installed("readr")
   road_congestion <- readr::read_lines("extract/road-congestion.tex")
   
   charts_in_road_congestion <-
@@ -190,6 +192,7 @@ test_that("Argument requested but missing", {
 })
 
 test_that("Environments", {
+  skip_if_not_installed("readr")
   road_congestion <- readr::read_lines("extract/road-congestion.tex")
   smallbox <- extract_mandatory_LaTeX_argument(road_congestion, "begin{smallbox}")
   expect_true(all(c("Estimates of the economic costs of congestion are misused and poorly understood", 

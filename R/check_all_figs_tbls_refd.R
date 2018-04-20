@@ -34,7 +34,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
   }
   
   lines <- strip_comments(lines)
-
+  
   # Order is important (e.g. Vrefrange)
   input_pattern <- "^\\\\(?:(?:input)|(?:include(?!(?:graphics))))[{](.*(?:\\.tex)?)[}]$"
   
@@ -45,21 +45,21 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
   file_path <- dirname(filename)
   while (length(input_line_nos)) {
     lines <- 
-     lapply(seq_along(lines), 
-            function(ii) {
-              if (ii %in% input_line_nos) {
-                input_line <- lines[ii]
-                input_file <-
-                  gsub(input_pattern,
-                       "\\1.tex",
-                       input_line,
-                       perl = TRUE)
-                read_lines(file.path(file_path, input_file))
-              } else {
-                lines[ii]
-              }
-            }) %>%
-       unlist(use.names = FALSE)
+      lapply(seq_along(lines), 
+             function(ii) {
+               if (ii %in% input_line_nos) {
+                 input_line <- lines[ii]
+                 input_file <-
+                   gsub(input_pattern,
+                        "\\1.tex",
+                        input_line,
+                        perl = TRUE)
+                 read_lines(file.path(file_path, input_file))
+               } else {
+                 lines[ii]
+               }
+             }) %>%
+      unlist(use.names = FALSE)
     
     input_line_nos <- grep(input_pattern,
                            lines, 
@@ -143,6 +143,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
     
   }
   
+  
   if (any(grepl("\\\\(?:(?:Chaps?ref)|(?:topref))", lines, perl = TRUE))){
     chapter_line_nos <-
       sort(union(grep("\\addchap", lines, fixed = TRUE),
@@ -203,8 +204,37 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       }) %>%
       unlist
     
+    
+    Chapref_and_1st <-
+      grep("\\\\(?:Chaprefand)", lines, perl = TRUE, value = TRUE) %>%
+      strsplit(split = "\\\\(?=(?:Chaprefand))", perl = TRUE) %>%
+      lapply(function(commands){
+        grep("^(?:Chaprefand)", commands, perl = TRUE, value = TRUE) %>%
+          sub(pattern = "^(?:Chaprefand)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
+              replacement = "\\1",
+              x = .,
+              perl = TRUE)
+      }) %>%
+      unlist
+    
+    
+    Chapref_and_2nd <-
+      grep("\\\\(?:Chaprefand)", lines, perl = TRUE, value = TRUE) %>%
+      strsplit(split = "\\\\(?=(?:Chaprefand))", perl = TRUE) %>%
+      lapply(function(commands){
+        grep("^(?:Chaprefand)", commands, perl = TRUE, value = TRUE) %>%
+          sub(pattern = "^(?:Chaprefand)[{]([^\\}]+)[}][{]([^\\}]+)[}].*$",
+              replacement = "\\2",
+              x = .,
+              perl = TRUE)
+      }) %>%
+      unlist
+    
+    
     Chapref_targets_all <- union(union(Chapref_range_1st,
                                        Chapref_range_2nd),
+                                 union(Chapref_and_1st,
+                                       Chapref_and_2nd),
                                  union(topref_targets,
                                        Chapref_targets))
     
@@ -220,6 +250,12 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       
       Chapref_range_2nd_undefined <-
         Chapref_range_2nd[Chapref_range_2nd %notin% labels_following_chapters]
+      
+      Chapref_and_1st_undefined <-
+        Chapref_and_1st[Chapref_and_1st %notin% labels_following_chapters]
+      
+      Chapref_and_2nd_undefined <-
+        Chapref_and_2nd[Chapref_and_2nd %notin% labels_following_chapters]      
       
       
       offending_xrefs <- character(0)
@@ -244,6 +280,18 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
       if (not_length0(Chapref_range_2nd)){
         ante_note <- "There were also empty cross-reference targets for the *2nd* argument of Chaprefrange."
       }
+      
+      
+      if (not_length0(Chapref_and_1st)){
+        offending_xrefs <-
+          c(offending_xrefs,
+            paste0("\\topref{", Chapref_and_1st_undefined, "}"))
+      }
+      
+      if (not_length0(Chapref_and_2nd)){
+        ante_note <- "There were also empty cross-reference targets for the *2nd* argument of Chaprefand."
+      }
+      
       
       error_message <- "Mislabeled or empty cross-references target for Chapref or topref"
       context <-

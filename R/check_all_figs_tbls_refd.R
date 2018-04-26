@@ -144,7 +144,7 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
   }
   
   
-  if (any(grepl("\\\\(?:(?:Chaps?ref)|(?:topref))", lines, perl = TRUE))){
+  if (any(grepl("\\\\(?:(?:Chaps?ref)|(?:topref)|(?:Chaprefand))", lines, perl = TRUE))){
     chapter_line_nos <-
       sort(union(grep("\\addchap", lines, fixed = TRUE),
                  grep("\\chapter", lines, fixed = TRUE)))

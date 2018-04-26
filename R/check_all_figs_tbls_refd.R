@@ -232,10 +232,10 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
     
     
     Chapref_targets_all <- unique(c(Chapref_range_1st,
-                                    Chapref_range_2nd),
-                                  c(Chapref_and_1st,
-                                    Chapref_and_2nd),
-                                  c(topref_targets,
+                                    Chapref_range_2nd,
+                                    Chapref_and_1st,
+                                    Chapref_and_2nd,
+                                    topref_targets,
                                     Chapref_targets))
     
     if (!all(Chapref_targets_all %in% labels_following_chapters)){

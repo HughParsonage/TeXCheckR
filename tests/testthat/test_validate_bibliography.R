@@ -32,3 +32,18 @@ test_that("Near-duplicate authors", {
   expect_error(any_bib_duplicates("validate-bib/near-dup-authors.bib", report2console),
                regexp = "Same author used with inconsistent.*case")
 })
+
+test_that("Hypercorrected mendeleys", {
+  if (isTRUE(getOption("TeXCheckR.halt_on_error"))) {
+    expect_error(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
+                 regexp = "URL contains hypercorrected escapes.",
+                 fixed = TRUE)
+  } else {
+    options("TeXCheckR.halt_on_error" = TRUE)
+    expect_error(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
+                 regexp = "URL contains hypercorrected escapes.",
+                 fixed = TRUE)
+    options("TeXCheckR.halt_on_error" = FALSE)
+  }
+  expect_null(validate_bibliography(file = "./validate-bib/valid-hypercorrected.bib"))
+})

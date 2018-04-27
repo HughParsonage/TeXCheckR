@@ -29,7 +29,8 @@
 #' 
 
 
-validate_bibliography <- function(path = ".", file = NULL, .report_error, rstudio = FALSE){
+validate_bibliography <- function(path = ".", file = NULL, .report_error,
+                                  rstudio = FALSE) {
   if (missing(.report_error)){
     if (rstudio) {
       .report_error <- function(...) report2console(..., file = file, rstudio = TRUE)
@@ -70,8 +71,7 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error, rstudi
     stop(bib_file, " contains line which is neither a key, nor field, nor closing.")
   }
   
-  bib <- 
-    bib[!grepl("% Valid", bib, fixed = TRUE)]
+  bib[grep("% Valid", bib, fixed = TRUE)] <- ""
   
   if (any(grepl(".[}]$", bib, perl = TRUE))){
     line_no <- grep(".[}]$", bib, perl = TRUE)[[1]]
@@ -320,6 +320,17 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error, rstudi
         bad_entry[3], "\n\t",
         bad_entry[4], "\n")
     stop("Date and year should not both appear in bibliography.")
+  }
+  
+  url_hypercorrected <- grep("^url.*\\\\", bib, perl = TRUE)
+  if (not_length0(url_hypercorrected)) {
+    .report_error(file = bib_file,
+                  line_no = url_hypercorrected[1],
+                  column = 1,
+                  context = bib[url_hypercorrected[1]],
+                  error_message = "URL contains hypercorrected escapes.",
+                  advice = paste("Do not escape characters with special meaning in TeX ('control sequences')", 
+                                 "when they appear in URLs. Delete the backslashes."))
   }
 
   invisible(NULL)

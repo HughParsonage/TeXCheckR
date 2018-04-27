@@ -9,3 +9,15 @@ test_that("Correctly tidies known input", {
                    readLines("lint_bib_out_correct.bib", encoding = "UTF-8"))
 })
 
+test_that("Correctly tidies hypercorrections", {
+  # skip("Not supported in R 3.5.0.")
+  
+  if (file.exists("./validate-bib/invalid-hypercorrected_out.bib")) {
+    file.remove("./validate-bib/invalid-hypercorrected_out.bib")
+  }
+  lint_bib("./validate-bib/invalid-hypercorrected.bib",
+           "./validate-bib/invalid-hypercorrected_out.bib")
+  expect_identical(readLines("./validate-bib/invalid-hypercorrected_out.bib", encoding = "UTF-8"),
+                   readLines("./validate-bib/valid-hypercorrected.bib", encoding = "UTF-8"))
+})
+

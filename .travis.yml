@@ -9,7 +9,7 @@ pandoc: false
 warnings_are_errors: true
 
 before_install:
-- Rscript -e 'install.packages("devtools", repos = "https://cran.ms.unimelb.edu.au/", dep = T)'
+- Rscript -e 'update.packages(ask=FALSE)'
 - Rscript -e 'if (!requireNamespace("tinytex", quietly = TRUE)) install.packages("tinytex", quiet = TRUE)'
 - Rscript -e 'library(tinytex);install_tinytex(force = T);setwd("./tests/testthat/check-biber/no-journal-title/");pdflatex("a.tex", engine_args = "-interaction=batchmode", bib_engine = "biber")'
 

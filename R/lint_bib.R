@@ -32,7 +32,14 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
 
   out <- bib
   
-  
+  # Lint things like {https://docs.education.gov.au/system/files/doc/other/2017{\_}allocation{\_}of{\_}units{\_}of{\_}study{\_}v2.pdf} in URLs
+  # 'is url'
+  iu <- startsWith(out, "url")
+  # braced versions first so we capture both
+  out[iu] <- gsub("{\\_}", "_", out[iu], fixed = TRUE)
+  out[iu] <- gsub("{\\%}", "%", out[iu], fixed = TRUE)
+  out[iu] <- gsub("\\_", "_", out[iu], fixed = TRUE)
+  out[iu] <- gsub("\\%", "%", out[iu], fixed = TRUE)
 
   # Vectorized gsub. Required because spaces_required is 
   # different every line.
@@ -43,25 +50,14 @@ lint_bib <- function(bib_file, outfile = bib_file, leading_spaces = 2L){
       
       if (grepl("^\\s*(\\w+)\\s*[=]\\s*\\{", bib[line], perl = TRUE)) {
         spaces_req <- widest_field - field_width[line]
-        if (getRversion() > "3.4.0") {
-          out[line] <-
-            gsub("^\\s*(\\w+)\\s*[=]\\s*\\{", 
-                 paste0(paste0(rep(" ", leading_spaces), collapse = ""),
-                        "\\1",
-                        paste0(rep(" ", spaces_req), collapse = ""),
-                        " = {"),
-                 bib[line],
-                 perl = TRUE)
-        } else {
-          out[line] <-
-            gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
-                 paste0(paste0(rep(" ", leading_spaces), collapse = ""),
-                        "\\L\\1",
-                        paste0(rep(" ", spaces_req), collapse = ""),
-                        " = {"),
-                 bib[line],
-                 perl = TRUE)
-        }
+        out[line] <-
+          gsub("^\\s*(\\w+)\\s*[=]\\s*\\{",
+               paste0(paste0(rep(" ", leading_spaces), collapse = ""),
+                      "\\L\\1",
+                      paste0(rep(" ", spaces_req), collapse = ""),
+                      " = {"),
+               out[line],
+               perl = TRUE)
       }
     }
   }

@@ -33,6 +33,8 @@ test_that("Permit Chaprefand", {
                "See \\Chaprefand{chap:1}{chap:3}.",
                "\\chapter{one}\\label{chap:1}",
                "foo",
+               "\\chapter{two}\\label{chap:2}",
+               "\\Chapref{chap:1} and \\Chaprefrange{chap:2}{chap:3}",
                "\\chapter{three}\\label{chap:3}",
                "\\end{document}", 
                ""),

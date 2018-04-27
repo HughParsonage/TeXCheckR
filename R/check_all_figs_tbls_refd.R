@@ -156,11 +156,11 @@ figs_tbls_unrefd <- function(filename, .report_error, check.labels = TRUE){
           perl = TRUE)
     
     Chapref_targets <-
-      grep("\\\\(?:Chapref(?!range))", lines, perl = TRUE, value = TRUE) %>%
-      strsplit(split = "\\\\(?=(?:Chapref(?!range)))", perl = TRUE) %>%
+      grep("\\\\(?:Chapref(?!(?:range|and)))", lines, perl = TRUE, value = TRUE) %>%
+      strsplit(split = "\\\\(?=(?:Chapref(?!(?:range|and))))", perl = TRUE) %>%
       lapply(function(commands){
         grep("^(?:Chapref(?!range))", commands, perl = TRUE, value = TRUE) %>%
-          gsub(pattern = "^(?:Chapref(?!range))[{]([^\\}]+)[}].*$",
+          gsub(pattern = "^(?:Chapref(?!(?:range|and)))[{]([^\\}]+)[}].*$",
                replacement = "\\1",
                x = .,
                perl = TRUE)

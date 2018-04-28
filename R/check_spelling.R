@@ -238,7 +238,9 @@ check_spelling <- function(filename,
                 # prenote
                 "\\[", "[^\\]]*", "\\]",
                 # postnote
+                "(?:",
                 "\\[", "[^\\]]*", "\\]",
+                ")?",
                 ")?",
                 # cite key (possibly multiple)
                 # (the multiplicity applies to the prenote as well)

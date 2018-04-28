@@ -1,6 +1,6 @@
 context("Reports")
 
-test_that("Housing affordability", {
+test_that("Housing affordability (current)", {
   skip_on_cran()
   skip_if_not(nzchar(Sys.which("biber")))
   library(data.table)
@@ -21,6 +21,28 @@ test_that("Housing affordability", {
              fixed = TRUE, 
              value = TRUE))
   expect_null(check_spelling("Report.tex"))
+})
+  
+test_that("Housing affordability (original)", {  
+  skip_on_cran()
+  skip_if_not(nzchar(Sys.which("biber")))
+  library(data.table)
+  h <- sample(LETTERS, size = 1)
+  ha <- file.path(tempdir(), h)
+  hutils::provide.dir(ha)
+  get_wd <- getwd()
+  setwd(ha)
+  dl_status <- 
+    download.file(url = "https://github.com/grattan/zzz-2018-Housing-affordability/zipball/f51db0a2782508a78877eb29f33eec6eb3f021df",
+                  mode = "wb",
+                  cacheOK = FALSE,
+                  destfile = "ha.zip", 
+                  quiet = TRUE)
+  unzip("ha.zip", exdir = ".")
+  setwd(grep("grattan-zzz-2018-Housing-affordability", 
+             list.dirs(), 
+             fixed = TRUE, 
+             value = TRUE))
   
   Report <- read_tex_document("Report.tex")
   Report.tex <- tempfile(fileext = ".tex")

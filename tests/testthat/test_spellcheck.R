@@ -122,6 +122,6 @@ test_that("Lonesome footcites", {
                "\\end{document}",
                ""),
              footcite.tex)
-  expect_error(check_spelling(footcite.tex), regexp = "[Ss]pelling")
+  expect_error(check_spelling(footcite.tex), regexp = "[Ss]pellcheck")
 })
 

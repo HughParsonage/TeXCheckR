@@ -229,16 +229,18 @@ check_spelling <- function(filename,
     }
   }
   
-  # Do not check cite keys
+  # Do not check cite keys: not reliably supported by hunspell
   lines <-
     gsub(paste0("((foot)|(text)|(auto))",
                 "cites?",
                 # optional pre/postnote
                 "((",
                 # prenote
-                "\\[", "\\]",
-                # postnote
                 "\\[", "[^\\]]*", "\\]",
+                # postnote
+                "(?:",
+                "\\[", "[^\\]]*", "\\]",
+                ")?",
                 ")?",
                 # cite key (possibly multiple)
                 # (the multiplicity applies to the prenote as well)

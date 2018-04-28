@@ -114,3 +114,14 @@ test_that("Inputs should respect dict_lang at top level", {
                              dict_lang = "en_US"))
 })
 
+test_that("Lonesome footcites", {
+  footcite.tex <- tempfile(fileext = ".tex")
+  writeLines(c("\\documentclass{article}",
+               "\\begin{document}", 
+               "A claim.\\footnote{textcite{not-yet-cited}.}",
+               "\\end{document}",
+               ""),
+             footcite.tex)
+  expect_error(check_spelling(footcite.tex), regexp = "[Ss]pellcheck")
+})
+

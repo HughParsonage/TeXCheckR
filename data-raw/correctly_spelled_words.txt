@@ -723,7 +723,7 @@ Shiller
 Shore
 Sims
 Sirtex
-Sizable
+sizable
 Skybus
 smallbox
 Smartbus

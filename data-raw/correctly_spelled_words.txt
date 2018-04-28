@@ -312,8 +312,6 @@ float's
 Flyvbjerg
 Flyvbjerg's
 Foodland
-footcite
-footcites
 Footscray
 Forest
 Forestville
@@ -787,9 +785,6 @@ Telstra
 Tempe
 Tennyson
 tex
-textbf
-textcite
-textcites
 Thompsons
 Thornleigh
 Thrombophilia

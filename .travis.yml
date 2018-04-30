@@ -1,6 +1,7 @@
 language: r
 cache: packages
 matrix:
+include:
 - r: release
   - env:  _R_CHECK_FORCE_SUGGESTS_=true
 - r: devel

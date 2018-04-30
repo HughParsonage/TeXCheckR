@@ -5,8 +5,9 @@ matrix:
   - r: release
     env: 
     - R_CHECK_FORCE_SUGGESTS_=true
-    - R_CHECK_FORCE_SUGGESTS_=false
   - r: devel
+    env: 
+    - R_CHECK_FORCE_SUGGESTS_=false
 sudo: true
 latex: false
 pandoc: false

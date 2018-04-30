@@ -1,10 +1,12 @@
 language: r
 cache: packages
 matrix:
-include:
-- r: release
-  - env:  _R_CHECK_FORCE_SUGGESTS_=true
-- r: devel
+  include:
+  - r: release
+    env: 
+    - R_CHECK_FORCE_SUGGESTS_=true
+    - R_CHECK_FORCE_SUGGESTS_=false
+  - r: devel
 sudo: true
 latex: false
 pandoc: false

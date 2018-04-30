@@ -1,8 +1,13 @@
 language: r
 cache: packages
-r: 
-- release
-- devel
+matrix:
+  include:
+  - r: release
+    env: 
+    - R_CHECK_FORCE_SUGGESTS_=true
+  - r: devel
+    env: 
+    - R_CHECK_FORCE_SUGGESTS_=false
 sudo: true
 latex: false
 pandoc: false

@@ -26,3 +26,16 @@ test_that("Optional arguments", {
   expect_identical(out, 
                    list(data.table(starts = 20L, stops = 25L, zero_width = FALSE)))
 })
+
+test_that("Disallow stringi", {
+  out <- nth_arg_positions("", "foo", allow_stringi = FALSE)
+  expect_true(is.na(out[[1]][["starts"]]))
+  out <- nth_arg_positions("See \\textcite[Ante][Post]{Knuth1} [if you want].",
+                           command_name = "textcite", 
+                           n = 2L, 
+                           optional = TRUE,
+                           allow_stringi = FALSE)
+  expect_identical(out, 
+                   list(data.table(starts = 20L, stops = 25L, zero_width = FALSE)))
+})
+

@@ -11,7 +11,7 @@ replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
   .dummy_replacement = "Qq")
 
 nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
-  star = TRUE, data.tables = TRUE)
+  star = TRUE, data.tables = TRUE, allow_stringi = TRUE)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file (as read in from \code{readLines} or \code{readr::read_lines}).}
@@ -36,6 +36,9 @@ the argument lies on a single line.}
 
 \item{data.tables}{Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
 for performance.}
+
+\item{allow_stringi}{(logical, default: \code{TRUE}) If \code{FALSE}, non-\code{stringi} 
+functions are allowed.}
 }
 \description{
 Replace nth arguments

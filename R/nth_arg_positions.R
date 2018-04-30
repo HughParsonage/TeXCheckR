@@ -110,23 +110,33 @@ replace_nth_LaTeX_argument <- function(tex_lines,
 #' the argument lies on a single line.
 #' @param data.tables Should each element of the list be a \code{data.table}? Set to \code{FALSE} 
 #' for performance.
+#' @param allow_stringi (logical, default: \code{TRUE}) If \code{FALSE}, non-\code{stringi} 
+#' functions are allowed.
 #' @export nth_arg_positions
-nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE, star = TRUE, data.tables = TRUE) {
-  if (!requireNamespace("stringi", quietly = TRUE)) {
-    warning("Using non-stringi method. Run install.packages('stringi') for tested use.")
-    return(extract_LaTeX_argument(tex_lines = tex_lines, command_name = command_name, n = n, optional = optional))
-  } else {
-  Command_locations <-
-    stringi::stri_locate_all_regex(str = tex_lines,
-                                   # If command = \a, must not also detect \ab
-                                   pattern = sprintf("\\\\%s(?![A-Za-z])", command_name))
+nth_arg_positions <- function(tex_lines,
+                              command_name,
+                              n = 1L,
+                              optional = FALSE,
+                              star = TRUE,
+                              data.tables = TRUE,
+                              allow_stringi = TRUE) {
+  Command_locations <- 
+    if (requireNamespace("stringi", quietly = TRUE) && allow_stringi) {
+      stringi::stri_locate_all_regex(str = tex_lines,
+                                     # If command = \a, must not also detect \ab
+                                     pattern = sprintf("\\\\%s(?![A-Za-z])", command_name))
+    } else {
+      stri_locate_all_regex_no_stri(str = tex_lines,
+                                    # If command = \a, must not also detect \ab
+                                    pattern = sprintf("\\\\%s(?![A-Za-z])", command_name))
+    } 
   nchar_tex_lines <- nchar(tex_lines)
   Tex_line_split <- strsplit(tex_lines, split = "")
   
   delim1 <- if (optional) "[" else "{"
   delim2 <- if (optional) "]" else "}"
   
-
+  
   if (star) {
     out <- 
       lapply(seq_along(tex_lines), function(i) {
@@ -217,7 +227,7 @@ nth_arg_positions <- function(tex_lines, command_name, n = 1L, optional = FALSE,
         by = .(command_no)] %>%
       unique(by = "command_no")
   }
-  }
 }
+
 
 

@@ -1,8 +1,9 @@
 language: r
 cache: packages
-r: 
-- release
-- devel
+matrix:
+- r: release
+  - env:  _R_CHECK_FORCE_SUGGESTS_=true
+- r: devel
 sudo: true
 latex: false
 pandoc: false

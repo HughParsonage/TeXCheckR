@@ -33,6 +33,32 @@ stri_locate_first_fixed_no_stringi <- function(str, pattern) {
   out
 }
 
+stri_locate_all_regex_no_stri <- function(str, pattern) {
+  row_has_pattern <- grepl(pattern, str, perl = TRUE)
+  ans <- 
+    lapply(seq_along(str), function(i) {
+      if (row_has_pattern[i]) {
+        gregexprs <- 
+          gregexpr(pattern = pattern, 
+                   text = str[i], 
+                   perl = TRUE)
+        nchar_pattern <- attr(gregexprs[[1L]], "match.length")[1L]
+        out <- matrix(NA_integer_, nrow = length(gregexprs[[1L]]), ncol = 2L)
+        for (j in seq_along(gregexprs[[1L]])) {
+          out[j, 1L] <- gregexprs[[1L]][j]
+        }
+        out[, 2L] <- out[, 1L] + nchar_pattern - 1L
+        # Conformance with stringi
+      } else {
+        out <- matrix(NA_integer_, nrow = 1L, ncol = 2L)
+      }
+      setattr(out, "dimnames", value = list(NULL, c("start", "end")))
+      out
+    })
+  ans
+}
+
+
 stri_count_fixed_no_stringi <- function(str, pattern) {
   relevant_line_nos <- grep(pattern, str, fixed = TRUE)
   relevant_lines <- str[relevant_line_nos]
@@ -58,6 +84,8 @@ stri_count_fixed_no_stringi <- function(str, pattern) {
   out[relevant_line_nos] <- count_on_relevant
   out
 }
+
+
 
 stri_locate_first_fixed <- function(str, pattern, ...) {
   if (requireNamespace("stringi", quietly = TRUE)) {

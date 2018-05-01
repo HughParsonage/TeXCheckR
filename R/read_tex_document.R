@@ -11,29 +11,19 @@ read_tex_document <- function(file_root) {
          perl = TRUE)
   
   if (length(inputs_in_doc)) {
-    inputs <- 
-      lapply(inputs_in_doc, 
-             function(x) {
-               line_subfile <-
-                 sub("\\include{",
-                     "\\input{",
-                     project_lines_0[x],
-                     fixed = TRUE)
-               
-               subfile <- 
-                 # Need to deal with \input s on the same line
-                 # Problem if \b occurs natively but very unlikely.
-                 strsplit(gsub("\\\\input\\{([^\\}]++)\\}",
-                               "\\1\b",
-                               line_subfile,
-                               perl = TRUE),
-                          "\b",
-                          fixed = TRUE)[[1L]]
-               subfile <- 
-                 file.path(dirname(filename), 
-                           sprintf("%s.tex", tools::file_path_sans_ext(subfile)))
-               read_tex_document(subfile)
-             })
+    input_files <- 
+      project_lines_0 %>%
+      .[inputs_in_doc] %>%
+      gsub("\\include{", "\\input{", x = ., fixed = TRUE) %>%
+      extract_LaTeX_argument("input") %>%
+      .subset2("extract")
+    
+    input_files <- file.path(dirname(filename), input_files)
+    input_files[!endsWith(input_files, ".tex")] <-
+      paste0(input_files[!endsWith(input_files, ".tex")], ".tex")
+    
+    inputs <- lapply(input_files, read_tex_document)
+    
     project_lines_0 <- as.list(project_lines_0)
     for (i in seq_along(inputs_in_doc)) {
       project_lines_0[[inputs_in_doc[i]]] <- inputs[[i]]

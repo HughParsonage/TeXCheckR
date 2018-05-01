@@ -2,6 +2,7 @@ context("Reports")
 
 test_that("Housing affordability (current)", {
   skip_on_cran()
+  skip_if_not_installed("readr")
   skip_if_not(nzchar(Sys.which("biber")))
   library(data.table)
   h <- sample(letters, size = 1)
@@ -20,7 +21,11 @@ test_that("Housing affordability (current)", {
              list.dirs(), 
              fixed = TRUE, 
              value = TRUE))
+  Report <- read_tex_document("Report.tex")
+  Report.tex <- tempfile(fileext = ".tex")
+  readr::write_lines(Report, Report.tex)
   expect_null(check_spelling("Report.tex"))
+  expect_null(check_footnote_typography(Report.tex))
 })
   
 test_that("Housing affordability (original)", {  
@@ -46,7 +51,8 @@ test_that("Housing affordability (original)", {
   
   Report <- read_tex_document("Report.tex")
   Report.tex <- tempfile(fileext = ".tex")
-  write_lines(Report, Report.tex)
+  skip_if_not_installed("readr")
+  readr::write_lines(Report, Report.tex)
   footnotes <- extract_LaTeX_argument(Report, "footnote")
   expect_equal(footnotes[262][["extract"]], 
                "For example, at Ormond and Moonee Ponds.")
@@ -56,7 +62,7 @@ test_that("Housing affordability (original)", {
   expect_null(check_cite_pagerefs(Report.tex))
   expect_null(check_dashes(Report.tex))
   expect_null(check_escapes(Report.tex))
-  expect_null(check_footnote_typography(Report.tex))
+  
   expect_null(check_labels(Report.tex))
   expect_null(check_literal_citations(Report.tex))
   

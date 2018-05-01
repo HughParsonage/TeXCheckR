@@ -72,3 +72,16 @@ test_that("Footcites and footcite in same document don't get confused about dots
                regexp = "Punctuation mark")
 })
 
+test_that("Hypercorrected % after footnote", {
+  tempf <- tempfile(fileext = ".tex")
+  writeLines(c("\\documentclass{article}",
+               "\\begin{document}", 
+               "\\% not appropriate here:\\footnote{", 
+               "Because it smudges the sentences together.}%", 
+               "\\end{document}", 
+               ""), 
+             tempf)
+  expect_error(check_footnote_typography(tempf))
+  
+})
+

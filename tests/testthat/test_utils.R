@@ -29,6 +29,10 @@ test_that("stringi replacements work if stringi absent", {
   expect_identical(stringi::stri_sub(some_lines, i1, j1), stri_sub_no_stringi(some_lines, i1, j1))
 })
 
+test_that("write_lines", {
+  write_lines(letters, tmpf <- tempfile())
+  expect_equal(read_lines(tmpf), letters)
+})
 
 
 

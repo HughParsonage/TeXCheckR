@@ -42,7 +42,7 @@ lc_govt_pattern <-
          ") government(?!s)(?!-)",
          "(?!\\s(?:schools?))")
 
-punctuation <- c(".", ",", ":", ";", "'", '"', "?", "-", "!")
+punctuation <- c(".", ",", ":", ";", "'", '"', "?", "-", "!", "%")
 
 devtools::use_data(twocolumn_atop,
                    # dictionaryAU,

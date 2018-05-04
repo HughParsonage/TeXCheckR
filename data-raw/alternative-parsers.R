@@ -86,10 +86,10 @@ sieved_find4 <- function(needle, haystack) {
   sieved[haystack[sieved + i + 1L] %chin% c("{", " ")] + length_needle
 }
 
-parse_jono <- function(parsed_doc, command_name) {
+parse_jono <- function(char, command_name) {
   needle <- c("\\", strsplit(command_name, split = "", fixed = TRUE)[[1L]])
   # parsed_doc_no_ws <- parsed_doc#[grep("^\\S$", char, perl = TRUE)]
-  haystack <- .subset2(parsed_doc, "char")
+  haystack <- char
   sieved <- sieved_find4(needle, haystack)
   out <- list(char_no = sieved,
               command = rep_len(command_name, length(sieved)),

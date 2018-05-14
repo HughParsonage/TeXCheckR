@@ -73,6 +73,7 @@ test_that("Footcites and footcite in same document don't get confused about dots
 })
 
 test_that("Hypercorrected % after footnote", {
+  options("TeXCheckR.halt_on_error" = TRUE)
   tempf <- tempfile(fileext = ".tex")
   writeLines(c("\\documentclass{article}",
                "\\begin{document}", 
@@ -81,7 +82,17 @@ test_that("Hypercorrected % after footnote", {
                "\\end{document}", 
                ""), 
              tempf)
-  expect_error(check_footnote_typography(tempf))
   
+  expect_error(check_footnote_typography(tempf))
+  options("TeXCheckR.halt_on_error" = FALSE)
 })
+
+test_that("Don't panic", {
+  options("TeXCheckR.halt_on_error" = TRUE)
+  expect_error(check_footnote_typography("fnote-typogr/no-panic.tex"),
+               regexp = "% sign immediately follows footnote",
+               fixed = TRUE)
+  options("TeXCheckR.halt_on_error" = FALSE)
+})
+
 

@@ -89,9 +89,7 @@ test_that("Hypercorrected % after footnote", {
 
 test_that("Don't panic", {
   options("TeXCheckR.halt_on_error" = TRUE)
-  expect_null(check_footnote_typography("fnote-typogr/no-panic.tex"),
-              regexp = "% sign immediately follows footnote",
-              fixed = TRUE)
+  expect_null(check_footnote_typography("fnote-typogr/no-panic.tex"))
   options("TeXCheckR.halt_on_error" = FALSE)
 })
 

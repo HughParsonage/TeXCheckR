@@ -8,6 +8,8 @@ not_length0 <- function(x) as.logical(length(x))
   !{lhs %chin% rhs}
 }
 
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 lead <- function(x, n = 1L, default = NA) shift(x, type = "lead", n = n, fill = default)
  lag <- function(x, n = 1L, default = NA) shift(x, type = "lag", n = n, fill = default)
 

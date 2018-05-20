@@ -125,3 +125,19 @@ test_that("Lonesome footcites", {
   expect_error(check_spelling(footcite.tex), regexp = "[Ss]pellcheck")
 })
 
+test_that("Multi-ignore", {
+  multi.tex <- tempfile(fileext = ".tex")
+  writeLines(c("\\documentclass{article}",
+               "\\begin{document}", 
+               "A claim.\\mymulticmd{okay}{sudifhds}{ihsodfidoshf}",
+               "\\end{document}",
+               ""),
+             multi.tex)
+  expect_null(check_spelling(multi.tex, ignore_spelling_in_nth = list("mymulticmd" = 2:3)))
+  expect_error(check_spelling(multi.tex, ignore_spelling_in_nth = list("mymulticmd" = c(1L, 3L))), 
+               regexp = "sudifhds")
+})
+
+
+
+

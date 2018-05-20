@@ -362,7 +362,7 @@ check_spelling <- function(filename,
         parsed_doc <- fill_nth_LaTeX_argument(parsed_doc, 
                                               command, 
                                               n = ns,
-                                              return.tex = FALSE)
+                                              return.text = FALSE)
       }
     }
     

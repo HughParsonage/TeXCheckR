@@ -116,13 +116,18 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                          command_name = "footnote",
                                          n = 1L,
                                          by.line = TRUE)
-      
+      command_no <- NULL
       location_this_footnote <- location_of_footnotes[command_no == i]
       
       # What's the next char?
       the_next_char <- split_line_after_footnote[footnote_closes_at + 1]
       
       if (the_next_char == "%") {
+        stopifnot("line_no_max" %in% names(location_this_footnote), 
+                  "line_no" %in% names(location_this_footnote),
+                  "char_no_max" %in% names(location_this_footnote),
+                  "char_no_min" %in% names(location_this_footnote))
+        line_no_max <- line_no <- char_no_max <- char_no_min <- NULL
         # Hypercorrection
         .report_error(line_no = location_this_footnote[, max(line_no_max)],
                       column = location_this_footnote[which.max(line_no), pmax.int(char_no_max - char_no_min, 1L)],

@@ -8,6 +8,7 @@
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
 #' @param ignore_spelling_in Command whose first mandatory argument will be ignored.
+#' @param ignore_spelling_in_nth Named list of arguments to ignore; names are the commands to be ignored, values are the \code{n}th argument to be ignored.
 #' @param bib_files Bibliography files (containing possible clues to misspellings). If supplied, and this function would otherwise throw an error, the \code{.bib} files are read and any author names that match the misspelled words are added to the dictionary.
 #' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
@@ -68,6 +69,7 @@ check_spelling <- function(filename,
                            known.correct = NULL,
                            known.wrong = NULL,
                            ignore_spelling_in = NULL,
+                           ignore_spelling_in_nth = NULL,
                            bib_files,
                            check_etcs = TRUE,
                            dict_lang = "en_GB",
@@ -351,6 +353,22 @@ check_spelling <- function(filename,
                                             return.text = FALSE)
     }
   }
+  if (!is.null(ignore_spelling_in_nth)) {
+    for (isin in seq_along(ignore_spelling_in_nth)) {
+      command <- names(ignore_spelling_in_nth)[[isin]]
+      if (length(grep(sprintf("\\%s{", command), lines, fixed = TRUE))) {
+        ns <- ignore_spelling_in_nth[[isin]]
+        stopifnot(is.character(command), is.integer(ns))
+        parsed_doc <- fill_nth_LaTeX_argument(parsed_doc, 
+                                              command, 
+                                              n = ns,
+                                              return.text = FALSE)
+      }
+    }
+    
+  }
+  
+  
   lines <- unparse(parsed_doc)
 
   

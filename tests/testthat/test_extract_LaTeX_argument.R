@@ -116,6 +116,7 @@ test_that("Optional argument interference", {
 
 
 test_that("Multi-lines", {
+  skip_if_not_installed("readr")
   dbl_col_fig <- readr::read_lines("extract/dbl-col-fig.tex")
   out <- extract_mandatory_LaTeX_argument(dbl_col_fig, "doublecolumnfigure", n = 2L)
   expect_true(grepl("includegraphics{atlas/boxplot-increase_in_travel_time-by-City-Weekday--MonFri-excl-holiday-1.pdf}", 

@@ -2,6 +2,7 @@ context("Splitting reports")
 
 test_that("split report into includes", {
   skip("Not yet implemented")
+  skip_if_not_installed("readr")
   split_report("split-report/split-simple.tex",
                subdir = "abc",
                out.tex = "split-report/split-simple-test.tex")

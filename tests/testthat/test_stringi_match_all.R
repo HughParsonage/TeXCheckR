@@ -11,6 +11,7 @@ test_that("stri_locate_all_regex single entry", {
   expect_identical(stri_oui, stri_non)
 })
 test_that("stri_locate_all_regex multiple entries", {
+  skip_if_not_installed("stringi")
   stri_oui <- 
     stringi::stri_locate_all_regex(c("\\abc{def} \\abcdef \\abc{x}"),
                                    pattern = "\\\\abc(?![A-Za-z])")

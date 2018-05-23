@@ -1,7 +1,12 @@
+
+
 # TeXCheckR 0.6.0
 
 ## Enhancements:
 * `validate_bibliography` now errors if url fields contain escaped symbols.
+
+## Other 
+* Test involving `readr` did not properly check for it being installed
 
 # TeXCheckR 0.5.1
 * Allow `fread_bib` to optionally retain braces in `value`.

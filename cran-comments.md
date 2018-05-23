@@ -1,4 +1,4 @@
-This is a package update. The `rcnst` issue has been fixed.
+This is a package update. The unit test that required `readr` is now skipped if it is not installed.
 
 ## Test environments
 * local MRAN R 3.4.3

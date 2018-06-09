@@ -1,5 +1,8 @@
 
 
+* New functions:
+  - `parse_tex2` experimental alternative to `parse_tex`
+
 # TeXCheckR 0.6.0
 
 ## Enhancements:

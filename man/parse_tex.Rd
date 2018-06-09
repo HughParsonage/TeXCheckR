@@ -2,9 +2,12 @@
 % Please edit documentation in R/parse_tex.R
 \name{parse_tex}
 \alias{parse_tex}
+\alias{parse_tex2}
 \title{Parse LaTeX lines}
 \usage{
 parse_tex(tex_lines)
+
+parse_tex2(tex_lines)
 }
 \arguments{
 \item{tex_lines}{Character vector (as read from a \code{.tex} file).}
@@ -22,6 +25,9 @@ A \code{data.table} where each row identifies a unique character in \code{tex_li
 \item{\code{GROUP_IDi}}{The analog for optional groups.}
 }
 If \code{tex_lines} is zero-length, a null \code{data.table}.
+
+\code{parse_tex2} is an experimental alternative that does not use
+\code{data.table} and may be faster in some circumstances.
 }
 \description{
 Parse LaTeX lines

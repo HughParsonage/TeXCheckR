@@ -13,6 +13,9 @@
 #' }
 #' If \code{tex_lines} is zero-length, a null \code{data.table}.
 #' 
+#' \code{parse_tex2} is an experimental alternative that does not use
+#' \code{data.table} and may be faster in some circumstances.
+#' 
 #' @examples
 #' parse_tex(c("A{}", "B[a]{b{c}{d}}z"))
 #' # The version transposed:
@@ -24,7 +27,7 @@
 #' #>     GROUP_ID1 : .11....222222222.
 #' #>     GROUP_ID2 : .........111222..
 #' #> OPT_GROUP_ID1 : ....111..........
-#' @export
+#' @export parse_tex
 
 parse_tex <- function(tex_lines) {
   if (!length(tex_lines)) {
@@ -128,8 +131,29 @@ parse_tex <- function(tex_lines) {
 }
 
 
-# # nocov
+#' @rdname parse_tex
+#' @export parse_tex2
 parse_tex2 <- function(tex_lines) {
+  if (!length(tex_lines)) {
+    return(data.table())
+  }
+  tex_lines <- strip_comments(tex_lines, retain.percent.symbol = FALSE)
+  nchar_tex_lines <- nchar(tex_lines)
+  
+  if (!any(nchar_tex_lines)) {
+    return(data.table(char_no = seq_along(tex_lines),
+                      line_no = seq_along(tex_lines),
+                      column = 1L,
+                      char = "",
+                      openers = FALSE,
+                      closers = FALSE,
+                      opener_optional = FALSE,
+                      closer_optional = FALSE,
+                      tex_group = 0L,
+                      optional_tex_group = 0L))
+  }
+  
+  trailing_newlines <- max(which(tex_lines != ""))
   # .NotYetICmplemented()
   Tex_line_split_unlist <-
     unlist(strsplit(tex_lines,
@@ -181,8 +205,14 @@ parse_tex2 <- function(tex_lines) {
     which_tgej <- which(tex_group >= j)
     
     out[[GROUP_IDj]] <- vacant_entry
-    GG <- rleid(out[[tgj]] + 2 * out$optional_tex_group + 1/2)[w_tgj]
-    out[[GROUP_IDj]][w_tgj] <- match(GG, unique(GG))
+    # GG <- vacant_entry
+    out_gg <- lapply(lapply(out[c("optional_tex_group", tgj)],
+                            `[`, w_tgj),
+                     coalesce, -1L)
+    out_gg_x <- complex(real = out_gg[[1L]], imaginary = out_gg[[2L]])
+    
+    # GG[w_tgj] <- rleidv(out_gg)
+    out[[GROUP_IDj]][w_tgj] <- match(out_gg_x, unique(out_gg_x))
    
     out[[GROUP_IDj]][which_tgej] <- fill_blanks(.subset2(out, GROUP_IDj)[which_tgej])
   }
@@ -202,19 +232,19 @@ parse_tex2 <- function(tex_lines) {
     
     out[[ogk]] <- vacant_entry
     og_leq_k <- optional_tex_group <= k
-    out[[ogk]][og_leq_k] <- cumsum(opener[og_leq_k] & tex_group[og_leq_k] == k)
+    out[[ogk]][og_leq_k] <- cumsum(opener_optional[og_leq_k] & optional_tex_group[og_leq_k] == k)
     
     OPT_GROUP_IDk <- OPT_GROUP_IDz[k]
     w_okg <- which(optional_tex_group == k)
     
     out[[OPT_GROUP_IDk]] <- vacant_entry
-    OGG <- out$tex_group[w_okg]
+    OGG <- out[[ogk]][w_okg]
     out[[OPT_GROUP_IDk]][w_okg] <- match(OGG, unique(OGG))
     which_tgek <- which(optional_tex_group >= k)
     out[[OPT_GROUP_IDk]][which_tgek] <- fill_blanks(.subset2(out, OPT_GROUP_IDk)[which_tgek])
   }
 
-  out
+  setDT(out)
 }
 
 

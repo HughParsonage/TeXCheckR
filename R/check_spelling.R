@@ -220,11 +220,11 @@ check_spelling <- function(filename,
         unlist(use.names = FALSE)
     }
 
-  if (length(inputs) > 0) {
+  if (length(inputs)) {
     # Recursively check
-    cat("Check subfiles:\n")
+    cat_("Check subfiles:\n")
     for (input in inputs) {
-      cat(input, "\n")
+      cat_(input, "\n")
       check_spelling(filename = file.path(file_path,
                                           paste0(sub("\\.tex?", "", input, perl = TRUE),
                                                  ".tex")),

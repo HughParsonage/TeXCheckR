@@ -94,6 +94,12 @@ check_spelling <- function(filename,
   file_path <- dirname(filename)
   orig <- lines <- read_lines(filename)
   
+  # Quick way to identify end document if it exists, avoids issues 
+  # with comments beneath \end{document}
+  if (any(is_end_doc <- startsWith(lines, "\\end{document}"))) {
+    lines <- lines[seq_len(which.max(is_end_doc))]
+  }
+  
   # Omits
   lines <- veto_sic(lines)
   # Smart quotes
@@ -344,6 +350,10 @@ check_spelling <- function(filename,
     stop("pre_release = TRUE but 'ignore spelling in' line was present.")
   }
   
+  # Now we can strip comments as all the directives have been used
+  # and it must occur before any fill_nth_LaTeX_argument arguments
+  lines <- strip_comments(lines)
+  
   parsed_doc <- parse_tex(lines)
   for (command in c(ignore_spelling_in, commands_to_ignore,
                     "captionsetup")) {
@@ -368,13 +378,8 @@ check_spelling <- function(filename,
     
   }
   
-  
+
   lines <- unparse(parsed_doc)
-
-  
-
-  # Now we can strip comments as all the directives have been used
-  lines <- strip_comments(lines)
 
   # Treat square brackets as invisible:
   # e.g. 'urgently phas[e] out' is correct

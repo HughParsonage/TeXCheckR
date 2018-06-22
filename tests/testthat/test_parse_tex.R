@@ -43,8 +43,14 @@ test_that("Parse tiny documents", {
 
 test_that("parse2", {
   library(data.table)
-  y <- parse_tex("SchoolFunding/SchoolFunding.tex")
-  y2 <- parse_tex2("SchoolFunding/SchoolFunding.tex")
+  a <- readLines("SchoolFunding/SchoolFunding.tex")
+  y <- parse_tex(a)
+  y2 <- parse_tex2(a)
+  expect_equal(y, y2, check.attributes = FALSE)
+  
+  a <- readLines("check-all-figs-tbls-refd/fig-not-labeled.tex")
+  y <- parse_tex(a)
+  y2 <- parse_tex2(a)
   expect_equal(y, y2, check.attributes = FALSE)
 })
 

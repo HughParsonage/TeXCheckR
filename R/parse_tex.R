@@ -186,7 +186,7 @@ parse_tex2 <- function(tex_lines) {
   # Nested tex group -- likely to be small
   # 0L to ensure blank documents don't cause obscure errors
   max_tex_group <- max(tex_group, 0L)
-
+  max_opt_group <- max(optional_tex_group, 0L)
   seq_max_tex_group <- seq_len(max_tex_group)
 
   tg <- sprintf("tg%s", seq_max_tex_group)
@@ -205,14 +205,17 @@ parse_tex2 <- function(tex_lines) {
     which_tgej <- which(tex_group >= j)
     
     out[[GROUP_IDj]] <- vacant_entry
-    # GG <- vacant_entry
-    out_gg <- lapply(lapply(out[c("optional_tex_group", tgj)],
-                            `[`, w_tgj),
-                     coalesce, -1L)
-    out_gg_x <- complex(real = out_gg[[1L]], imaginary = out_gg[[2L]])
+    # out_gg_x <- complex(real = .subset2(out, "optional_tex_group")[w_tgj],
+    #                     imaginary = .subset2(out, tgj)[w_tgj])
+    max_tgj <- max(.subset2(out, tgj), na.rm = TRUE)
+    out_gg_x <-
+      .subset2(out, tgj)[w_tgj] + 
+      max_tex_group * .subset2(out, "optional_tex_group")[w_tgj]
+    
+    nmaxu <- (max_tgj + 1L) * (max_opt_group + 1L)
     
     # GG[w_tgj] <- rleidv(out_gg)
-    out[[GROUP_IDj]][w_tgj] <- match(out_gg_x, unique(out_gg_x))
+    out[[GROUP_IDj]][w_tgj] <- fmatch(out_gg_x, unique(out_gg_x, nmax = nmaxu))
    
     out[[GROUP_IDj]][which_tgej] <- fill_blanks(.subset2(out, GROUP_IDj)[which_tgej])
   }
@@ -221,7 +224,7 @@ parse_tex2 <- function(tex_lines) {
   # A [b] \\cde[fg][hi]{jk} \\mn[o[p]]{q}.
   # 0011100000022223333000000000445554000
 
-  max_opt_group <- max(optional_tex_group, 0L)
+  
   seq_max_opt_group <- seq_len(max_opt_group)
   og <- sprintf("og%s", seq_max_opt_group)
   OPT_GROUP_IDz <- sprintf("OPT_GROUP_ID%s", seq_max_opt_group)

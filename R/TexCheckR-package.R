@@ -7,6 +7,7 @@
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed bold
 #' @importFrom fastmatch %fin%
+#' @importFrom fastmatch fmatch
 #' @importFrom grDevices embedFonts
 #' @importFrom hunspell hunspell
 #' @importFrom hunspell dictionary

@@ -83,7 +83,7 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error,
 
   # Abbreviated names
   inst_pattern <-
-    paste0("^\\s+(author).*",
+    paste0("^\\s*(author).*",
            "(?:",
            "(?:(?:Australian )?Bureau of Statistics)",
            "|",

@@ -92,3 +92,38 @@ test_that("DOI", {
   }
   
 })
+
+test_that("Ends with comma", {
+  doi_bib <- tempfile(fileext = ".bib")
+  writeLines(c("@Article{Akerstedt1997Goodsleepits,",
+               "  author       = {Akerstedt, T. and Hume, K. and Minors, D. and Waterhouse, J.},",
+               "  title        = {Good sleep - its timing and physiological sleep characteristics},", 
+               "  journal      = {Journal of Sleep Research},",
+               "  year         = {1997},", 
+               "  volume       = {6}",
+               "  url          = {http://dx.doi.org/10.1111/j.1365-2869.1997.00221.x},", 
+               "}", ""),
+             doi_bib)
+  expect_error(validate_bibliography(file = doi_bib),
+               regexp = "Each field line in .bib must end with a comma (to allow intra-entry reordering).",
+               fixed = TRUE)
+})
+
+test_that("Ends with comma", {
+  doi_bib <- tempfile(fileext = ".bib")
+  writeLines(c("@Article{Akerstedt1997Goodsleepits,",
+               "  author       = {Australian Taxation Office},",
+               "  title        = {Good sleep - its timing and physiological sleep characteristics},", 
+               "  journal      = {Journal of Sleep Research},",
+               "  year         = {1997},", 
+               "  volume       = {6},",
+               "  url          = {http://dx.doi.org/10.1111/j.1365-2869.1997.00221.x},", 
+               "}", ""),
+             doi_bib)
+  expect_error(validate_bibliography(file = doi_bib),
+               regexp = "Institutional authors should be abbreviated.",
+               fixed = TRUE)
+})
+
+
+

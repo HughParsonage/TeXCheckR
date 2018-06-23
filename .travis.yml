@@ -40,6 +40,7 @@ after_success:
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
 - test $TRAVIS_BRANCH == "master" && test $TRAVIS_R_VERSION_STRING == "release" && test $CHECK_GRATTANREPORTER == "true" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter")'
+- test $TRAVIS_PULL_REQUEST == "true" && test $TRAVIS_R_VERSION_STRING == "release" && test $CHECK_GRATTANREPORTER == "true" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter")'
 - test $TRAVIS_BRANCH == "fix-hypercorrection-panic" && test $TRAVIS_R_VERSION_STRING == "release" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter", types = "tests")'
 env:
   global:

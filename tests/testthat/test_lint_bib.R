@@ -21,3 +21,15 @@ test_that("Correctly tidies hypercorrections", {
                    readLines("./validate-bib/valid-hypercorrected.bib", encoding = "UTF-8"))
 })
 
+
+test_that("Resolve close brace on next line", {
+  temp.bib <- tempfile(fileext = ".bib")
+  lint_bib("lint-bib/sly-open-brace.bib", outfile = temp.bib)
+  read_nz <- function(x) {
+    o <- readLines(x, encoding = "UTF-8")
+    o[nzchar(o)]
+  }
+  expect_identical(read_nz(temp.bib), read_nz("lint-bib/sly-open-brace-expected.bib"))
+})
+
+

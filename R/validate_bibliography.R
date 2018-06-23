@@ -298,8 +298,8 @@ validate_bibliography <- function(path = ".", file = NULL, .report_error,
   }
 
   # dois should not include the top-level URL
-  if (any(grepl("^\\s+(doi).*https?[:][/][/]", bib, perl = TRUE))) {
-    line_no <- grep("^\\s+(doi).*https?[:][/][/]", bib, perl = TRUE)[1]
+  if (any(grepl("^\\s*(doi).*https?[:][/][/]", bib, perl = TRUE))) {
+    line_no <- grep("^\\s*(doi).*https?[:][/][/]", bib, perl = TRUE)[1]
     report2console(file = file,
                    line_no = line_no,
                    error_message = paste0("DOI entries must be in the form", "\n\t",

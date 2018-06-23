@@ -5,7 +5,7 @@
     "TeXCheckR.capture.output" = FALSE,
     "TeXCheckR.messages" = !identical(Sys.getenv("TEXCHECKR.MESSAGES"), "FALSE")
   )
-  toset <- !(names(options) %in% names(op))
+  toset <- !(names(opTeXCheckR) %in% names(op))
   if (any(toset)) options(opTeXCheckR[toset])
   
   

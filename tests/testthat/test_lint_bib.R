@@ -32,4 +32,16 @@ test_that("Resolve close brace on next line", {
   expect_identical(read_nz(temp.bib), read_nz("lint-bib/sly-open-brace-expected.bib"))
 })
 
+test_that("1000 clearance", {
+  skip_if(isTRUE(getOption("TeXCheckR.verbose")))
+  test1000.bib <- tempfile(fileext = ".bib")
+  writeLines(c("", "@Article{", 
+               "author = {the", 
+               rep_len(".", 102), 
+               "badger},",
+               "}", ""), 
+             test1000.bib)
+  expect_warning(lint_bib(test1000.bib, tempfile(fileext = ".bib")))
+})
+
 

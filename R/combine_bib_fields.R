@@ -22,14 +22,14 @@ combine_bib_fields <- function(bib, verbose = getOption("TeXCheckR.verbose", FAL
   # i is the maximum number of lines over which
   # field could be spread
   i <- 0L
-  while (i < 1000L && max(vapply(intraentry_groups, last, 0L)) > 1L) {
+  while (i < 100L && max(vapply(intraentry_groups, last, 0L)) > 1L) {
     i <- i + 1L
     if (verbose && {i %% 10L} == 0L) {
       cat(i, sep = "\n")
     }
     
-    if (i == 1000L) {
-      warning("Iterated to combined bib files 1000 times. ",
+    if (i == 100L) {
+      warning("Iterated to combined bib files 100 times. ",
               "That is, a field in your .bib file is spread over at least 1000 lines. ",
               "This is likely a bug, so please report.")
     }

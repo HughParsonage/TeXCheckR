@@ -38,8 +38,20 @@ test_that("Hypercorrected mendeleys", {
     expect_error(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
                  regexp = "URL contains hypercorrected escapes.",
                  fixed = TRUE)
-  } else {
+    options("TeXCheckR.halt_on_error" = FALSE)
+    options("TeXCheckR.capture.output" = TRUE)
+    expect_output(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
+                  regexp = "URL contains hypercorrected escapes.",
+                  fixed = TRUE)
     options("TeXCheckR.halt_on_error" = TRUE)
+    options("TeXCheckR.capture.output" = FALSE)
+  } else {
+    options("TeXCheckR.capture.output" = TRUE)
+    expect_output(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
+                  regexp = "URL contains hypercorrected escapes.",
+                  fixed = TRUE)
+    options("TeXCheckR.halt_on_error" = TRUE)
+    options("TeXCheckR.capture.output" = FALSE)
     expect_error(validate_bibliography(file = "./validate-bib/invalid-hypercorrected.bib"),
                  regexp = "URL contains hypercorrected escapes.",
                  fixed = TRUE)
@@ -62,8 +74,18 @@ test_that("DOI", {
   if (isTRUE(getOption("TeXCheckR.halt_on_error"))) {
     expect_error(validate_bibliography(file = doi_bib), 
                  regexp = "DOI entries must be in the form")
-  } else {
+    options("TeXCheckR.halt_on_error" = FALSE)
+    options("TeXCheckR.capture.output" = TRUE)
+    expect_output(validate_bibliography(file = doi_bib), 
+                  regexp = "DOI entries must be in the form")
     options("TeXCheckR.halt_on_error" = TRUE)
+    options("TeXCheckR.capture.output" = FALSE)
+  } else {
+    options("TeXCheckR.capture.output" = TRUE)
+    expect_output(validate_bibliography(file = doi_bib), 
+                  regexp = "DOI entries must be in the form")
+    options("TeXCheckR.halt_on_error" = TRUE)
+    options("TeXCheckR.capture.output" = FALSE)
     expect_error(validate_bibliography(file = doi_bib), 
                  regexp = "DOI entries must be in the form")
     options("TeXCheckR.halt_on_error" = FALSE)

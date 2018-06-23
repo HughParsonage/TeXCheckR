@@ -3,7 +3,8 @@
   op <- options()
   opTeXCheckR <- list(
     "TeXCheckR.capture.output" = FALSE,
-    "TeXCheckR.messages" = !identical(Sys.getenv("TEXCHECKR.MESSAGES"), "FALSE")
+    "TeXCheckR.messages" = !identical(Sys.getenv("TEXCHECKR.MESSAGES"), "FALSE"),
+    "TeXCheckR.halt_on_error" = FALSE
   )
   toset <- !(names(opTeXCheckR) %in% names(op))
   if (any(toset)) options(opTeXCheckR[toset])

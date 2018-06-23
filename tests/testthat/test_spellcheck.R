@@ -138,6 +138,11 @@ test_that("Multi-ignore", {
                regexp = "sudifhds")
 })
 
+test_that("Like Energy-2018-WholesaleMarketPower", {
+  expect_null(check_spelling("spelling/chapref/in-comments.tex",
+                             ignore_spelling_in_nth = list(Chaprefrange = 1:2)))
+})
+
 
 
 

@@ -161,6 +161,12 @@ is_testing <- function() {
     testthat::is_testing()
 }
 
+cat_ <- function(...) {
+  if (getOption("TeXCheckR.messages", TRUE)) {
+    base::cat(...)
+  }
+}
+
 
 
 

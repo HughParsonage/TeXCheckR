@@ -61,7 +61,9 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
   
   if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
     duplicates <- duplicated_rows(bibDT, by = "key_value")
-    print(duplicates[, "bib_file" := file.bib])
+    if (getOption("TeXCheckR.messages", TRUE)) {
+      print(duplicates[, "bib_file" := file.bib])
+    }
     report2console(file = file.bib,
                    line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
                    error_message = "Duplicate bib key used.",

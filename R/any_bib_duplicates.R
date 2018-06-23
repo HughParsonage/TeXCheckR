@@ -115,12 +115,14 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
                   context = "Possible duplicates in bibliographies.",
                   error_message = "Possible duplicates in bibliography.")
     
-    for (dup in 1:(nrow(DT_with_all_duplicates) / 2)){
-      if (dup == 6){
-        break
+    if (getOption("TeXCheckR.messages", TRUE)) {
+      for (dup in 1:(nrow(DT_with_all_duplicates) / 2)) {
+        if (dup == 6){
+          break
+        }
+        cat("\n")
+        print(DT_with_all_duplicates[c(2 * dup - 1, 2 * dup)], row.names = FALSE)
       }
-      cat("\n")
-      print(DT_with_all_duplicates[c(2 * dup - 1, 2 * dup)], row.names = FALSE)
     }
     stop("Possible duplicate entries in bibliography. First 5 shown above.")
   }
@@ -158,9 +160,9 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
       the_file <- first_author_with_dup[["bib_file"]][2L]
       line_no <- first_author_with_dup[["line_no"]][2L]
     }
-    
-    print(authors_with_dups[(bad), .(bib_file, line_no, key, value, authors)])
-    
+    if (getOption("TeXCheckR.messages", TRUE)) {
+      print(authors_with_dups[(bad), .(bib_file, line_no, key, value, authors)])
+    }
     
     .report_error(file = the_file,
                   line_no = line_no,

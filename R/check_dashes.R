@@ -3,6 +3,8 @@
 #' @param filename A tex or Rnw file.
 #' @param .report_error How errors should be reported.
 #' @param dash.consistency Character vector permitted dash types. 
+#' @param protases_ok (logical, default: \code{TRUE}) Should em-dashes be permitted when 
+#' they form a protasis in a list? \code{\\item when there is an emdash---always.}
 #' @param rstudio (logical, default: \code{TRUE}) Use the RStudio API?
 #' @return File stops and \code{cat()}s on any line where a hyphen is surrounded by a space.
 #' Excludes dashes in knitr chunks and LaTeX math mode \code{\(...\)} but not in TeX math mode \code{$...$}.
@@ -11,6 +13,7 @@
 check_dashes <- function(filename,
                          .report_error,
                          dash.consistency = c("en-dash", "em-dash"),
+                         protases_ok = TRUE,
                          rstudio = TRUE) {
   if (missing(.report_error)) {
     if (rstudio) {
@@ -39,6 +42,11 @@ check_dashes <- function(filename,
     cumsum(endsWith(trimws(lines), "\\]")) > 0L
   
   lines[display_equations] <- "% equation environment"
+  
+  if (protases_ok) {
+    which_protases <- grep("\\\\item (for|if|when|where)\\b", lines, perl = TRUE, ignore.case = TRUE)
+    lines[which_protases] <- "ignored"
+  }
 
   possible_hyphen <- grepl(" - ", lines, fixed = TRUE)
 

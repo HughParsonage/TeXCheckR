@@ -25,3 +25,12 @@ test_that("Emdashes detected", {
   expect_error(check_dashes("./check-dashes/has-emdash-1.tex"),
                regexp = "[Ee]m-dash")
 })
+
+test_that("emdashes are ok when protasis", {
+  expect_error(check_dashes("./check-dashes/ok-if-protasis.tex", 
+                            protases_ok = FALSE), 
+               regexp = "[Ee]m-dash")
+  expect_null(check_dashes("./check-dashes/ok-if-protasis.tex", 
+                           protases_ok = TRUE))
+})
+

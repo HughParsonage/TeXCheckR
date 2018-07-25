@@ -34,5 +34,10 @@ test_that("write_lines", {
   expect_equal(read_lines(tmpf), letters)
 })
 
+test_that("Fill with space", {
+  expect_equal(fill_with_space("xyz>abc<012", "abc"), 
+               "xyz>   <012")
+})
+
 
 

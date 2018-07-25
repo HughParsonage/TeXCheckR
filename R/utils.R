@@ -167,6 +167,30 @@ cat_ <- function(...) {
   }
 }
 
+fill_with_space <- function(x, pattern, group = 1L) {
+  R <- gregexpr(pattern, x, perl = TRUE)
+  out <- x
+  sx <- strsplit(x, split = "", fixed = TRUE)
+  for (i in seq_along(x)) {
+    if (R[[i]][[1L]] > 0L) {
+      sxi <- sx[[i]]
+      if (length(R[[i]]) == 1L) {
+        wid <- attr(R[[i]], "match.length")
+        ind <- seq.int(R[[i]][[1L]], by = 1L, length.out = wid)
+        sxi[ind] <- " "
+      } else {
+        for (j in seq_along(R[[i]])) {
+          wid <- attr(R[[i]], "match.length")[j]
+          ind <- seq.int(R[[i]][[j]], by = 1L, length.out = wid)
+          sxi[ind] <- " "
+        }
+      }
+      out[i] <- paste0(sxi, collapse = "")
+    }
+  }
+  out         
+}
+
 
 
 

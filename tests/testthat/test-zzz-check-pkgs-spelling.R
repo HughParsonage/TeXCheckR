@@ -29,6 +29,7 @@ test_that("No misspelled words", {
                                        "knitr",
                                        "linting", 
                                        "perl",
+                                       "protasis",
                                        "QXEF", 
                                        "regex",
                                        "Rnw",

@@ -11,6 +11,7 @@
 #' @importFrom hunspell hunspell
 #' @importFrom hunspell dictionary
 #' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
 #' @importFrom magrittr and
 #' @importFrom magrittr or
 #' @importFrom magrittr not

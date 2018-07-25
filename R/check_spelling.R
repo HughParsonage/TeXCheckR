@@ -26,6 +26,7 @@
 #' \item{The 
 #' directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
 #' of \code{\\mycmd}.}
+#' \item{\code{ignore_file: <file.tex>} will skip the check of \code{<file.tex>} if it is \code{input} or \code{include} in \code{filename}, as well as any files within it. Should appear as it is within \code{input} but with the file extension}
 #' 
 #' \item{Only the root document need be supplied; 
 #' any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).}
@@ -207,9 +208,22 @@ check_spelling <- function(filename,
       stop(paste0("'", wrong, "' present but prohibited in preamble."))
     }
   }
-
+  
+  
   # inputs and includes
   inputs <- inputs_of(filename)
+  
+  files_ignore <- 
+    if (any(startsWith(lines, "% ignore_file:"))) {
+      lines[startsWith(lines, "% ignore_file:")] %>%
+        sub("^[%] ignore_file[:] (.*)([:][0-9]+)?\\s*$", "\\1", x = ., perl = TRUE)
+    }
+
+  if (!is.null(files_ignore)) {
+    inputs %<>% setdiff(files_ignore)
+  }
+  
+    
   
   commands_to_ignore <-
     if (!pre_release) {
@@ -235,6 +249,10 @@ check_spelling <- function(filename,
                      dict_lang = dict_lang,
                      rstudio = rstudio)
     }
+  }
+  
+  if (any(grepl("\\verb", lines, fixed = TRUE))) {
+    lines <- gsub("\\\\verb(.)(.+?)\\1", "\\verb", lines)
   }
   
   # Do not check cite keys: not reliably supported by hunspell

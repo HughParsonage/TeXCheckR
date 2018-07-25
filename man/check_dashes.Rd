@@ -5,7 +5,7 @@
 \title{Check dashes entered as hyphens}
 \usage{
 check_dashes(filename, .report_error, dash.consistency = c("en-dash",
-  "em-dash"), rstudio = TRUE)
+  "em-dash"), protases_ok = TRUE, rstudio = TRUE)
 }
 \arguments{
 \item{filename}{A tex or Rnw file.}
@@ -13,6 +13,9 @@ check_dashes(filename, .report_error, dash.consistency = c("en-dash",
 \item{.report_error}{How errors should be reported.}
 
 \item{dash.consistency}{Character vector permitted dash types.}
+
+\item{protases_ok}{(logical, default: \code{TRUE}) Should em-dashes be permitted when 
+they form a protasis in a list? \code{\\item when there is an emdash---always.}}
 
 \item{rstudio}{(logical, default: \code{TRUE}) Use the RStudio API?}
 }

@@ -4,6 +4,7 @@
 
 ## Enhancements:
 * `validate_bibliography` now errors if url fields contain escaped symbols.
+* `check_dashes` now do not error if an emdash occurs in a protasis within an list.
 
 ## Other 
 * Test involving `readr` did not properly check for it being installed

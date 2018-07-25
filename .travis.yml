@@ -4,10 +4,13 @@ matrix:
   include:
   - r: release
     env: 
-    - R_CHECK_FORCE_SUGGESTS_=true
+    - CHECK_GRATTANREPORTER=true
+  - r: release
+    env: 
+    - _R_CHECK_FORCE_SUGGESTS_=true
   - r: devel
     env: 
-    - R_CHECK_FORCE_SUGGESTS_=false
+    - _R_CHECK_FORCE_SUGGESTS_=false
 sudo: true
 latex: false
 pandoc: false
@@ -36,7 +39,8 @@ after_success:
 - test $TRAVIS_R_VERSION_STRING != "release" && Rscript -e 'aspell(files = "tests/testthat/Engaging-students/Report.tex", filter = "Sweave", control = c("-t", "--master=en_GB"))'
 - test $TRAVIS_R_VERSION_STRING == "release" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash
   deploy.sh
-- test $TRAVIS_BRANCH == "master" && test $TRAVIS_R_VERSION_STRING == "release" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter")'
+- test $TRAVIS_BRANCH == "master" && test $TRAVIS_R_VERSION_STRING == "release" && test $CHECK_GRATTANREPORTER == "true" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter")'
+- test $TRAVIS_PULL_REQUEST == "true" && test $TRAVIS_R_VERSION_STRING == "release" && test $CHECK_GRATTANREPORTER == "true" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter")'
 - test $TRAVIS_BRANCH == "fix-hypercorrection-panic" && test $TRAVIS_R_VERSION_STRING == "release" && Rscript -e 'devtools::install_github("hughparsonage/grattanReporter", args = "--install-tests");tools::testInstalledPackage("grattanReporter", types = "tests")'
 env:
   global:

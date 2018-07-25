@@ -175,13 +175,25 @@ fill_with_space <- function(x, pattern, group = 1L) {
     if (R[[i]][[1L]] > 0L) {
       sxi <- sx[[i]]
       if (length(R[[i]]) == 1L) {
-        wid <- attr(R[[i]], "match.length")
-        ind <- seq.int(R[[i]][[1L]], by = 1L, length.out = wid)
+        if (is.null(attr(R[[i]], "capture.start"))) {
+          wid <- attr(R[[i]], "match.length")
+          ind <- seq.int(R[[i]][[1L]], by = 1L, length.out = wid)
+        } else {
+          wid <- attr(R[[i]], "capture.length")[1, group]
+          start <- attr(R[[i]], "capture.start")[1, group]
+          ind <- seq.int(start, by = 1L, length.out = wid)
+        }
         sxi[ind] <- " "
       } else {
         for (j in seq_along(R[[i]])) {
-          wid <- attr(R[[i]], "match.length")[j]
-          ind <- seq.int(R[[i]][[j]], by = 1L, length.out = wid)
+          if (is.null(attr(R[[i]], "capture.start"))) {
+            wid <- attr(R[[i]], "match.length")[j]
+            ind <- seq.int(R[[i]][[j]], by = 1L, length.out = wid)
+          } else {
+            wid <- attr(R[[i]], "capture.length")[j, group]
+            start <- attr(R[[i]], "capture.start")[j, group]
+            ind <- seq.int(start, by = 1L, length.out = wid)
+          }
           sxi[ind] <- " "
         }
       }

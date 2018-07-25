@@ -37,6 +37,13 @@ test_that("write_lines", {
 test_that("Fill with space", {
   expect_equal(fill_with_space("xyz>abc<012", "abc"), 
                "xyz>   <012")
+  expect_equal(fill_with_space("xyz>abcdef<012", "(?:xyz>)(.+)<"), 
+               "xyz>      <012")
+  
+  expect_equal(fill_with_space("axyz", "a(.)(.)z", group = 1L),
+               "a yz")
+  expect_equal(fill_with_space("axyz", "a(.)(.)z", group = 2L),
+               "ax z")
 })
 
 

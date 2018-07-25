@@ -53,6 +53,7 @@ test_that("Ignore spelling in input", {
   expect_error(check_spelling("./spelling/input/a.tex", pre_release = TRUE), 
                regexp = "Spellcheck failed on above line with .asofihsafioh")
   expect_null(check_spelling("./spelling/input/a.tex", pre_release = FALSE))
+  expect_null(check_spelling("./spelling/input.b.tex", pre_release = TRUE))
 })
 
 test_that("Stop if present", {
@@ -145,6 +146,21 @@ test_that("Like Energy-2018-WholesaleMarketPower", {
 
 test_that("Spellcheck verb", {
   expect_null(check_spelling("spelling/verb.tex"))
+})
+
+test_that("pre-release + add to dictionary outside", {
+  tempfile.tex <- tempfile(fileext = ".tex")
+  writeLines(c("\\documentclass{article}", 
+               "% add_to_dictionary: ok", 
+               "\\begin{document}", 
+               "% add_to_dictionary: notok", 
+               "Not ok.",
+               "\\end{document}"), 
+             tempfile.tex)
+  expect_null(check_spelling(tempfile.tex, pre_release = FALSE))
+  expect_error(check_spelling(tempfile.tex, pre_release = TRUE),
+               regexp = "When pre_release = TRUE, % add_to_dictionary: lines must not be situated outside the document preamble.",
+               fixed = TRUE)
 })
 
 

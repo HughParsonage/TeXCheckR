@@ -76,8 +76,8 @@ rev_forename_surname_bibtex <- function(author_fields){
 }
 
 nth_max <- function(x, n){
-  n <- length(x)
-  sort(x, partial = n - 1)[n - 1]
+  m <- length(x) - n + 1L
+  sort(x, partial = m)[m]
 }
 
 nth_min <- function(x, n){
@@ -88,14 +88,18 @@ nth_min.int <- function(x, n){
   sort.int(x)[n]
 }
 
-move_to <- function(to.dir, from.dir = ".", pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$"){
-  x <- list.files(path = from.dir,
+move_to <- function(to.dir,
+                    from.dir = ".",
+                    pattern = "\\.((pdf)|(tex)|(cls)|(sty)|(Rnw)|(bib)|(png)|(jpg))$") {
+  setwd(from.dir)
+  x <- list.files(path = ".",
                   pattern = pattern,
                   full.names = TRUE,
                   recursive = TRUE,
                   include.dirs = FALSE)
-  x.dirs <- file.path(to.dir, 
-                      list.dirs(path = from.dir, recursive = TRUE, full.names = TRUE))
+
+  setwd(from.dir)
+  x.dirs <- file.path(to.dir, list.dirs(full.names = TRUE))
   lapply(x.dirs, hutils::provide.dir)
   file.copy(x, file.path(to.dir, x), overwrite = TRUE, recursive = FALSE)
   setwd(to.dir)
@@ -111,7 +115,10 @@ r9 <- function(a1, a2, a3, a4, a5, a6, a7, a8, a9) sprintf("%s%s%s%s%s%s%s%s%s",
 trimws_if_char <- function(x) if (is.character(x)) stri_trim_both(x) else x
 
 # for printing parsed lines
-print_transpose_data.table <- function(DT, file = "") {
+print_transpose_data.table <- function(dt, file = "") {
+  DT <- 
+    copy(dt) %>%
+    .[, lapply(.SD, function(x) if (is.logical(x)) as.integer(x) else x)]
   cat <- function(...) base::cat(..., file = file, append = TRUE)
   
   max_nchar <- function(v) {

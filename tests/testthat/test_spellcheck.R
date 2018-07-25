@@ -143,6 +143,10 @@ test_that("Like Energy-2018-WholesaleMarketPower", {
                              ignore_spelling_in_nth = list(Chaprefrange = 1:2)))
 })
 
+test_that("Spellcheck verb", {
+  expect_null(check_spelling("spelling/verb.tex"))
+})
+
 
 
 

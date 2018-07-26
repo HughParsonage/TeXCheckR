@@ -137,96 +137,45 @@ nth_arg_positions <- function(tex_lines,
   delim2 <- if (optional) "]" else "}"
   
   
-  if (star) {
-    out <- 
-      lapply(seq_along(tex_lines), function(i) {
-        # Where does the command name end (i.e. just before 
-        # opening brace.
-        command_locations <- Command_locations[[i]][, 2]
-        tex_line_split <- Tex_line_split[[i]]
-        if (nchar_tex_lines[i] > 0) {
-          tex_group <- cumsum(tex_line_split == delim1) - cumsum(tex_line_split == delim2)
-          tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
-          tex_group_at_command_locations <- tex_group[command_locations]
+  out <- 
+    lapply(seq_along(tex_lines), function(i) {
+      # Where does the command name end (i.e. just before 
+      # opening brace.
+      command_locations <- Command_locations[[i]][, 2]
+      tex_line_split <- Tex_line_split[[i]]
+      if (nchar_tex_lines[i] > 0) {
+        tex_group <- cumsum(tex_line_split == delim1) - cumsum(tex_line_split == delim2)
+        tex_group_lag <- shift(tex_group, n = 1L, type = "lag", fill = tex_group[[1]])
+        tex_group_at_command_locations <- tex_group[command_locations]
+        
+        starts <- stops <- integer(length(command_locations))
+        for (j in seq_along(command_locations)){
+          tg <- command_locations[[j]]
+          starts[[j]] <-
+            # below tells us the position of the opening *brace*
+            nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
+                                      seq_along(tex_group) > tg),
+                                  tex_group == tex_group_lag + 1)),
+                        n = n)
           
-          starts <- stops <- integer(length(command_locations))
-          for (j in seq_along(command_locations)){
-            tg <- command_locations[[j]]
-            starts[[j]] <-
-              # below tells us the position of the opening *brace*
-              nth_min.int(which(and(and(tex_group == tex_group[tg] + 1,
-                                        seq_along(tex_group) > tg),
-                                    tex_group == tex_group_lag + 1)),
-                          n = n)
-            
-            stops[[j]] <-
-              nth_min.int(which(and(tex_group == tex_group[tg],
-                                    and(seq_along(tex_group) > tg,
-                                        tex_group == tex_group_lag - 1))),
-                          n = n)
-          }
-          list(starts = starts, stops = stops, zero_width = stops == starts + 1L)
-        } else {
-          list(starts = NA_integer_, stops = NA_integer_, zero_width = NA)
+          stops[[j]] <-
+            nth_min.int(which(and(tex_group == tex_group[tg],
+                                  and(seq_along(tex_group) > tg,
+                                      tex_group == tex_group_lag - 1))),
+                        n = n)
         }
-      })
-    
-    if (data.tables) {
-      lapply(out, setDT)
-    } else {
-      out
-    }
+        list(starts = starts, stops = stops, zero_width = stops == starts + 1L)
+      } else {
+        list(starts = NA_integer_, stops = NA_integer_, zero_width = NA)
+      }
+    })
+  
+  if (data.tables) {
+    lapply(out, setDT)
   } else {
-    n_char <- NULL
-    
-    char_no_by_line_no <- 
-      data.table(line_no = seq_along(tex_lines),
-                 n_char = shift(nchar_tex_lines, fill = 0L)) %>%
-      .[, .(line_no, char_no = cumsum(n_char))]
-    
-    start <- end <- NULL
-    intra_line_char_no <- end_char_no <- start_char_no <-
-      next_start <- command_no <- NULL
-    
-    command_locations_by_char_no <-
-      rbindlist(lapply(Command_locations, as.data.table), idcol = "line_no") %>%
-      .[, intra_line_char_no := end + 1L] %>%
-      .[char_no_by_line_no, on = "line_no"] %>%
-      # Which character in the entire document
-      # does (this) command's argument start at 
-      # (where does this command's name end)
-      .[, end_char_no := intra_line_char_no + char_no] %>%
-      .[, start_char_no := start + char_no] %>%
-      .[complete.cases(.)] %>%
-      .[, next_start := shift(start_char_no, type = "lead", fill = .Machine$integer.max)] %>%
-      .[, .(line_no, end_char_no,  next_start)] %>%
-      .[, command_no := .I]
-    
-    Tex_line_split_unlist <- unlist(Tex_line_split)
-    tex_groups <- cumsum(Tex_line_split_unlist == delim1) - cumsum(Tex_line_split_unlist == delim2)
-    
-    line_no <- char <- char_no <- tex_group <-
-      initial_group_no <- NULL
-    
-    group_by_line_no <- 
-      data.table(line_no = rep(seq_along(tex_lines), times = nchar_tex_lines),
-                 char = Tex_line_split_unlist) %>%
-      .[, char_no := .I] %>%
-      .[, tex_group := cumsum(char == delim1) - cumsum(char == delim2)] %>%
-      command_locations_by_char_no[., on = c("line_no<=line_no",
-                                             "end_char_no<char_no",
-                                             "next_start>char_no"),
-                                   nomatch=0L] %>%
-      unique %>%
-      .[, initial_group_no := first(tex_group), by = "command_no"]
-    
-    group_by_line_no %>%
-      .[tex_group >= initial_group_no] %>%
-      .[, .(extract = paste0(char, collapse = ""),
-            line_no = first(line_no)),
-        by = .(command_no)] %>%
-      unique(by = "command_no")
+    out
   }
+  
 }
 
 

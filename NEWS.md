@@ -5,7 +5,7 @@
 ## Enhancements:
 * `validate_bibliography` now errors if url fields contain escaped symbols.
 * `check_dashes` now do not error if an emdash occurs in a protasis within an list.
-* `check_spelling` now obeys a directive `% ignore_file: <file.tex>` for files (such as technical tables) where the spelling is not important.
+* `check_spelling` now obeys a directive `% ignore_spelling_in_file: <file.tex>` for files where the spelling may be ignored (such as tables with symbols, jargon, or esoteric nomenclature).
 
 ## Other 
 * Test involving `readr` did not properly check for it being installed

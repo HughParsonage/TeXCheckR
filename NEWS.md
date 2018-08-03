@@ -7,8 +7,12 @@
 * `check_dashes` now do not error if an emdash occurs in a protasis within an list.
 * `check_spelling` now obeys a directive `% ignore_spelling_in_file: <file.tex>` for files where the spelling may be ignored (such as tables with symbols, jargon, or esoteric nomenclature).
 
+## Bug fixes:
+* `check_unclosed_parentheses` no longer errors or panics over unclosed parentheses occurring within optional arguments to `\begin{enumerate}` such as `label` constructions.
+
 ## Other 
 * Test involving `readr` did not properly check for it being installed
+
 
 # TeXCheckR 0.5.1
 * Allow `fread_bib` to optionally retain braces in `value`.

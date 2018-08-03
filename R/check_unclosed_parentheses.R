@@ -14,6 +14,8 @@ check_unclosed_parentheses <- function(filename,
   # equations like \(x^2 + y^2 = h^2\)
   tex_lines <- gsub("\\\\\\(|\\\\\\)", "\\$", tex_lines, perl = TRUE)
   
+  tex_lines[grep("\\begin{enumerate}[", tex_lines, fixed = TRUE)] <- ""
+  
   if (sum(stri_count_fixed(tex_lines, pattern = "(")) != 
       sum(stri_count_fixed(tex_lines, pattern = ")"))) {
     tex_lines_split <- strsplit(tex_lines, "", fixed = TRUE)

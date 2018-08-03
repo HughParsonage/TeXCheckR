@@ -91,8 +91,12 @@ report2console <- function(file = NULL,
         append <- TRUE
       } else {
         prev_build_status <- "None"
-        append <- FALSE
+        if (append <- identical(log_file_sep, "|")) {
+          prev_log <- data.table()
+        }
       }
+      
+      
       
       if (prev_build_status %in% c("Broken", "Still failing")){
         build_status <- "Still failing"

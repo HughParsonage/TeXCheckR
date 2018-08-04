@@ -40,6 +40,8 @@ report2console(file = NULL, line_no = NULL, column = NULL,
 \item{silent}{(logical, default: \code{FALSE}) Suppress all output.}
 
 \item{halt}{Should failures halt via \code{stop} or just display a message in the console?}
+
+\item{as_tbl}{Return a list. Experimental.}
 }
 \description{
 Report errors to console

@@ -14,6 +14,7 @@
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
 #' @param silent (logical, default: \code{FALSE}) Suppress all output.
 #' @param halt Should failures halt via \code{stop} or just display a message in the console?
+#' @param as_tbl Return a list. Experimental.
 #' @rdname report_error
 #' @export
 report2console <- function(file = NULL,
@@ -38,24 +39,24 @@ report2console <- function(file = NULL,
   ## 4. Suggeston.
   
   if (as_tbl) {
-    return(setNames(list(file,
-                         line_no,
-                         column,
-                         context, 
-                         error_message,
-                         advice,
-                         build_status,
-                         extra_cat_ante,
-                         extra_cat_post),
-                    c('file',
-                      'line_no',
-                      'column',
-                      'context', 
-                      'error_message',
-                      'advice',
-                      'build_status',
-                      'extra_cat_ante',
-                      'extra_cat_post')))
+    return(stats::setNames(list(file,
+                                line_no,
+                                column,
+                                context, 
+                                error_message,
+                                advice,
+                                build_status,
+                                extra_cat_ante,
+                                extra_cat_post),
+                           c('file',
+                             'line_no',
+                             'column',
+                             'context', 
+                             'error_message',
+                             'advice',
+                             'build_status',
+                             'extra_cat_ante',
+                             'extra_cat_post')))
                     
   }
   

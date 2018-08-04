@@ -9,16 +9,22 @@ check_unclosed_parentheses <- function(filename,
     tex_lines <- read_lines(filename)
   }
   tex_lines <- strip_comments(tex_lines)
-  tex_lines_nchar <- nchar(tex_lines)
   
   # equations like \(x^2 + y^2 = h^2\)
   tex_lines <- gsub("\\\\\\(|\\\\\\)", "\\$", tex_lines, perl = TRUE)
   
   tex_lines[grep("\\begin{enumerate}[", tex_lines, fixed = TRUE)] <- ""
   
+  
+  
   if (sum(stri_count_fixed(tex_lines, pattern = "(")) != 
       sum(stri_count_fixed(tex_lines, pattern = ")"))) {
     tex_lines_split <- strsplit(tex_lines, "", fixed = TRUE)
+    
+    # This needs to be after all modifications to tex_lines
+    # otherwise the data.table() later might warn about 
+    # different lengths.
+    tex_lines_nchar <- nchar(tex_lines)
     
     tex_line_chars <- unlist(tex_lines_split)
     

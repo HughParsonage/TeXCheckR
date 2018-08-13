@@ -4,7 +4,8 @@
 \alias{check_xrefs}
 \title{Check cross-references}
 \usage{
-check_xrefs(filename, permitted.case = c(NA, "upper", "lower"), .report_error)
+check_xrefs(filename, permitted.case = c(NA, "upper", "lower"),
+  .report_error)
 }
 \arguments{
 \item{filename}{A LaTeX file}

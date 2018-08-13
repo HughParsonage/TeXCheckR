@@ -34,3 +34,14 @@ test_that("emdashes are ok when protasis", {
                            protases_ok = TRUE))
 })
 
+
+test_that("emdashes are ok when requested", {
+  skip_on_cran()
+  tempf <- tempfile(fileext = ".tex")
+  writeLines(c("A -- B", "C---D", "x-y", "\\(x - y\\)"), tempf)
+  expect_error(check_dashes(tempf), "Em")
+  expect_null(check_dashes(tempf, dash.consistency = c("en-dash", "em-dash")))
+  expect_error(check_dashes(tempf, dash.consistency = c("em-dash")), "En")
+  
+})
+

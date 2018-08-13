@@ -24,7 +24,7 @@ Imports:
   zoo
 LazyData: TRUE
 ByteCompile: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Suggests:
   devtools,
   readr,

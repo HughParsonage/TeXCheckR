@@ -4,7 +4,8 @@
 \alias{extract_LaTeX_argument}
 \title{Extract LaTeX command argument}
 \usage{
-extract_LaTeX_argument(tex_lines, command_name, n = 1L, optional = FALSE)
+extract_LaTeX_argument(tex_lines, command_name, n = 1L,
+  optional = FALSE)
 }
 \arguments{
 \item{tex_lines}{LaTeX text.}

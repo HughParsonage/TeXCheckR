@@ -4,12 +4,14 @@
 \alias{check_labels}
 \title{Check labels}
 \usage{
-check_labels(filename, .report_error)
+check_labels(filename, .report_error, check.chaprefs = TRUE)
 }
 \arguments{
 \item{filename}{The LaTeX source file to check.}
 
 \item{.report_error}{The function to provide context to the error.}
+
+\item{check.chaprefs}{(logical, default: \code{TRUE}) If \code{TRUE}, require all cross-references to use \code{\\Chapref}.}
 }
 \value{
 \code{NULL}, invisibly if labels check out. An error otherwise.

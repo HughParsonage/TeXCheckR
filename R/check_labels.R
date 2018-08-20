@@ -15,10 +15,11 @@
 #' (N.B. although each label must have a prefix, it must not necessarily the \emph{right} prefix; 
 #' for example, a table caption may have prefix \code{tbl:}.)
 #' @param .report_error The function to provide context to the error.
+#' @param check.chaprefs (logical, default: \code{TRUE}) If \code{TRUE}, require all cross-references to use \code{\\Chapref}.
 #' @return \code{NULL}, invisibly if labels check out. An error otherwise.
 #' @export
 
-check_labels <- function(filename, .report_error){
+check_labels <- function(filename, .report_error, check.chaprefs = TRUE) {
   if (missing(.report_error)){
     .report_error <- function(...) report2console(...)
   }
@@ -99,53 +100,64 @@ check_labels <- function(filename, .report_error){
     stop("\\caption{} present without \\label{}")
   }
 
-  # Match label and command?
-  # Probably not necessary, except for chapter etc
-  chapter_label_lines <-
-    lines[lines_with_labels[grepl("^chap[:]", label_contents)]]
-
-  chapter_line_nos <-
-    sort(union(grep("\\addchap{", lines, fixed = TRUE),
-               grep("\\chapter{", lines, fixed = TRUE)))
-
-  label_prefixes_following_chapters <-
-    gsub("^.*\\\\label[{](.*)[:][^\\}]*[}].*$",
-         "\\1",
-         lines[chapter_line_nos],
-         perl = TRUE)
-
-  if (any(label_prefixes_following_chapters != "chap")){
-    first_wrong_line_no <-
-      chapter_line_nos %>%
-      .[label_prefixes_following_chapters != "chap"] %>%
-      .[1]
-
-
-    cat(bgRed(symbol$cross), " ",
-        first_wrong_line_no, ": ",
-        lines[first_wrong_line_no],
-        sep = "")
-    .report_error(line_no = first_wrong_line_no, 
-                  context = lines[[first_wrong_line_no]], 
-                  error_message = "Unlabelled chapter or \\label without chap: prefix.", 
-                  advice = "For every \\chapter{} ensure there is a \\label{chap:...} on the same line.")
+  if (check.chaprefs) {
     
-    stop("Chapters must be labelled and have prefix 'chap:'.")
+    # Match label and command?
+    # Probably not necessary, except for chapter etc
+    chapter_label_lines <-
+      lines[lines_with_labels[grepl("^chap[:]", label_contents)]]
+    
+    chapter_line_nos <-
+      sort(union(grep("\\addchap{", lines, fixed = TRUE),
+                 grep("\\chapter{", lines, fixed = TRUE)))
+    
+    if (length(begin.document <- grep("\\begin{document}", lines, fixed = TRUE))) {
+      chapter_line_nos <- chapter_line_nos[chapter_line_nos > begin.document]
+    }
+    
+    label_prefixes_following_chapters <-
+      gsub("^.*\\\\label[{](.*)[:][^\\}]*[}].*$",
+           "\\1",
+           lines[chapter_line_nos],
+           perl = TRUE)
+    
+    if (any(label_prefixes_following_chapters != "chap")){
+      first_wrong_line_no <-
+        chapter_line_nos %>%
+        .[label_prefixes_following_chapters != "chap"] %>%
+        .[1]
+      
+      
+      cat(bgRed(symbol$cross), " ",
+          first_wrong_line_no, ": ",
+          lines[first_wrong_line_no],
+          sep = "")
+      .report_error(line_no = first_wrong_line_no, 
+                    context = lines[[first_wrong_line_no]], 
+                    error_message = "Unlabelled chapter or \\label without chap: prefix.", 
+                    advice = "For every \\chapter{} ensure there is a \\label{chap:...} on the same line.")
+      
+      stop("Chapters must be labelled and have prefix 'chap:'.")
+    }
+    
+    chapter_xref_lines <-
+      grep("[VvCc]ref(range)?[{]chap[:]",
+           lines,
+           perl = TRUE)
+    
+    if (length(begin.document)) {
+      chapter_xref_lines <- chapter_xref_lines[chapter_xref_lines > begin.document]
+    }
+    
+    if (length(chapter_xref_lines) > 0){
+      line_no <- chapter_xref_lines[[1]]
+      .report_error(line_no = line_no,
+                    context = lines[line_no],
+                    error_message = "Cross-reference to chapter using Vref or Cref.",
+                    advice = "Cross-references to chapters must use Chapref or topref.")
+      stop("Cross-references to chapters must use Chapref or topref.")
+    }
   }
-
-  chapter_xref_lines <-
-    grep("[VvCc]ref(range)?[{]chap[:]",
-         lines,
-         perl = TRUE)
-
-  if (length(chapter_xref_lines) > 0){
-    line_no <- chapter_xref_lines[[1]]
-    .report_error(line_no = line_no,
-                  context = lines[line_no],
-                  error_message = "Cross-reference to chapter using Vref or Cref.",
-                  advice = "Cross-references to chapters must use Chapref or topref.")
-    stop("Cross-references to chapters must use Chapref or topref.")
-  }
-
+  
   invisible(NULL)
 }

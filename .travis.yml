@@ -27,6 +27,7 @@ before_install:
 r_packages:
 - covr
 - drat
+- roxygen2
 
 after_failure:
 - Rscript -e 'print(Sys.which("biber"))'

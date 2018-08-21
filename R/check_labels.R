@@ -54,10 +54,11 @@ check_labels <- function(filename, .report_error, check.chaprefs = TRUE) {
   label_contents <-
     lines[lines_with_labels] %>%
     strsplit(split = "\\", fixed = TRUE) %>%
-    vapply(function(commands){
-      grep("^label", commands, perl = TRUE, value = TRUE) %>%
+    lapply(function(commands){
+      grep("^label\\{", commands, perl = TRUE, value = TRUE) %>%
         gsub(pattern = "^label[{]([^\\}]+)[}].*$", replacement = "\\1", x = ., perl = TRUE)
-    }, FUN.VALUE = "")
+    }) %>%
+    unlist
   
   if (any(grepl("^app(endix)?[:]", label_contents, perl = TRUE))){
     line_no <- grep("\\\\label\\{app(endix)?[:]", lines, perl = TRUE)[[1]]

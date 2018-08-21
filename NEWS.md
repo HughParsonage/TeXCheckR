@@ -9,6 +9,8 @@
 
 ## Bug fixes:
 * `check_unclosed_parentheses` no longer errors or panics over unclosed parentheses occurring within optional arguments to `\begin{enumerate}` such as `label` constructions.
+* `labels` around the chapter checks now contemplate multiple labels on the same line, 
+  and distinguish between `\label{}` and `\labelenumi`.
 
 ## Other 
 * Test involving `readr` did not properly check for it being installed

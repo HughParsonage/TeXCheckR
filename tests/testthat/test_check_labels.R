@@ -63,3 +63,31 @@ test_that("Labels with space after", {
   
   expect_error(check_labels(temp_file)) 
 })
+
+
+test_that("Labels occuring twice, labelenumi", {
+  temp_file <- tempfile(pattern = "labels",
+                        fileext = ".tex")
+  
+  Cat <- function(...) base::cat(..., file = temp_file, append = TRUE, sep = "\n")
+  
+  Cat("\\documentclass{article}")
+  Cat("")
+  Cat("")
+  Cat("\\begin{document}")
+  Cat("Some figure.")
+  Cat("\\chapter{A}\\label{chap:x}\\label{chap:y}")
+  Cat("\\begin{enumerate}")
+  Cat("\\renewcommand{\\labelenumi}{\\alpha{enumi}}")
+  Cat("\\item A label.")
+  Cat("\\end{enumerate}")
+  Cat("\\begin{figure}")
+  Cat("\\caption{Some label}\\label{fig:A B}")
+  Cat("\\includegraphics{some-figure}")
+  Cat("\\end{figure}")
+  Cat("")
+  Cat("\\end{document}")
+  Cat("")
+  
+  expect_error(check_labels(temp_file)) 
+})

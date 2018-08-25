@@ -1,8 +1,8 @@
 Package: TeXCheckR
 Type: Package
 Title: Parses LaTeX Documents for Errors
-Date: 2018-08-21
-Version: 0.5.99.4
+Date: 2018-08-26
+Version: 0.6.0
 Author: Hugh Parsonage
 Maintainer: Hugh Parsonage <hugh.parsonage@gmail.com>
 URL: https://github.com/HughParsonage/TeXCheckR
@@ -15,7 +15,7 @@ Imports:
   crayon,
   data.table (>= 1.9.0),
   fastmatch, 
-  hunspell,
+  hunspell (>= 2.5),
   hutils (>= 0.8.0),
   magrittr, 
   rstudioapi,

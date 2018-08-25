@@ -5,7 +5,10 @@
 ^timings$
 ^\.httr-oauth$
 ^deploy.sh$
+^README.Rmd$
+^README.html$
 ^doc$
+^docs$
 ^cran-comments\.md$
 ^revdep$
 ^biber-linux_x86_64.tar.gz$

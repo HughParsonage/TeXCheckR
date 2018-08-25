@@ -37,18 +37,18 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
   }
 
   bib_just_key_and_fields <- bib
-  bib_just_key_and_fields[or(is_closing, bib == "")] <- NA_character_
+  bib_just_key_and_fields[is_closing] <- ""
   bib_just_key_and_fields[is_at] <- sub("@", "key = ", bib_just_key_and_fields[is_at], fixed = TRUE)
 
   # Make sure the sep is detected (in case of >author   ={John Daley}<)
   bib_just_key_and_fields <- sub("={", "= {", bib_just_key_and_fields, fixed = TRUE)
   bib_just_key_and_fields <- sub(" = ", sep, bib_just_key_and_fields, fixed = TRUE)
-  used_line_nos <- which(!is.na(bib_just_key_and_fields))
-  bib_just_key_and_fields <- bib_just_key_and_fields[!is.na(bib_just_key_and_fields)]
+  used_line_nos <- which(nzchar(bib_just_key_and_fields))
+  bib_just_key_and_fields <- bib_just_key_and_fields[used_line_nos]
 
   x <- line_no <- NULL
-  bibDT <- data.table(line_no = used_line_nos,
-                      x = bib_just_key_and_fields)
+  bibDT <- setDT(list(line_no = used_line_nos,
+                      x = bib_just_key_and_fields))
 
   field <- value <- NULL
   bibDT[, c("field", "value") := tstrsplit(x, sep, fixed = TRUE)]

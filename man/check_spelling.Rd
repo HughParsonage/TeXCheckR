@@ -5,10 +5,10 @@
 \title{Spell checking}
 \usage{
 check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
-  known.correct = NULL, known.wrong = NULL,
-  ignore_spelling_in = NULL, ignore_spelling_in_nth = NULL, bib_files,
-  check_etcs = TRUE, dict_lang = "en_GB", rstudio = FALSE,
-  .report_error)
+  known.correct = NULL, known.correct.fixed = NULL,
+  known.wrong = NULL, ignore_spelling_in = NULL,
+  ignore_spelling_in_nth = NULL, bib_files, check_etcs = TRUE,
+  dict_lang = "en_GB", rstudio = FALSE, .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
@@ -20,6 +20,8 @@ present outside the document preamble.}
 \item{ignore.lines}{Integer vector of lines to ignore (due to possibly spurious errors).}
 
 \item{known.correct}{Character vector of patterns known to be correct (which will never be raised by this function).}
+
+\item{known.correct.fixed}{Character vector of words known to be correct (which will never be raised by this function).}
 
 \item{known.wrong}{Character vector of patterns known to be wrong.}
 

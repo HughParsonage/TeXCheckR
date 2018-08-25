@@ -6,6 +6,7 @@
 #' present outside the document preamble.
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
 #' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
+#' @param known.correct.fixed Character vector of words known to be correct (which will never be raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
 #' @param ignore_spelling_in Command whose first mandatory argument will be ignored.
 #' @param ignore_spelling_in_nth Named list of arguments to ignore; names are the commands to be ignored, values are the \code{n}th argument to be ignored.
@@ -68,6 +69,7 @@ check_spelling <- function(filename,
                            pre_release = TRUE,
                            ignore.lines = NULL,
                            known.correct = NULL,
+                           known.correct.fixed = NULL,
                            known.wrong = NULL,
                            ignore_spelling_in = NULL,
                            ignore_spelling_in_nth = NULL,
@@ -445,7 +447,8 @@ check_spelling <- function(filename,
   
   words_to_add <- c(valid_abbreviations, paste0(valid_abbreviations, "s"), words_to_add)
 
-  parsed <- hunspell(lines, format = "latex", dict = dictionary(dict_lang))
+  parsed <- hunspell(lines, format = "latex", dict = dictionary(dict_lang),
+                     ignore = c(hunspell::en_stats, known.correct.fixed))
   all_bad_words <- unlist(parsed)
 
   # Faster than using hunspell(add_words = )

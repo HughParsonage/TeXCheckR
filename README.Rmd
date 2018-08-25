@@ -1,0 +1,53 @@
+# TeXCheckR
+
+Development page for TeXCheckR. See also https://github.com/hughparsonage/grattanReporter 
+
+```{r}
+# install.packages("TeXCheckR")
+library(TeXCheckR)
+library(knitr)
+library(pander)
+library(magrittr)
+
+```
+
+```{r}
+eg <- system.file("extdata", "readme.tex", package = "TeXCheckR")
+```
+
+```latex
+\documentclass{article}
+
+\begin{document}
+
+I'd like an en dash - now.
+
+Quotes need to be entered 'precisely'.
+
+Footnotes can't have spaces before. \footnote{And should be full sentences}
+
+We shouldn't refer to section 1 by typing out the literal cross-reference.
+
+\section{Consitent labels are a good custom}\label{good-customs}
+
+And English spacing dictates sentence spacing HERE. Otherwise the spacing looks strange.
+
+Here the mismatched parentheses are obvious. (But it's not always the case.
+
+We want to avoid this formatting: 10 million payments of $5 would total $50 million. 
+And \LaTeX{} won't raise an error.
+
+\end{document}
+```
+
+```{r, error=TRUE}
+check_dashes(eg)
+check_quote_marks(eg)
+check_footnote_typography(eg)
+check_literal_xrefs(eg)
+check_labels(eg)
+TeXCheckR:::check_sentence_ending_periods(eg)
+TeXCheckR:::check_unclosed_parentheses(eg)
+check_escapes(eg)
+```
+

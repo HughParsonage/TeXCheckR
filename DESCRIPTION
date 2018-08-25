@@ -3,8 +3,7 @@ Type: Package
 Title: Parses LaTeX Documents for Errors
 Date: 2018-08-26
 Version: 0.6.0
-Author: Hugh Parsonage
-Maintainer: Hugh Parsonage <hugh.parsonage@gmail.com>
+Authors@R: c(person("Hugh", "Parsonage", role = c("aut", "cre"), email = "hugh.parsonage@gmail.com"))
 URL: https://github.com/HughParsonage/TeXCheckR
 BugReports: https://github.com/HughParsonage/TeXCheckR/issues
 Description: Checks LaTeX documents and .bib files for typing errors, such as spelling errors, incorrect quotation marks. Also provides useful functions for parsing and linting bibliography files.

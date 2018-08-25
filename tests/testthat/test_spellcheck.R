@@ -165,6 +165,17 @@ test_that("pre-release + add to dictionary outside", {
                fixed = TRUE)
 })
 
+test_that("known.correct.fixed", {
+  tempfile.tex <- tempfile(fileext = ".tex")
+  writeLines(c("\\documentclass{article}", 
+               "% add_to_dictionary: ok", 
+               "\\begin{document}",
+               "QETYY-high.",
+               "\\end{document}"), 
+             tempfile.tex)
+  expect_null(check_spelling(tempfile.tex, pre_release = FALSE, known.correct.fixed = "QETYY"))
+})
+
 
 
 

@@ -1,4 +1,9 @@
-# TeXCheckR
+---
+title: TeXCheckR
+output:
+  md_document:
+    variant: markdown_github
+---
 
 Development page for TeXCheckR. See also https://github.com/hughparsonage/grattanReporter 
 

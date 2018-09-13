@@ -93,4 +93,11 @@ test_that("Don't panic", {
   options("TeXCheckR.halt_on_error" = FALSE)
 })
 
+test_that("Issue #63", {
+  expect_null(check_footnote_typography({
+    tempf <- tempfile()
+    writeLines(c("A\\footcite{ok-dash} -- ok?"), tempf)
+    tempf}))
+})
+
 

@@ -201,10 +201,13 @@ check_footnote_typography <- function(filename, ignore.lines = NULL, .report_err
                                       lines_with_footcite_noarg, 
                                       perl = TRUE)
     
-    chars_after_footcite <- gsub("^.*\\\\footcite\\{\\}\\s*(.)?.*$", 
-                                "\\1", 
-                                lines_with_footcite_noarg, 
-                                perl = TRUE)
+    chars_after_footcite <-
+      gsub("^.*\\\\footcite\\{\\}(\\s*.)?.*$", 
+           "\\1", 
+           lines_with_footcite_noarg, 
+           perl = TRUE) %>%
+      .[or(!startsWith(., " "), 
+           !endsWith(., "-"))]
     
     if (any(chars_after_footcite %fin% punctuation)){
       first_footcite_w_punct <- which(chars_after_footcite %fin% punctuation)[[1L]]

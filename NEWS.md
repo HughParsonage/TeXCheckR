@@ -1,3 +1,10 @@
+## TeXCheckR 0.6.1
+
+#### Bug fixes:
+
+* `fread_bib`, when it encounters a duplicate entry key,
+  no longer includes lines without keys in the console to
+  explain the error message. 
 
 
 ## TeXCheckR 0.6.0

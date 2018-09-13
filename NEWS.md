@@ -5,6 +5,7 @@
 * `fread_bib`, when it encounters a duplicate entry key,
   no longer includes lines without keys in the console to
   explain the error message. 
+* `check_footnote_typography` no longer errors when `footcite` precedes a space and a dash.
 
 
 ## TeXCheckR 0.6.0

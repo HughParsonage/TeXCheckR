@@ -60,12 +60,13 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
   bibDT[(is_key), key_value := tolower(sub("^.*\\{", "", value, perl = TRUE))]
   
   if (check.dup.keys && anyDuplicated(stats::na.omit(bibDT[["key_value"]]))) {
-    duplicates <- duplicated_rows(bibDT, by = "key_value")
+    duplicates <- duplicated_rows(bibDT, by = "key_value", na.rm = TRUE)
     if (getOption("TeXCheckR.messages", TRUE)) {
       print(duplicates[, "bib_file" := file.bib])
     }
     report2console(file = file.bib,
                    line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
+                   context = first(duplicates[["value"]]),
                    error_message = "Duplicate bib key used.",
                    advice = paste0("Compare the two entries above. If they are identical, delete one. ", 
                                    "If they are distinct, choose a different bib key. ", 

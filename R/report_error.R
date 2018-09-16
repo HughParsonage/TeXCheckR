@@ -105,7 +105,7 @@ report2console <- function(file = NULL,
         build_status <- "Broken"
       }
       if (append) {
-        d <- function(x) if (is.null(x)) NA_character_ else x
+        d <- function(x) if (!length(x)) NA_character_ else x
         
         to_append <-
           data.table(Time = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),

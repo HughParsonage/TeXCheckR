@@ -1,6 +1,14 @@
-Development page for TeXCheckR. See also <https://github.com/hughparsonage/grattanReporter>
+---
+title: TeXCheckR
+output:
+  md_document:
+    variant: markdown_github
+---
 
-``` r
+Development page for TeXCheckR. See also https://github.com/hughparsonage/grattanReporter 
+
+
+```r
 # install.packages("TeXCheckR")
 library(TeXCheckR)
 library(knitr)
@@ -8,11 +16,12 @@ library(pander)
 library(magrittr)
 ```
 
-``` r
+
+```r
 eg <- system.file("extdata", "readme.tex", package = "TeXCheckR")
 ```
 
-``` latex
+```latex
 \documentclass{article}
 
 \begin{document}
@@ -37,86 +46,123 @@ And \LaTeX{} won't raise an error.
 \end{document}
 ```
 
-``` r
+
+```r
 check_dashes(eg)
 ```
 
-    ## 
-    ## Dash likely masquerading as hyphen. Use -- for a dash.
-    ## <U+2716> 5: As always, visually check the result in the PDF.I'd like an en dash - now.
-    ## 
-    ## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  â€“
+```
+## 
+## Dash likely masquerading as hyphen. Use -- for a dash.
+## <U+2716> 5: As always, visually check the result in the PDF.I'd like an en dash - now.
+## 
+## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  –
+```
 
-    ## Error in check_dashes(eg): Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.
-    ## 
-    ## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  â€“
-    ## If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). As always, visually check the result in the PDF.
+```
+## Error in check_dashes(eg): Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.
+## 
+## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  –
+## If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). As always, visually check the result in the PDF.
+```
 
-``` r
+```r
 check_quote_marks(eg)
 ```
 
-    ## 
-    ## Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.
-    ## <U+2716> 7: Quotes need to be entered 'precisely'.
-    ##                                 ^
+```
+## 
+## Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.
+## <U+2716> 7: Quotes need to be entered 'precisely'.
+##                                 ^
+```
 
-    ## Error in check_quote_marks(eg): Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.
+```
+## Error in check_quote_marks(eg): Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.
+```
 
-``` r
+```r
 check_footnote_typography(eg)
 ```
 
-    ## 
-    ## Footnote does not end with full stop.
-    ## <U+2716> 9: 
-    ## \footnote
-    ##          {And should be full sentences}
+```
+## 
+## Footnote does not end with full stop.
+## <U+2716> 9: 
+## \footnote
+##          {And should be full sentences}
+```
 
-    ## Error in check_footnote_typography(eg): Footnote does not end with full stop.
+```
+## Error in check_footnote_typography(eg): Footnote does not end with full stop.
+```
 
-``` r
+```r
 check_literal_xrefs(eg)
 ```
 
-    ## 
-    ## Hard-coded xref in document.
-    ## <U+2716> 11: We shouldn't refer to section 1 by typing out the literal cross-reference.
-    ## All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters). If you need to use this phrase, you can use a non-breaking space e.g. 'Section~81 of the Constitution.
+```
+## 
+## Hard-coded xref in document.
+## <U+2716> 11: We shouldn't refer to section 1 by typing out the literal cross-reference.
+## All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters). If you need to use this phrase, you can use a non-breaking space e.g. 'Section~81 of the Constitution.
+```
 
-    ## Error in check_literal_xrefs(eg): Hard-coded xref in document. All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters).
+```
+## Error in check_literal_xrefs(eg): Hard-coded xref in document. All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters).
+```
 
-``` r
+```r
 check_labels(eg)
 ```
 
-    ## 
-    ## \label used without prefix.
-    ## <U+2716> 13: \section{Consitent labels are a good custom}\label{good-customs}
-    ## Use fig: tbl: box: chap: subsec: paragraph: rec: fn: in every label.
+```
+## 
+## \label used without prefix.
+## <U+2716> 13: \section{Consitent labels are a good custom}\label{good-customs}
+## Use fig: tbl: box: chap: subsec: paragraph: rec: fn: in every label.
+```
 
-    ## Error in check_labels(eg): Each \label must contain a prefix.
+```
+## Error in check_labels(eg): Each \label must contain a prefix.
+```
 
-``` r
+```r
 TeXCheckR:::check_sentence_ending_periods(eg)
 ```
 
-    ## 
-    ## Capital letter ends sentence, but sentence-ending period mark absent.
-    ## <U+2716> 15: And English spacing dictates sentence spacing HERE. Otherwise the spacing looks strange.
-    ## Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)
+```
+## 
+## Capital letter ends sentence, but sentence-ending period mark absent.
+## <U+2716> 15: And English spacing dictates sentence spacing HERE. Otherwise the spacing looks strange.
+## Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)
+```
 
-    ## Error in TeXCheckR:::check_sentence_ending_periods(eg): Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)
+```
+## Error in TeXCheckR:::check_sentence_ending_periods(eg): Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)
+```
 
-``` r
+```r
 TeXCheckR:::check_unclosed_parentheses(eg)
+```
+
+```
+## Error in TeXCheckR:::check_unclosed_parentheses(eg): 17 contains parenthesis that does not close.
+```
+
+```r
 check_escapes(eg)
 ```
 
-    ## 
-    ## Unescaped $.
-    ## <U+2716> 19: We want to avoid this formatting: 10 million payments of $5 would total
-    ##                                                                 ^
-    ## If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .
+```
+## 
+## Unescaped $.
+## <U+2716> 19: We want to avoid this formatting: 10 million payments of $5 would total
+##                                                                 ^
+## If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .
+```
 
-    ## Error in check_escapes(eg): Unescaped $. If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .
+```
+## Error in check_escapes(eg): Unescaped $. If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .
+```
+

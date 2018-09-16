@@ -7,6 +7,10 @@
   explain the error message. 
 * `check_footnote_typography` no longer errors when `footcite` precedes a space and a dash.
 
+#### Enhancements:
+
+* `check_footnote_typography` now provides better advice as to the location of punctutation after a footcite.
+
 
 ## TeXCheckR 0.6.0
 

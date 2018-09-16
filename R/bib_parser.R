@@ -4,15 +4,22 @@
 #' @param to_sort Include only author, title, year, and date.
 #' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
 #' @param strip.braces If \code{TRUE}, the default, braces in fields are removed. 
+#' @param .report_error A function like \code{\link{report2console}} to handle errors.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
+#' 
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
+fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE, .report_error) {
   stopifnot(length(file.bib) == 1L)
   if (!endsWith(file.bib, ".bib")) {
     warning("File extension is not '.bib'.")
   }
+  
+  if (missing(.report_error)) {
+    .report_error <- report2console
+  }
+  
 
   bib <-
     read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
@@ -64,7 +71,7 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE) {
     if (getOption("TeXCheckR.messages", TRUE)) {
       print(duplicates[, "bib_file" := file.bib])
     }
-    report2console(file = file.bib,
+    .report_error(file = file.bib,
                    line_no = if (!is.null(duplicates[["line_no"]])) first(duplicates[["line_no"]]),
                    context = first(duplicates[["value"]]),
                    error_message = "Duplicate bib key used.",

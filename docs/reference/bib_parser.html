@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
       </span>
     </div>
 
@@ -111,7 +111,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>fread_bib</span>(<span class='no'>file.bib</span>, <span class='kw'>check.dup.keys</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>strip.braces</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>fread_bib</span>(<span class='no'>file.bib</span>, <span class='kw'>check.dup.keys</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>strip.braces</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>.report_error</span>)
 
 <span class='fu'>bib2DT</span>(<span class='no'>file.bib</span>, <span class='kw'>to_sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
@@ -131,6 +132,10 @@
     <tr>
       <th>strip.braces</th>
       <td><p>If <code>TRUE</code>, the default, braces in fields are removed.</p></td>
+    </tr>
+    <tr>
+      <th>.report_error</th>
+      <td><p>A function like <code><a href='report_error.html'>report2console</a></code> to handle errors.</p></td>
     </tr>
     <tr>
       <th>to_sort</th>

@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
       </span>
     </div>
 
@@ -101,27 +101,53 @@
       <small>Source: <a href='https://github.com/HughParsonage/TeXCheckR/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="texcheckr-0-6-0" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-6-0" class="anchor"></a>TeXCheckR 0.6.0<small> Unreleased </small>
-</h1>
-<div id="enhancements" class="section level2">
+    <div id="texcheckr-0-6-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>Enhancements:</h2>
+<a href="#texcheckr-0-6-1" class="anchor"></a>TeXCheckR 0.6.1</h2>
+<div id="bug-fixes" class="section level4">
+<h4 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes:</h4>
+<ul>
+<li>
+<code>fread_bib</code>, when it encounters a duplicate entry key, no longer includes lines without keys in the console to explain the error message.</li>
+<li>
+<code>check_footnote_typography</code> no longer errors when <code>footcite</code> precedes a space and a dash.</li>
+<li>
+<code>rm_editorial_square_brackets</code> now removes brackets if they are preceded by an opening quote.</li>
+</ul>
+</div>
+<div id="enhancements" class="section level4">
+<h4 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>Enhancements:</h4>
+<ul>
+<li>
+<code>check_footnote_typography</code> now provides better advice as to the location of punctutation after a footcite.</li>
+</ul>
+</div>
+</div>
+    <div id="texcheckr-0-6-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-6-0" class="anchor"></a>TeXCheckR 0.6.0</h2>
+<div id="enhancements-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#enhancements-1" class="anchor"></a>Enhancements:</h4>
 <ul>
 <li>
 <code>validate_bibliography</code> now errors if url fields contain escaped symbols.</li>
 <li>
 <code>check_dashes</code> now does not error if an emdash occurs in a protasis within an list, or if requested.</li>
 <li>
-<code>check_spelling</code> :</li>
+<code>check_spelling</code> :
+<ul>
 <li>now obeys a directive <code>% ignore_spelling_in_file: &lt;file.tex&gt;</code> for files where the spelling may be ignored (such as tables with symbols, jargon, or esoteric nomenclature).</li>
 <li>gains an argument <code>known.correct.fixed</code> for words (rather than patterns) to add.</li>
 </ul>
+</li>
+</ul>
 </div>
-<div id="bug-fixes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes:</h2>
+<div id="bug-fixes-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes:</h4>
 <ul>
 <li>
 <code>check_unclosed_parentheses</code> no longer errors or panics over unclosed parentheses occurring within optional arguments to <code>\begin{enumerate}</code> such as <code>label</code> constructions.</li>
@@ -129,21 +155,21 @@
 <code>labels</code> around the chapter checks now contemplate multiple labels on the same line, and distinguish between <code>\label{}</code> and <code>\labelenumi</code>.</li>
 </ul>
 </div>
-<div id="other" class="section level2">
-<h2 class="hasAnchor">
-<a href="#other" class="anchor"></a>Other</h2>
+<div id="other" class="section level4">
+<h4 class="hasAnchor">
+<a href="#other" class="anchor"></a>Other</h4>
 <ul>
 <li>Test involving <code>readr</code> did not properly check for it being installed</li>
 </ul>
 </div>
 </div>
-    <div id="texcheckr-0-5-1" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-5-1" class="anchor"></a>TeXCheckR 0.5.1<small> 2018-03-20 </small>
-</h1>
+    <div id="texcheckr-0-5-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-5-1" class="anchor"></a>TeXCheckR 0.5.1</h2>
 <ul>
 <li>Allow <code>fread_bib</code> to optionally retain braces in <code>value</code>.</li>
-<li>New functions:</li>
+<li>New functions:
+<ul>
 <li>
 <code>split_report</code> to split a report into chapters</li>
 <li>
@@ -154,6 +180,8 @@
 <code>strip_comments</code> is now exported</li>
 <li><p><code>read_tex_document</code> to take the root file of a LaTeX document and read the entire document (including the contents <code>\input</code> and <code>\include</code>)</p></li>
 <li>(Unexported) <code>check_unclosed_parentheses</code> to check (some) instances of unclosed or unopened parentheses</li>
+</ul>
+</li>
 <li>
 <code>stringi</code> and <code>readr</code> have been moved to Suggests to minimize compile times (as on Travis-CI)</li>
 <li>
@@ -170,7 +198,8 @@
 <li>
 <code>separate_sentences</code> gains a <code>hanging_footnotes</code> argument, indenting footnotes if set to <code>TRUE</code>.</li>
 <li><p>Add some proper-nouns to the dictionary.</p></li>
-<li>Bug fixes:</li>
+<li>Bug fixes:
+<ul>
 <li>check labels now test for spaces rather than check dashes</li>
 <li>
 <code>lint_bib</code> does not add commas after <code><a href='http://github.com/string'>@string</a></code> fields.</li>
@@ -192,51 +221,53 @@
 </li>
 <li>
 <code>check_consecutive_words</code> no longer requires <code>grattan.cls</code> to run. Thanks to <a href='http://github.com/jonocarroll'>@jonocarroll</a> for reporting.</li>
-<li><p><code>check_footnote_typography</code> no longer falsely claims a footnote lacks a terminal full stop when it ends in a list like <code>enumerate</code> or <code>itemize</code> (and the terminal item ends with a full stop).</p></li>
-<li>Internal:</li>
-<li><p><code>readr</code>, <code>stringi</code> are now in Suggests to reduce compile time (especially on Travis-CI)</p></li>
+<li>
+<code>check_footnote_typography</code> no longer falsely claims a footnote lacks a terminal full stop when it ends in a list like <code>enumerate</code> or <code>itemize</code> (and the terminal item ends with a full stop).</li>
+</ul>
+</li>
+<li>Internal:
+<ul>
+<li>
+<code>readr</code>, <code>stringi</code> are now in Suggests to reduce compile time (especially on Travis-CI)</li>
+</ul>
+</li>
 </ul>
 </div>
-    <div id="texcheckr-0-4-3" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-4-3" class="anchor"></a>TeXCheckR 0.4.3<small> Unreleased </small>
-</h1>
+    <div id="texcheckr-0-4-3" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-4-3" class="anchor"></a>TeXCheckR 0.4.3</h2>
 <ul>
 <li>Use <code>hunspell</code>’s ignore option when a dictionary addition is not respected</li>
 <li>Fix spurious unit test broken under new <code>hunspell</code>.</li>
 <li>Fix issue with <code>check_footnote_typography</code> where the RStudio pops to the end of the first footnote, not the first wrong footntoe. Thanks to CC for reporting.</li>
 </ul>
 </div>
-    <div id="texcheckr-0-4-2" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-4-2" class="anchor"></a>TeXCheckR 0.4.2<small> Unreleased </small>
-</h1>
+    <div id="texcheckr-0-4-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-4-2" class="anchor"></a>TeXCheckR 0.4.2</h2>
 <ul>
 <li>Fixed <code>inputs_of</code> to select <code>\include</code> and <code>\inputs</code> only</li>
 <li>Export <code>inputs_of</code>
 </li>
 </ul>
 </div>
-    <div id="texcheckr-0-4-1" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-4-1" class="anchor"></a>TeXCheckR 0.4.1<small> 2017-10-23 </small>
-</h1>
+    <div id="texcheckr-0-4-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-4-1" class="anchor"></a>TeXCheckR 0.4.1</h2>
 <ul>
 <li>Fixed an issue whereby <code>pdflatex</code> may not run in certain environments (in particular CRAN where it caused an egregious hanging of the package queue). Tests now skip in such cases.</li>
 </ul>
 </div>
-    <div id="texcheckr-0-4-0" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-4-0" class="anchor"></a>TeXCheckR 0.4.0<small> Unreleased </small>
-</h1>
+    <div id="texcheckr-0-4-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-4-0" class="anchor"></a>TeXCheckR 0.4.0</h2>
 <ul>
 <li>Major internal functions <code>parse_tex</code>, <code>extract_mandatory_LaTeX_argument</code>, and <code>extract_optional_LaTeX_argument</code>.</li>
 </ul>
 </div>
-    <div id="texcheckr-0-3-3" class="section level1">
-<h1 class="page-header">
-<a href="#texcheckr-0-3-3" class="anchor"></a>TeXCheckR 0.3.3<small> Unreleased </small>
-</h1>
+    <div id="texcheckr-0-3-3" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-3-3" class="anchor"></a>TeXCheckR 0.3.3</h2>
 <ul>
 <li>
 <code>check_footnote_typography</code> can now provide the precise location of incorrect punctuation, instead of just reporting the head of footnote.</li>
@@ -250,6 +281,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#texcheckr-0-6-1">0.6.1</a></li>
         <li><a href="#texcheckr-0-6-0">0.6.0</a></li>
         <li><a href="#texcheckr-0-5-1">0.5.1</a></li>
         <li><a href="#texcheckr-0-4-3">0.4.3</a></li>

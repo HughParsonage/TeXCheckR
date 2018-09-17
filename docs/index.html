@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
       </span>
     </div>
 
@@ -70,9 +70,6 @@
 
     
     
-<div id="texcheckr" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#texcheckr" class="anchor"></a>TeXCheckR</h1></div>
 <p>Development page for TeXCheckR. See also <a href="https://github.com/hughparsonage/grattanReporter" class="uri">https://github.com/hughparsonage/grattanReporter</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("TeXCheckR")</span>
 <span class="kw">library</span>(TeXCheckR)
@@ -124,7 +121,7 @@ And <span class="fu">\LaTeX</span>{} won't raise an error.
 ## &lt;U+2716&gt; 9: 
 ## \footnote
 ##          {And should be full sentences}</code></pre>
-<pre><code>## Error in check_footnote_typography(eg): Footnote does not end with full stop.</code></pre>
+<pre><code>## Error in report2console(file = filename, ..., halt = TRUE): Footnote does not end with full stop.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_literal_xrefs.html">check_literal_xrefs</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## Hard-coded xref in document.
@@ -143,15 +140,15 @@ And <span class="fu">\LaTeX</span>{} won't raise an error.
 ## &lt;U+2716&gt; 15: And English spacing dictates sentence spacing HERE. Otherwise the spacing looks strange.
 ## Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)</code></pre>
 <pre><code>## Error in TeXCheckR:::check_sentence_ending_periods(eg): Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TeXCheckR<span class="op">:::</span><span class="kw">check_unclosed_parentheses</span>(eg)
-<span class="kw"><a href="reference/check_escapes.html">check_escapes</a></span>(eg)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TeXCheckR<span class="op">:::</span><span class="kw">check_unclosed_parentheses</span>(eg)</code></pre></div>
+<pre><code>## Error in TeXCheckR:::check_unclosed_parentheses(eg): 17 contains parenthesis that does not close.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_escapes.html">check_escapes</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## Unescaped $.
 ## &lt;U+2716&gt; 19: We want to avoid this formatting: 10 million payments of $5 would total
 ##                                                                 ^
 ## If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .</code></pre>
 <pre><code>## Error in check_escapes(eg): Unescaped $. If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .</code></pre>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

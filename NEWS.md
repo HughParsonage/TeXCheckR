@@ -6,6 +6,7 @@
   no longer includes lines without keys in the console to
   explain the error message. 
 * `check_footnote_typography` no longer errors when `footcite` precedes a space and a dash.
+* `rm_editorial_square_brackets` now removes brackets if they are preceded by an opening quote.
 
 #### Enhancements:
 

@@ -15,3 +15,9 @@ test_that("Square brackets forming optional arguments are not removed", {
   expect_equal(rm_editorial_square_brackets("\\begin{addsmallbox}[p]{How to read this report}{null}"),
                "\\begin{addsmallbox}[p]{How to read this report}{null}")
 })
+
+test_that("Square brackets starting at the beginning of a quote are removed", {
+  expect_equal(rm_editorial_square_brackets("`[E]conomics'"),
+               "`Economics'")
+})
+

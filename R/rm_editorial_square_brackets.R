@@ -16,6 +16,8 @@ rm_editorial_square_brackets <- function(tex_lines){
               "(?:\\s+[A-Za-z]*)",
               "|",
               "(?:^[A-Za-z]*)",
+              "|",
+              "(?:`)",  # e.g. # `[E]conomics.
               "\\s*",
               ")",
               "\\[",

@@ -7,6 +7,7 @@
   explain the error message. 
 * `check_footnote_typography` no longer errors when `footcite` precedes a space and a dash.
 * `rm_editorial_square_brackets` now removes brackets if they are preceded by an opening quote.
+* `extract_validate_abbreviations` now detects abbreviations formed themselves by abbreviations (e.g. NT Electoral Commission (NTEC))
 
 #### Enhancements:
 

@@ -1,3 +1,7 @@
+## TeXCheckR 0.6.2
+#### Bug fixes:
+* `check_spelling` respects `ignore_spelling_in_nth` in nested inputs.
+
 ## TeXCheckR 0.6.1
 
 #### Bug fixes:

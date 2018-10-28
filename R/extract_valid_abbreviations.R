@@ -40,7 +40,9 @@ extract_validate_abbreviations <- function(lines){
       .[grepl(paste0(abbrev_pattern, "$"), ., perl = TRUE)]
     
     NN <- abbrev <- expected_abbrev <-
-      expected_abbrev_with_stops <- figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
+      expected_abbrev_with_stops <- 
+      expected_abbrev_caps <-
+      figs_tbls_not_refd <- nchars_abbrev <- prefix <- prefix_incl_stops <- NULL
     
     list(
       line = lines_w_abbrev_last,

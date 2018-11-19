@@ -125,5 +125,9 @@ test_that("Ends with comma", {
                fixed = TRUE)
 })
 
+test_that("No year #70", {
+  expect_null(any_bib_duplicates("fread-bib/citr-zotero-test.bib"))
+})
+
 
 

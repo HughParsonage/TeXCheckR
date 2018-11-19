@@ -87,16 +87,21 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
   }
   
   Author <- Title <- Year <- NULL
-  bibDT %>%
-    .[, Year := if_else(is.na(year),
-                        if_else(is.na(date),
-                                NA_character_,
-                                substr(date, 0L, 4L)), 
-                        as.character(year))] %>%
-    .[, Author := rev_forename_surname_bibtex(author)] %>%
-    .[, Title := tolower(title)] %>%
-    # ABS duplicate if identical without Australia
-    .[Author == "ABS", Title := gsub(", australia,", ",", Title, fixed = TRUE)]
+  if ("year" %notchin% names(bibDT)) {
+    bibDT[, "year" := NA_character_]
+    bibDT[, "Year" := if_else(is.na(date), NA_character_, substr(date, 0L, 4L))]
+  } else {
+    bibDT[, Year := if_else(is.na(year),
+                            if_else(is.na(date),
+                                    NA_character_,
+                                    substr(date, 0L, 4L)), 
+                            as.character(year))]
+  }
+  
+  bibDT[, Author := rev_forename_surname_bibtex(author)]
+  bibDT[, Title := tolower(title)]
+  # ABS duplicate if identical without Australia
+  bibDT[Author == "ABS", Title := gsub(", australia,", ",", Title, fixed = TRUE)]
   
   
   

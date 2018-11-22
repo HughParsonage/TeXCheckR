@@ -130,7 +130,22 @@ test_that("No year #70", {
 })
 
 test_that("Unescaped % in non-url fields", {
-  expect_error(fread_bib("fread-bib/issue-44.bib"))
+  expect_error(fread_bib("fread-bib/issue-44.bib"),
+               regexp = "BlakersLuStocks2017")
+  expect_error(fread_bib("fread-bib/issue-44.bib"),
+               regexp = "contains unescaped %",
+               fixed = TRUE)
+})
+
+test_that("Unescaped % in non-url fields (output)", {
+  skip_if_not_installed("rlang")
+  rlang::with_options({
+    output <- capture.output(fread_bib("fread-bib/issue-44.bib",
+                                       halt = FALSE))
+    expect_true(any(endsWith(output, "^^"))) # test caret = 2L
+    expect_true("Insert a backslash before this %." %in% output)
+  },
+  TeXCheckR.capture.output = TRUE)
 })
 
 

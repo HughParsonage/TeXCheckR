@@ -16,6 +16,11 @@ fill_blanks <- function(S) {
    L <- !is.na(S)
    c(S[L][1L], S[L], use.names = FALSE)[cumsum(L) + 1L]
 }
+
+stop <- function(..., call. = TRUE, domain = NULL) {
+  base::stop(simpleError(.makeMessage(..., domain = domain, appendLF = TRUE),
+                         call = sys.call(1L - sys.nframe())))
+}
  
 # takes a vector of froms and tos and takes their union
 seq.default.Vectorized <- function(x, y)
@@ -230,7 +235,5 @@ check_TF <- function (x) {
     }
   }
 }
-
-
 
 

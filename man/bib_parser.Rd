@@ -26,6 +26,9 @@ reorder_bib(file.bib, outfile.bib = file.bib)
 percent signs are an error. (Unescaped percent signs in URLs are permitted.) Set
 to \code{FALSE} to skip this check.}
 
+\item{.bib_expected}{(logical, default: \code{TRUE}) Should \code{file.bib} be expected to 
+have file extension \code{.bib}? If expectation violated, a warning is emitted.}
+
 \item{halt}{Whether to halt on error. If \code{NULL}, the default, the value
 \code{getOption("TeXCheckR.halt_on_error")} is used. Otherwise, \code{TRUE} or
 \code{FALSE} to halt

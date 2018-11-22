@@ -7,6 +7,8 @@
 #' @param check.unescaped.percent If \code{TRUE}, the default, fields with unescaped
 #' percent signs are an error. (Unescaped percent signs in URLs are permitted.) Set
 #' to \code{FALSE} to skip this check.
+#' @param .bib_expected (logical, default: \code{TRUE}) Should \code{file.bib} be expected to 
+#' have file extension \code{.bib}? If expectation violated, a warning is emitted.
 #' @param halt Whether to halt on error. If \code{NULL}, the default, the value
 #' \code{getOption("TeXCheckR.halt_on_error")} is used. Otherwise, \code{TRUE} or
 #' \code{FALSE} to halt
@@ -56,6 +58,13 @@ fread_bib <- function(file.bib,
   
   is_at <- startsWith(bib, "@")
   is_closing <- bib == "}"
+  
+  # Need to exit if bib is empty (also makes testing above convenient)
+  if (!any(is_at) || !any(is_closing)) {
+    message("`file.bib = ", file.bib, "` had no bib entries. ", 
+            "Returning empty data.table.")
+    return(data.table())
+  }
 
   sep <- NULL
   # Can't use = as separator (almost certainly occurs in a URL)

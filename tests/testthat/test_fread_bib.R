@@ -11,3 +11,22 @@ test_that("fread_bib output", {
   expect_equal(bibDT_w_braces[line_no == "2"][["value"]],
                "{{Attorney-General's Department}}")
 })
+
+test_that(".bib_expected", {
+  tempf <- tempfile()
+  file.create(tempf)
+  expect_warning(fread_bib(tempf), 
+                 regexp = "File extension is not '.bib'.",
+                 fixed = TRUE)
+  expect_message(fread_bib(tempf, .bib_expected = FALSE),
+                 regexp = "Returning empty")
+  
+  # XOR
+  tempf <- tempfile(fileext = ".bib")
+  file.create(tempf)
+  expect_warning(fread_bib(tempf, .bib_expected = FALSE), 
+                 regexp = "File extension is not '.bib'.",
+                 fixed = TRUE)
+  expect_message(fread_bib(tempf, .bib_expected = TRUE),
+                 regexp = "Returning empty")
+})

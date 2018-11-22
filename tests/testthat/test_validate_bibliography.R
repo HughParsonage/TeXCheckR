@@ -129,5 +129,9 @@ test_that("No year #70", {
   expect_null(any_bib_duplicates("fread-bib/citr-zotero-test.bib"))
 })
 
+test_that("Unescaped % in non-url fields", {
+  expect_error(fread_bib("fread-bib/issue-44.bib"))
+})
+
 
 

@@ -20,6 +20,7 @@
 #' @importFrom hutils coalesce
 #' @importFrom hutils %notin%
 #' @importFrom hutils NOR
+#' @importFrom hutils XOR
 #' @importFrom hutils neither
 #' @importFrom hutils duplicated_rows
 #' @importFrom stats complete.cases

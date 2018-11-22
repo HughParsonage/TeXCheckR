@@ -24,7 +24,7 @@ fread_bib <- function(file.bib,
                       strip.braces = TRUE,
                       check.unescaped.percent = TRUE,
                       .bib_expected = TRUE,
-                      halt = NULL,
+                      halt = TRUE,
                       rstudio = FALSE,
                       .report_error) {
   stopifnot(length(file.bib) == 1L)

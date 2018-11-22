@@ -28,6 +28,7 @@ Encoding: UTF-8
 Suggests:
   devtools,
   readr,
+  rlang,
   stringi,
   testthat (>= 2.0.0),
   tinytex

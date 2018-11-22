@@ -146,6 +146,14 @@ test_that("Unescaped % in non-url fields (output)", {
     expect_true("Insert a backslash before this %." %in% output)
   },
   TeXCheckR.capture.output = TRUE)
+  
+  # Test halt = NULL
+  rlang::with_options({
+    expect_error(fread_bib("fread-bib/issue-44.bib",
+                           halt = NULL),
+                 regexp = "BlakersLuStocks2017")
+  },
+  TeXCheckR.halt_on_error = TRUE)
 })
 
 

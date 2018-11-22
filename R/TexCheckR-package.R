@@ -15,6 +15,7 @@
 #' @importFrom magrittr and
 #' @importFrom magrittr or
 #' @importFrom magrittr not
+#' @importFrom magrittr subtract
 #' @importFrom hutils if_else
 #' @importFrom hutils coalesce
 #' @importFrom hutils %notin%

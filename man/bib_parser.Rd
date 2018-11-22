@@ -8,7 +8,8 @@
 \title{Functions for parsing .bib files}
 \usage{
 fread_bib(file.bib, check.dup.keys = TRUE, strip.braces = TRUE,
-  .report_error)
+  check.unescaped.percent = TRUE, .bib_expected = TRUE, halt = NULL,
+  rstudio = FALSE, .report_error)
 
 bib2DT(file.bib, to_sort = FALSE)
 
@@ -20,6 +21,18 @@ reorder_bib(file.bib, outfile.bib = file.bib)
 \item{check.dup.keys}{If \code{TRUE}, the default, return error if any bib keys are duplicates.}
 
 \item{strip.braces}{If \code{TRUE}, the default, braces in fields are removed.}
+
+\item{check.unescaped.percent}{If \code{TRUE}, the default, fields with unescaped
+percent signs are an error. (Unescaped percent signs in URLs are permitted.) Set
+to \code{FALSE} to skip this check.}
+
+\item{halt}{Whether to halt on error. If \code{NULL}, the default, the value
+\code{getOption("TeXCheckR.halt_on_error")} is used. Otherwise, \code{TRUE} or
+\code{FALSE} to halt
+regardless of the value of the option.}
+
+\item{rstudio}{(logical, default: \code{FALSE}) If \code{TRUE}, pop the RStudio session
+to the location in \code{file.bib} of the first error.}
 
 \item{.report_error}{A function like \code{\link{report2console}} to handle errors.}
 

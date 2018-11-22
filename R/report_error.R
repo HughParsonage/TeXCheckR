@@ -12,6 +12,13 @@
 #' @param rstudio If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?
 #' @param extra_cat_ante Character vector extra messages (placed before \code{context}).
 #' @param extra_cat_post Character vector extra messages (placed after \code{context}).
+#' @param caret (logical, default: \code{FALSE}) Should a caret symbol be placed beneath the 
+#' \code{context} to point to the location of the error? The caret will be inserted on a
+#' new line after \code{error_message} and \code{extra_cat_post}.
+#' 
+#' Length-one integer values of \code{caret} are permitted and will be interpreted as the
+#' number of caret symbols to be inserted at the position. 
+#' 
 #' @param silent (logical, default: \code{FALSE}) Suppress all output.
 #' @param halt Should failures halt via \code{stop} or just display a message in the console?
 #' @param as_tbl Return a list. Experimental.
@@ -26,6 +33,7 @@ report2console <- function(file = NULL,
                            build_status = NULL,
                            extra_cat_ante = NULL,
                            extra_cat_post = NULL,
+                           caret = FALSE,
                            rstudio = FALSE,
                            log_file = NULL,
                            log_file_sep = "|",
@@ -65,10 +73,21 @@ report2console <- function(file = NULL,
   Red <- function(x) if (!is.character(x)) x else red(x)
   bold_red <- function(x) if (!is.character(x)) x else bold(red(x))
   if (!silent && OR(getOption("TeXCheckR.capture.output", FALSE), !is_testing())) {
+    caret_text <- 
+      if (caret && !is.null(column)) {
+        paste0(" ", # cross
+               " ", # space, 
+               formatC("", width = nchar(line_no) + 1L), # line_no + 1
+               formatC("", width = as.integer(column)),
+               paste0(rep("^", times = as.integer(caret)), collapse = ""),
+               "\n")
+      }
+    
     cat("\n", 
         bold_red(error_message), "\n",
         bold_red(symbol$cross), " ", Red(line_no), ": ",
         unlist(extra_cat_ante), Red(context), unlist(extra_cat_post), "\n",
+        caret_text,
         bold_red(advice), "\n",
         sep = "")
     

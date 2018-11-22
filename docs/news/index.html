@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.2</span>
       </span>
     </div>
 
@@ -101,12 +101,35 @@
       <small>Source: <a href='https://github.com/HughParsonage/TeXCheckR/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="texcheckr-0-6-1" class="section level2">
+    <div id="texcheckr-0-6-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#texcheckr-0-6-1" class="anchor"></a>TeXCheckR 0.6.1</h2>
+<a href="#texcheckr-0-6-2" class="anchor"></a>TeXCheckR 0.6.2</h2>
 <div id="bug-fixes" class="section level4">
 <h4 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes:</h4>
+<ul>
+<li>
+<code>check_spelling</code> respects <code>ignore_spelling_in_nth</code> in nested inputs.</li>
+</ul>
+</div>
+<div id="enhancements" class="section level4">
+<h4 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>Enhancements</h4>
+<ul>
+<li>
+<code>fread_bib</code>:</li>
+<li>offers more flexible error behaviour (such as obeying <code>getOption("TeXCheckR.halt_on_error")</code>)</li>
+<li>detects and halts (if requested) unescaped <code>%</code> signs in fields (<a href='https://github.com/HughParsonage/TeXCheckR/issues/44'>#44</a>)</li>
+<li>The default error profile now uses <code>simpleError</code> and refers to the top calling frame.</li>
+</ul>
+</div>
+</div>
+    <div id="texcheckr-0-6-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#texcheckr-0-6-1" class="anchor"></a>TeXCheckR 0.6.1</h2>
+<div id="bug-fixes-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes:</h4>
 <ul>
 <li>
 <code>fread_bib</code>, when it encounters a duplicate entry key, no longer includes lines without keys in the console to explain the error message.</li>
@@ -114,11 +137,13 @@
 <code>check_footnote_typography</code> no longer errors when <code>footcite</code> precedes a space and a dash.</li>
 <li>
 <code>rm_editorial_square_brackets</code> now removes brackets if they are preceded by an opening quote.</li>
+<li>
+<code>extract_validate_abbreviations</code> now detects abbreviations formed themselves by abbreviations (e.g. NT Electoral Commission (NTEC))</li>
 </ul>
 </div>
-<div id="enhancements" class="section level4">
+<div id="enhancements-1" class="section level4">
 <h4 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>Enhancements:</h4>
+<a href="#enhancements-1" class="anchor"></a>Enhancements:</h4>
 <ul>
 <li>
 <code>check_footnote_typography</code> now provides better advice as to the location of punctutation after a footcite.</li>
@@ -128,9 +153,9 @@
     <div id="texcheckr-0-6-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#texcheckr-0-6-0" class="anchor"></a>TeXCheckR 0.6.0</h2>
-<div id="enhancements-1" class="section level4">
+<div id="enhancements-2" class="section level4">
 <h4 class="hasAnchor">
-<a href="#enhancements-1" class="anchor"></a>Enhancements:</h4>
+<a href="#enhancements-2" class="anchor"></a>Enhancements:</h4>
 <ul>
 <li>
 <code>validate_bibliography</code> now errors if url fields contain escaped symbols.</li>
@@ -145,9 +170,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level4">
+<div id="bug-fixes-2" class="section level4">
 <h4 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes:</h4>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes:</h4>
 <ul>
 <li>
 <code>check_unclosed_parentheses</code> no longer errors or panics over unclosed parentheses occurring within optional arguments to <code>\begin{enumerate}</code> such as <code>label</code> constructions.</li>
@@ -281,6 +306,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#texcheckr-0-6-2">0.6.2</a></li>
         <li><a href="#texcheckr-0-6-1">0.6.1</a></li>
         <li><a href="#texcheckr-0-6-0">0.6.0</a></li>
         <li><a href="#texcheckr-0-5-1">0.5.1</a></li>

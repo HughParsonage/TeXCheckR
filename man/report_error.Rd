@@ -8,8 +8,9 @@
 report2console(file = NULL, line_no = NULL, column = NULL,
   context = NULL, error_message = NULL, advice = NULL,
   build_status = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
-  rstudio = FALSE, log_file = NULL, log_file_sep = "|",
-  silent = FALSE, halt = getOption("TeXCheckR.halt_on_error", FALSE),
+  caret = FALSE, rstudio = FALSE, log_file = NULL,
+  log_file_sep = "|", silent = FALSE,
+  halt = getOption("TeXCheckR.halt_on_error", FALSE),
   as_tbl = getOption("TeXCheckR.error_as_tbl", FALSE))
 }
 \arguments{
@@ -30,6 +31,13 @@ report2console(file = NULL, line_no = NULL, column = NULL,
 \item{extra_cat_ante}{Character vector extra messages (placed before \code{context}).}
 
 \item{extra_cat_post}{Character vector extra messages (placed after \code{context}).}
+
+\item{caret}{(logical, default: \code{FALSE}) Should a caret symbol be placed beneath the 
+\code{context} to point to the location of the error? The caret will be inserted on a
+new line after \code{error_message} and \code{extra_cat_post}.
+
+Length-one integer values of \code{caret} are permitted and will be interpreted as the
+number of caret symbols to be inserted at the position.}
 
 \item{rstudio}{If available, should the report be allowed to modify the RStudio session (for example, to pop to the location of the error)?}
 

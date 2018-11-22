@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.2</span>
       </span>
     </div>
 
@@ -112,7 +112,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>fread_bib</span>(<span class='no'>file.bib</span>, <span class='kw'>check.dup.keys</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>strip.braces</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>.report_error</span>)
+  <span class='kw'>check.unescaped.percent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>.bib_expected</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>halt</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>rstudio</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>.report_error</span>)
 
 <span class='fu'>bib2DT</span>(<span class='no'>file.bib</span>, <span class='kw'>to_sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
@@ -132,6 +133,29 @@
     <tr>
       <th>strip.braces</th>
       <td><p>If <code>TRUE</code>, the default, braces in fields are removed.</p></td>
+    </tr>
+    <tr>
+      <th>check.unescaped.percent</th>
+      <td><p>If <code>TRUE</code>, the default, fields with unescaped
+percent signs are an error. (Unescaped percent signs in URLs are permitted.) Set
+to <code>FALSE</code> to skip this check.</p></td>
+    </tr>
+    <tr>
+      <th>.bib_expected</th>
+      <td><p>(logical, default: <code>TRUE</code>) Should <code>file.bib</code> be expected to 
+have file extension <code>.bib</code>? If expectation violated, a warning is emitted.</p></td>
+    </tr>
+    <tr>
+      <th>halt</th>
+      <td><p>Whether to halt on error. If <code>NULL</code>, the default, the value
+<code>getOption("TeXCheckR.halt_on_error")</code> is used. Otherwise, <code>TRUE</code> or
+<code>FALSE</code> to halt
+regardless of the value of the option.</p></td>
+    </tr>
+    <tr>
+      <th>rstudio</th>
+      <td><p>(logical, default: <code>FALSE</code>) If <code>TRUE</code>, pop the RStudio session
+to the location in <code>file.bib</code> of the first error.</p></td>
     </tr>
     <tr>
       <th>.report_error</th>

@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">TeXCheckR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.6.2</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@ And <span class="fu">\LaTeX</span>{} won't raise an error.
 ## &lt;U+2716&gt; 5: As always, visually check the result in the PDF.I'd like an en dash - now.
 ## 
 ## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  –</code></pre>
-<pre><code>## Error in check_dashes(eg): Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.
+<pre><code>## Error in tryCatch(withCallingHandlers({: Single hyphen surrounded by spaces. This is likely a hyphen masquerading as dash. Use -- for a dash.
 ## 
 ## IMPORTANT: make sure you are replacing a hyphen with two hyphens, not a unicode dash  –
 ## If you're not sure, reenter as two hyphens from the keyboard (rather than just appending a hyphen at the end). As always, visually check the result in the PDF.</code></pre>
@@ -114,41 +114,41 @@ And <span class="fu">\LaTeX</span>{} won't raise an error.
 ## Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.
 ## &lt;U+2716&gt; 7: Quotes need to be entered 'precisely'.
 ##                                 ^</code></pre>
-<pre><code>## Error in check_quote_marks(eg): Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Closing quote used at beginning of word. Use a backtick for an opening quote, e.g. The word `ossifrage' is quoted.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_footnote_typography.html">check_footnote_typography</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## Footnote does not end with full stop.
 ## &lt;U+2716&gt; 9: 
 ## \footnote
 ##          {And should be full sentences}</code></pre>
-<pre><code>## Error in report2console(file = filename, ..., halt = TRUE): Footnote does not end with full stop.</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Footnote does not end with full stop.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_literal_xrefs.html">check_literal_xrefs</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## Hard-coded xref in document.
 ## &lt;U+2716&gt; 11: We shouldn't refer to section 1 by typing out the literal cross-reference.
 ## All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters). If you need to use this phrase, you can use a non-breaking space e.g. 'Section~81 of the Constitution.</code></pre>
-<pre><code>## Error in check_literal_xrefs(eg): Hard-coded xref in document. All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters).</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Hard-coded xref in document. All xrefs need to use \Cref or \Vref (or \Chapref for cross-references to chapters).</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_labels.html">check_labels</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## \label used without prefix.
 ## &lt;U+2716&gt; 13: \section{Consitent labels are a good custom}\label{good-customs}
 ## Use fig: tbl: box: chap: subsec: paragraph: rec: fn: in every label.</code></pre>
-<pre><code>## Error in check_labels(eg): Each \label must contain a prefix.</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Each \label must contain a prefix.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TeXCheckR<span class="op">:::</span><span class="kw">check_sentence_ending_periods</span>(eg)</code></pre></div>
 <pre><code>## 
 ## Capital letter ends sentence, but sentence-ending period mark absent.
 ## &lt;U+2716&gt; 15: And English spacing dictates sentence spacing HERE. Otherwise the spacing looks strange.
 ## Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)</code></pre>
-<pre><code>## Error in TeXCheckR:::check_sentence_ending_periods(eg): Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Sentences which end with a capital letter need to be signalled with a sentence-ending period. (\@.)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TeXCheckR<span class="op">:::</span><span class="kw">check_unclosed_parentheses</span>(eg)</code></pre></div>
-<pre><code>## Error in TeXCheckR:::check_unclosed_parentheses(eg): 17 contains parenthesis that does not close.</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: 17 contains parenthesis that does not close.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/check_escapes.html">check_escapes</a></span>(eg)</code></pre></div>
 <pre><code>## 
 ## Unescaped $.
 ## &lt;U+2716&gt; 19: We want to avoid this formatting: 10 million payments of $5 would total
 ##                                                                 ^
 ## If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .</code></pre>
-<pre><code>## Error in check_escapes(eg): Unescaped $. If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .</code></pre>
+<pre><code>## Error in tryCatch(withCallingHandlers({: Unescaped $. If you meant to print a dollar sign, use \$. If you want to use math-mode, use \(...\), not $...$ .</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

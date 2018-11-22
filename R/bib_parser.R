@@ -4,15 +4,43 @@
 #' @param to_sort Include only author, title, year, and date.
 #' @param check.dup.keys If \code{TRUE}, the default, return error if any bib keys are duplicates.
 #' @param strip.braces If \code{TRUE}, the default, braces in fields are removed. 
+#' @param check.unescaped.percent If \code{TRUE}, the default, fields with unescaped
+#' percent signs are an error. (Unescaped percent signs in URLs are permitted.) Set
+#' to \code{FALSE} to skip this check.
+#' @param .bib_expected (logical, default: \code{TRUE}) Should \code{file.bib} be expected to 
+#' have file extension \code{.bib}? If expectation violated, a warning is emitted.
+#' @param halt Whether to halt on error. If \code{NULL}, the default, the value
+#' \code{getOption("TeXCheckR.halt_on_error")} is used. Otherwise, \code{TRUE} or
+#' \code{FALSE} to halt
+#' regardless of the value of the option.
+#' @param rstudio (logical, default: \code{FALSE}) If \code{TRUE}, pop the RStudio session
+#' to the location in \code{file.bib} of the first error.
 #' @param .report_error A function like \code{\link{report2console}} to handle errors.
 #' @details \code{bib2DT} returns a \code{data.table} of the entries in \code{file.bib}. The function
 #' \code{reorder_bib} rewrites \code{file.bib}, to put it in surname, year, title, line number order.
 #' 
 #' @export bib2DT fread_bib
 
-fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE, .report_error) {
+fread_bib <- function(file.bib,
+                      check.dup.keys = TRUE,
+                      strip.braces = TRUE,
+                      check.unescaped.percent = TRUE,
+                      .bib_expected = TRUE,
+                      halt = TRUE,
+                      rstudio = FALSE,
+                      .report_error) {
   stopifnot(length(file.bib) == 1L)
-  if (!endsWith(file.bib, ".bib")) {
+  check_TF(check.dup.keys)
+  check_TF(strip.braces)
+  check_TF(check.unescaped.percent)
+  check_TF(.bib_expected)
+  if (is.null(halt)) {
+    halt <- getOption("TeXCheckR.halt_on_error")
+  }
+  check_TF(halt)
+  check_TF(rstudio)
+  
+  if (XOR(.bib_expected, endsWith(file.bib, ".bib"))) {
     warning("File extension is not '.bib'.")
   }
   
@@ -23,12 +51,20 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE, .rep
 
   bib <-
     read_lines(file.bib) %>%  # Consider: fread("~/Road-congestion-2017/bib/Transport.bib", sep = "\n", fill = TRUE, encoding = "UTF-8", header = FALSE) 
+    
     # Avoid testing }\\s+$ rather than just == }
     stri_trim_both %>%
     .[!startsWith(., "@Comment")]
   
   is_at <- startsWith(bib, "@")
   is_closing <- bib == "}"
+  
+  # Need to exit if bib is empty (also makes testing above convenient)
+  if (!any(is_at) || !any(is_closing)) {
+    message("`file.bib = ", file.bib, "` had no bib entries. ", 
+            "Returning empty data.table.")
+    return(data.table())
+  }
 
   sep <- NULL
   # Can't use = as separator (almost certainly occurs in a URL)
@@ -77,8 +113,9 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE, .rep
                    error_message = "Duplicate bib key used.",
                    advice = paste0("Compare the two entries above. If they are identical, delete one. ", 
                                    "If they are distinct, choose a different bib key. ", 
-                                   "(Note: keys are case-insensitive.)"))
-    stop("Duplicate bib key used.")
+                                   "(Note: keys are case-insensitive.)"),
+                  halt = halt,
+                  rstudio = rstudio)
   }
   
   bibDT[, key_value := NULL]
@@ -123,6 +160,41 @@ fread_bib <- function(file.bib, check.dup.keys = TRUE, strip.braces = TRUE, .rep
       }
     }
   }
+  
+  # Check for unescaped % in fields (except URL)
+  if (check.unescaped.percent) {
+    unescaped_percent <- 
+      bibDT[field != "url"][grep("(?<!(?:\\\\))[%]", value, perl = TRUE)]
+    
+    if (nrow(unescaped_percent)) {
+      orig_file.bib <- read_lines(file.bib)
+      first_line_no <- unescaped_percent[1L][["line_no"]]
+      first_bad_text <- orig_file.bib[first_line_no]
+      
+      column <- 
+        first_bad_text %>%
+        stri_locate_all_regex_no_stri("(?<!(?:\\\\))[%]") %>%
+        .[[1L]] %>%
+        .[1, "start"] %>%
+        as.vector
+      
+      first_bad_field <- unescaped_percent[1L][["field"]]
+      first_bad_key <- unescaped_percent[1L][["key"]]
+      
+      .report_error(file = file.bib,
+                    line_no = first_line_no,
+                    column = column,
+                    error_message = paste0("Field <", first_bad_field, "> ",
+                                           "in entry <", first_bad_key, "> ",
+                                           "contains unescaped %."),
+                    advice = "Insert a backslash before this %.",
+                    context = first_bad_text,
+                    halt = halt,
+                    caret = 2L,
+                    rstudio = rstudio)
+    }
+  }
+  
   bibDT[, .(line_no, entry_type, key, field, value)]
 
 }

@@ -16,6 +16,11 @@ fill_blanks <- function(S) {
    L <- !is.na(S)
    c(S[L][1L], S[L], use.names = FALSE)[cumsum(L) + 1L]
 }
+
+stop <- function(..., call. = TRUE, domain = NULL) {
+  base::stop(simpleError(.makeMessage(..., domain = domain, appendLF = TRUE),
+                         call = sys.call(1L - sys.nframe())))
+}
  
 # takes a vector of froms and tos and takes their union
 seq.default.Vectorized <- function(x, y)
@@ -210,8 +215,25 @@ fill_with_space <- function(x, pattern, group = 1L) {
   out         
 }
 
-
-
-
+check_TF <- function (x) {
+  if (is.logical(x) && length(x) == 1L) {
+    if (anyNA(x)) {
+      xc <- deparse(substitute(x))
+      stop("`", xc, " = NA` but must be TRUE or FALSE. ", 
+           "Change `", xc, "` to be TRUE or FALSE.")
+    } else {
+      return(NULL)
+    }
+  } else {
+    xc <- deparse(substitute(x))
+    if (length(x) != 1L) {
+      stop("`", xc, "` had length ", length(x), " but must be length-one. ", 
+           "Change `", xc, "` to be TRUE or FALSE.")
+    } else {
+      stop("`", xc, "` was type ", typeof(x), " but must be logical. ", 
+           "Change `", xc, "` to be TRUE or FALSE.")
+    }
+  }
+}
 
 

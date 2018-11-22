@@ -2,6 +2,13 @@
 #### Bug fixes:
 * `check_spelling` respects `ignore_spelling_in_nth` in nested inputs.
 
+#### Enhancements
+* `fread_bib`:
+  * offers more flexible error behaviour (such as obeying `getOption("TeXCheckR.halt_on_error")`)
+  * detects and halts (if requested) unescaped `%` signs in fields (#44)
+* The default error profile now uses `simpleError` and refers to the top calling frame.
+
+
 ## TeXCheckR 0.6.1
 
 #### Bug fixes:

@@ -129,5 +129,32 @@ test_that("No year #70", {
   expect_null(any_bib_duplicates("fread-bib/citr-zotero-test.bib"))
 })
 
+test_that("Unescaped % in non-url fields", {
+  expect_error(fread_bib("fread-bib/issue-44.bib"),
+               regexp = "BlakersLuStocks2017")
+  expect_error(fread_bib("fread-bib/issue-44.bib"),
+               regexp = "contains unescaped %",
+               fixed = TRUE)
+})
+
+test_that("Unescaped % in non-url fields (output)", {
+  skip_if_not_installed("rlang")
+  rlang::with_options({
+    output <- capture.output(fread_bib("fread-bib/issue-44.bib",
+                                       halt = FALSE))
+    expect_true(any(endsWith(output, "^^"))) # test caret = 2L
+    expect_true("Insert a backslash before this %." %in% output)
+  },
+  TeXCheckR.capture.output = TRUE)
+  
+  # Test halt = NULL
+  rlang::with_options({
+    expect_error(fread_bib("fread-bib/issue-44.bib",
+                           halt = NULL),
+                 regexp = "BlakersLuStocks2017")
+  },
+  TeXCheckR.halt_on_error = TRUE)
+})
+
 
 

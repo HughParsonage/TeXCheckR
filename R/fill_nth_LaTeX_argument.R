@@ -9,6 +9,7 @@ fill_nth_LaTeX_argument <- function(parsed_doc, command_names, n = 1L, optional 
       locate_mandatory_LaTeX_argument(parsed_doc = parsed_doc,
                                       command_name = command_name,
                                       n = n)
+    
   }
   
   wi <- rep_len(FALSE, nrow(parsed_doc))

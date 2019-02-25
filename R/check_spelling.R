@@ -123,6 +123,9 @@ check_spelling <- function(filename,
   # Smart quotes
   lines <- gsub(parse(text = paste0("'", "\u2019", "'")), "'", lines, fixed = TRUE)
   lines <- gsub(parse(text = paste0("'", "\u2018", "'")), "'", lines, fixed = TRUE)
+  
+  # Trailing apostrophes tend to cause false positives
+  lines <- gsub("'s\\b", "", lines, perl = TRUE)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""

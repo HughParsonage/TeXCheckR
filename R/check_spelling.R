@@ -2,40 +2,55 @@
 #'
 #' @param filename Path to a LaTeX file to check.
 #' @param pre_release Should the document be assumed to be final?
-#' Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits \code{add_to_dictionary} to be
+#' Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits 
+#' \code{add_to_dictionary} to be
 #' present outside the document preamble.
 #' @param ignore.lines Integer vector of lines to ignore (due to possibly spurious errors).
-#' @param known.correct Character vector of patterns known to be correct (which will never be raised by this function).
-#' @param known.correct.fixed Character vector of words known to be correct (which will never be raised by this function).
+#' @param known.correct Character vector of patterns known to be correct (which will never be raised
+#'  by this function).
+#' @param known.correct.fixed Character vector of words known to be correct (which will never be 
+#' raised by this function).
 #' @param known.wrong Character vector of patterns known to be wrong.
 #' @param ignore_spelling_in Command whose first mandatory argument will be ignored.
 #' @param ignore_spelling_in_nth Named list of arguments to ignore; names are the commands to be ignored, values are the \code{n}th argument to be ignored.
-#' @param bib_files Bibliography files (containing possible clues to misspellings). If supplied, and this function would otherwise throw an error, the \code{.bib} files are read and any author names that match the misspelled words are added to the dictionary.
-#' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg} are present. (If they are typed literally, they may be formatted inconsistently. Using a macro ensures they appear consistently.)
+#' @param bib_files Bibliography files (containing possible clues to misspellings). If supplied, and
+#'  this function would otherwise throw an error, the \code{.bib} files are read and any author 
+#'  names that match the misspelled words are added to the dictionary.
+#' @param check_etcs If \code{TRUE}, stop if any variations of \code{etc}, \code{ie}, and \code{eg}
+#'  are present. (If they are typed literally, they may be formatted inconsistently. Using a macro
+#'  ensures they appear consistently.)
 #' @param dict_lang Passed to \code{hunspell::dictionary}.
 #' @param rstudio Use the RStudio API?
-#' @param .report_error A function to provide context to any errors. If missing, defaults to \code{\link{report2console}}.
-#' @return Called primarily for its side-effect. If the spell check fails, the line at which the first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
+#' @param .report_error A function to provide context to any errors. If missing, defaults to 
+#' \code{\link{report2console}}.
+#' @return Called primarily for its side-effect. If the spell check fails, the line at which the 
+#' first error was detected, with an error message. If the check succeeds, \code{NULL} invisibly.
 #' 
 #' @details Extends and enhances \code{hunspell}:
 #' 
 #'  \itemize{
 #' \item{You can add directives 
-#' in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not throw an error), write
-#' \code{\% add_to_dictionary: foobaz} on a single line. The advantage of this method is that you can collaborate
-#' on the document without having to keep track of which spelling errors are genuine.}
+#' in the document itself. To add a word \code{foobaz} to the dictionary (so its presence does not
+#'  throw an error), write \code{\% add_to_dictionary: foobaz} on a single line. The advantage of 
+#'  this method is that you can collaborate on the document without having to keep track of which
+#'  spelling errors are genuine.}
 #' \item{The 
 #' directive \code{\% ignore_spelling_in: mycmd} which will ignore the spelling of words within the first argument
 #' of \code{\\mycmd}.}
-#' \item{\code{ignore_spelling_in_file: <file.tex>} will skip the check of \code{<file.tex>} if it is \code{input} or \code{include} in \code{filename}, as well as any files within it. Should appear as it is within \code{input} but with the file extension}
+#' \item{\code{ignore_spelling_in_file: <file.tex>} will skip the check of \code{<file.tex>} if it 
+#' is \code{input} or \code{include} in \code{filename}, as well as any files within it. Should 
+#' appear as it is within \code{input} but with the file extension}
 #' 
 #' \item{Only the root document need be supplied; 
 #' any files that are fed via \code{\\input} or \code{\\include} are checked (recursively).}
 #' 
 #' \item{A historical advantages was that the contents of certain commands were not checked, the spelling of which need not be checked 
-#' as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional arguments. Most of these
-#' are now parsed correctly by \code{\link[hunspell]{hunspell}}, though some still need to be supplied (including, naturally, user-supplied macros).}
-#' \item{Abbreviations and initialisms which are validly introduced will not throw errors. See \code{\link{extract_valid_abbrevations}}.}
+#' as they are not printed, \code{viz.} citation and cross-reference commands, and certain optional
+#' arguments. Most of these
+#' are now parsed correctly by \code{\link[hunspell]{hunspell}}, though some still need to be 
+#' supplied (including, naturally, user-supplied macros).}
+#' \item{Abbreviations and initialisms which are validly introduced will not throw errors. See
+#' \code{\link{extract_valid_abbrevations}}.}
 #' \item{Words preceded by '[sic]' will not throw errors.}
 #' }
 #' 
@@ -79,7 +94,7 @@ check_spelling <- function(filename,
                            rstudio = FALSE,
                            
                            .report_error){
-  if (missing(.report_error)){
+  if (missing(.report_error)) {
     if (rstudio) {
       if (!interactive()) {
         stop("Argument 'rstudio' is only valid in interactive sessions.")
@@ -108,6 +123,9 @@ check_spelling <- function(filename,
   # Smart quotes
   lines <- gsub(parse(text = paste0("'", "\u2019", "'")), "'", lines, fixed = TRUE)
   lines <- gsub(parse(text = paste0("'", "\u2018", "'")), "'", lines, fixed = TRUE)
+  
+  # Trailing apostrophes tend to cause false positives
+  lines <- gsub("'s\\b", "", lines, perl = TRUE)
 
   if (!is.null(ignore.lines)){
     lines[ignore.lines] <- ""

@@ -10,3 +10,10 @@ test_that("Locations", {
                seq.int(from = nchar("\\documentclass[11pt,parksip=half*]{"),
                        to = nchar("\\documentclass[11pt,parksip=half*]{scrartcl}")))
 })
+
+test_that("Issue 73", {
+  x <- "State governments should relax planning restrictions (see \\Chaprefrange{subsec:relax-planning-rules-to-allow-more-density-in-inner-and-middle-ring-suburbs-of-our-cities}{subsec:empower-independent-panels-to-determine-more-planning-applications} on pages \\pageref{subsec:relax-planning-rules-to-allow-more-density-in-inner-and-middle-ring-suburbs-of-our-cities}--\\pageref{subsec:empower-independent-panels-to-determine-more-planning-applications})."
+  locate_mandatory_LaTeX_argument(x, "Chaprefrange", n = 1L)
+  
+})
+

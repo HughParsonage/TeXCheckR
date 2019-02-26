@@ -155,45 +155,20 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
     
     command_no_t <- target <- NULL
     
-    bullseye <- function(.id_at_group_level, .n, .command, .GROUP_LEVEL) {
-      if (length(.n) == 1L) {
-        if (is.na(.n)) {
-          rep_len(TRUE, length(.id_at_group_level))
-        } else {
-          if (anyNA(.command)) {
-            command_not_na <- !is.na(.command)
-            first_id <- .id_at_group_level[command_not_na][[1L]]
-            first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
-          } else {
-            first_id <- .id_at_group_level[[1L]]
-            first_GR <- .GROUP_LEVEL[[1L]]
-          }
-          and(.id_at_group_level + 1L - n == first_id, 
-              .GROUP_LEVEL == first_GR)
-        }
-      } else {
-        if (anyNA(.command)) {
-          command_not_na <- !is.na(.command)
-          first_id <- .id_at_group_level[command_not_na][[1L]]
-          first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
-        } else {
-          first_id <- .id_at_group_level[[1L]]
-          first_GR <- .GROUP_LEVEL[[1L]]
-        }
-        # Arguments in this group may differ and
-        
-        and({.id_at_group_level + 1L - first_id} %in% n, 
-            .GROUP_LEVEL == first_GR)
-      }
-    }
-    
     # Must be outer join
     candidate_char_ranges <- 
       candidates[molten_parsed_doc, on = "char_no"] %>%
       
       # Only include NAs after the first command
-      .[cumsum(!is.na(command)) > 0L] %>%
-      
+      .[cumsum(!is.na(command)) > 0L]
+    
+    if (nrow(candidate_char_ranges) == 0L) {
+      # Issue 73
+      return(parsed_doc[])
+    }
+    
+    candidate_char_ranges <-
+      candidate_char_ranges %>%
       .[, .(char_no_min = min(char_no),
             char_no_max = max(char_no),
             command = return_first_nonNA(command),
@@ -276,6 +251,39 @@ locate_mandatory_LaTeX_argument <- function(tex_lines,
   }
   out[]
 }
+
+bullseye <- function(.id_at_group_level, .n, .command, .GROUP_LEVEL) {
+  if (length(.n) == 1L) {
+    if (is.na(.n)) {
+      rep_len(TRUE, length(.id_at_group_level))
+    } else {
+      if (anyNA(.command)) {
+        command_not_na <- !is.na(.command)
+        first_id <- .id_at_group_level[command_not_na][[1L]]
+        first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
+      } else {
+        first_id <- .id_at_group_level[[1L]]
+        first_GR <- .GROUP_LEVEL[[1L]]
+      }
+      and(.id_at_group_level + 1L - .n == first_id, 
+          .GROUP_LEVEL == first_GR)
+    }
+  } else {
+    if (anyNA(.command)) {
+      command_not_na <- !is.na(.command)
+      first_id <- .id_at_group_level[command_not_na][[1L]]
+      first_GR <- .GROUP_LEVEL[command_not_na][[1L]]
+    } else {
+      first_id <- .id_at_group_level[[1L]]
+      first_GR <- .GROUP_LEVEL[[1L]]
+    }
+    # Arguments in this group may differ and
+    
+    and({.id_at_group_level + 1L - first_id} %in% .n, 
+        .GROUP_LEVEL == first_GR)
+  }
+}
+
 
 
 

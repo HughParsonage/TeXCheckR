@@ -262,16 +262,8 @@ check_spelling <- function(filename,
     for (input in inputs) {
 
       # If nested, remove duplicated folder in path. See isse #75
-      last_of_file_path <- gsub(".*?([a-zA-Z0-9\\-]*?$)", "\\1", file_path, perl = TRUE)
-      first_of_input <- gsub("^([a-zA-Z0-9\\-]*).*", "\\1", input, perl = TRUE)
-      
-      if (last_of_file_path == first_of_input) input <- gsub(paste0(first_of_input, "\\/"), "", input)
-      if (last_of_file_path == first_of_input) input <- gsub(paste0(first_of_input, "\\\\"), "", input)
-
-
-      .file_path <- file.path(file_path,
-                              paste0(sub("\\.tex?", "", input, perl = TRUE),
-                                     ".tex"))
+      .file_path <- get_input_file_path(.path = file_path,
+                                        .input = input)
 
       cat_(input, "\n")
 
@@ -576,7 +568,7 @@ check_spelling <- function(filename,
           .report_error(line_no = line_w_misspell,
                         column = chars_b4_badword + nchar_of_badword + 1L,
                         context = context,
-                        error_message = paste0("Spellcheck failed: '", bad_word, "'"),
+                        error_message = paste0("Spellcheck failed: '", bad_word, "' in ", filename),
                         extra_cat_post = c("\n",
                                            rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
                                            rep("^", nchar_of_badword),
@@ -606,4 +598,23 @@ check_spelling <- function(filename,
   }
 
   return(invisible(NULL))
+}
+
+
+
+
+
+get_input_file_path <- function(.path, .input) {
+  
+  last_of_file_path <- gsub(".*?([a-zA-Z0-9\\-]*?$)", "\\1", .path, perl = TRUE)
+  first_of_input <- gsub("^([a-zA-Z0-9\\-]*).*", "\\1", .input, perl = TRUE)
+  
+  if (last_of_file_path == first_of_input) .input <- gsub(paste0(first_of_input, "\\/"), "", .input)
+  if (last_of_file_path == first_of_input) .input <- gsub(paste0(first_of_input, "\\\\"), "", .input)
+  
+  
+  .file_path <- file.path(.path,
+                          paste0(sub("\\.tex?", "", .input, perl = TRUE),
+                                 ".tex"))
+  return(.file_path)
 }

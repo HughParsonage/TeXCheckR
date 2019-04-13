@@ -178,4 +178,20 @@ test_that("known.correct.fixed", {
 
 
 
+test_that("get_file_path.works", {
+  # Nested:
+  expect_equal(get_input_file_path(.path = "./nest1",
+                                   .input = "nest1/nest2/file.tex"),
+               "./nest1/nest2/file.tex")
+  # Not nested:
+  expect_equal(get_input_file_path(.path = "./nest1",
+                                   .input = "nest2/file.tex"),
+               "./nest1/nest2/file.tex")
+  # Not nested:
+  expect_equal(get_input_file_path(.path = "./nest1",
+                             .input = "file.tex"),
+               "./nest1/file.tex")
+  
+})
+
 

@@ -266,6 +266,8 @@ check_spelling <- function(filename,
       first_of_input <- gsub("^([a-zA-Z0-9\\-]*).*", "\\1", input, perl = TRUE)
       
       if (last_of_file_path == first_of_input) input <- gsub(paste0(first_of_input, "\\/"), "", input)
+      if (last_of_file_path == first_of_input) input <- gsub(paste0(first_of_input, "\\\\"), "", input)
+
 
       .file_path <- file.path(file_path,
                               paste0(sub("\\.tex?", "", input, perl = TRUE),

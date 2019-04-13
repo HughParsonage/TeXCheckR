@@ -255,9 +255,15 @@ check_spelling <- function(filename,
     }
 
   if (length(inputs)) {
+    
     # Recursively check
     cat_("Check subfiles:\n")
     for (input in inputs) {
+      # Ignore if a nested table input: see issue #75
+      if ( grepl("tbl-", input)) {
+        cat_("\t(Skipping", input, ")\n")
+      }
+      if (!grepl("tbl-", input)) {
       cat_(input, "\n")
       check_spelling(filename = file.path(file_path,
                                           paste0(sub("\\.tex?", "", input, perl = TRUE),
@@ -270,6 +276,7 @@ check_spelling <- function(filename,
                      dict_lang = dict_lang,
                      rstudio = rstudio)
     }
+  }
   }
   
   if (any(grepl("\\verb", lines, fixed = TRUE))) {

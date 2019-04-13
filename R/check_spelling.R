@@ -110,6 +110,7 @@ check_spelling <- function(filename,
   }
 
   file_path <- dirname(filename)
+
   orig <- lines <- read_lines(filename)
   
   # Quick way to identify end document if it exists, avoids issues 
@@ -259,15 +260,20 @@ check_spelling <- function(filename,
     # Recursively check
     cat_("Check subfiles:\n")
     for (input in inputs) {
-      # Ignore if a nested table input: see issue #75
-      if ( grepl("tbl-", input)) {
-        cat_("\t(Skipping", input, ")\n")
-      }
-      if (!grepl("tbl-", input)) {
+
+      # If nested, remove duplicated folder in path. See isse #75
+      last_of_file_path <- gsub(".*?([a-zA-Z0-9\\-]*?$)", "\\1", file_path, perl = TRUE)
+      first_of_input <- gsub("^([a-zA-Z0-9\\-]*).*", "\\1", input, perl = TRUE)
+      
+      if (last_of_file_path == first_of_input) input <- gsub(paste0(first_of_input, "\\/"), "", input)
+
+      .file_path <- file.path(file_path,
+                              paste0(sub("\\.tex?", "", input, perl = TRUE),
+                                     ".tex"))
+
       cat_(input, "\n")
-      check_spelling(filename = file.path(file_path,
-                                          paste0(sub("\\.tex?", "", input, perl = TRUE),
-                                                 ".tex")),
+
+      check_spelling(filename = .file_path,
                      pre_release = pre_release,
                      known.correct = known.correct,
                      known.wrong = known.wrong, 
@@ -277,7 +283,7 @@ check_spelling <- function(filename,
                      rstudio = rstudio)
     }
   }
-  }
+
   
   if (any(grepl("\\verb", lines, fixed = TRUE))) {
     lines <- gsub("\\\\verb(.)(.+?)\\1", "\\verb", lines)

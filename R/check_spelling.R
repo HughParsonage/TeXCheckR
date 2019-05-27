@@ -110,6 +110,7 @@ check_spelling <- function(filename,
   }
 
   file_path <- dirname(filename)
+
   orig <- lines <- read_lines(filename)
   
   # Quick way to identify end document if it exists, avoids issues 
@@ -255,13 +256,18 @@ check_spelling <- function(filename,
     }
 
   if (length(inputs)) {
+    
     # Recursively check
     cat_("Check subfiles:\n")
     for (input in inputs) {
+
+      # If nested, remove duplicated folder in path. See isse #75
+      .file_path <- get_input_file_path(.path = file_path,
+                                        .input = input)
+
       cat_(input, "\n")
-      check_spelling(filename = file.path(file_path,
-                                          paste0(sub("\\.tex?", "", input, perl = TRUE),
-                                                 ".tex")),
+
+      check_spelling(filename = .file_path,
                      pre_release = pre_release,
                      known.correct = known.correct,
                      known.wrong = known.wrong, 
@@ -271,6 +277,7 @@ check_spelling <- function(filename,
                      rstudio = rstudio)
     }
   }
+
   
   if (any(grepl("\\verb", lines, fixed = TRUE))) {
     lines <- gsub("\\\\verb(.)(.+?)\\1", "\\verb", lines)
@@ -561,7 +568,7 @@ check_spelling <- function(filename,
           .report_error(line_no = line_w_misspell,
                         column = chars_b4_badword + nchar_of_badword + 1L,
                         context = context,
-                        error_message = paste0("Spellcheck failed: '", bad_word, "'"),
+                        error_message = paste0("Spellcheck failed: '", bad_word, "' in ", filename),
                         extra_cat_post = c("\n",
                                            rep(" ", chars_b4_badword + 5 + nchar(line_w_misspell)),
                                            rep("^", nchar_of_badword),
@@ -591,4 +598,23 @@ check_spelling <- function(filename,
   }
 
   return(invisible(NULL))
+}
+
+
+
+
+
+get_input_file_path <- function(.path, .input) {
+  
+  last_of_file_path <- gsub(".*?([a-zA-Z0-9\\-]*?$)", "\\1", .path, perl = TRUE)
+  first_of_input <- gsub("^([a-zA-Z0-9\\-]*).*", "\\1", .input, perl = TRUE)
+  
+  if (last_of_file_path == first_of_input) .input <- gsub(paste0(first_of_input, "\\/"), "", .input)
+  if (last_of_file_path == first_of_input) .input <- gsub(paste0(first_of_input, "\\\\"), "", .input)
+  
+  
+  .file_path <- file.path(.path,
+                          paste0(sub("\\.tex?", "", .input, perl = TRUE),
+                                 ".tex"))
+  return(.file_path)
 }

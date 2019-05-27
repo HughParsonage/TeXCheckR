@@ -1,6 +1,8 @@
 #' Spell checking
 #'
 #' @param filename Path to a LaTeX file to check.
+#' @param tex_root The root path of the filename. Provide this if you are checking an \code{\\input}
+#' file that has a different root directory to its parent.
 #' @param pre_release Should the document be assumed to be final?
 #' Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits 
 #' \code{add_to_dictionary} to be
@@ -81,6 +83,7 @@
 #' 
 
 check_spelling <- function(filename,
+                           tex_root = dirname(filename),
                            pre_release = TRUE,
                            ignore.lines = NULL,
                            known.correct = NULL,
@@ -109,7 +112,7 @@ check_spelling <- function(filename,
     }
   }
 
-  file_path <- dirname(filename)
+  file_path <- tex_root
 
   orig <- lines <- read_lines(filename)
   
@@ -262,12 +265,13 @@ check_spelling <- function(filename,
     for (input in inputs) {
 
       # If nested, remove duplicated folder in path. See isse #75
-      .file_path <- get_input_file_path(.path = file_path,
-                                        .input = input)
+      # .file_path <- get_input_file_path(.path = file_path,
+      #                                   .input = input)
 
       cat_(input, "\n")
 
-      check_spelling(filename = .file_path,
+      check_spelling(filename = file.path(tex_root, input),
+                     tex_root = tex_root,
                      pre_release = pre_release,
                      known.correct = known.correct,
                      known.wrong = known.wrong, 

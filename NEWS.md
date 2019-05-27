@@ -1,6 +1,8 @@
 ## TeXCheckR 0.7.0
 #### Bug fixes:
-* `check_spelling` respects `ignore_spelling_in_nth` in nested inputs.
+* `check_spelling`:
+  - now respects `ignore_spelling_in_nth` in nested inputs.
+  - now correctly identifies nested inputs.
 * Fixed an issue (#73) that was fixed by being more assertive and careful with variables within 
   some internal functions. Thanks to @wfmackey for reporting.
 

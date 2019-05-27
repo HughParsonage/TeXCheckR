@@ -4,14 +4,18 @@
 \alias{check_spelling}
 \title{Spell checking}
 \usage{
-check_spelling(filename, pre_release = TRUE, ignore.lines = NULL,
-  known.correct = NULL, known.correct.fixed = NULL,
-  known.wrong = NULL, ignore_spelling_in = NULL,
-  ignore_spelling_in_nth = NULL, bib_files, check_etcs = TRUE,
-  dict_lang = "en_GB", rstudio = FALSE, .report_error)
+check_spelling(filename, tex_root = dirname(filename),
+  pre_release = TRUE, ignore.lines = NULL, known.correct = NULL,
+  known.correct.fixed = NULL, known.wrong = NULL,
+  ignore_spelling_in = NULL, ignore_spelling_in_nth = NULL, bib_files,
+  check_etcs = TRUE, dict_lang = "en_GB", rstudio = FALSE,
+  .report_error)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}
+
+\item{tex_root}{The root path of the filename. Provide this if you are checking an \code{\\input}
+file that has a different root directory to its parent.}
 
 \item{pre_release}{Should the document be assumed to be final?
 Setting to \code{FALSE} permits the use of \code{ignore_spelling_in} and permits 

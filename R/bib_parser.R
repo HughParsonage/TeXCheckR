@@ -75,7 +75,7 @@ fread_bib <- function(file.bib,
       break
     }
   }
-  if (is.null(sep_candidate)){
+  if (is.null(sep)){
     stop("No suitable separator found for bibliography file. That is, all candidates tried already appeared in the file")
   }
 

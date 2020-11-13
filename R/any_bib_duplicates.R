@@ -113,21 +113,13 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
       .[dups_tail | dups_head, .(key, Author, Title, date, year)] %>%
       .[order(Author, Title)]
     
-    stopifnot(nrow(DT_with_all_duplicates) %% 2L == 0L,
-              nrow(DT_with_all_duplicates) > 1L)
-    
     .report_error(line_no = NULL,
                   context = "Possible duplicates in bibliographies.",
                   error_message = "Possible duplicates in bibliography.")
     
     if (getOption("TeXCheckR.messages", TRUE)) {
       for (dup in 1:(nrow(DT_with_all_duplicates) / 2)) {
-        if (dup == 6){
-          break
-        }
-        cat("\n")
-        print(DT_with_all_duplicates[c(2 * dup - 1, 2 * dup)], row.names = FALSE)
-      }
+        print(head(DT_with_all_duplicates))
     }
     stop("Possible duplicate entries in bibliography. First 5 shown above.")
   }

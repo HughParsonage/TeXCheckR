@@ -25,5 +25,6 @@
 #' @importFrom hutils duplicated_rows
 #' @importFrom stats complete.cases
 #' @importFrom utils download.file
+#' @importFrom utils head
 NULL
 

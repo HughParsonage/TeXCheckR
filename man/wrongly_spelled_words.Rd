@@ -4,7 +4,9 @@
 \name{wrongly_spelled_words}
 \alias{wrongly_spelled_words}
 \title{List of wrongly spelled words}
-\format{A regex of patterns to raise as spelling errors.}
+\format{
+A regex of patterns to raise as spelling errors.
+}
 \usage{
 wrongly_spelled_words
 }

@@ -5,6 +5,8 @@
   - now correctly identifies nested inputs.
 * Fixed an issue (#73) that was fixed by being more assertive and careful with variables within 
   some internal functions. Thanks to @wfmackey for reporting.
+* `any_bib_entries` no longer includes an unsound assertion that the number of
+  duplicate entries must be divisible by 2. Thanks to @jamesha95 and AS for reporting.
 
 #### Enhancements
 * `fread_bib`:

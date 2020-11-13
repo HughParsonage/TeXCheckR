@@ -1,8 +1,8 @@
 Package: TeXCheckR
 Type: Package
 Title: Parses LaTeX Documents for Errors
-Date: 2018-10-28
-Version: 0.6.2
+Date: 2020-11-14
+Version: 0.7.0
 Authors@R: c(person("Hugh", "Parsonage", role = c("aut", "cre"), email = "hugh.parsonage@gmail.com"))
 URL: https://github.com/HughParsonage/TeXCheckR
 BugReports: https://github.com/HughParsonage/TeXCheckR/issues
@@ -23,7 +23,7 @@ Imports:
   zoo
 LazyData: TRUE
 ByteCompile: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 Suggests:
   devtools,

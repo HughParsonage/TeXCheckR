@@ -7,9 +7,16 @@
 \alias{reorder_bib}
 \title{Functions for parsing .bib files}
 \usage{
-fread_bib(file.bib, check.dup.keys = TRUE, strip.braces = TRUE,
-  check.unescaped.percent = TRUE, .bib_expected = TRUE, halt = TRUE,
-  rstudio = FALSE, .report_error)
+fread_bib(
+  file.bib,
+  check.dup.keys = TRUE,
+  strip.braces = TRUE,
+  check.unescaped.percent = TRUE,
+  .bib_expected = TRUE,
+  halt = TRUE,
+  rstudio = FALSE,
+  .report_error
+)
 
 bib2DT(file.bib, to_sort = FALSE)
 

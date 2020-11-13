@@ -4,8 +4,12 @@
 \alias{locate_mandatory_LaTeX_argument}
 \title{Locate contents of LaTeX commands}
 \usage{
-locate_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
-  parsed_doc = NULL)
+locate_mandatory_LaTeX_argument(
+  tex_lines,
+  command_name,
+  n = 1L,
+  parsed_doc = NULL
+)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX document, 

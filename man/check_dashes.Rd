@@ -4,8 +4,13 @@
 \alias{check_dashes}
 \title{Check dashes entered as hyphens}
 \usage{
-check_dashes(filename, .report_error, dash.consistency = c("en-dash",
-  "em-dash"), protases_ok = TRUE, rstudio = TRUE)
+check_dashes(
+  filename,
+  .report_error,
+  dash.consistency = c("en-dash", "em-dash"),
+  protases_ok = TRUE,
+  rstudio = TRUE
+)
 }
 \arguments{
 \item{filename}{A tex or Rnw file.}

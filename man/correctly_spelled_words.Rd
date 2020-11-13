@@ -4,7 +4,9 @@
 \name{correctly_spelled_words}
 \alias{correctly_spelled_words}
 \title{List of correctly spelled words}
-\format{A character vector of words as perl-regex patterns to skip during the spell check.}
+\format{
+A character vector of words as perl-regex patterns to skip during the spell check.
+}
 \usage{
 correctly_spelled_words
 }

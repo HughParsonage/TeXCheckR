@@ -4,12 +4,22 @@
 \alias{check_spelling}
 \title{Spell checking}
 \usage{
-check_spelling(filename, tex_root = dirname(filename),
-  pre_release = TRUE, ignore.lines = NULL, known.correct = NULL,
-  known.correct.fixed = NULL, known.wrong = NULL,
-  ignore_spelling_in = NULL, ignore_spelling_in_nth = NULL, bib_files,
-  check_etcs = TRUE, dict_lang = "en_GB", rstudio = FALSE,
-  .report_error)
+check_spelling(
+  filename,
+  tex_root = dirname(filename),
+  pre_release = TRUE,
+  ignore.lines = NULL,
+  known.correct = NULL,
+  known.correct.fixed = NULL,
+  known.wrong = NULL,
+  ignore_spelling_in = NULL,
+  ignore_spelling_in_nth = NULL,
+  bib_files,
+  check_etcs = TRUE,
+  dict_lang = "en_GB",
+  rstudio = FALSE,
+  .report_error
+)
 }
 \arguments{
 \item{filename}{Path to a LaTeX file to check.}

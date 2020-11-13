@@ -4,8 +4,7 @@
 \alias{validate_bibliography}
 \title{Validate bibliography according to Grattan style}
 \usage{
-validate_bibliography(path = ".", file = NULL, .report_error,
-  rstudio = FALSE)
+validate_bibliography(path = ".", file = NULL, .report_error, rstudio = FALSE)
 }
 \arguments{
 \item{path}{Containing the bib file.}

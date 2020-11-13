@@ -4,8 +4,13 @@
 \alias{extract_mandatory_LaTeX_argument}
 \title{Extract mandatory argument II}
 \usage{
-extract_mandatory_LaTeX_argument(tex_lines, command_name, n = 1L,
-  by.line = FALSE, parsed_doc = NULL)
+extract_mandatory_LaTeX_argument(
+  tex_lines,
+  command_name,
+  n = 1L,
+  by.line = FALSE,
+  parsed_doc = NULL
+)
 }
 \arguments{
 \item{tex_lines}{A character vector of lines as read from a LaTeX document.}

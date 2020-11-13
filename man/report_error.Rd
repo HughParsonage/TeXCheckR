@@ -5,13 +5,24 @@
 \alias{report2console}
 \title{Report errors to console}
 \usage{
-report2console(file = NULL, line_no = NULL, column = NULL,
-  context = NULL, error_message = NULL, advice = NULL,
-  build_status = NULL, extra_cat_ante = NULL, extra_cat_post = NULL,
-  caret = FALSE, rstudio = FALSE, log_file = NULL,
-  log_file_sep = "|", silent = FALSE,
+report2console(
+  file = NULL,
+  line_no = NULL,
+  column = NULL,
+  context = NULL,
+  error_message = NULL,
+  advice = NULL,
+  build_status = NULL,
+  extra_cat_ante = NULL,
+  extra_cat_post = NULL,
+  caret = FALSE,
+  rstudio = FALSE,
+  log_file = NULL,
+  log_file_sep = "|",
+  silent = FALSE,
   halt = getOption("TeXCheckR.halt_on_error", FALSE),
-  as_tbl = getOption("TeXCheckR.error_as_tbl", FALSE))
+  as_tbl = getOption("TeXCheckR.error_as_tbl", FALSE)
+)
 }
 \arguments{
 \item{file}{The file in which the error occurred.}

@@ -4,8 +4,13 @@
 \alias{split_report}
 \title{Split report into include-able files}
 \usage{
-split_report(Report.tex, include = TRUE, subdir = "tex",
-  use.chapter.title = TRUE, out.tex = Report.tex)
+split_report(
+  Report.tex,
+  include = TRUE,
+  subdir = "tex",
+  use.chapter.title = TRUE,
+  out.tex = Report.tex
+)
 }
 \arguments{
 \item{Report.tex}{File to split.}

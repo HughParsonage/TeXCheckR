@@ -4,8 +4,7 @@
 \alias{minimal_bib}
 \title{Generate a minimal bibliography file}
 \usage{
-minimal_bib(path = ".", bbl.file = NULL, bib.files = NULL,
-  out.bib = bib.files)
+minimal_bib(path = ".", bbl.file = NULL, bib.files = NULL, out.bib = bib.files)
 }
 \arguments{
 \item{path}{A directory containing a document after it has been run with \code{pdflatex}.}

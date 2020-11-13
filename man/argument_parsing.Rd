@@ -6,12 +6,25 @@
 \alias{nth_arg_positions}
 \title{Replace nth arguments}
 \usage{
-replace_nth_LaTeX_argument(tex_lines, command_name, n = 1L,
-  replacement = "correct", optional = FALSE, warn = TRUE,
-  .dummy_replacement = "Qq")
+replace_nth_LaTeX_argument(
+  tex_lines,
+  command_name,
+  n = 1L,
+  replacement = "correct",
+  optional = FALSE,
+  warn = TRUE,
+  .dummy_replacement = "Qq"
+)
 
-nth_arg_positions(tex_lines, command_name, n = 1L, optional = FALSE,
-  star = TRUE, data.tables = TRUE, allow_stringi = TRUE)
+nth_arg_positions(
+  tex_lines,
+  command_name,
+  n = 1L,
+  optional = FALSE,
+  star = TRUE,
+  data.tables = TRUE,
+  allow_stringi = TRUE
+)
 }
 \arguments{
 \item{tex_lines}{A character vector of a LaTeX file (as read in from \code{readLines} or \code{readr::read_lines}).}

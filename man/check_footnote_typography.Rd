@@ -4,8 +4,12 @@
 \alias{check_footnote_typography}
 \title{Check footnote typography}
 \usage{
-check_footnote_typography(filename, ignore.lines = NULL, .report_error,
-  rstudio = FALSE)
+check_footnote_typography(
+  filename,
+  ignore.lines = NULL,
+  .report_error,
+  rstudio = FALSE
+)
 }
 \arguments{
 \item{filename}{A LaTeX file.}

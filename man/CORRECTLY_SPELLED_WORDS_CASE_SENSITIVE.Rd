@@ -4,7 +4,9 @@
 \name{CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE}
 \alias{CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE}
 \title{List of correctly spelled, case-sensitive words}
-\format{A character vector of words as perl-regex case-sensitive patterns to skip during the spell check.}
+\format{
+A character vector of words as perl-regex case-sensitive patterns to skip during the spell check.
+}
 \usage{
 CORRECTLY_SPELLED_WORDS_CASE_SENSITIVE
 }

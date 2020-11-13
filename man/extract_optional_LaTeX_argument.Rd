@@ -4,8 +4,12 @@
 \alias{extract_optional_LaTeX_argument}
 \title{Extract optional argument}
 \usage{
-extract_optional_LaTeX_argument(tex_lines, command_name, n = 1L,
-  by.line = FALSE)
+extract_optional_LaTeX_argument(
+  tex_lines,
+  command_name,
+  n = 1L,
+  by.line = FALSE
+)
 }
 \arguments{
 \item{tex_lines}{A character vector reading from a LaTeX document.}

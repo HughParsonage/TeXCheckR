@@ -118,8 +118,7 @@ any_bib_duplicates <- function(bib.files, .report_error, rstudio = FALSE) {
                   error_message = "Possible duplicates in bibliography.")
     
     if (getOption("TeXCheckR.messages", TRUE)) {
-      for (dup in 1:(nrow(DT_with_all_duplicates) / 2)) {
-        print(head(DT_with_all_duplicates))
+      print(head(DT_with_all_duplicates))
     }
     stop("Possible duplicate entries in bibliography. First 5 shown above.")
   }

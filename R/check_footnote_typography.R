@@ -4,7 +4,7 @@
 #' @param .report_error A function to provide context to any errors.
 #' @param rstudio (logical, default: \code{FALSE}) Should the RStudio API be used?
 #' @return Called for its side-effect.
-#' @details See \url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for full set of error conditions.
+#' @details See \url{https://github.com/grattan/grattex/blob/master/doc/grattexDocumentation.pdf} for full set of error conditions.
 #' @examples 
 #' \dontrun{
 #'   tex_file <- tempfile(fileext = ".tex")

@@ -107,7 +107,7 @@ to the dictionary
 explicitly, or using \code{citeauthor} and friends. 
 
 This function is forked from \url{https://github.com/hughparsonage/grattanReporter} to parse reports of the Grattan Institute, Melbourne for errors. See
-\url{https://github.com/HughParsonage/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
+\url{https://github.com/grattan/grattex/blob/master/doc/grattexDocumentation.pdf} for the full spec.
 Some checks that package performs have been omitted in this package.
 }
 \examples{

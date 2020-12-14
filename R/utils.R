@@ -18,8 +18,10 @@ fill_blanks <- function(S) {
 }
 
 stop <- function(..., call. = TRUE, domain = NULL) {
-  base::stop(simpleError(.makeMessage(..., domain = domain, appendLF = TRUE),
-                         call = sys.call(1L - sys.nframe())))
+  if (!getOption("TeXCheckR.scrollmode", FALSE)) {
+    base::stop(simpleError(.makeMessage(..., domain = domain, appendLF = TRUE),
+                           call = sys.call(1L - sys.nframe())))
+  }
 }
  
 # takes a vector of froms and tos and takes their union

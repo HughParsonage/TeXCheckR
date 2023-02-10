@@ -2,7 +2,7 @@
 #' @title TeXCheckR
 #' @description Checks LaTeX documents and \code{.bib} files for typing errors, such as spelling errors, incorrect quotation marks. Also provides useful functions for parsing and linting bibliography files.  
 #'
-#' @import data.table
+#' @rawNamespace import(data.table, except="%notin%")
 #' 
 #' @importFrom clisymbols symbol
 #' @importFrom crayon green red bgGreen bgRed bold

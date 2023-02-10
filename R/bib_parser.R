@@ -356,3 +356,21 @@ reorder_bib <- function(file.bib, outfile.bib = file.bib){
   writeLines(y[out_no], outfile.bib, useBytes = TRUE)
 }
 
+
+enkey <- function(file.bib, outfile.bib = file.bib, placeholder = "PLACEHOLDER") {
+  out <- readLines(file.bib, encoding = "UTF-8")
+  out <- trimws(out)
+  stopifnot(length(placeholder) == 1, is.character(placeholder))
+  while (any(grepl(placeholder, out, fixed = TRUE))) {
+    placeholder <- paste0(placeholder, "r")
+  }
+  is_at <- startsWith(out, "@")
+  is_invalid_at <- is_at & grepl("\\{,$", out)
+  wis_invalid_at <- which(is_invalid_at)
+  for (i in wis_invalid_at) {
+    out[i] <- sub(",$", paste0(placeholder, i, ","), out[i])
+  } 
+  writeLines(out, outfile.bib, useBytes = TRUE)
+}
+
+

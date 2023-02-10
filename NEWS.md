@@ -1,4 +1,9 @@
 ## TeXCheckR 0.7.0
+#### Internal
+  - Fix upcoming namespace clash with data.table for `%notin%`
+
+
+## TeXCheckR 0.7.0
 #### Bug fixes:
 * `check_spelling`:
   - now respects `ignore_spelling_in_nth` in nested inputs.

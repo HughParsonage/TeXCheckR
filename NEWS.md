@@ -1,4 +1,4 @@
-## TeXCheckR 0.7.0
+## TeXCheckR 0.8.1
 #### Internal
   - Fix upcoming namespace clash with data.table for `%notin%`
 

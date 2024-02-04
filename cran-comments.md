@@ -1,4 +1,4 @@
-This is a package update.
+This is a package update for data.table NAMESPACE
 
 ## R CMD check results
 

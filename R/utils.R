@@ -23,7 +23,7 @@ stop <- function(..., call. = TRUE, domain = NULL) {
 }
  
 # takes a vector of froms and tos and takes their union
-seq.default.Vectorized <- function(x, y)
+seq__default.Vectorized <- function(x, y)
   Vectorize(seq.default, vectorize.args = c("from", "to"))(x, y)
 
 Seq_union <- function(x, y){
@@ -31,7 +31,7 @@ Seq_union <- function(x, y){
     seq.int(x, y)
   } else {
     if (length(x) == length(y)){
-      unlist(seq.default.Vectorized(x, y))
+      unlist(seq__default.Vectorized(x, y))
     } else {
       lengthx <- length(x)
       lengthy <- length(y)

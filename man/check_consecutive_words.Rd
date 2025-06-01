@@ -45,3 +45,13 @@ Lastly the error message contains the \code{\link[tools]{md5sum}} of the file is
 \description{
 Check consecutive typeset words
 }
+\details{
+For implementation reasons, only one PDF file is permitted in `path` 
+(i.e. the path must contain only the PDF of the LaTeX file concerned).
+
+As this was originally part of check code for the Grattan Institute, it has
+slightly different behaviour when using the `grattan.cls` class file.
+
+The `pdftotext` utility is required; if the utility is not on the PATH (i.e.
+if `Sys.which("pdftotext")` returns the empty string), the function returns an error.
+}

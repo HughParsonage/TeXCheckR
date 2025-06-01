@@ -5,6 +5,14 @@
 #' you can use the \code{md5sum} of the output of this function.
 #' @param outfile A file to which the output can be saved. If \code{NULL}, the default, the output is printed to the console (and not saved).
 #' @param outfile.append (logical, default: \code{FALSE}). Append or overwrite \code{outfile} if specified? If \code{FALSE}, the default, and file exists, \code{outfile} will be overwritten.
+#' @details For implementation reasons, only one PDF file is permitted in `path` 
+#' (i.e. the path must contain only the PDF of the LaTeX file concerned).
+#' 
+#' As this was originally part of check code for the Grattan Institute, it has
+#' slightly different behaviour when using the `grattan.cls` class file.
+#' 
+#' The `pdftotext` utility is required; if the utility is not on the PATH (i.e.
+#' if `Sys.which("pdftotext")` returns the empty string), the function returns an error.
 #' @return \code{NULL} if the \code{LaTeX} document does not create a PDF with lines repeated. 
 #' An error if words are repeated on consecutive lines, together with \code{cat()} output of the offending lines. The output is presented in 'stanzas': 
 #' \preformatted{'<Repeated word>'

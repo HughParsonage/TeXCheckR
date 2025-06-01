@@ -23,7 +23,7 @@ Imports:
   zoo
 LazyData: TRUE
 ByteCompile: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 Suggests:
   devtools,
